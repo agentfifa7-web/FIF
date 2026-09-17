@@ -200,7 +200,7 @@ button { font:inherit; }
 .chip-row { display:flex; flex-wrap:wrap; gap:8px; }
 .divider { background:var(--line); height:1px; margin:36px 0; }
 .info-tiles { display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
-.info-tile { background:#fff; border:1px solid var(--line); padding:26px; }
+.info-tile { background:#fff; border:1px solid var(--line); color:var(--ink); padding:26px; }
 .info-tile svg { color:var(--orange); height:24px; width:24px; }
 .info-tile strong { display:block; font-size:16px; margin:14px 0 8px; }
 .info-tile p { color:var(--muted); font-size:13px; line-height:1.6; margin:0; }
