@@ -1,6 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { SiteHeader } from '@/components/site/SiteHeader'
+import { SiteFooter } from '@/components/site/SiteFooter'
 
 export const metadata: Metadata = {
   title: 'FIF Digital — Le football ivoirien, plus proche que jamais',
@@ -41,7 +43,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="antialiased">
-        {children}
+        <div className="site-shell">
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </div>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
