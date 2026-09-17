@@ -231,6 +231,28 @@ button { font:inherit; }
 
 @media (max-width:900px) { .match-center-grid { grid-template-columns:1fr; padding:0 20px; } .match-center-header { padding:36px 20px; grid-template-columns:1fr; text-align:center; } .match-center-meta { padding:16px 20px; } .sim-panel { margin-left:20px; margin-right:20px; } }
 
+.cart-pill { background:var(--forest); color:#fff; font-size:11px; font-weight:700; padding:10px 16px; }
+.product-card { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; gap:8px; padding:16px; }
+.product-image { background-color:var(--forest); background-position:center; background-size:cover; height:160px; }
+.product-card strong { font-size:13px; }
+.product-card span { color:var(--muted); font-size:12px; }
+.product-card button { margin-top:8px; }
+.ticket-card { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; padding:22px; }
+.ticket-card small { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.ticket-card strong { display:block; font-size:16px; margin:8px 0; }
+.ticket-card p { align-items:center; color:var(--muted); display:flex; font-size:12px; gap:6px; margin:0; }
+.ticket-card-foot { align-items:center; border-top:1px solid var(--line); display:flex; justify-content:space-between; margin-top:18px; padding-top:16px; }
+.ticket-card-foot span { color:var(--green); font-weight:700; }
+.course-card { background:#fff; border:1px solid var(--line); display:block; padding:24px; transition:box-shadow .2s, transform .2s; }
+.course-card:hover { box-shadow:0 14px 30px rgba(4,27,18,.1); transform:translateY(-2px); }
+.course-card-top { align-items:center; color:var(--orange); display:flex; gap:8px; justify-content:space-between; margin-bottom:14px; }
+.course-card-top span { background:#fff3e6; border-radius:999px; color:#b45300; font-size:9px; font-weight:800; letter-spacing:.08em; padding:5px 10px; text-transform:uppercase; }
+.course-card strong { display:block; font-size:17px; letter-spacing:-.02em; margin-bottom:10px; }
+.course-card p { align-items:center; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12px; gap:6px; margin:0 0 18px; }
+.course-card-foot { border-top:1px solid var(--line); display:flex; justify-content:space-between; padding-top:14px; font-size:12px; }
+.course-card-foot b { color:var(--green); }
+.module-list { color:var(--muted); font-size:14px; line-height:2.1; list-style:none; margin:16px 0 0; padding:0; }
+.module-list li { border-bottom:1px solid var(--line); padding:8px 0; }
 .verify-result { align-items:center; background:#fff; border:1px solid var(--line); border-top-width:4px; display:flex; flex-direction:column; margin:0 auto; max-width:520px; padding:44px; text-align:center; }
 .verify-result h1 { font-size:24px; margin:16px 0 4px; }
 .fif-id-card { background:linear-gradient(135deg,var(--forest),#0a5c33); border-radius:16px; color:#fff; max-width:360px; padding:24px; }
