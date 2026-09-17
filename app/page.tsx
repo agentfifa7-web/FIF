@@ -35,6 +35,16 @@ export default function Page() {
   return (
     <main>
       <section className="hero" id="accueil">
+        <video
+          className="hero-video"
+          src="/hero-elephants.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
         <div className="hero-overlay" />
         <div className="hero-content">
           <p className="eyebrow light"><span /> Fédération Ivoirienne de Football</p>
