@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, MapPin, Shield, Trophy, User } from 'lucide-react'
 import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches } from '@/lib/data/mock'
-import { PageHero } from '@/components/site/PageHero'
+import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, MatchCard, PlayerCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
@@ -31,18 +31,21 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   return (
     <main>
       <section className="page-hero tone-forest">
-        <div className="breadcrumb"><Link href="/">Accueil</Link><span>›</span><Link href="/clubs">Clubs</Link><span>›</span><b>{club.name}</b></div>
-        <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
-          <ClubCrest club={club} size={80} />
-          <div>
-            <p className="eyebrow"><span /> {club.category} · {cityName(club.cityId)}</p>
-            <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{club.name}</h1>
+        <HeroCarousel seed={club.name} />
+        <div className="page-hero-content">
+          <div className="breadcrumb"><Link href="/">Accueil</Link><span>›</span><Link href="/clubs">Clubs</Link><span>›</span><b>{club.name}</b></div>
+          <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
+            <ClubCrest club={club} size={80} />
+            <div>
+              <p className="eyebrow"><span /> {club.category} · {cityName(club.cityId)}</p>
+              <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{club.name}</h1>
+            </div>
           </div>
-        </div>
-        <div className="page-hero-meta">
-          <div><strong>{club.founded}</strong><span>Fondation</span></div>
-          <div><strong>{roster.length}</strong><span>Licenciés</span></div>
-          <div><strong>{club.honours.reduce((a, h) => a + h.count, 0)}</strong><span>Titres</span></div>
+          <div className="page-hero-meta">
+            <div><strong>{club.founded}</strong><span>Fondation</span></div>
+            <div><strong>{roster.length}</strong><span>Licenciés</span></div>
+            <div><strong>{club.honours.reduce((a, h) => a + h.count, 0)}</strong><span>Titres</span></div>
+          </div>
         </div>
       </section>
 

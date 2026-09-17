@@ -4,14 +4,61 @@ import type { Article, Club, Competition, Match, Player, Video } from '@/lib/dat
 import { getClubById, getStadiumById, cityName } from '@/lib/data/mock'
 import { formatDate, formatTime, age } from '@/lib/format'
 
+const SHIELD_PATH = 'M12,6 L88,6 L88,50 C88,73 70,89 50,96 C30,89 12,73 12,50 Z'
+
 export function ClubCrest({ club, size = 44 }: { club: Club; size?: number }) {
+  const idNum = parseInt(club.id.replace(/\D/g, ''), 10) || 0
+  const diagonal = idNum % 2 === 1
+  const clipId = `crest-clip-${club.id}`
+  const [primary, secondary] = club.colors
+  const textColor = secondary && secondary.toLowerCase() !== primary.toLowerCase() ? secondary : '#fff'
+  const hasHonours = club.honours.length > 0
+
   return (
-    <span
+    <svg
       className="club-crest"
-      style={{ width: size, height: size, background: club.colors[0], color: club.colors[1], fontSize: size * 0.34 }}
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      role="img"
+      aria-label={`Écusson ${club.name}`}
+      style={{ flexShrink: 0 }}
     >
-      {club.crestInitials}
-    </span>
+      <defs>
+        <clipPath id={clipId}>
+          <path d={SHIELD_PATH} />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clipId})`}>
+        <rect x="0" y="0" width="100" height="100" fill={primary} />
+        {diagonal ? (
+          <polygon points="100,0 100,100 0,100" fill={secondary} opacity="0.92" />
+        ) : (
+          <rect x="50" y="0" width="50" height="100" fill={secondary} opacity="0.92" />
+        )}
+        <path d={SHIELD_PATH} fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="3" />
+      </g>
+      <path d={SHIELD_PATH} fill="none" stroke="rgba(4,27,18,.35)" strokeWidth="2.5" />
+      {hasHonours && (
+        <path
+          d="M50,14 L53,21 L61,21 L54.5,25.6 L57,33 L50,28.4 L43,33 L45.5,25.6 L39,21 L47,21 Z"
+          fill={textColor}
+          opacity="0.9"
+        />
+      )}
+      <text
+        x="50"
+        y={hasHonours ? 66 : 58}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize="30"
+        fontWeight="800"
+        fontFamily="var(--font-heading), Arial, sans-serif"
+        fill={textColor}
+      >
+        {club.crestInitials.slice(0, 3)}
+      </text>
+    </svg>
   )
 }
 
@@ -53,7 +100,10 @@ export function PlayerCard({ player }: { player: Player }) {
   const club = getClubById(player.clubId)
   return (
     <Link href={`/joueurs/${player.slug}`} className="entity-card player-card">
-      <span className="avatar" style={{ background: club?.colors[0] }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
+      <span className="avatar-wrap">
+        <span className="avatar" style={{ background: club?.colors[0] }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
+        {club && <span className="avatar-crest-badge avatar-crest-badge-sm"><ClubCrest club={club} size={16} /></span>}
+      </span>
       <div>
         <strong>{player.name}</strong>
         <span>{player.position} · {age(player.birthdate)} ans · {club?.shortName}</span>

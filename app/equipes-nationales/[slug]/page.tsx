@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CalendarDays, MapPin, Trophy } from 'lucide-react'
-import { getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, getStadiumById } from '@/lib/data/mock'
+import { getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, getStadiumById, getClubById } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { ClubCrest } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate, formatTime, age } from '@/lib/format'
 
@@ -68,15 +69,22 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
           <div key={group.position} style={{ marginTop: 20 }}>
             <b style={{ fontSize: 12, letterSpacing: '.06em', color: 'var(--muted)', textTransform: 'uppercase' }}>{group.position}s</b>
             <div className="card-grid cols-4" style={{ marginTop: 12 }}>
-              {group.entries.map(({ player, caps, goals }) => player && (
-                <Link key={player.id} href={`/joueurs/${player.slug}`} className="entity-card player-card">
-                  <span className="avatar">{player.name.split(' ').map((n) => n[0]).join('')}</span>
-                  <div>
-                    <strong>{player.name}</strong>
-                    <span>{age(player.birthdate)} ans · {caps} sél. · {goals} buts</span>
-                  </div>
-                </Link>
-              ))}
+              {group.entries.map(({ player, caps, goals }) => {
+                if (!player) return null
+                const club = getClubById(player.clubId)
+                return (
+                  <Link key={player.id} href={`/joueurs/${player.slug}`} className="entity-card player-card">
+                    <span className="avatar-wrap">
+                      <span className="avatar" style={{ background: club?.colors[0] }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
+                      {club && <span className="avatar-crest-badge avatar-crest-badge-sm"><ClubCrest club={club} size={16} /></span>}
+                    </span>
+                    <div>
+                      <strong>{player.name}</strong>
+                      <span>{age(player.birthdate)} ans · {caps} sél. · {goals} buts</span>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         ))}

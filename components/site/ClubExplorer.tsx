@@ -3,15 +3,27 @@
 import { useMemo, useState } from 'react'
 import { List, Map as MapIcon } from 'lucide-react'
 import type { Club } from '@/lib/data/types'
-import { cities } from '@/lib/data/mock'
+import { cities, competitions } from '@/lib/data/mock'
 import { ClubCard } from './cards'
 import { EmptyState, FilterSelect } from './widgets'
+
+const LEAGUE_PRIORITY = ['comp-l1', 'comp-l2', 'comp-fem', 'comp-u20', 'comp-futsal', 'comp-beach']
+const LEAGUE_LABEL_OVERRIDE: Record<string, string> = {
+  'comp-u20': 'Football des jeunes — U20 / U17',
+}
+
+function primaryLeagueId(club: Club) {
+  for (const id of LEAGUE_PRIORITY) {
+    if (club.competitionIds.includes(id)) return id
+  }
+  return 'autre'
+}
 
 export function ClubExplorer({ clubs }: { clubs: Club[] }) {
   const [city, setCity] = useState('Toutes')
   const [category, setCategory] = useState('Toutes')
   const [gender, setGender] = useState('Tous')
-  const [view, setView] = useState<'liste' | 'carte'>('liste')
+  const [view, setView] = useState<'ligue' | 'carte'>('ligue')
 
   const categories = ['Toutes', ...Array.from(new Set(clubs.map((c) => c.category)))]
   const cityOptions = ['Toutes', ...cities.map((c) => c.name)]
@@ -25,6 +37,21 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
       return true
     })
   }, [clubs, city, category, gender])
+
+  const byLeague = useMemo(() => {
+    const map = new Map<string, Club[]>()
+    for (const c of filtered) {
+      const id = primaryLeagueId(c)
+      map.set(id, [...(map.get(id) ?? []), c])
+    }
+    const ordered = [...LEAGUE_PRIORITY, 'autre']
+      .filter((id) => map.has(id))
+      .map((id) => {
+        const label = LEAGUE_LABEL_OVERRIDE[id] ?? competitions.find((comp) => comp.id === id)?.name ?? 'Autres clubs'
+        return { id, label, clubs: map.get(id)! }
+      })
+    return ordered
+  }, [filtered])
 
   const byCity = useMemo(() => {
     const map = new Map<string, Club[]>()
@@ -42,16 +69,23 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
         <FilterSelect label="Catégorie" value={category} options={categories} onChange={setCategory} />
         <FilterSelect label="Genre" value={gender} options={['Tous', 'M', 'F']} onChange={setGender} />
         <div className="tab-bar" style={{ borderBottom: 0, marginBottom: 0 }}>
-          <button type="button" className={view === 'liste' ? 'tab active' : 'tab'} onClick={() => setView('liste')}><List size={14} /> Liste</button>
+          <button type="button" className={view === 'ligue' ? 'tab active' : 'tab'} onClick={() => setView('ligue')}><List size={14} /> Par ligue</button>
           <button type="button" className={view === 'carte' ? 'tab active' : 'tab'} onClick={() => setView('carte')}><MapIcon size={14} /> Carte</button>
         </div>
       </div>
 
       {!filtered.length && <EmptyState title="Aucun club trouvé" hint="Essayez d’élargir vos filtres." />}
 
-      {view === 'liste' && (
-        <div className="card-grid">
-          {filtered.map((c) => <ClubCard key={c.id} club={c} />)}
+      {view === 'ligue' && (
+        <div>
+          {byLeague.map((group) => (
+            <div key={group.id} style={{ marginBottom: 32 }}>
+              <p className="section-tag">{group.label} · {group.clubs.length} club{group.clubs.length > 1 ? 's' : ''}</p>
+              <div className="card-grid" style={{ marginTop: 12 }}>
+                {group.clubs.map((c) => <ClubCard key={c.id} club={c} />)}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

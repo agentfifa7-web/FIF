@@ -47,9 +47,14 @@ button { font:inherit; }
 .breadcrumb svg { color:var(--muted); height:12px; width:12px; }
 .tone-cream .breadcrumb b { color:var(--ink); }
 
-.page-hero { color:#fff; padding:clamp(70px,12vw,120px) clamp(20px,9vw,140px) 56px; position:relative; }
+.page-hero { color:#fff; overflow:hidden; padding:clamp(70px,12vw,120px) clamp(20px,9vw,140px) 56px; position:relative; }
 .page-hero.tone-forest { background:linear-gradient(120deg,var(--forest),#062a1b); }
 .page-hero.tone-cream { background:var(--cream); color:var(--ink); }
+.page-hero-media { inset:0; position:absolute; z-index:0; }
+.page-hero-media-slide { background-position:center; background-size:cover; inset:0; opacity:0; position:absolute; transition:opacity 1.4s ease; }
+.page-hero-media-slide.is-active { opacity:1; }
+.page-hero-scrim { background:linear-gradient(120deg,rgba(4,27,18,.92),rgba(10,92,51,.72) 55%,rgba(4,27,18,.9)),linear-gradient(0deg,rgba(3,20,13,.55),transparent 60%); inset:0; position:absolute; }
+.page-hero-content { position:relative; z-index:1; }
 .page-hero .eyebrow { color:var(--orange); }
 .page-hero h1 { font-size:clamp(36px,5vw,60px); letter-spacing:-.05em; line-height:1; margin:0; max-width:760px; }
 .page-hero-sub { color:#d6ddd8; font-size:15px; line-height:1.6; margin:18px 0 0; max-width:560px; }
@@ -90,8 +95,12 @@ button { font:inherit; }
 .entity-card > svg { color:var(--line); flex-shrink:0; height:16px; width:16px; }
 .entity-card:hover > svg { color:var(--orange); }
 
-.club-crest { align-items:center; border-radius:50%; display:flex; flex-shrink:0; font-weight:900; justify-content:center; }
-.player-card .avatar { align-items:center; border-radius:50%; color:#fff; display:flex; flex-shrink:0; font-size:13px; font-weight:800; height:48px; justify-content:center; width:48px; }
+.club-crest { display:block; filter:drop-shadow(0 1px 2px rgba(4,27,18,.25)); flex-shrink:0; }
+.avatar { align-items:center; background-color:var(--forest); border-radius:50%; color:#fff; display:flex; flex-shrink:0; font-weight:800; justify-content:center; }
+.player-card .avatar { font-size:13px; height:48px; width:48px; }
+.avatar-wrap { display:inline-flex; flex-shrink:0; position:relative; }
+.avatar-crest-badge { background:#fff; border-radius:50%; bottom:-4px; box-shadow:0 2px 6px rgba(4,27,18,.4); padding:2px; position:absolute; right:-4px; }
+.avatar-crest-badge-sm { bottom:-3px; padding:1px; right:-3px; }
 .comp-badge { align-items:center; background:var(--forest); border-radius:12px; color:var(--orange); display:flex; flex-shrink:0; height:48px; justify-content:center; width:48px; }
 .comp-badge svg { height:20px; width:20px; }
 

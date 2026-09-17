@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { QrCode } from 'lucide-react'
 import { players, getPlayer, getClubById, nationalTeams } from '@/lib/data/mock'
-import { Breadcrumb } from '@/components/site/PageHero'
-import { StatCard } from '@/components/site/cards'
+import { Breadcrumb, HeroCarousel } from '@/components/site/PageHero'
+import { ClubCrest, StatCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { age, formatDate } from '@/lib/format'
 
@@ -28,19 +28,25 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
   return (
     <main>
       <section className="page-hero tone-forest">
-        <div className="breadcrumb"><Link href="/">Accueil</Link><span>›</span><Link href="/joueurs">Joueurs</Link><span>›</span><b>{player.name}</b></div>
-        <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
-          <span className="avatar" style={{ background: club?.colors[0], fontSize: 22, height: 84, width: 84 }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
-          <div>
-            <p className="eyebrow"><span /> {player.position} · {club?.name}</p>
-            <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{player.name}</h1>
+        <HeroCarousel seed={player.name} />
+        <div className="page-hero-content">
+          <div className="breadcrumb"><Link href="/">Accueil</Link><span>›</span><Link href="/joueurs">Joueurs</Link><span>›</span><b>{player.name}</b></div>
+          <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
+            <span className="avatar-wrap" style={{ height: 84, width: 84 }}>
+              <span className="avatar" style={{ background: club?.colors[0], fontSize: 22, height: 84, width: 84 }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
+              {club && <span className="avatar-crest-badge"><ClubCrest club={club} size={28} /></span>}
+            </span>
+            <div>
+              <p className="eyebrow"><span /> {player.position} · {club?.name}</p>
+              <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{player.name}</h1>
+            </div>
           </div>
-        </div>
-        <div className="page-hero-meta">
-          <div><strong>{age(player.birthdate)}</strong><span>Âge</span></div>
-          <div><strong>{player.stats.matches}</strong><span>Matchs joués</span></div>
-          <div><strong>{player.stats.goals}</strong><span>Buts</span></div>
-          <div><strong>{player.stats.assists}</strong><span>Passes décisives</span></div>
+          <div className="page-hero-meta">
+            <div><strong>{age(player.birthdate)}</strong><span>Âge</span></div>
+            <div><strong>{player.stats.matches}</strong><span>Matchs joués</span></div>
+            <div><strong>{player.stats.goals}</strong><span>Buts</span></div>
+            <div><strong>{player.stats.assists}</strong><span>Passes décisives</span></div>
+          </div>
         </div>
       </section>
 
