@@ -66,7 +66,7 @@ button { font:inherit; }
 .page-section-head { align-items:end; display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; margin-bottom:32px; }
 .section-tag { color:var(--green); font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
 
-.tab-bar { border-bottom:1px solid var(--line); display:flex; gap:22px; margin-bottom:28px; overflow-x:auto; padding-bottom:2px; }
+.tab-bar { -webkit-mask-image:linear-gradient(90deg,#000 92%,transparent); border-bottom:1px solid var(--line); display:flex; gap:22px; margin-bottom:28px; mask-image:linear-gradient(90deg,#000 92%,transparent); overflow-x:auto; padding-bottom:2px; padding-right:24px; }
 .tab { background:none; border:0; border-bottom:2px solid transparent; color:var(--muted); cursor:pointer; font-size:11px; font-weight:800; letter-spacing:.07em; padding:10px 2px; text-transform:uppercase; white-space:nowrap; }
 .tab.active { border-color:var(--orange); color:var(--ink); }
 
