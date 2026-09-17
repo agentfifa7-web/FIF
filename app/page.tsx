@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, CalendarDays, Clock3, MapPin, Play, Trophy, Users } from 'lucide-react'
+import { ArrowRight, CalendarDays, Clock3, MapPin, Newspaper, Play, Trophy, Users } from 'lucide-react'
 import {
   articles,
   getClubById,
@@ -121,6 +121,11 @@ export default function Page() {
         <div className="news-grid">
           {filteredNews.map((item, i) => <NewsCard key={item.id} article={item} featured={i === 0} />)}
         </div>
+        <Link href="/actualites#revue-de-presse" className="press-teaser">
+          <Newspaper />
+          <div><strong>Revue de presse — médias ivoiriens</strong><span>Titres agrégés en direct depuis Fraternité Matin, Koaci, Abidjan.net, RTI et plus, sur le football ivoirien et les pros ivoiriens à l’international.</span></div>
+          <ArrowRight />
+        </Link>
       </section>
 
       <section className="quick-links">
