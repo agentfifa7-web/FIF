@@ -257,6 +257,24 @@ function playersOf(clubId: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Agents
+// ---------------------------------------------------------------------------
+export const agents: Agent[] = Array.from({ length: 20 }, (_, i) => {
+  const name = fullName()
+  const represented = rng.pickN(players, rng.int(1, 5))
+  return {
+    id: `agent-${i}`,
+    slug: `${slugify(name)}-${i}`,
+    name,
+    fifId: `FIF-AG-${(4000 + i).toString().padStart(5, '0')}`,
+    license: `LIC-${rng.int(1000, 9999)}`,
+    status: rng.bool(0.9) ? 'Actif' : 'Suspendu',
+    validUntil: `${rng.int(2026, 2028)}-${String(rng.int(1, 12)).padStart(2, '0')}-01`,
+    playerIds: represented.map((p) => p.id),
+  }
+})
+
+// ---------------------------------------------------------------------------
 // National teams
 // ---------------------------------------------------------------------------
 export const nationalTeams: NationalTeam[] = [
