@@ -14,7 +14,7 @@
 @media (max-width:700px) { .utility-inner { align-items:flex-start; flex-direction:column; gap:8px; }.utility-inner > div { gap:12px; overflow:auto; width:100%; }.utility-inner a:nth-child(n+4) { display:none; }.universe-panel { grid-template-columns:repeat(2,1fr); top:44px; }.alert-bar { align-items:flex-start; flex-wrap:wrap; gap:8px 13px; }.alert-bar > span:not(.alert-live) { width:100%; }.alert-bar a { margin-left:0; }.ticker { gap:25px; }.service-grid { grid-template-columns:1fr; }.nav-dropdown { justify-content:space-between; width:100%; } }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
-body { margin:0; background:var(--cream); color:var(--ink); font-family:Arial, Helvetica, sans-serif; }
+body { margin:0; background:var(--cream); color:var(--ink); font-family:var(--font-body), Arial, Helvetica, sans-serif; }
 a { color:inherit; text-decoration:none; }
 button { font:inherit; }
 .site-shell { overflow:hidden; background:var(--cream); }
@@ -290,4 +290,36 @@ button { font:inherit; }
 @media (max-width:700px) { .page-hero { padding:90px 20px 44px; } .page-section { padding:48px 20px; } .card-grid, .card-grid.cols-2, .card-grid.cols-4 { grid-template-columns:1fr; } .dashboard-grid { grid-template-columns:1fr; } .search-overlay { padding-top:22vh; } }
 
 @theme inline { --color-background:var(--cream); --color-foreground:var(--ink); --color-primary:var(--green); --color-border:var(--line); }
+
+/* ===========================================================================
+   Typography — condensed sporty display face for headlines/labels/nav/scores,
+   clean grotesque for running body text (visual family close to major
+   football-federation sites, self-hosted via next/font, no proprietary font
+   copied).
+   =========================================================================== */
+h1, h2, h3, h4, h5, h6,
+.brand-copy strong, .brand-copy small,
+.eyebrow, .section-tag, .section-label,
+.main-nav a, .nav-dropdown, .login-link, .universe-panel b,
+.utility-inner span, .utility-inner a,
+.filter, .tab, .chip, .status-pill, .demo-badge,
+.button, .button-primary, .button-ghost, .button-secondary, .button-outline, .text-link,
+.match-card-top, .match-card-teams strong, .match-card-bottom,
+.next-card-top, .team strong, .crest, .versus small, .versus b, .countdown b, .countdown small,
+.match-main small, .match-main strong, .match-status span, .match-status strong,
+.news-image span, .news-body small,
+.video-small small, .video-feature small,
+.stat-card strong, .stat-card span, .stat-bar-labels b,
+.data-table th, .page-hero-meta strong, .page-hero-meta span,
+.dashboard-card strong, .dashboard-card span, .fif-id-card-top span, .fif-id-card-foot,
+.footer-links b, .made-in,
+.course-card-top span, .ticket-card small, .cart-pill,
+.stepper li, .breadcrumb {
+  font-family: var(--font-heading), Arial, Helvetica, sans-serif;
+}
+
+.hero h1, .next-match h2, .news-section h2, .tv-section h2, .page-hero h1, .match-center-score strong {
+  font-family: var(--font-heading), Arial, Helvetica, sans-serif;
+  font-weight: 700;
+}
 

@@ -1,8 +1,23 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Barlow, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { SiteFooter } from '@/components/site/SiteFooter'
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  weight: ['500', '600', '700', '800', '900'],
+  variable: '--font-heading',
+  display: 'swap',
+})
+
+const barlow = Barlow({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'FIF Digital — Le football ivoirien, plus proche que jamais',
@@ -41,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={`${barlowCondensed.variable} ${barlow.variable}`}>
       <body className="antialiased">
         <div className="site-shell">
           <SiteHeader />
