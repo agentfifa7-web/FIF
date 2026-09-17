@@ -339,3 +339,61 @@ h1, h2, h3, h4, h5, h6,
   color: #fff;
 }
 
+/* ===========================================================================
+   Rounded, premium finish — soft corners on every card/box/image, plus a
+   little orange↔green color-mixing on key accents (still inside the
+   official Orange / Vert / Blanc / Anthracite identity).
+   =========================================================================== */
+:root { --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px; }
+
+.next-card, .news-image, .video-image, .video-thumb, .video-card .video-thumb,
+.match-card, .entity-card, .stat-card, .info-tile, .course-card, .ticket-card,
+.product-card, .product-image, .dashboard-card, .dashboard-panel, .form-card,
+.fif-id-card, .verify-result, .empty-state, .sim-panel, .search-field,
+.filter-select select, .text-field input, .text-field select, .text-field textarea,
+.article-image, .video-player, .lineup, .cart-pill, .universe-panel,
+.faq-list details, .match-center-meta, .portal-layout aside, .comp-badge {
+  border-radius: var(--radius-md);
+}
+
+.news-card.featured .news-image, .featured .news-image { border-radius: var(--radius-lg); }
+.news-image, .video-image, .video-thumb, .video-card .video-thumb, .article-image, .product-image {
+  overflow: hidden;
+}
+.button, .button-primary, .button-ghost, .button-secondary, .button-outline,
+.filter, .status-pill, .chip, .demo-badge, .stepper li span { border-radius: 999px; }
+.crest, .next-card, .table-wrap, .stat-bar-track { overflow: hidden; }
+.table-wrap { border-radius: var(--radius-md); border: 1px solid var(--line); }
+.table-wrap .data-table { border: 0; }
+.circle-arrow, .socials a { border-radius: 999px; }
+.hero-video { border-radius: 0; }
+.stat-bar-track { border-radius: 999px; }
+
+/* Orange ↔ green color-mixing on key surfaces */
+.button-primary {
+  background: linear-gradient(135deg, var(--orange), #ffa64d);
+}
+.button-primary:hover {
+  background: linear-gradient(135deg, #ffa64d, var(--orange));
+}
+.page-hero.tone-forest, .dark-section, .tv-section, .next-match {
+  background: linear-gradient(150deg, var(--forest) 0%, #0a5c33 55%, var(--forest) 100%);
+}
+.match-center-header {
+  background: linear-gradient(135deg, var(--forest), #0a5c33);
+}
+.entity-card, .stat-card, .info-tile, .dashboard-card {
+  border-top-width: 3px;
+  border-top-color: var(--orange);
+}
+.card-grid > *:nth-child(even),
+.dashboard-grid > *:nth-child(even),
+.info-tiles > *:nth-child(even) {
+  border-top-color: var(--green);
+}
+.demo-badge { border-radius: 999px; }
+
+@media (max-width: 700px) {
+  :root { --radius-md: 12px; --radius-lg: 16px; }
+}
+
