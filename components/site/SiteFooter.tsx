@@ -16,9 +16,12 @@ const columns = [
     links: [
       { label: 'FIF ID', href: '/fif-id' },
       { label: 'Licences', href: '/licences' },
+      { label: 'Transferts', href: '/transferts' },
       { label: 'Portail Clubs', href: '/portail/clubs' },
       { label: 'Portail Officiels', href: '/officiels' },
       { label: 'Formation', href: '/formation' },
+      { label: 'Stades', href: '/stades' },
+      { label: 'Académies', href: '/academies' },
     ],
   },
   {
@@ -27,8 +30,11 @@ const columns = [
       { label: 'La Fédération', href: '/federation' },
       { label: 'Documents officiels', href: '/documents' },
       { label: 'Transparence', href: '/federation#transparence' },
+      { label: 'Discipline', href: '/discipline' },
+      { label: 'Réclamations', href: '/reclamations' },
       { label: 'Presse', href: '/presse' },
       { label: 'Carrières', href: '/carrieres' },
+      { label: 'Archives', href: '/archives' },
     ],
   },
   {
@@ -38,6 +44,7 @@ const columns = [
       { label: 'Boutique', href: '/boutique' },
       { label: 'Club des Supporters', href: '/supporters' },
       { label: 'FIF TV', href: '/fif-tv' },
+      { label: 'Notifications', href: '/notifications' },
       { label: 'Contact & FAQ', href: '/contact' },
     ],
   },
