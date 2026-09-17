@@ -679,3 +679,42 @@ export function globalSearch(query: string): SearchResult[] {
   }
   return results.slice(0, 30)
 }
+
+// FIF ID verification --------------------------------------------------
+export interface VerifiedIdentity {
+  fifId: string
+  type: 'PLAYER' | 'AGENT' | 'CLUB' | 'REFEREE' | 'COACH'
+  name: string
+  status: string
+  validUntil: string
+  profileHref: string
+}
+
+export function verifyIdentity(rawId: string): VerifiedIdentity | null {
+  const id = rawId.trim().toUpperCase()
+  if (!id) return null
+
+  const player = players.find((p) => p.fifId.toUpperCase() === id)
+  if (player) {
+    return { fifId: player.fifId, type: 'PLAYER', name: player.name, status: player.licenseStatus === 'Valide' ? 'Actif' : player.licenseStatus, validUntil: '2027-06-30', profileHref: `/joueurs/${player.slug}` }
+  }
+
+  const agent = agents.find((a) => a.fifId.toUpperCase() === id)
+  if (agent) {
+    return { fifId: agent.fifId, type: 'AGENT', name: agent.name, status: agent.status, validUntil: agent.validUntil, profileHref: '/officiels?role=agents' }
+  }
+
+  const clubMatch = id.match(/^FIF-CLUB-(\d+)$/)
+  if (clubMatch) {
+    const club = clubs[Number(clubMatch[1])]
+    if (club) return { fifId: id, type: 'CLUB', name: club.name, status: 'Actif', validUntil: '2027-06-30', profileHref: `/clubs/${club.slug}` }
+  }
+
+  const refMatch = id.match(/^FIF-REF-(\d+)$/)
+  if (refMatch) {
+    const referee = referees[Number(refMatch[1])]
+    if (referee) return { fifId: id, type: 'REFEREE', name: referee.name, status: referee.status, validUntil: '2027-06-30', profileHref: '/officiels?role=arbitres' }
+  }
+
+  return null
+}
