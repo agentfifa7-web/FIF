@@ -144,7 +144,7 @@ export const clubs: Club[] = Array.from({ length: 40 }, (_, i) => {
     id: `club-${i}`,
     slug,
     name,
-    shortName: name.split(' ').slice(-1)[0],
+    shortName: name.split(' ').length > 1 ? `${name.split(' ')[0]} ${name.split(' ').slice(-1)[0]}` : name,
     cityId: city.id,
     stadiumId: rng.pick(clubStadiums.length ? clubStadiums : stadiums).id,
     founded: rng.int(1948, 2015),
