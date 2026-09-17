@@ -1,5 +1,6 @@
-import { ExternalLink, Newspaper } from 'lucide-react'
+import { ArrowRight, Newspaper } from 'lucide-react'
 import type { PressItem } from '@/lib/news/rss'
+import { EmptyState } from './widgets'
 
 function timeAgo(pubDate: string | null) {
   if (!pubDate) return ''
@@ -15,24 +16,27 @@ function timeAgo(pubDate: string | null) {
 export function PressReview({ items, ok }: { items: PressItem[]; ok: boolean }) {
   if (!ok || !items.length) {
     return (
-      <div className="empty-state">
-        <strong>Revue de presse momentanément indisponible</strong>
-        <span>Les flux des médias sportifs ivoiriens n’ont pas pu être récupérés à l’instant — réessayez dans quelques minutes.</span>
-      </div>
+      <EmptyState
+        title="Revue de presse momentanément indisponible"
+        hint="Les flux des médias sportifs ivoiriens n’ont pas pu être récupérés à l’instant — réessayez dans quelques minutes."
+      />
     )
   }
 
   return (
-    <div className="press-list">
+    <div className="card-grid press-news-grid">
       {items.map((item, i) => (
-        <a key={i} href={item.link} target="_blank" rel="noopener noreferrer" className="press-item">
-          <Newspaper size={16} />
-          <div>
-            <strong>{item.title}</strong>
-            <span>{item.source}{item.pubDate ? ` · ${timeAgo(item.pubDate)}` : ''}</span>
+        <article className="news-card press-card" key={i}>
+          <a href={item.link} target="_blank" rel="noopener noreferrer" className={`news-image press-card-image ${i % 2 === 0 ? 'tone-a' : 'tone-b'}`}>
+            <Newspaper />
+            <span>{item.source}</span>
+          </a>
+          <div className="news-body">
+            <small>{item.pubDate ? timeAgo(item.pubDate).toUpperCase() : 'PRESSE'}</small>
+            <h3><a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a></h3>
+            <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`Lire sur ${item.source} : ${item.title}`}><ArrowRight /></a>
           </div>
-          <ExternalLink size={14} className="press-item-ext" />
-        </a>
+        </article>
       ))}
     </div>
   )
