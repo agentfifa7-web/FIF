@@ -264,7 +264,8 @@ button { font:inherit; }
 .faq-list p { color:var(--muted); font-size:13px; line-height:1.6; margin:12px 0 0; }
 .cart-pill { background:var(--forest); color:#fff; font-size:11px; font-weight:700; padding:10px 16px; }
 .product-card { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; gap:8px; padding:16px; }
-.product-image { background-color:var(--forest); background-position:center; background-size:cover; height:160px; }
+.product-image { background:#f2f4f1; display:block; height:180px; }
+.product-image svg { display:block; }
 .product-card strong { font-size:13px; }
 .product-card span { color:var(--muted); font-size:12px; }
 .product-card button { margin-top:8px; }

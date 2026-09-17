@@ -563,14 +563,24 @@ export const trainingCourses: TrainingCourse[] = [
 ]
 
 const productCategories = ['Maillots', 'Tenues', 'Enfants', 'Femmes', 'Accessoires', 'Ballons', 'Écharpes', 'Casquettes']
+const productNamer: Record<string, () => string> = {
+  Maillots: () => `Maillot Éléphants ${rng.bool() ? 'Domicile' : 'Extérieur'}`,
+  Tenues: () => `Tenue d’entraînement Éléphants`,
+  Enfants: () => `Maillot Enfant Éléphants ${rng.bool() ? 'Domicile' : 'Extérieur'}`,
+  Femmes: () => `Maillot Femme Éléphantes`,
+  Accessoires: () => `Bracelet FIF Côte d’Ivoire`,
+  Ballons: () => `Ballon Officiel FIF`,
+  Écharpes: () => `Écharpe Éléphants`,
+  Casquettes: () => `Casquette FIF Côte d’Ivoire`,
+}
 export const products: Product[] = Array.from({ length: 24 }, (_, i) => {
   const category = productCategories[i % productCategories.length]
   return {
     id: `product-${i}`,
-    name: `${category.slice(0, -1) || category} Éléphants ${rng.bool() ? 'Domicile' : 'Extérieur'}`,
+    name: productNamer[category](),
     category,
     price: rng.int(6, 65) * 1000,
-    colors: rng.pickN(['Orange', 'Vert', 'Blanc', 'Anthracite'], rng.int(1, 3)),
+    colors: rng.pickN(['Orange', 'Vert', 'Blanc'], rng.int(1, 3)),
     sizes: rng.pickN(['XS', 'S', 'M', 'L', 'XL', 'XXL'], rng.int(3, 6)),
     image: `https://picsum.photos/seed/product-${i}/700/700`,
     customizable: category === 'Maillots',

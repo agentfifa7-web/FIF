@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import type { Product } from '@/lib/data/types'
 import { formatMoney } from '@/lib/format'
 import { FilterSelect } from './widgets'
+import { ProductArt } from './ProductArt'
 
 export function StoreGrid({ products }: { products: Product[] }) {
   const categories = ['Toutes', ...Array.from(new Set(products.map((p) => p.category)))]
@@ -23,7 +24,7 @@ export function StoreGrid({ products }: { products: Product[] }) {
       <div className="card-grid cols-4">
         {filtered.map((p) => (
           <div className="product-card" key={p.id}>
-            <div className="product-image" style={{ backgroundImage: `url(${p.image})` }} />
+            <div className="product-image"><ProductArt product={p} /></div>
             <strong>{p.name}</strong>
             <span>{formatMoney(p.price)}{p.customizable ? ' · Personnalisable' : ''}</span>
             <button type="button" className="button-outline" onClick={() => setCart((c) => ({ ...c, [p.id]: (c[p.id] ?? 0) + 1 }))}>
