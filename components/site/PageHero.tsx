@@ -18,17 +18,10 @@ export function Breadcrumb({ items }: { items: { label: string; href?: string }[
   )
 }
 
-// Curated pool of football/stadium photos already proven to work in this
-// codebase's hero. Each page picks a deterministic 3-photo slice so the
-// carousel varies across pages without needing per-page curation.
-const HERO_PHOTO_POOL = [
-  'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1556056504-5c7696c4c28d?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1552318965-6e6be7484ada?auto=format&fit=crop&w=1600&q=80',
-]
+// Éléphants photo pool (supplied by the FIF team) used across every page
+// hero. Each page picks a deterministic 3-photo slice so the carousel
+// varies across pages without needing per-page curation.
+const HERO_PHOTO_POOL = Array.from({ length: 15 }, (_, i) => `/hero-photos/elephants-${String(i + 1).padStart(2, '0')}.jpg`)
 
 function hashString(value: string) {
   let h = 0
