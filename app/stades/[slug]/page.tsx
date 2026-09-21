@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { stadiums, getStadium, cityName, clubs, matches } from '@/lib/data/mock'
+import { CalendarDays, DoorOpen, Lightbulb, MapPin, Sprout, Users, Video } from 'lucide-react'
+import { stadiums, getStadium, cityName, getCity, getRegion, clubs, matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -18,6 +19,8 @@ export default async function StadiumPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params
   const stadium = getStadium(slug)
   if (!stadium) notFound()
+  const city = getCity(stadium.cityId)
+  const region = city ? getRegion(city.regionId) : undefined
   const residentClubs = clubs.filter((c) => c.stadiumId === stadium.id)
   const upcoming = matches.filter((m) => m.stadiumId === stadium.id && m.status === 'À venir').slice(0, 4)
 
@@ -30,6 +33,50 @@ export default async function StadiumPage({ params }: { params: Promise<{ slug: 
         breadcrumb={[{ label: 'Stades', href: '/stades' }, { label: stadium.name }]}
         meta={[{ value: stadium.capacity.toLocaleString('fr-FR'), label: 'Places' }]}
       />
+
+      <section className="page-section tight">
+        <p className="section-tag">Fiche d’infrastructure</p>
+        <div className="info-tiles">
+          <div className="info-tile">
+            <MapPin />
+            <strong>Localisation</strong>
+            <p>{cityName(stadium.cityId)}{region ? `, région ${region.name}` : ''}, Côte d’Ivoire</p>
+          </div>
+          <div className="info-tile">
+            <Users />
+            <strong>Capacité d’accueil</strong>
+            <p>{stadium.capacity.toLocaleString('fr-FR')} places assises</p>
+          </div>
+          <div className="info-tile">
+            <CalendarDays />
+            <strong>Année de création</strong>
+            <p>Construit en {stadium.built}</p>
+          </div>
+          <div className="info-tile">
+            <Sprout />
+            <strong>Type de pelouse</strong>
+            <p>{stadium.surface}</p>
+          </div>
+          <div className="info-tile">
+            <Lightbulb />
+            <strong>Éclairage</strong>
+            <p>{stadium.lighting ? 'Éclairage homologué pour les matchs en nocturne' : 'Pas d’éclairage homologué'}</p>
+          </div>
+          <div className="info-tile">
+            <DoorOpen />
+            <strong>Vestiaires</strong>
+            <p>{stadium.changingRooms} vestiaires équipés</p>
+          </div>
+        </div>
+        {stadium.video360Url ? (
+          <div className="sim-panel" style={{ marginLeft: 0, marginRight: 0 }}>
+            <p><Video size={15} /> Visite virtuelle 360° disponible (démonstration — {stadium.video360Url})</p>
+          </div>
+        ) : (
+          <p className="lede" style={{ marginTop: 20 }}>Aucune vidéo 360° disponible pour ce stade pour l’instant.</p>
+        )}
+      </section>
+
       {residentClubs.length > 0 && (
         <section className="page-section tight">
           <p className="section-tag">Club(s) résident(s)</p>

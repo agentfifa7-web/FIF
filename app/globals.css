@@ -87,7 +87,7 @@ button { font:inherit; }
 .card-grid.cols-2 { grid-template-columns:repeat(2,1fr); }
 .card-grid.cols-4 { grid-template-columns:repeat(4,1fr); }
 
-.entity-card { align-items:center; background:#fff; border:1px solid var(--line); display:flex; gap:14px; padding:16px 18px; transition:box-shadow .2s, transform .2s; }
+.entity-card { align-items:center; background:#fff; border:1px solid var(--line); color:var(--ink); display:flex; gap:14px; padding:16px 18px; transition:box-shadow .2s, transform .2s; }
 .entity-card:hover { box-shadow:0 14px 30px rgba(4,27,18,.1); transform:translateY(-2px); }
 .entity-card > div { display:flex; flex-direction:column; flex:1; gap:3px; min-width:0; }
 .entity-card strong { font-size:14px; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -276,7 +276,7 @@ button { font:inherit; }
 .gauge-fill { background:linear-gradient(90deg, var(--green), var(--orange)); height:100%; }
 
 .promise-list { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
-.promise-list details { background:#fff; border:1px solid var(--line); padding:16px 18px; }
+.promise-list details { background:#fff; border:1px solid var(--line); color:var(--ink); padding:16px 18px; }
 .promise-list summary { align-items:center; cursor:pointer; display:flex; gap:16px; list-style:none; }
 .promise-list summary::-webkit-details-marker { display:none; }
 .promise-list summary > div { flex:1; min-width:0; }
@@ -286,7 +286,7 @@ button { font:inherit; }
 .promise-list .promise-foot { align-items:center; display:flex; gap:10px; margin-top:14px; }
 
 .rank-list { display:flex; flex-direction:column; gap:10px; }
-.rank-list details { background:#fff; border:1px solid var(--line); padding:14px 18px; }
+.rank-list details { background:#fff; border:1px solid var(--line); color:var(--ink); padding:14px 18px; }
 .rank-list summary { align-items:center; cursor:pointer; display:flex; gap:14px; list-style:none; }
 .rank-list summary::-webkit-details-marker { display:none; }
 .rank-list summary > div { flex:1; min-width:0; }

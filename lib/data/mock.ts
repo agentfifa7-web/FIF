@@ -502,16 +502,19 @@ const youthClubs = clubs.filter((c) => c.category === 'Jeunes')
 const futsalClubs = clubs.filter((c) => c.category === 'Futsal')
 
 export const competitions: Competition[] = [
-  { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 14).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
-  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(14, 24).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L2' },
-  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', gender: 'M', season: '2025-2026', clubIds: proClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CN' },
-  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 2).map((c) => c.id), format: 'Match unique', logoInitials: 'SC' },
-  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', gender: 'F', season: '2025-2026', clubIds: femClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'CF' },
-  { id: 'comp-coupe-fem', slug: 'coupe-feminine', name: 'Coupe Nationale Féminine', category: 'Féminin', gender: 'F', season: '2025-2026', clubIds: femClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CF' },
-  { id: 'comp-u20', slug: 'championnat-u20', name: 'Championnat National U20', category: 'Jeunes', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U20' },
-  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U17' },
-  { id: 'comp-futsal', slug: 'futsal-elite', name: 'Futsal Élite', category: 'Futsal', gender: 'M', season: '2025-2026', clubIds: futsalClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'FE' },
-  { id: 'comp-beach', slug: 'beach-soccer-national', name: 'Beach Soccer National', category: 'Beach Soccer', gender: 'M', season: '2025-2026', clubIds: rng.pickN(proClubs, 8).map((c) => c.id), format: 'Tournoi', logoInitials: 'BS' },
+  { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 14).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
+  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(14, 24).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L2' },
+  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CN' },
+  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 2).map((c) => c.id), format: 'Match unique', logoInitials: 'SC' },
+  { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },
+  { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2025-2026', clubIds: rng.shuffle(youthClubs).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'R1' },
+  { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CD' },
+  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2025-2026', clubIds: femClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'CF' },
+  { id: 'comp-coupe-fem', slug: 'coupe-feminine', name: 'Coupe Nationale Féminine', category: 'Féminin', practice: null, gender: 'F', season: '2025-2026', clubIds: femClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CF' },
+  { id: 'comp-u20', slug: 'championnat-u20', name: 'Championnat National U20', category: 'Jeunes', practice: null, gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U20' },
+  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', practice: null, gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U17' },
+  { id: 'comp-futsal', slug: 'futsal-elite', name: 'Futsal Élite', category: 'Futsal', practice: null, gender: 'M', season: '2025-2026', clubIds: futsalClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'FE' },
+  { id: 'comp-beach', slug: 'beach-soccer-national', name: 'Beach Soccer National', category: 'Beach Soccer', practice: null, gender: 'M', season: '2025-2026', clubIds: rng.pickN(proClubs, 8).map((c) => c.id), format: 'Tournoi', logoInitials: 'BS' },
 ]
 
 for (const club of clubs) {

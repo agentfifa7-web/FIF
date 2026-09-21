@@ -191,6 +191,7 @@ export interface Competition {
   slug: string
   name: string
   category: 'Seniors' | 'Féminin' | 'Jeunes' | 'Futsal' | 'Beach Soccer'
+  practice: 'Professionnel' | 'Amateur' | null
   gender: Gender
   season: string
   clubIds: string[]

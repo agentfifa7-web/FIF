@@ -20,7 +20,27 @@ export default function CompetitionsPage() {
           { value: '2025-2026', label: 'Saison en cours' },
         ]}
       />
-      {groups.map((group) => {
+      <section className="page-section tight">
+        <p className="section-tag">Seniors — Football professionnel</p>
+        <p className="lede">Les compétitions locales de haut niveau, sous licence professionnelle FIF.</p>
+        <div className="card-grid" style={{ marginTop: 16 }}>
+          {competitions.filter((c) => c.category === 'Seniors' && c.practice === 'Professionnel').map((c) => (
+            <CompetitionCard key={c.id} competition={c} clubCount={c.clubIds.length} />
+          ))}
+        </div>
+      </section>
+
+      <section className="page-section tight dark-section">
+        <p className="section-tag" style={{ color: 'var(--orange)' }}>Seniors — Football amateur</p>
+        <p className="lede" style={{ color: '#a9b7af' }}>Championnats régionaux, coupes de districts et ligues amateurs organisés sous la gestion de la FIF.</p>
+        <div className="card-grid" style={{ marginTop: 16 }}>
+          {competitions.filter((c) => c.category === 'Seniors' && c.practice === 'Amateur').map((c) => (
+            <CompetitionCard key={c.id} competition={c} clubCount={c.clubIds.length} />
+          ))}
+        </div>
+      </section>
+
+      {groups.filter((g) => g !== 'Seniors').map((group) => {
         const items = competitions.filter((c) => c.category === group)
         if (!items.length) return null
         return (

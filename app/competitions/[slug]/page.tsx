@@ -28,7 +28,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   return (
     <main>
       <PageHero
-        eyebrow={competition.category}
+        eyebrow={competition.practice ? `${competition.category} · Football ${competition.practice.toLowerCase()}` : competition.category}
         title={competition.name}
         subtitle={`Saison ${competition.season} · ${competition.format} · ${competition.clubIds.length} équipes engagées.`}
         breadcrumb={[{ label: 'Compétitions', href: '/competitions' }, { label: competition.name }]}
