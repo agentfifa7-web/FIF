@@ -12,7 +12,7 @@ const universe = [
       { label: 'La Fédération', href: '/federation' },
       { label: 'Gouvernance', href: '/federation#gouvernance' },
       { label: 'Documents officiels', href: '/documents' },
-      { label: 'Transparence', href: '/federation#transparence' },
+      { label: 'Transparence', href: '/federation/transparence' },
       { label: 'Palmarès', href: '/palmares' },
       { label: 'Presse', href: '/presse' },
       { label: 'Carrières', href: '/carrieres' },

@@ -29,7 +29,7 @@ const columns = [
     links: [
       { label: 'La Fédération', href: '/federation' },
       { label: 'Documents officiels', href: '/documents' },
-      { label: 'Transparence', href: '/federation#transparence' },
+      { label: 'Transparence', href: '/federation/transparence' },
       { label: 'Discipline', href: '/discipline' },
       { label: 'Réclamations', href: '/reclamations' },
       { label: 'Presse', href: '/presse' },

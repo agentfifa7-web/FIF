@@ -5,8 +5,15 @@ import { useMemo, useState } from 'react'
 import type { Agent, Coach, Official, Referee } from '@/lib/data/types'
 import { getClubById } from '@/lib/data/mock'
 import { Tabs, EmptyState } from './widgets'
+import { PersonPortrait } from './PersonPortrait'
 
 const ROLES = ['Entraîneurs', 'Arbitres', 'Dirigeants', 'Agents'] as const
+const ROLE_PATH: Record<(typeof ROLES)[number], string> = {
+  Entraîneurs: 'entraineurs',
+  Arbitres: 'arbitres',
+  Dirigeants: 'dirigeants',
+  Agents: 'agents',
+}
 
 export function OfficialsDirectory({
   coaches,
@@ -39,30 +46,34 @@ export function OfficialsDirectory({
         {role === 'Entraîneurs' && coaches.map((c) => {
           const club = c.clubId ? getClubById(c.clubId) : null
           return (
-            <div className="entity-card" key={c.id}>
+            <Link href={`/officiels/${ROLE_PATH[role]}/${c.slug}`} className="entity-card" key={c.id}>
+              <PersonPortrait seed={c.name} size={44} />
               <div><strong>{c.name}</strong><span>{club?.name ?? 'Sélection nationale'} · Licence {c.license} · depuis {c.since}</span></div>
-            </div>
+            </Link>
           )
         })}
         {role === 'Arbitres' && referees.map((r) => (
-          <div className="entity-card" key={r.id}>
+          <Link href={`/officiels/${ROLE_PATH[role]}/${r.slug}`} className="entity-card" key={r.id}>
+            <PersonPortrait seed={r.name} size={44} />
             <div><strong>{r.name}</strong><span>{r.category} · {r.matchesOfficiated} matchs arbitrés</span></div>
             <span className={`status-pill ${r.status === 'Actif' ? 'ok' : r.status === 'Suspendu' ? 'error' : 'neutral'}`}>{r.status}</span>
-          </div>
+          </Link>
         ))}
         {role === 'Dirigeants' && officials.map((o) => {
           const club = o.clubId ? getClubById(o.clubId) : null
           return (
-            <div className="entity-card" key={o.id}>
+            <Link href={`/officiels/${ROLE_PATH[role]}/${o.slug}`} className="entity-card" key={o.id}>
+              <PersonPortrait seed={o.name} size={44} />
               <div><strong>{o.name}</strong><span>{o.role}{club ? ` · ${club.name}` : ''}</span></div>
-            </div>
+            </Link>
           )
         })}
         {role === 'Agents' && agents.map((a) => (
-          <div className="entity-card" key={a.id}>
+          <Link href={`/officiels/${ROLE_PATH[role]}/${a.slug}`} className="entity-card" key={a.id}>
+            <PersonPortrait seed={a.name} size={44} />
             <div><strong>{a.name}</strong><span>{a.fifId} · {a.playerIds.length} joueur(s) représenté(s)</span></div>
             <span className={`status-pill ${a.status === 'Actif' ? 'ok' : 'error'}`}>{a.status}</span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

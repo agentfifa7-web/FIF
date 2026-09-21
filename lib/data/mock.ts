@@ -802,6 +802,7 @@ export function getVideo(slug: string) { return videos.find((v) => v.slug === sl
 export function getAcademy(slug: string) { return academies.find((a) => a.slug === slug) }
 export function getMatch(id: string) { return matches.find((m) => m.id === id) }
 export function getCity(id: string) { return cities.find((c) => c.id === id) }
+export function getRegion(id: string) { return regions.find((r) => r.id === id) }
 export function getStadiumById(id: string) { return stadiums.find((s) => s.id === id) }
 export function getClubById(id: string) { return clubs.find((c) => c.id === id) }
 export function getPlayerById(id: string) { return players.find((p) => p.id === id) }
