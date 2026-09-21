@@ -1,4 +1,5 @@
 import { clubs, stadiums, cities, regions, competitions } from '@/lib/data/mock'
+import { CI_CITY_COORDS } from '@/lib/data/ci-geo'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubExplorer } from '@/components/site/ClubExplorer'
 import { IvoryCoastMap, type MapZone } from '@/components/site/IvoryCoastMap'
@@ -6,22 +7,9 @@ import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Carte du football ivoirien — FIF Digital' }
 
-const CITY_COORDS: Record<string, { x: number; y: number }> = {
-  'c-abidjan': { x: 339, y: 414 },
-  'c-yamoussoukro': { x: 246, y: 302 },
-  'c-bouake': { x: 265, y: 236 },
-  'c-daloa': { x: 160, y: 298 },
-  'c-korhogo': { x: 220, y: 101 },
-  'c-man': { x: 78, y: 257 },
-  'c-gagnoa': { x: 197, y: 354 },
-  'c-abengourou': { x: 379, y: 308 },
-  'c-bondoukou': { x: 430, y: 209 },
-  'c-san-pedro': { x: 148, y: 458 },
-}
-
 function buildZones(): MapZone[] {
   return cities.map((city) => {
-    const coords = CITY_COORDS[city.id] ?? { x: 230, y: 250 }
+    const coords = CI_CITY_COORDS[city.id] ?? { x: 230, y: 250 }
     const region = regions.find((r) => r.id === city.regionId)
     const cityClubs = clubs.filter((c) => c.cityId === city.id)
     const cityStadiums = stadiums.filter((s) => s.cityId === city.id)

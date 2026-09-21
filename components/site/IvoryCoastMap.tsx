@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Landmark, MapPin, ShieldHalf, Trophy, X } from 'lucide-react'
 import type { Club, Stadium } from '@/lib/data/types'
+import { CI_PATH, CI_MAP_VIEWBOX } from '@/lib/data/ci-geo'
 import { ClubCrest } from './cards'
 
 export type MapZoneClub = Club
@@ -21,16 +22,14 @@ export interface MapZone {
   proCount: number
 }
 
-const OUTLINE = '15,23 0,227 22,326 74,439 82,485 163,485 252,439 341,432 416,417 430,349 445,250 445,136 371,46 267,15 156,8 59,23'
-
 export function IvoryCoastMap({ zones }: { zones: MapZone[] }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const active = zones.find((z) => z.cityId === activeId) ?? null
 
   return (
     <div className="ci-map">
-      <svg viewBox="-20 -10 480 520" className="ci-map-svg" role="img" aria-label="Carte du football ivoirien par district">
-        <polygon points={OUTLINE} className="ci-map-outline" />
+      <svg viewBox={CI_MAP_VIEWBOX} className="ci-map-svg" role="img" aria-label="Carte du football ivoirien par district">
+        <path d={CI_PATH} className="ci-map-outline" />
         {zones.map((z) => {
           const size = 10 + Math.min(10, z.clubs.length + z.stadiums.length)
           const tone = z.proCount > 0 ? 'ci-marker-pro' : 'ci-marker-amateur'
