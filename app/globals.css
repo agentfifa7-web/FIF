@@ -206,8 +206,9 @@ button { font:inherit; }
 .form-foot { color:var(--muted); font-size:12px; margin-top:22px; text-align:center; }
 
 .matchsheet-score { align-items:end; display:flex; gap:16px; }
-.matchsheet-score .text-field { flex:1; }
-.matchsheet-score input { font-size:22px; font-weight:800; text-align:center; }
+.matchsheet-score .text-field { flex:1; min-width:0; }
+.matchsheet-score input { font-size:22px; font-weight:800; min-width:0; text-align:center; width:100%; }
+@media (max-width:480px) { .matchsheet-score { flex-direction:column; align-items:stretch; } .matchsheet-vs { align-self:center; padding-bottom:0; } }
 .matchsheet-vs { color:var(--muted); font-size:20px; font-weight:800; padding-bottom:12px; }
 .matchsheet-list { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
 .matchsheet-row { align-items:center; background:#fafbfa; border:1px solid var(--line); display:flex; gap:8px; padding:8px; }
