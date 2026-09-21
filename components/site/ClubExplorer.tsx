@@ -70,7 +70,7 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
         <FilterSelect label="Genre" value={gender} options={['Tous', 'M', 'F']} onChange={setGender} />
         <div className="tab-bar" style={{ borderBottom: 0, marginBottom: 0 }}>
           <button type="button" className={view === 'ligue' ? 'tab active' : 'tab'} onClick={() => setView('ligue')}><List size={14} /> Par ligue</button>
-          <button type="button" className={view === 'carte' ? 'tab active' : 'tab'} onClick={() => setView('carte')}><MapIcon size={14} /> Carte</button>
+          <button type="button" className={view === 'carte' ? 'tab active' : 'tab'} onClick={() => setView('carte')}><MapIcon size={14} /> Par ville</button>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
 
       {view === 'carte' && (
         <div>
-          <p className="lede" style={{ marginBottom: 20 }}>Carte du football ivoirien — regroupement par ville (aperçu schématique, géolocalisation précise à venir).</p>
+          <p className="lede" style={{ marginBottom: 20 }}>Clubs regroupés par ville — pour la localisation géographique, consultez la carte interactive ci-dessus.</p>
           {byCity.map(([cityName, list]) => (
             <div key={cityName} style={{ marginBottom: 24 }}>
               <p className="section-tag">{cityName} · {list.length} club{list.length > 1 ? 's' : ''}</p>
