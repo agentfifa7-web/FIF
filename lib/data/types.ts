@@ -21,6 +21,14 @@ export interface Stadium {
   lighting: boolean
   changingRooms: number
   image: string
+  built: number
+  video360Url: string
+}
+
+export interface HonourRecord {
+  competition: string
+  year: number
+  result: 'Champion' | 'Finaliste' | 'Demi-finaliste' | 'Qualifié' | 'Podium (3e)'
 }
 
 export interface Club {
@@ -39,6 +47,7 @@ export interface Club {
   competitionIds: string[]
   website: string
   honours: { title: string; count: number }[]
+  achievements: HonourRecord[]
 }
 
 export interface Coach {
@@ -49,6 +58,9 @@ export interface Coach {
   nationalTeamId: string | null
   license: 'CAF Pro' | 'CAF A' | 'CAF B' | 'CAF C'
   since: number
+  fifId: string
+  birthdate: string
+  bio: string
 }
 
 export interface Referee {
@@ -60,6 +72,9 @@ export interface Referee {
   gender: Gender
   status: 'Actif' | 'Suspendu' | 'Retraité'
   matchesOfficiated: number
+  fifId: string
+  birthdate: string
+  bio: string
 }
 
 export interface Official {
@@ -68,6 +83,9 @@ export interface Official {
   name: string
   role: 'Président de club' | 'Secrétaire général' | 'Délégué de match' | 'Commissaire au match'
   clubId: string | null
+  fifId: string
+  birthdate: string
+  bio: string
 }
 
 export interface Agent {
@@ -79,6 +97,8 @@ export interface Agent {
   status: 'Actif' | 'Suspendu'
   validUntil: string
   playerIds: string[]
+  birthdate: string
+  bio: string
 }
 
 export interface Player {
@@ -117,6 +137,53 @@ export interface NationalTeam {
   coachId: string | null
   ranking?: number
   honours: { title: string; year: number }[]
+  achievements: HonourRecord[]
+}
+
+export interface PresidentPromise {
+  id: string
+  title: string
+  description: string
+  commissionId: string
+  progress: number
+  status: 'Réalisée' | 'En cours' | 'Planifiée'
+}
+
+export interface Commission {
+  id: string
+  slug: string
+  name: string
+  mission: string
+}
+
+export interface ExecutiveMember {
+  id: string
+  slug: string
+  name: string
+  role: string
+  commissionIds: string[]
+  since: number
+  bio: string
+}
+
+export interface OfficialDocument {
+  id: string
+  slug: string
+  title: string
+  organization: 'FIF' | 'CAF' | 'FIFA'
+  category: string
+  date: string
+  summary: string
+}
+
+export interface TransparencyRecord {
+  id: string
+  slug: string
+  title: string
+  category: 'Rapport' | 'Budget' | 'Décision' | 'Appel d’offres' | 'Statistique institutionnelle'
+  date: string
+  summary: string
+  amount?: string
 }
 
 export interface Competition {

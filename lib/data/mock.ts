@@ -6,12 +6,17 @@ import type {
   City,
   Club,
   Coach,
+  Commission,
   Competition,
+  ExecutiveMember,
+  HonourRecord,
   Match,
   MatchEvent,
   NationalTeam,
   Official,
+  OfficialDocument,
   Player,
+  PresidentPromise,
   Product,
   Referee,
   Region,
@@ -19,6 +24,7 @@ import type {
   StandingRow,
   TicketEvent,
   TrainingCourse,
+  TransparencyRecord,
   Video,
 } from './types'
 
@@ -82,6 +88,8 @@ export const stadiums: Stadium[] = cities.flatMap((city, ci) =>
       lighting: rng.bool(0.7),
       changingRooms: rng.int(2, 6),
       image: `https://picsum.photos/seed/${id}/900/560`,
+      built: rng.int(1965, 2023),
+      video360Url: rng.bool(0.45) ? `demo-360-${id}` : '',
     }
   }),
 )
@@ -134,12 +142,32 @@ const clubColorPairs: [string, string][] = [
   ['#1b4fd6', '#ffffff'], ['#7a1fa8', '#f5f3ee'],
 ]
 
+function makeAchievements(competitionLabel: string, championCount: number, yearFrom = 1992, yearTo = 2026): HonourRecord[] {
+  const used = new Set<number>()
+  function pickYear() {
+    let y: number
+    do { y = rng.int(yearFrom, yearTo) } while (used.has(y))
+    used.add(y)
+    return y
+  }
+  const records: HonourRecord[] = []
+  for (let i = 0; i < championCount; i++) records.push({ competition: competitionLabel, year: pickYear(), result: 'Champion' })
+  const extra = rng.int(0, 3)
+  for (let i = 0; i < extra; i++) {
+    const result = rng.pick(['Finaliste', 'Demi-finaliste', 'Podium (3e)', 'Qualifié'] as const)
+    records.push({ competition: competitionLabel, year: pickYear(), result })
+  }
+  return records.sort((a, b) => b.year - a.year)
+}
+
 export const clubs: Club[] = Array.from({ length: 40 }, (_, i) => {
   const city = rng.pick(cities)
   const name = makeClubName(city.name, usedClubNames)
   const category = i < 24 ? 'Professionnel' : i < 30 ? 'Féminin' : i < 36 ? 'Jeunes' : 'Futsal'
   const clubStadiums = stadiums.filter((s) => s.cityId === city.id)
   const slug = slugify(name)
+  const championCount = rng.bool(0.4) ? rng.int(1, 5) : 0
+  const label = category === 'Féminin' ? 'Championnat National Féminin' : category === 'Futsal' ? 'Futsal Élite' : 'Championnat National'
   return {
     id: `club-${i}`,
     slug,
@@ -160,9 +188,8 @@ export const clubs: Club[] = Array.from({ length: 40 }, (_, i) => {
     category: category as Club['category'],
     competitionIds: [],
     website: `https://${slug}.fif.ci`,
-    honours: rng.bool(0.4)
-      ? [{ title: 'Champion national', count: rng.int(1, 5) }]
-      : [],
+    honours: championCount > 0 ? [{ title: 'Champion national', count: championCount }] : [],
+    achievements: makeAchievements(label, championCount),
   }
 })
 
@@ -170,18 +197,31 @@ function clubBySlug(slug: string) {
   return clubs.find((c) => c.slug === slug)
 }
 
+function randomBirthdate(minAge: number, maxAge: number) {
+  const age = rng.int(minAge, maxAge)
+  const year = 2026 - age
+  return `${year}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`
+}
+
 // ---------------------------------------------------------------------------
 // Coaches
 // ---------------------------------------------------------------------------
-export const coaches: Coach[] = clubs.map((club, i) => ({
-  id: `coach-${i}`,
-  slug: `coach-${slugify(club.name)}`,
-  name: fullName(club.gender === 'F' ? 'F' : 'M'),
-  clubId: club.id,
-  nationalTeamId: null,
-  license: rng.pick(['CAF Pro', 'CAF A', 'CAF B', 'CAF C'] as const),
-  since: rng.int(2018, 2025),
-}))
+export const coaches: Coach[] = clubs.map((club, i) => {
+  const name = fullName(club.gender === 'F' ? 'F' : 'M')
+  const license = rng.pick(['CAF Pro', 'CAF A', 'CAF B', 'CAF C'] as const)
+  return {
+    id: `coach-${i}`,
+    slug: `coach-${slugify(club.name)}`,
+    name,
+    clubId: club.id,
+    nationalTeamId: null,
+    license,
+    since: rng.int(2018, 2025),
+    fifId: `FIF-CO-${(2000 + i).toString().padStart(5, '0')}`,
+    birthdate: randomBirthdate(32, 62),
+    bio: `Titulaire de la licence ${license}, ${name} dirige l’équipe première de ${club.name} depuis ${rng.int(2018, 2025)}, après plusieurs saisons comme adjoint dans le football régional.`,
+  }
+})
 
 // ---------------------------------------------------------------------------
 // Referees / Officials / Agents
@@ -189,15 +229,19 @@ export const coaches: Coach[] = clubs.map((club, i) => ({
 export const referees: Referee[] = Array.from({ length: 42 }, (_, i) => {
   const gender = rng.bool(0.85) ? 'M' : 'F'
   const name = fullName(gender)
+  const category = rng.pick(['FIFA', 'Fédérale 1', 'Fédérale 2', 'Régionale'] as const)
   return {
     id: `ref-${i}`,
     slug: `${slugify(name)}-${i}`,
     name,
-    category: rng.pick(['FIFA', 'Fédérale 1', 'Fédérale 2', 'Régionale'] as const),
+    category,
     regionId: rng.pick(regions).id,
     gender,
     status: rng.bool(0.92) ? 'Actif' : rng.bool() ? 'Suspendu' : 'Retraité',
     matchesOfficiated: rng.int(4, 210),
+    fifId: `FIF-AR-${(3000 + i).toString().padStart(5, '0')}`,
+    birthdate: randomBirthdate(24, 55),
+    bio: `Arbitre de catégorie ${category}, ${name} officie sur les rencontres du football ivoirien depuis ${rng.int(2010, 2022)} et a dirigé ${rng.int(4, 210)} matchs à ce jour.`,
   }
 })
 
@@ -211,6 +255,9 @@ export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
     name,
     role,
     clubId: club?.id ?? null,
+    fifId: `FIF-OF-${(5000 + i).toString().padStart(5, '0')}`,
+    birthdate: randomBirthdate(30, 65),
+    bio: `${name} exerce la fonction de ${role.toLowerCase()}${club ? ` au sein de ${club.name}` : ' pour le compte de la Fédération'}, au service de l’organisation du football ivoirien.`,
   }
 })
 
@@ -271,21 +318,41 @@ export const agents: Agent[] = Array.from({ length: 20 }, (_, i) => {
     status: rng.bool(0.9) ? 'Actif' : 'Suspendu',
     validUntil: `${rng.int(2026, 2028)}-${String(rng.int(1, 12)).padStart(2, '0')}-01`,
     playerIds: represented.map((p) => p.id),
+    birthdate: randomBirthdate(30, 60),
+    bio: `${name} est agent sportif licencié FIF, représentant ${represented.length} joueur${represented.length > 1 ? 's' : ''} évoluant dans le football ivoirien.`,
   }
 })
 
 // ---------------------------------------------------------------------------
 // National teams
 // ---------------------------------------------------------------------------
+function teamAchievements(competitionLabel: string, honours: { title: string; year: number }[]): HonourRecord[] {
+  const champions: HonourRecord[] = honours.map((h) => ({ competition: h.title, year: h.year, result: 'Champion' }))
+  const usedYears = new Set(champions.map((c) => c.year))
+  const extra = rng.int(1, 3)
+  const records = [...champions]
+  for (let i = 0; i < extra; i++) {
+    let year: number
+    do { year = rng.int(1998, 2026) } while (usedYears.has(year))
+    usedYears.add(year)
+    records.push({ competition: competitionLabel, year, result: rng.pick(['Demi-finaliste', 'Qualifié', 'Podium (3e)'] as const) })
+  }
+  return records.sort((a, b) => b.year - a.year)
+}
+
 export const nationalTeams: NationalTeam[] = [
-  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }] },
-  { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 78, honours: [] },
-  { id: 'nt-u23', slug: 'u23', name: 'Éléphants U23', gender: 'M', category: 'U23', coachId: null, honours: [] },
-  { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [{ title: 'Coupe UFOA U20', year: 2023 }] },
-  { id: 'nt-u17', slug: 'u17', name: 'Éléphants U17', gender: 'M', category: 'U17', coachId: null, honours: [] },
-  { id: 'nt-futsal', slug: 'futsal', name: 'Éléphants Futsal', gender: 'M', category: 'Futsal', coachId: null, honours: [] },
-  { id: 'nt-beach', slug: 'beach-soccer', name: 'Éléphants Beach Soccer', gender: 'M', category: 'Beach Soccer', coachId: null, honours: [{ title: 'Coupe d’Afrique Beach Soccer', year: 2022 }] },
+  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
+  { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 78, honours: [], achievements: [] },
+  { id: 'nt-u23', slug: 'u23', name: 'Éléphants U23', gender: 'M', category: 'U23', coachId: null, honours: [], achievements: [] },
+  { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [{ title: 'Coupe UFOA U20', year: 2023 }], achievements: [] },
+  { id: 'nt-u17', slug: 'u17', name: 'Éléphants U17', gender: 'M', category: 'U17', coachId: null, honours: [], achievements: [] },
+  { id: 'nt-futsal', slug: 'futsal', name: 'Éléphants Futsal', gender: 'M', category: 'Futsal', coachId: null, honours: [], achievements: [] },
+  { id: 'nt-beach', slug: 'beach-soccer', name: 'Éléphants Beach Soccer', gender: 'M', category: 'Beach Soccer', coachId: null, honours: [{ title: 'Coupe d’Afrique Beach Soccer', year: 2022 }], achievements: [] },
 ]
+
+for (const team of nationalTeams) {
+  team.achievements = teamAchievements('Coupe d’Afrique des Nations', team.honours)
+}
 
 for (const team of nationalTeams) {
   const c = coaches[rng.int(0, coaches.length - 1)]
@@ -303,6 +370,128 @@ for (const team of nationalTeams) {
     player?.nationalSelections.push({ teamId: team.id, caps: s.caps, goals: s.goals })
   }
 }
+
+// ---------------------------------------------------------------------------
+// Fédération — gouvernance (démonstration : ne représente aucune personne
+// réelle ni aucune information officielle de la FIF)
+// ---------------------------------------------------------------------------
+export const commissions: Commission[] = [
+  { id: 'com-competitions', slug: 'competitions', name: 'Commission des Compétitions', mission: 'Organise et supervise les championnats et coupes nationales, toutes catégories.' },
+  { id: 'com-arbitrage', slug: 'arbitrage', name: 'Commission Centrale d’Arbitrage', mission: 'Forme, évalue et désigne les arbitres du football ivoirien.' },
+  { id: 'com-discipline', slug: 'discipline', name: 'Commission de Discipline', mission: 'Instruit les dossiers disciplinaires et rend les décisions de sanction.' },
+  { id: 'com-feminin', slug: 'football-feminin', name: 'Commission du Football Féminin', mission: 'Développe et structure la pratique féminine à tous les niveaux.' },
+  { id: 'com-medicale', slug: 'medicale', name: 'Commission Médicale', mission: 'Encadre la santé, la prévention et le suivi médical des acteurs du football.' },
+  { id: 'com-marketing', slug: 'marketing-communication', name: 'Commission Marketing & Communication', mission: 'Valorise l’image de la FIF et développe ses partenariats.' },
+  { id: 'com-ethique', slug: 'ethique', name: 'Commission d’Éthique', mission: 'Veille au respect des principes d’intégrité et de bonne gouvernance.' },
+  { id: 'com-statuts', slug: 'statuts-reglements', name: 'Commission des Statuts et Règlements', mission: 'Rédige et actualise les textes fédéraux.' },
+  { id: 'com-formation', slug: 'formation', name: 'Commission de la Formation', mission: 'Pilote la FIF Academy et les parcours de certification des encadrants.' },
+  { id: 'com-jeunes', slug: 'football-jeunes', name: 'Commission du Football des Jeunes', mission: 'Coordonne les filières de détection et les compétitions de jeunes.' },
+]
+
+const execRoles = ['1er Vice-Président', '2e Vice-Président', 'Secrétaire Général', 'Trésorier Général', 'Membre chargé des Ligues', 'Membre chargé du Football Amateur', 'Membre chargé du Football Féminin', 'Membre chargé de la Formation', 'Membre chargé du Marketing', 'Membre chargé des Relations Internationales', 'Membre chargé du Numérique']
+export const executiveCommittee: ExecutiveMember[] = execRoles.map((role, i) => {
+  const name = fullName(rng.bool(0.25) ? 'F' : 'M')
+  const memberCommissions = rng.pickN(commissions, rng.int(1, 2))
+  return {
+    id: `exec-${i}`,
+    slug: `${slugify(name)}-${i}`,
+    name,
+    role,
+    commissionIds: memberCommissions.map((c) => c.id),
+    since: rng.int(2017, 2024),
+    bio: `${name} siège au Comité Exécutif de la FIF en tant que ${role.toLowerCase()} depuis ${rng.int(2017, 2024)}, et supervise ${memberCommissions.map((c) => c.name).join(' et ')}.`,
+  }
+})
+
+export const presidentProfile = {
+  name: 'Amara N’Dri Koffi',
+  role: 'Président de la Fédération Ivoirienne de Football',
+  since: 2021,
+  photoSeed: 'president-fif-demo',
+  cv: [
+    { year: '2021 — aujourd’hui', label: 'Président de la FIF' },
+    { year: '2013 — 2021', label: 'Vice-président de la FIF, chargé des compétitions' },
+    { year: '2005 — 2013', label: 'Président de club, Ligue 1 ivoirienne' },
+    { year: '1998 — 2005', label: 'Dirigeant sportif et arbitre fédéral' },
+  ],
+  word: 'Le football ivoirien porte l’ambition de tout un pays. Notre mandat est de bâtir des fondations solides : des clubs mieux structurés, des compétitions plus professionnelles à tous les niveaux, un football féminin en plein essor, et une gouvernance exemplaire, transparente et redevable devant chaque licencié, chaque supporter et chaque partenaire du football ivoirien.',
+}
+
+export const presidentPromises: PresidentPromise[] = [
+  { id: 'prom-1', title: 'Professionnaliser la Ligue 1', description: 'Cahier des charges renforcé, encadrement financier et infrastructures homologuées pour tous les clubs de Ligue 1.', commissionId: 'com-competitions', progress: 72, status: 'En cours' },
+  { id: 'prom-2', title: 'Doubler le nombre de licenciées féminines', description: 'Programme national de développement du football féminin dans les 14 districts.', commissionId: 'com-feminin', progress: 54, status: 'En cours' },
+  { id: 'prom-3', title: 'Digitaliser les licences fédérales', description: 'Délivrance et renouvellement des licences entièrement dématérialisés via FIF ID.', commissionId: 'com-statuts', progress: 100, status: 'Réalisée' },
+  { id: 'prom-4', title: 'Créer un centre technique national', description: 'Centre de formation et de préparation pour les sélections nationales, toutes catégories.', commissionId: 'com-formation', progress: 38, status: 'En cours' },
+  { id: 'prom-5', title: 'Généraliser la VAR en Ligue 1', description: 'Déploiement de l’assistance vidéo à l’arbitrage sur l’ensemble des rencontres de Ligue 1.', commissionId: 'com-arbitrage', progress: 20, status: 'En cours' },
+  { id: 'prom-6', title: 'Réduire les délais de traitement disciplinaire', description: 'Instruction des dossiers de discipline sous 15 jours ouvrés.', commissionId: 'com-discipline', progress: 100, status: 'Réalisée' },
+  { id: 'prom-7', title: 'Publier un rapport financier annuel public', description: 'Rapport d’activité et exécution budgétaire publiés chaque année dans la Transparence FIF.', commissionId: 'com-statuts', progress: 100, status: 'Réalisée' },
+  { id: 'prom-8', title: 'Structurer 100 nouveaux clubs amateurs', description: 'Accompagnement à l’affiliation de clubs amateurs dans les districts sous-représentés.', commissionId: 'com-jeunes', progress: 61, status: 'En cours' },
+  { id: 'prom-9', title: 'Lancer une académie de formation d’arbitres régionale', description: 'Centre régional de formation continue pour les arbitres fédérale 2 et régionaux.', commissionId: 'com-arbitrage', progress: 0, status: 'Planifiée' },
+  { id: 'prom-10', title: 'Créer un fonds de solidarité pour les anciens internationaux', description: 'Accompagnement social et professionnel des anciens Éléphants et Éléphantes.', commissionId: 'com-marketing', progress: 15, status: 'Planifiée' },
+]
+
+const docTitlesByOrg: Record<'FIF' | 'CAF' | 'FIFA', { title: string; category: string }[]> = {
+  FIF: [
+    { title: 'Statuts de la Fédération Ivoirienne de Football', category: 'Statuts' },
+    { title: 'Règlement des Compétitions Nationales', category: 'Règlements' },
+    { title: 'Règlement Disciplinaire', category: 'Règlements' },
+    { title: 'Charte d’Éthique et de Bonne Gouvernance', category: 'Statuts' },
+    { title: 'Procès-verbal de l’Assemblée Générale 2026', category: 'Procès-verbaux' },
+    { title: 'Circulaire — Saison sportive 2025-2026', category: 'Circulaires' },
+    { title: 'Rapport d’activité annuel', category: 'Rapports' },
+    { title: 'Guide du dirigeant de club', category: 'Guides' },
+  ],
+  CAF: [
+    { title: 'Statuts de la Confédération Africaine de Football', category: 'Statuts' },
+    { title: 'Règlement de la Coupe d’Afrique des Nations', category: 'Règlements' },
+    { title: 'Règlement des Interclubs CAF', category: 'Règlements' },
+    { title: 'Code Disciplinaire CAF', category: 'Règlements' },
+  ],
+  FIFA: [
+    { title: 'Statuts de la FIFA', category: 'Statuts' },
+    { title: 'Lois du Jeu (IFAB)', category: 'Règlements' },
+    { title: 'Règlement du Statut et du Transfert des Joueurs (RSTJ)', category: 'Règlements' },
+    { title: 'Code de Discipline FIFA', category: 'Règlements' },
+  ],
+}
+export const officialDocuments: OfficialDocument[] = (Object.keys(docTitlesByOrg) as Array<'FIF' | 'CAF' | 'FIFA'>).flatMap((org) =>
+  docTitlesByOrg[org].map((doc, i) => ({
+    id: `doc-${org}-${i}`,
+    slug: `${slugify(doc.title)}-${org.toLowerCase()}`,
+    title: doc.title,
+    organization: org,
+    category: doc.category,
+    date: addDays(new Date('2026-06-01T00:00:00Z'), -rng.int(0, 700)).toISOString(),
+    summary: `Texte de référence (${org}) encadrant ${doc.category.toLowerCase()} applicable au football ivoirien et à ses acteurs.`,
+  })),
+)
+
+const transparencyItems: { title: string; category: TransparencyRecord['category']; summary: string; amount?: string }[] = [
+  { title: 'Budget prévisionnel 2026', category: 'Budget', summary: 'Budget annuel voté en Assemblée Générale, détaillant les recettes fédérales et les postes de dépense.', amount: '4,2 Md FCFA' },
+  { title: 'Exécution budgétaire — 1er semestre 2026', category: 'Budget', summary: 'Suivi semestriel de l’exécution du budget fédéral par grand poste.', amount: '1,9 Md FCFA' },
+  { title: 'Rapport d’activité 2025', category: 'Rapport', summary: 'Bilan des actions menées par la Fédération sur l’exercice écoulé.' },
+  { title: 'Rapport de gouvernance 2025', category: 'Rapport', summary: 'État des lieux de la gouvernance fédérale et des réformes engagées.' },
+  { title: 'Décision — Homologation Ligue 1 2025-2026', category: 'Décision', summary: 'Décision du Comité Exécutif portant homologation du format de la Ligue 1.' },
+  { title: 'Décision — Commission de Discipline, dossier n°14', category: 'Décision', summary: 'Décision disciplinaire rendue publique conformément au règlement.' },
+  { title: 'Appel d’offres — Équipement des centres techniques régionaux', category: 'Appel d’offres', summary: 'Consultation ouverte pour la fourniture d’équipements sportifs aux centres régionaux.' },
+  { title: 'Appel d’offres — Diffusion audiovisuelle Ligue 1', category: 'Appel d’offres', summary: 'Consultation pour les droits de diffusion des championnats nationaux.' },
+  { title: 'Statistiques institutionnelles — Licences 2025-2026', category: 'Statistique institutionnelle', summary: 'Nombre de licences délivrées par catégorie et par district.' },
+  { title: 'Statistiques institutionnelles — Clubs affiliés', category: 'Statistique institutionnelle', summary: 'Répartition des clubs affiliés par ligue et par région.' },
+]
+export const transparencyRecords: TransparencyRecord[] = transparencyItems.map((t, i) => ({
+  id: `tr-${i}`,
+  slug: `${slugify(t.title)}-${i}`,
+  title: t.title,
+  category: t.category,
+  date: addDays(new Date('2026-07-01T00:00:00Z'), -rng.int(0, 500)).toISOString(),
+  summary: t.summary,
+  amount: t.amount,
+}))
+
+export function getCommission(slug: string) { return commissions.find((c) => c.slug === slug) }
+export function getExecutiveMember(slug: string) { return executiveCommittee.find((m) => m.slug === slug) }
+export function getDocument(slug: string) { return officialDocuments.find((d) => d.slug === slug) }
+export function getTransparencyRecord(slug: string) { return transparencyRecords.find((t) => t.slug === slug) }
 
 // ---------------------------------------------------------------------------
 // Competitions
