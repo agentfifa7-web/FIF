@@ -205,6 +205,28 @@ button { font:inherit; }
 .form-actions { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
 .form-foot { color:var(--muted); font-size:12px; margin-top:22px; text-align:center; }
 
+.matchsheet-score { align-items:end; display:flex; gap:16px; }
+.matchsheet-score .text-field { flex:1; }
+.matchsheet-score input { font-size:22px; font-weight:800; text-align:center; }
+.matchsheet-vs { color:var(--muted); font-size:20px; font-weight:800; padding-bottom:12px; }
+.matchsheet-list { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+.matchsheet-row { align-items:center; background:#fafbfa; border:1px solid var(--line); display:flex; gap:8px; padding:8px; }
+.matchsheet-row select, .matchsheet-row input { background:#fff; border:1px solid var(--line); color:var(--ink); font:inherit; font-size:12px; padding:7px 8px; }
+.matchsheet-row select:first-child { flex:1; min-width:0; }
+.matchsheet-row select:nth-child(2) { flex:1.4; min-width:0; }
+.matchsheet-row input[type="number"] { width:52px; }
+.matchsheet-row span { color:var(--muted); font-size:11px; }
+.matchsheet-remove { align-items:center; background:none; border:0; color:var(--muted); cursor:pointer; display:flex; padding:4px; }
+.matchsheet-remove:hover { color:#c62828; }
+.matchsheet-published-head { align-items:center; color:var(--green); display:flex; font-size:14px; font-weight:800; gap:8px; margin:0; }
+.matchsheet-compare { display:grid; gap:14px; grid-template-columns:1fr 1fr; margin-top:14px; }
+.matchsheet-delta { background:#fafbfa; border:1px solid var(--line); padding:16px; }
+.matchsheet-delta strong { display:block; font-size:13px; margin-bottom:8px; }
+.matchsheet-delta > div { align-items:center; display:flex; font-size:15px; font-weight:800; gap:10px; }
+.matchsheet-delta-new { color:var(--orange); }
+.matchsheet-delta .muted-sm { color:var(--muted); display:block; font-size:11px; margin-top:6px; }
+@media (max-width:640px) { .matchsheet-compare { grid-template-columns:1fr; } }
+
 .timeline { display:flex; flex-direction:column; }
 .timeline > div { border-left:2px solid var(--line); display:flex; gap:14px; padding:0 0 22px 18px; position:relative; }
 .timeline > div::before { background:var(--orange); border-radius:50%; content:''; height:9px; left:-6px; position:absolute; top:2px; width:9px; }
@@ -428,9 +450,11 @@ h1, h2, h3, h4, h5, h6,
 .filter-select select, .text-field input, .text-field select, .text-field textarea,
 .article-image, .video-player, .lineup, .cart-pill, .universe-panel,
 .faq-list details, .match-center-meta, .portal-layout aside, .comp-badge,
-.president-preview, .promise-list details, .rank-list details {
+.president-preview, .promise-list details, .rank-list details,
+.matchsheet-row, .matchsheet-delta {
   border-radius: var(--radius-md);
 }
+.matchsheet-row select, .matchsheet-row input { border-radius: var(--radius-sm); }
 .gauge-track, .gauge-fill { border-radius: 999px; }
 
 .news-card.featured .news-image, .featured .news-image { border-radius: var(--radius-lg); }

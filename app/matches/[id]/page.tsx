@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
-import { matches, getMatch, players } from '@/lib/data/mock'
+import { matches, getMatch, players, getClubById } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { MatchCenter } from '@/components/site/MatchCenter'
+import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export function generateStaticParams() {
@@ -20,6 +21,8 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   if (!match) notFound()
   const homeRoster = players.filter((p) => p.clubId === match.homeClubId)
   const awayRoster = players.filter((p) => p.clubId === match.awayClubId)
+  const homeClub = getClubById(match.homeClubId)
+  const awayClub = getClubById(match.awayClubId)
 
   return (
     <main>
@@ -27,6 +30,9 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
         <Breadcrumb items={[{ label: 'Calendrier', href: '/matches' }, { label: 'Match Center' }]} />
       </div>
       <MatchCenter match={match} homeRoster={homeRoster} awayRoster={awayRoster} />
+      {match.status !== 'Terminé' && homeClub && awayClub && (
+        <MatchSheetBanner matchId={match.id} homeName={homeClub.name} awayName={awayClub.name} />
+      )}
       <section className="page-section tight"><DemoBadge /></section>
     </main>
   )

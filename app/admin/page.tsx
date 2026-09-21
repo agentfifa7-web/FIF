@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-  BarChart3, FileText, Film, Gavel, Newspaper, Settings, Shield, ShoppingBag,
+  BarChart3, ClipboardList, FileText, Film, Gavel, Newspaper, Settings, Shield, ShoppingBag,
   Ticket, Trophy, Users, Wallet,
 } from 'lucide-react'
 import {
@@ -11,11 +11,12 @@ import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'FIF Command Center — Admin' }
 
-const sections = [
+const sections: { id: string; icon: typeof BarChart3; label: string; count: number; href?: string }[] = [
   { id: 'news', icon: Newspaper, label: 'Actualités', count: articles.length },
   { id: 'videos', icon: Film, label: 'Vidéos', count: videos.length },
   { id: 'competitions', icon: Trophy, label: 'Compétitions', count: competitions.length },
   { id: 'matches', icon: BarChart3, label: 'Matchs', count: matches.length },
+  { id: 'matchsheets', icon: ClipboardList, label: 'Feuilles de match', count: matches.filter((m) => m.status !== 'Terminé').length, href: '/admin/feuille-de-match' },
   { id: 'players', icon: Users, label: 'Joueurs', count: players.length },
   { id: 'clubs', icon: Shield, label: 'Clubs', count: clubs.length },
   { id: 'licenses', icon: FileText, label: 'Licences', count: players.filter((p) => p.licenseStatus !== 'Valide').length },
@@ -36,7 +37,7 @@ export default function AdminPage() {
       <PageHero
         eyebrow="Administration fédérale"
         title="FIF Command Center"
-        subtitle="Vue d’ensemble de la plateforme : contenus, licences, compétitions, matchs, billetterie et boutique. Environnement de démonstration en lecture seule."
+        subtitle="Vue d’ensemble de la plateforme : contenus, licences, compétitions, matchs, billetterie et boutique. Environnement de démonstration en lecture seule, à l’exception des feuilles de match qui peuvent être saisies localement."
         breadcrumb={[{ label: 'Admin' }]}
       />
 
@@ -57,7 +58,7 @@ export default function AdminPage() {
         <p className="section-tag">Modules CMS</p>
         <div className="card-grid cols-4" style={{ marginTop: 16 }}>
           {sections.map((s) => (
-            <a key={s.id} href={`#${s.id}`} className="entity-card">
+            <a key={s.id} href={s.href ?? `#${s.id}`} className="entity-card">
               <s.icon size={20} color="var(--orange)" />
               <div><strong>{s.label}</strong><span>{s.count} élément(s)</span></div>
             </a>
@@ -69,7 +70,7 @@ export default function AdminPage() {
         <div className="portal-layout" style={{ padding: 0 }}>
           <aside>
             <nav className="sidebar-nav">
-              {sections.map((s) => <a key={s.id} href={`#${s.id}`}><s.icon size={15} /> {s.label}</a>)}
+              {sections.map((s) => <a key={s.id} href={s.href ?? `#${s.id}`}><s.icon size={15} /> {s.label}</a>)}
             </nav>
           </aside>
           <div>
@@ -109,11 +110,15 @@ export default function AdminPage() {
                   return (
                     <div key={m.id}>
                       <div><b>{home?.name} vs {away?.name}</b><small>{m.status}</small></div>
-                      <Link href={`/matches/${m.id}`} className="status-pill neutral">Match Center</Link>
+                      <span className="button-group" style={{ gap: 8 }}>
+                        <Link href={`/matches/${m.id}`} className="status-pill neutral">Match Center</Link>
+                        <Link href={`/admin/feuille-de-match/${m.id}`} className="status-pill pending">Feuille de match</Link>
+                      </span>
                     </div>
                   )
                 })}
               </div>
+              <Link href="/admin/feuille-de-match" className="text-link" style={{ marginTop: 16, display: 'inline-flex' }}>Toutes les feuilles de match <span aria-hidden>→</span></Link>
             </div>
 
             <div className="dashboard-panel" id="clubs">
