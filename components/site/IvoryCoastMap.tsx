@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Landmark, MapPin, ShieldHalf, Trophy, X } from 'lucide-react'
+import { CheckCircle2, Landmark, MapPin, ShieldHalf, Trophy, X } from 'lucide-react'
 import type { Club, Stadium } from '@/lib/data/types'
 import { CI_PATH, CI_MAP_VIEWBOX } from '@/lib/data/ci-geo'
 import { ClubCrest } from './cards'
@@ -22,7 +22,7 @@ export interface MapZone {
   proCount: number
 }
 
-export function IvoryCoastMap({ zones }: { zones: MapZone[] }) {
+export function IvoryCoastMap({ zones, checkedInCityIds, onCheckIn }: { zones: MapZone[]; checkedInCityIds?: string[]; onCheckIn?: (cityId: string) => void }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const active = zones.find((z) => z.cityId === activeId) ?? null
 
@@ -32,7 +32,8 @@ export function IvoryCoastMap({ zones }: { zones: MapZone[] }) {
         <path d={CI_PATH} className="ci-map-outline" />
         {zones.map((z) => {
           const size = 10 + Math.min(10, z.clubs.length + z.stadiums.length)
-          const tone = z.proCount > 0 ? 'ci-marker-pro' : 'ci-marker-amateur'
+          const checkedIn = checkedInCityIds?.includes(z.cityId)
+          const tone = checkedInCityIds ? (checkedIn ? 'ci-marker-pro' : 'ci-marker-amateur') : (z.proCount > 0 ? 'ci-marker-pro' : 'ci-marker-amateur')
           return (
             <g key={z.cityId} transform={`translate(${z.x}, ${z.y})`} className={`ci-marker ${tone}${activeId === z.cityId ? ' is-active' : ''}`} onClick={() => setActiveId(z.cityId)} role="button" tabIndex={0} aria-label={z.cityName}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveId(z.cityId) }}>
@@ -45,8 +46,17 @@ export function IvoryCoastMap({ zones }: { zones: MapZone[] }) {
       </svg>
 
       <div className="ci-map-legend">
-        <span><i className="ci-marker-dot ci-marker-pro" /> Pôle avec club professionnel</span>
-        <span><i className="ci-marker-dot ci-marker-amateur" /> Pôle amateur / jeunes / féminin</span>
+        {checkedInCityIds ? (
+          <>
+            <span><i className="ci-marker-dot ci-marker-pro" /> Étape visitée (check-in)</span>
+            <span><i className="ci-marker-dot ci-marker-amateur" /> Étape à découvrir</span>
+          </>
+        ) : (
+          <>
+            <span><i className="ci-marker-dot ci-marker-pro" /> Pôle avec club professionnel</span>
+            <span><i className="ci-marker-dot ci-marker-amateur" /> Pôle amateur / jeunes / féminin</span>
+          </>
+        )}
       </div>
 
       {active && (
@@ -54,6 +64,14 @@ export function IvoryCoastMap({ zones }: { zones: MapZone[] }) {
           <button type="button" className="ci-map-panel-close" onClick={() => setActiveId(null)} aria-label="Fermer"><X size={16} /></button>
           <p className="section-tag"><MapPin size={13} style={{ verticalAlign: 'middle' }} /> {active.regionName}</p>
           <h3 style={{ fontSize: 22, margin: '4px 0 12px' }}>{active.cityName}</h3>
+
+          {onCheckIn && (
+            checkedInCityIds?.includes(active.cityId) ? (
+              <p className="pronostic-submitted" style={{ justifyContent: 'flex-start', marginBottom: 16 }}><CheckCircle2 size={16} /> Étape visitée</p>
+            ) : (
+              <button type="button" className="button button-primary" style={{ marginBottom: 16 }} onClick={() => onCheckIn(active.cityId)}>Check-in FIF ici (+40 XP)</button>
+            )
+          )}
 
           {active.competitionNames.length > 0 && (
             <div className="chip-row" style={{ marginBottom: 16 }}>

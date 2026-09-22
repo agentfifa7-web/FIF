@@ -3,29 +3,39 @@ import type {
   Academy,
   Agent,
   Article,
+  ChantEntry,
   City,
   Club,
   Coach,
   Commission,
   Competition,
+  DigitalCard,
   ExecutiveMember,
+  FanBadge,
+  FanClubAssociation,
+  FanLevel,
+  FanZonePost,
   HonourRecord,
   Match,
   MatchEvent,
   NationalTeam,
   Official,
   OfficialDocument,
+  PartnerOffer,
   Player,
   PresidentPromise,
   Product,
+  QuizQuestion,
   Referee,
   Region,
+  RewardEntry,
   Stadium,
   StandingRow,
   TicketEvent,
   TrainingCourse,
   TransparencyRecord,
   Video,
+  XpAction,
 } from './types'
 
 export const IS_DEMO_DATA = true
@@ -921,3 +931,243 @@ export function verifyIdentity(rawId: string): VerifiedIdentity | null {
 
   return null
 }
+
+// ---------------------------------------------------------------------------
+// FIF Fan Universe — niveaux, XP, badges, quiz, fan clubs, partenaires,
+// chants, cartes numériques, récompenses et fil Fan Zone (catalogue de
+// démonstration). L'état propre à chaque supporter — XP, badges obtenus,
+// réponses aux quiz, pronostics, check-ins — vit côté client dans le
+// navigateur (voir lib/fan.ts) : ce prototype ne dispose pas de compte
+// utilisateur persistant côté serveur ni d'aucun système de paiement.
+// ---------------------------------------------------------------------------
+export const fanLevels: FanLevel[] = [
+  { id: 'lvl-1', order: 1, name: 'Nouveau Fan', icon: '🟢', minXp: 0, perks: ['Carte Fan ID numérique', 'Accès au fil Fan Zone'] },
+  { id: 'lvl-2', order: 2, name: 'Supporter', icon: '⚪', minXp: 500, perks: ['Badge de bienvenue', 'Accès aux quiz réguliers'] },
+  { id: 'lvl-3', order: 3, name: 'Passionné', icon: '🟠', minXp: 1500, perks: ['Avantages partenaires FAN+', 'Accès prioritaire à certains quiz'] },
+  { id: 'lvl-4', order: 4, name: '12e Homme', icon: '🇨🇮', minXp: 3500, perks: ['Accès anticipé à la billetterie', 'Cartes numériques rares débloquées plus vite'] },
+  { id: 'lvl-5', order: 5, name: 'Ultra Fan', icon: '🔥', minXp: 7000, perks: ['Expériences FAN PREMIUM', 'Éligible au Photobooth FIF'] },
+  { id: 'lvl-6', order: 6, name: 'Légende', icon: '🏆', minXp: 12000, perks: ['Expériences FAN LEGEND', 'Statut Fan Reporter éligible'] },
+  { id: 'lvl-7', order: 7, name: 'Icône du Football Ivoirien', icon: '👑', minXp: 20000, perks: ['Éligible au Trophée du Supporter', 'Invitations exclusives FIF'] },
+]
+
+export function levelForXp(xp: number): FanLevel {
+  let current = fanLevels[0]
+  for (const l of fanLevels) if (xp >= l.minXp) current = l
+  return current
+}
+export function nextFanLevel(xp: number): FanLevel | null {
+  const current = levelForXp(xp)
+  return fanLevels.find((l) => l.order === current.order + 1) ?? null
+}
+
+export const xpActions: XpAction[] = [
+  { id: 'xp-login', label: 'Connexion quotidienne', xp: 5 },
+  { id: 'xp-article', label: 'Lire un article', xp: 5 },
+  { id: 'xp-video', label: 'Regarder une vidéo', xp: 10 },
+  { id: 'xp-quiz-play', label: 'Participer à un quiz', xp: 20 },
+  { id: 'xp-quiz-win', label: 'Réussir un quiz', xp: 50 },
+  { id: 'xp-pronostic', label: 'Faire un pronostic', xp: 20 },
+  { id: 'xp-pronostic-win', label: 'Pronostic correct', xp: 100 },
+  { id: 'xp-share', label: 'Partager un contenu officiel', xp: 10 },
+  { id: 'xp-fanzone', label: 'Publier dans la Fan Zone', xp: 20 },
+  { id: 'xp-checkin', label: 'Check-in Football Tour', xp: 40 },
+  { id: 'xp-matchday', label: 'Activer le mode Matchday', xp: 100 },
+  { id: 'xp-animation', label: 'Participer à une animation officielle', xp: 200 },
+]
+
+export const fanBadges: FanBadge[] = [
+  { id: 'b-1', slug: 'premier-match', category: 'Supporter', name: 'Premier Match', icon: '🇨🇮', description: 'A suivi son premier match des Éléphants sur la plateforme.', xpReward: 20 },
+  { id: 'b-2', slug: 'premier-stade', category: 'Supporter', name: 'Premier Stade', icon: '🏟️', description: 'A fait son premier check-in Football Tour.', xpReward: 40 },
+  { id: 'b-3', slug: '10-matchs', category: 'Supporter', name: '10 matchs suivis', icon: '⚽', description: 'A suivi 10 matchs.', xpReward: 50 },
+  { id: 'b-4', slug: '50-matchs', category: 'Supporter', name: '50 matchs suivis', icon: '⚽', description: 'A suivi 50 matchs.', xpReward: 150 },
+  { id: 'b-5', slug: '100-matchs', category: 'Supporter', name: '100 matchs suivis', icon: '⚽', description: 'A suivi 100 matchs.', xpReward: 300 },
+  { id: 'b-6', slug: 'fan-fidele', category: 'Supporter', name: 'Fan fidèle', icon: '🔥', description: 'Connecté régulièrement sur la plateforme.', xpReward: 100 },
+  { id: 'b-7', slug: 'quiz-master', category: 'Supporter', name: 'Quiz Master', icon: '🧠', description: 'A réussi 20 quiz.', xpReward: 150 },
+  { id: 'b-8', slug: 'pronostiqueur', category: 'Supporter', name: 'Pronostiqueur', icon: '🏆', description: 'A fait 20 pronostics.', xpReward: 100 },
+  { id: 'b-9', slug: 'chant-du-stade', category: 'Supporter', name: 'Chant du stade', icon: '🎤', description: 'A consulté un chant officiel.', xpReward: 30 },
+  { id: 'b-10', slug: 'photographe-fan-zone', category: 'Supporter', name: 'Photographe Fan Zone', icon: '📸', description: 'A publié un contenu en Fan Zone.', xpReward: 40 },
+  { id: 'b-11', slug: 'champion-afrique', category: 'Historique', name: 'Champion d’Afrique', icon: '🏆', description: 'A célébré un titre continental des Éléphants sur la plateforme.', xpReward: 200 },
+  { id: 'b-12', slug: 'fan-premiere-heure', category: 'Historique', name: 'Fan de la première heure', icon: '⏳', description: 'Fan ID créé dès le lancement de la plateforme.', xpReward: 100 },
+  { id: 'b-13', slug: 'toujours-present', category: 'Historique', name: 'Toujours présent', icon: '📅', description: 'Participation régulière sur une saison complète.', xpReward: 150 },
+  { id: 'b-14', slug: 'route-des-elephants', category: 'Historique', name: 'Route des Éléphants', icon: '🗺️', description: 'A visité plusieurs stades du Football Tour.', xpReward: 200 },
+  { id: 'b-15', slug: 'ambassadeur', category: 'Social', name: 'Ambassadeur', icon: '🤝', description: 'Participation positive et régulière à la communauté.', xpReward: 100 },
+  { id: 'b-16', slug: 'createur', category: 'Social', name: 'Créateur', icon: '🎨', description: 'Contenus créatifs publiés en Fan Zone.', xpReward: 100 },
+  { id: 'b-17', slug: 'reporter-fan', category: 'Social', name: 'Reporter Fan', icon: '📰', description: 'Statut Fan Reporter obtenu.', xpReward: 150 },
+  { id: 'b-18', slug: 'voix-du-stade', category: 'Social', name: 'Voix du Stade', icon: '📣', description: 'Participation aux animations officielles.', xpReward: 100 },
+  { id: 'b-19', slug: 'supporter-annee', category: 'Saison', name: 'Supporter de l’année', icon: '🏅', description: 'Distinction de fin de saison.', xpReward: 500 },
+  { id: 'b-20', slug: '3-ans-de-passion', category: 'Saison', name: '3 ans de passion', icon: '🎉', description: 'Supporter FIF depuis 3 ans.', xpReward: 200 },
+]
+
+function quizFromStadiums(): QuizQuestion[] {
+  const allCapacities = [...new Set(stadiums.map((s) => s.capacity))]
+  return rng.pickN(stadiums, 8).map((s, i) => {
+    const pool = allCapacities.filter((c) => c !== s.capacity)
+    const distractors = rng.pickN(pool, 3)
+    const values = rng.shuffle([s.capacity, ...distractors])
+    return {
+      id: `q-stade-${i}`,
+      category: 'Stades' as const,
+      difficulty: rng.pick(['Débutant', 'Amateur', 'Passionné'] as const),
+      question: `Quelle est la capacité d’accueil du ${s.name} ?`,
+      choices: values.map((v) => `${v.toLocaleString('fr-FR')} places`),
+      answerIndex: values.indexOf(s.capacity),
+      explanation: `Le ${s.name} peut accueillir ${s.capacity.toLocaleString('fr-FR')} spectateurs.`,
+    }
+  })
+}
+
+function quizFromClubs(): QuizQuestion[] {
+  const allYears = [...new Set(clubs.map((c) => c.founded))]
+  return rng.pickN(clubs, 8).map((c, i) => {
+    const pool = allYears.filter((y) => y !== c.founded)
+    const distractors = rng.pickN(pool, 3)
+    const values = rng.shuffle([c.founded, ...distractors])
+    return {
+      id: `q-club-${i}`,
+      category: 'Clubs' as const,
+      difficulty: rng.pick(['Amateur', 'Passionné', 'Expert'] as const),
+      question: `En quelle année le club ${c.name} a-t-il été fondé ?`,
+      choices: values.map(String),
+      answerIndex: values.indexOf(c.founded),
+      explanation: `${c.name} a été fondé en ${c.founded}.`,
+    }
+  })
+}
+
+function quizFromCompetitions(): QuizQuestion[] {
+  const allFormats = [...new Set(competitions.map((c) => c.format))]
+  return competitions.map((comp, i) => {
+    const pool = allFormats.filter((f) => f !== comp.format)
+    const distractors = rng.pickN(pool, Math.min(3, pool.length))
+    const values = rng.shuffle([comp.format, ...distractors])
+    return {
+      id: `q-comp-${i}`,
+      category: 'Clubs' as const,
+      difficulty: 'Amateur' as const,
+      question: `Quel est le format de la compétition « ${comp.name} » ?`,
+      choices: values,
+      answerIndex: values.indexOf(comp.format),
+      explanation: `${comp.name} se joue sous le format : ${comp.format}.`,
+    }
+  })
+}
+
+const realFactQuestions: QuizQuestion[] = [
+  { id: 'q-real-1', category: 'Éléphants', difficulty: 'Débutant', question: 'En quelle année les Éléphants ont-ils remporté leur premier titre de Champion d’Afrique des Nations ?', choices: ['1984', '1992', '2006', '2012'], answerIndex: 1, explanation: 'La Côte d’Ivoire a remporté sa première CAN en 1992.' },
+  { id: 'q-real-2', category: 'Éléphants', difficulty: 'Débutant', question: 'En quelle année les Éléphants ont-ils remporté la CAN organisée sur leur propre sol ?', choices: ['2015', '2021', '2024', '2026'], answerIndex: 2, explanation: 'La Côte d’Ivoire a remporté la CAN 2024, qu’elle organisait elle-même.' },
+  { id: 'q-real-3', category: 'Éléphants', difficulty: 'Débutant', question: 'Quel est le surnom de l’équipe nationale masculine de Côte d’Ivoire ?', choices: ['Les Lions', 'Les Éléphants', 'Les Aigles', 'Les Panthères'], answerIndex: 1, explanation: 'L’équipe nationale masculine est surnommée « Les Éléphants ».' },
+  { id: 'q-real-4', category: 'Éléphants', difficulty: 'Débutant', question: 'Quelle est la capitale politique de la Côte d’Ivoire ?', choices: ['Abidjan', 'Bouaké', 'Yamoussoukro', 'San-Pédro'], answerIndex: 2, explanation: 'Yamoussoukro est la capitale politique ; Abidjan est la capitale économique.' },
+  { id: 'q-real-5', category: 'Éléphants', difficulty: 'Débutant', question: 'Quelles sont, dans l’ordre depuis la hampe, les couleurs du drapeau ivoirien ?', choices: ['Vert, blanc, orange', 'Orange, blanc, vert', 'Blanc, orange, vert', 'Orange, vert, blanc'], answerIndex: 1, explanation: 'Le drapeau de la Côte d’Ivoire est orange, blanc, vert.' },
+]
+
+export const quizQuestions: QuizQuestion[] = [
+  ...realFactQuestions,
+  ...quizFromStadiums(),
+  ...quizFromClubs(),
+  ...quizFromCompetitions(),
+]
+
+const fanClubNames = ['Ultras Éléphants', 'Brigade Orange', '12e Homme Abidjan', 'Fan Club Bouaké', 'Les Fidèles de Yamoussoukro', 'Green Army CI', 'Supporters du Nord', 'Fan Club San-Pédro', 'Les Irréductibles', 'Éléphants Diaspora']
+export const fanClubs: FanClubAssociation[] = fanClubNames.map((name, i) => {
+  const city = rng.pick(cities)
+  return {
+    id: `fc-${i}`,
+    slug: `${slugify(name)}-${i}`,
+    name,
+    cityId: city.id,
+    founded: rng.int(2005, 2023),
+    members: rng.int(80, 4200),
+    description: `Association de supporters basée à ${city.name}, engagée pour soutenir les Éléphants et le football ivoirien dans le respect de la charte du supporter.`,
+  }
+})
+
+const partnerCatalog: { partner: string; category: PartnerOffer['category']; title: string; discount: string; minLevelOrder: number }[] = [
+  { partner: 'Restaurant partenaire (Abidjan)', category: 'Restauration', title: 'Réduction menu jour de match', discount: '-15%', minLevelOrder: 1 },
+  { partner: 'Compagnie de transport partenaire', category: 'Transport', title: 'Tarif réduit vers le stade', discount: '-10%', minLevelOrder: 2 },
+  { partner: 'Opérateur télécom partenaire', category: 'Télécoms', title: 'Forfait data Fan Zone', discount: 'Data offerte', minLevelOrder: 1 },
+  { partner: 'Banque partenaire', category: 'Banque', title: 'Carte bancaire aux couleurs des Éléphants', discount: 'Frais de dossier offerts', minLevelOrder: 3 },
+  { partner: 'Complexe cinéma partenaire', category: 'Loisirs', title: 'Place de cinéma', discount: '-20%', minLevelOrder: 2 },
+  { partner: 'Hôtel partenaire', category: 'Hôtellerie', title: 'Nuitée déplacement Éléphants', discount: '-12%', minLevelOrder: 4 },
+  { partner: 'Centre sportif partenaire', category: 'Loisirs', title: 'Séance d’entraînement libre', discount: '-25%', minLevelOrder: 3 },
+]
+export const partnerOffers: PartnerOffer[] = partnerCatalog.map((p, i) => ({
+  id: `po-${i}`,
+  slug: `${slugify(p.title)}-${i}`,
+  ...p,
+  expiresAt: addDays(new Date('2026-12-31T00:00:00Z'), rng.int(-60, 120)).toISOString(),
+}))
+
+const chantCatalog: { title: string; category: ChantEntry['category']; origin: string; occasion: string }[] = [
+  { title: 'On est ensemble', category: 'Éléphants', origin: 'Tribune populaire, Abidjan', occasion: 'Avant match à domicile' },
+  { title: 'Éléphants debout', category: 'Éléphants', origin: 'Supporters historiques', occasion: 'Entrée des joueurs' },
+  { title: 'Le chant du 12e homme', category: 'Éléphants', origin: 'Fan Zone nationale', occasion: 'Pendant le match' },
+  { title: 'Orange, blanc, vert', category: 'Historique', origin: 'CAN 1992', occasion: 'Commémoration' },
+  { title: 'La fierté du pays', category: 'Historique', origin: 'CAN 2024', occasion: 'Célébration de victoire' },
+  { title: 'Chant du district d’Abidjan', category: 'Régional', origin: 'Ultras Éléphants', occasion: 'Déplacements' },
+  { title: 'Chant de Bouaké', category: 'Régional', origin: 'Fan Club Bouaké', occasion: 'Matchs régionaux' },
+  { title: 'Hymne des clubs amateurs', category: 'Club', origin: 'Championnat amateur', occasion: 'Matchs locaux' },
+]
+export const chants: ChantEntry[] = chantCatalog.map((c, i) => ({ id: `ch-${i}`, slug: `${slugify(c.title)}-${i}`, ...c, lyricsAvailable: rng.bool(0.6) }))
+
+export const digitalCards: DigitalCard[] = [
+  ...nationalTeams.filter((t) => t.achievements.length > 0).map((t, i) => ({
+    id: `dc-team-${i}`, slug: `${slugify(t.name)}-carte-${i}`, collection: 'Éléphants' as const, name: t.name,
+    rarity: 'Rare' as const, unlockedBy: 'Suivre 10 matchs de cette sélection', description: `Carte collector de la sélection ${t.name}.`,
+  })),
+  ...rng.pickN(stadiums, 10).map((s, i) => ({
+    id: `dc-stade-${i}`, slug: `${slugify(s.name)}-carte-${i}`, collection: 'Stades' as const, name: s.name,
+    rarity: 'Commune' as const, unlockedBy: `Check-in au ${s.name}`, description: `Carte du ${s.name}, ${s.capacity.toLocaleString('fr-FR')} places.`,
+  })),
+  ...rng.pickN(clubs.filter((c) => c.achievements.some((a) => a.result === 'Champion')), 8).map((c, i) => ({
+    id: `dc-club-${i}`, slug: `${slugify(c.name)}-carte-${i}`, collection: 'Trophées' as const, name: c.name,
+    rarity: 'Légendaire' as const, unlockedBy: 'Quiz Expert Foot réussi', description: `Carte trophée du club ${c.name}.`,
+  })),
+]
+
+const rewardCatalog: { category: RewardEntry['category']; title: string; description: string; xpCost: number; minLevelOrder: number }[] = [
+  { category: 'Digital', title: 'Cadre de profil Éléphants', description: 'Un cadre exclusif pour votre Fan ID.', xpCost: 200, minLevelOrder: 1 },
+  { category: 'Digital', title: 'Fond d’écran CAN 2024', description: 'Fond d’écran officiel de la victoire 2024.', xpCost: 150, minLevelOrder: 1 },
+  { category: 'Digital', title: 'Carte joueur exclusive', description: 'Carte numérique rare à collectionner.', xpCost: 500, minLevelOrder: 2 },
+  { category: 'Expériences', title: 'Visite d’un centre d’entraînement', description: 'Accès à une visite guidée, sous réserve de disponibilité.', xpCost: 3000, minLevelOrder: 4 },
+  { category: 'Expériences', title: 'Accès à une séance ouverte', description: 'Assistez à un entraînement ouvert au public.', xpCost: 2500, minLevelOrder: 4 },
+  { category: 'Expériences', title: 'Visite de stade', description: 'Visite guidée des coulisses d’un stade partenaire.', xpCost: 1500, minLevelOrder: 3 },
+  { category: 'Produits', title: 'Écharpe FIF', description: 'Écharpe aux couleurs de la Côte d’Ivoire.', xpCost: 800, minLevelOrder: 2 },
+  { category: 'Produits', title: 'Casquette FIF', description: 'Casquette officielle FIF Digital.', xpCost: 600, minLevelOrder: 2 },
+  { category: 'Produits', title: 'Ballon collector', description: 'Ballon collector édition supporter.', xpCost: 1200, minLevelOrder: 3 },
+  { category: 'Billetterie', title: 'Accès anticipé billetterie', description: '24h d’avance sur la mise en vente.', xpCost: 400, minLevelOrder: 2 },
+  { category: 'Billetterie', title: 'Place zone supporters', description: 'Place en tribune dédiée aux supporters actifs.', xpCost: 2000, minLevelOrder: 3 },
+]
+export const rewards: RewardEntry[] = rewardCatalog.map((r, i) => ({ id: `rw-${i}`, slug: `${slugify(r.title)}-${i}`, ...r }))
+
+const fanZoneCaptions = [
+  'On était plus de 20 000 dans le stade, quelle ambiance !',
+  'Mon fils a vu son premier match des Éléphants aujourd’hui 🐘',
+  'Le tifo de la tribune populaire était magnifique ce soir.',
+  'Retour de Bouaké après une belle victoire, fiers de nos couleurs 🇨🇮',
+  'Nouveau maillot reçu, prêt pour le prochain match !',
+  'La Fan Zone d’Abidjan était incroyable avant le coup d’envoi.',
+  'Souvenir du sacre de 2024, toujours autant d’émotion.',
+  'Chant appris avec la Brigade Orange avant le match.',
+  'Premier déplacement pour voir les Éléphants, expérience inoubliable.',
+  'Le mur de la fierté s’agrandit chaque semaine !',
+]
+export const fanZonePosts: FanZonePost[] = fanZoneCaptions.map((caption, i) => {
+  const city = rng.pick(cities)
+  return {
+    id: `fz-${i}`,
+    authorName: fullName(),
+    authorCityId: city.id,
+    type: rng.pick(['Photo', 'Vidéo', 'Message', 'Tifo'] as const),
+    caption,
+    date: addDays(new Date('2026-09-10T12:00:00Z'), -rng.int(0, 60)).toISOString(),
+    likes: rng.int(4, 480),
+  }
+})
+
+export function getFanClub(slug: string) { return fanClubs.find((f) => f.slug === slug) }
+
+export interface LeaderboardEntry { pseudo: string; cityId: string; xp: number; accuracyPct: number }
+export const mockFanLeaderboard: LeaderboardEntry[] = Array.from({ length: 30 }, () => {
+  const city = rng.pick(cities)
+  return { pseudo: rng.pick(['Kader', 'Assa', 'Fatou', 'Yannick', 'Moussa', 'Aya', 'Ibrahim', 'Nadège', 'Serge', 'Christelle', 'Amara', 'Rokia']) + rng.int(10, 99), cityId: city.id, xp: rng.int(200, 24000), accuracyPct: rng.int(30, 92) }
+}).sort((a, b) => b.xp - a.xp)

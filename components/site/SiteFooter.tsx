@@ -42,7 +42,7 @@ const columns = [
     links: [
       { label: 'Billetterie', href: '/billetterie' },
       { label: 'Boutique', href: '/boutique' },
-      { label: 'Club des Supporters', href: '/supporters' },
+      { label: 'FIF Fan Universe', href: '/supporters' },
       { label: 'FIF TV', href: '/fif-tv' },
       { label: 'Notifications', href: '/notifications' },
       { label: 'Contact & FAQ', href: '/contact' },

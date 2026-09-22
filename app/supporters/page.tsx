@@ -1,36 +1,101 @@
-import { Gift, MessageCircle, Ticket, Trophy } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Gamepad2, IdCard, MessageCircle, Users } from 'lucide-react'
+import { nextFixtureFor, getStadium, quizQuestions, fanZonePosts } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { FanHomeDashboard } from '@/components/site/FanHomeDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Club des Supporters — FIF Digital' }
+export const metadata = { title: 'FIF Fan Universe — FIF Digital' }
+
+const PILLARS = [
+  {
+    icon: IdCard,
+    title: 'Fan Pass',
+    description: 'Identité, avantages et expériences.',
+    links: [
+      { label: 'Mon Fan ID', href: '/supporters/fan-id' },
+      { label: 'Mes niveaux & XP', href: '/supporters/niveaux' },
+      { label: 'Mes badges', href: '/supporters/badges' },
+      { label: 'Passeport FIF & Football Tour', href: '/supporters/passeport' },
+    ],
+  },
+  {
+    icon: Gamepad2,
+    title: 'Fan Arena',
+    description: 'Jeux, quiz, pronostics, défis et classements.',
+    links: [
+      { label: 'FIF Game Arena', href: '/supporters/arena' },
+      { label: 'Quiz Éléphants', href: '/supporters/arena/quiz' },
+      { label: 'Pronostics', href: '/supporters/arena/pronostics' },
+      { label: 'Classements', href: '/supporters/classements' },
+    ],
+  },
+  {
+    icon: MessageCircle,
+    title: 'Fan Zone',
+    description: 'Photos, vidéos, chants, créations et communauté.',
+    links: [
+      { label: 'Fil Fan Zone', href: '/supporters/fan-zone' },
+      { label: 'Chants des supporters', href: '/supporters/chants' },
+      { label: 'Tifo Studio', href: '/supporters/tifo-studio' },
+      { label: 'Fan Studio (avatar & bannière)', href: '/supporters/fan-studio' },
+    ],
+  },
+  {
+    icon: Users,
+    title: 'Fan Life',
+    description: 'Matchday, associations, partenaires, récompenses.',
+    links: [
+      { label: 'Mode Matchday', href: '/supporters/matchday' },
+      { label: 'Fan Clubs & associations', href: '/supporters/associations' },
+      { label: 'Avantages partenaires', href: '/supporters/partenaires' },
+      { label: 'Récompenses', href: '/supporters/recompenses' },
+      { label: 'Charte du supporter', href: '/supporters/charte' },
+      { label: 'Modération & signalement', href: '/supporters/moderation' },
+    ],
+  },
+]
 
 export default function SupportersPage() {
+  const fixture = nextFixtureFor('nt-elephants')
+  const stadium = fixture ? getStadium(fixture.stadiumId) ?? undefined : undefined
+  const dailyQuestion = quizQuestions[5]
+  const recentPosts = fanZonePosts.slice(0, 3).map((p) => ({ authorName: p.authorName, type: p.type, caption: p.caption }))
+
   return (
     <main>
       <PageHero
-        eyebrow="Club des Supporters FIF"
-        title="Supporters"
-        subtitle="Rejoignez la communauté officielle des supporters du football ivoirien : contenus exclusifs, jeux, concours et avantages."
+        eyebrow="🇨🇮 FIF Fan Universe"
+        title="Vivez le football ivoirien autrement."
+        subtitle="Un supporter ne vient plus seulement lire une actualité : il joue, vote, crée, collectionne, découvre et construit son identité de fan — sans jamais miser ou gagner d’argent réel."
         breadcrumb={[{ label: 'Supporters' }]}
       />
 
-      <section className="page-section tight">
-        <div className="info-tiles">
-          <div className="info-tile"><Gift /><strong>Avantages</strong><p>Offres boutique, préventes billetterie et accès privilégiés à certains événements.</p></div>
-          <div className="info-tile"><Trophy /><strong>Gamification</strong><p>Quiz, pronostics non financiers, badges et classements communautaires — aucun jeu d’argent.</p></div>
-          <div className="info-tile"><MessageCircle /><strong>Fan Zone</strong><p>Photos, vidéos, chants et contenus communautaires modérés par la Fédération.</p></div>
-        </div>
-      </section>
+      {fixture && (
+        <FanHomeDashboard
+          nextFixture={{ opponent: fixture.opponent, competition: fixture.competition, date: fixture.date, stadiumName: stadium?.name ?? 'Stade à confirmer', home: fixture.home }}
+          dailyQuestion={dailyQuestion}
+          recentPosts={recentPosts}
+        />
+      )}
 
-      <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Carte Supporter FIF</p>
-        <div className="fif-id-card" style={{ marginTop: 16 }}>
-          <div className="fif-id-card-top"><span>FIF Supporter ID</span><Ticket /></div>
-          <div className="fif-id-card-body">
-            <span className="avatar" style={{ background: 'var(--orange)' }}>SF</span>
-            <div><strong>Supporter FIF</strong><span>FIF-SUPP-000482</span></div>
-          </div>
-          <div className="fif-id-card-foot"><span>Membre depuis 2026</span><span className="status-pill ok">Actif</span></div>
+      <section className="page-section tight">
+        <div className="page-section-head">
+          <div><p className="section-tag">Les quatre piliers</p><h2 style={{ fontSize: 24 }}>🇨🇮 FIF FAN UNIVERSE</h2></div>
+        </div>
+        <div className="fan-pillars" style={{ marginTop: 16 }}>
+          {PILLARS.map((pillar) => (
+            <div className="fan-pillar" key={pillar.title}>
+              <pillar.icon size={22} />
+              <strong>{pillar.title}</strong>
+              <p>{pillar.description}</p>
+              <div className="fan-pillar-links">
+                {pillar.links.map((l) => (
+                  <Link href={l.href} key={l.href}>{l.label} <ArrowRight size={11} style={{ verticalAlign: 'middle' }} /></Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

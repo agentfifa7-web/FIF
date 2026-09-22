@@ -522,3 +522,110 @@ h1, h2, h3, h4, h5, h6,
   :root { --radius-md: 12px; --radius-lg: 16px; }
 }
 
+
+/* ===========================================================================
+   FIF Fan Universe — Fan ID, jauges, gate, arène de jeux, fan zone, studios.
+   =========================================================================== */
+.fan-id-card { background:linear-gradient(135deg,var(--forest),#0a5c33); border-radius:var(--radius-md); color:#fff; max-width:380px; padding:24px; }
+.fan-id-card.compact { max-width:none; }
+.fan-id-card-top { align-items:center; display:flex; justify-content:space-between; opacity:.85; }
+.fan-id-card-top span { font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+.fan-id-card-body { align-items:center; display:flex; gap:14px; margin:22px 0 16px; }
+.fan-id-card-body strong { display:block; font-size:17px; }
+.fan-id-card-body > div { display:flex; flex-direction:column; gap:3px; }
+.fan-id-card-body span { color:#c9d3cd; font-size:11px; }
+.fan-id-level { color:#ffd9a8 !important; font-weight:700; }
+.fan-id-card-progress { margin-bottom:16px; }
+.fan-id-card-progress .gauge-track { background:rgba(255,255,255,.2); }
+.fan-id-card-progress span { color:#c9d3cd; display:block; font-size:10px; margin-top:6px; }
+.fan-id-card-foot { border-top:1px solid rgba(255,255,255,.2); display:flex; justify-content:space-between; font-size:11px; padding-top:14px; }
+
+.fan-gate { align-items:center; background:#fff; border:1px dashed var(--line); display:flex; flex-direction:column; gap:12px; padding:44px 24px; text-align:center; }
+.fan-gate svg { color:var(--orange); }
+.fan-gate strong { font-size:16px; }
+.fan-gate p { color:var(--muted); font-size:13px; margin:0; max-width:420px; }
+
+.fan-pillars { display:grid; gap:16px; grid-template-columns:repeat(4,1fr); }
+.fan-pillar { background:#fff; border:1px solid var(--line); border-top:3px solid var(--orange); display:flex; flex-direction:column; gap:10px; padding:22px; }
+.fan-pillar:nth-child(2n) { border-top-color:var(--green); }
+.fan-pillar svg { color:var(--orange); }
+.fan-pillar strong { font-size:15px; }
+.fan-pillar p { color:var(--muted); font-size:12px; line-height:1.6; margin:0; }
+.fan-pillar-links { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+.fan-pillar-links a { color:var(--ink); font-size:12px; font-weight:700; }
+.fan-pillar-links a:hover { color:var(--orange); }
+@media (max-width:900px) { .fan-pillars { grid-template-columns:1fr 1fr; } }
+@media (max-width:560px) { .fan-pillars { grid-template-columns:1fr; } }
+
+.xp-toast { align-items:center; background:var(--ink); border-radius:999px; bottom:24px; color:#fff; display:flex; font-size:12px; font-weight:800; gap:8px; left:50%; padding:12px 22px; position:fixed; transform:translateX(-50%); z-index:100; }
+.xp-toast b { color:var(--orange); }
+
+.quiz-card { background:#fff; border:1px solid var(--line); margin:0 auto; max-width:640px; padding:32px; }
+.quiz-progress { color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.quiz-question { font-size:clamp(19px,2.6vw,24px); margin:10px 0 24px; }
+.quiz-choices { display:flex; flex-direction:column; gap:10px; }
+.quiz-choice { background:#fafbfa; border:1px solid var(--line); cursor:pointer; font:inherit; font-size:14px; padding:14px 18px; text-align:left; }
+.quiz-choice:hover { border-color:var(--orange); }
+.quiz-choice.correct { background:#e5f4ea; border-color:var(--green); color:var(--green); font-weight:700; }
+.quiz-choice.wrong { background:#fdeceb; border-color:#c62828; color:#c62828; font-weight:700; }
+.quiz-choice:disabled { cursor:default; }
+.quiz-explanation { background:#fafbfa; border-left:3px solid var(--orange); font-size:13px; line-height:1.6; margin-top:20px; padding:14px 16px; }
+.quiz-result { text-align:center; }
+.quiz-result strong { display:block; font-size:32px; margin:10px 0; }
+
+.pronostic-card { background:#fff; border:1px solid var(--line); padding:20px 24px; }
+.pronostic-teams { align-items:center; display:grid; gap:12px; grid-template-columns:1fr auto 1fr; }
+.pronostic-teams > div { text-align:center; }
+.pronostic-score { align-items:center; display:flex; gap:10px; justify-content:center; }
+.pronostic-score input { border:1px solid var(--line); border-radius:var(--radius-sm); font-size:20px; font-weight:800; height:48px; text-align:center; width:48px; }
+.pronostic-submitted { align-items:center; color:var(--green); display:flex; font-size:12px; font-weight:700; gap:6px; justify-content:center; margin-top:12px; }
+
+.badge-grid { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); }
+.badge-tile { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; gap:8px; padding:18px; text-align:center; }
+.badge-tile.locked { opacity:.45; }
+.badge-tile .badge-icon { font-size:30px; }
+.badge-tile strong { font-size:12px; }
+.badge-tile span { color:var(--muted); font-size:10px; line-height:1.5; }
+@media (max-width:900px) { .badge-grid { grid-template-columns:repeat(2,1fr); } }
+
+.level-ladder { display:flex; flex-direction:column; gap:10px; }
+.level-row { align-items:center; background:#fff; border:1px solid var(--line); display:flex; gap:16px; padding:16px 20px; }
+.level-row.current { border-color:var(--orange); border-width:2px; }
+.level-row .level-icon { font-size:26px; }
+.level-row > div { flex:1; }
+.level-row strong { display:block; font-size:14px; }
+.level-row span { color:var(--muted); font-size:11px; }
+
+.fanzone-grid { display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
+.fanzone-post { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; }
+.fanzone-post-media { align-items:center; background:linear-gradient(135deg,var(--forest),#0a5c33); color:#fff; display:flex; height:140px; justify-content:center; }
+.fanzone-post-body { display:flex; flex-direction:column; gap:6px; padding:14px 16px; }
+.fanzone-post-body p { font-size:13px; line-height:1.5; margin:0; }
+.fanzone-post-meta { align-items:center; color:var(--muted); display:flex; font-size:11px; justify-content:space-between; }
+@media (max-width:900px) { .fanzone-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:560px) { .fanzone-grid { grid-template-columns:1fr; } }
+
+.tifo-canvas { align-items:center; aspect-ratio:16/9; display:flex; justify-content:center; overflow:hidden; }
+.tifo-controls { display:flex; flex-direction:column; gap:16px; }
+.color-swatches { display:flex; gap:8px; }
+.color-swatch { border:2px solid transparent; border-radius:50%; cursor:pointer; height:32px; width:32px; }
+.color-swatch.active { border-color:var(--ink); }
+
+.checkin-list { display:flex; flex-direction:column; gap:8px; }
+.checkin-row { align-items:center; background:#fff; border:1px solid var(--line); display:flex; gap:14px; padding:12px 16px; }
+.checkin-row.done { border-color:var(--green); }
+.checkin-row svg { color:var(--muted); flex-shrink:0; }
+.checkin-row.done svg { color:var(--green); }
+.checkin-row > div { flex:1; }
+.checkin-row strong { display:block; font-size:13px; }
+.checkin-row span { color:var(--muted); font-size:11px; }
+
+.rank-podium-list { display:flex; flex-direction:column; gap:8px; }
+.rank-podium-row { align-items:center; background:#fff; border:1px solid var(--line); display:flex; gap:14px; padding:12px 16px; }
+.rank-podium-row.me { border-color:var(--orange); border-width:2px; }
+
+.fif-id-card, .fan-id-card, .fan-gate, .quiz-card, .quiz-choice, .pronostic-card,
+.pronostic-score input, .badge-tile, .level-row, .fanzone-post, .fanzone-post-media,
+.fan-pillar, .checkin-row, .rank-podium-row, .xp-toast {
+  border-radius: var(--radius-md);
+}

@@ -291,3 +291,104 @@ export interface TrainingCourse {
   seats: number
   modules: string[]
 }
+
+// ---------------------------------------------------------------------------
+// FIF Fan Universe — programme fan / gamification (données de catalogue ;
+// l'état propre à chaque supporter — XP, badges obtenus, réponses — vit côté
+// client dans le navigateur, voir lib/fan.ts)
+// ---------------------------------------------------------------------------
+export interface FanLevel {
+  id: string
+  order: number
+  name: string
+  icon: string
+  minXp: number
+  perks: string[]
+}
+
+export interface XpAction {
+  id: string
+  label: string
+  xp: number
+}
+
+export interface FanBadge {
+  id: string
+  slug: string
+  category: 'Supporter' | 'Historique' | 'Social' | 'Saison'
+  name: string
+  icon: string
+  description: string
+  xpReward: number
+}
+
+export interface QuizQuestion {
+  id: string
+  category: 'Éléphants' | 'Expert Foot' | 'Clubs' | 'Stades'
+  difficulty: 'Débutant' | 'Amateur' | 'Passionné' | 'Expert' | 'Légende'
+  question: string
+  choices: string[]
+  answerIndex: number
+  explanation: string
+}
+
+export interface FanClubAssociation {
+  id: string
+  slug: string
+  name: string
+  cityId: string
+  founded: number
+  members: number
+  description: string
+}
+
+export interface PartnerOffer {
+  id: string
+  slug: string
+  partner: string
+  category: 'Restauration' | 'Transport' | 'Télécoms' | 'Banque' | 'Loisirs' | 'Hôtellerie'
+  title: string
+  discount: string
+  minLevelOrder: number
+  expiresAt: string
+}
+
+export interface ChantEntry {
+  id: string
+  slug: string
+  title: string
+  category: 'Éléphants' | 'Club' | 'Historique' | 'Régional'
+  origin: string
+  occasion: string
+  lyricsAvailable: boolean
+}
+
+export interface DigitalCard {
+  id: string
+  slug: string
+  collection: 'Éléphants' | 'Légendes' | 'Stades' | 'Trophées' | 'Compétitions'
+  name: string
+  rarity: 'Commune' | 'Rare' | 'Légendaire'
+  unlockedBy: string
+  description: string
+}
+
+export interface RewardEntry {
+  id: string
+  slug: string
+  category: 'Digital' | 'Expériences' | 'Produits' | 'Billetterie'
+  title: string
+  description: string
+  xpCost: number
+  minLevelOrder: number
+}
+
+export interface FanZonePost {
+  id: string
+  authorName: string
+  authorCityId: string
+  type: 'Photo' | 'Vidéo' | 'Chant' | 'Message' | 'Tifo'
+  caption: string
+  date: string
+  likes: number
+}

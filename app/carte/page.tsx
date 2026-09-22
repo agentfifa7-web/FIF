@@ -1,36 +1,14 @@
-import { clubs, stadiums, cities, regions, competitions } from '@/lib/data/mock'
-import { CI_CITY_COORDS } from '@/lib/data/ci-geo'
+import { clubs, stadiums, regions } from '@/lib/data/mock'
+import { buildFootballMapZones } from '@/lib/data/ci-geo'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubExplorer } from '@/components/site/ClubExplorer'
-import { IvoryCoastMap, type MapZone } from '@/components/site/IvoryCoastMap'
+import { IvoryCoastMap } from '@/components/site/IvoryCoastMap'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Carte du football ivoirien — FIF Digital' }
 
-function buildZones(): MapZone[] {
-  return cities.map((city) => {
-    const coords = CI_CITY_COORDS[city.id] ?? { x: 230, y: 250 }
-    const region = regions.find((r) => r.id === city.regionId)
-    const cityClubs = clubs.filter((c) => c.cityId === city.id)
-    const cityStadiums = stadiums.filter((s) => s.cityId === city.id)
-    const competitionIds = new Set(cityClubs.flatMap((c) => c.competitionIds))
-    const competitionNames = competitions.filter((c) => competitionIds.has(c.id)).map((c) => c.name)
-    return {
-      cityId: city.id,
-      cityName: city.name,
-      regionName: region?.name ?? city.name,
-      x: coords.x,
-      y: coords.y,
-      clubs: cityClubs,
-      stadiums: cityStadiums,
-      competitionNames,
-      proCount: cityClubs.filter((c) => c.category === 'Professionnel').length,
-    }
-  })
-}
-
 export default function MapPage() {
-  const zones = buildZones()
+  const zones = buildFootballMapZones()
 
   return (
     <main>
