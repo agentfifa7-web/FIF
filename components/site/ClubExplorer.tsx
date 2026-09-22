@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { List, Map as MapIcon } from 'lucide-react'
 import type { Club } from '@/lib/data/types'
 import { cities, competitions } from '@/lib/data/mock'
@@ -23,10 +24,12 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
   const [city, setCity] = useState('Toutes')
   const [category, setCategory] = useState('Toutes')
   const [gender, setGender] = useState('Tous')
+  const [competitionId, setCompetitionId] = useState('Toutes')
   const [view, setView] = useState<'ligue' | 'carte'>('ligue')
 
   const categories = ['Toutes', ...Array.from(new Set(clubs.map((c) => c.category)))]
   const cityOptions = ['Toutes', ...cities.map((c) => c.name)]
+  const competitionOptions = ['Toutes', ...competitions.filter((c) => clubs.some((cl) => cl.competitionIds.includes(c.id))).map((c) => c.name)]
 
   const filtered = useMemo(() => {
     return clubs.filter((c) => {
@@ -34,9 +37,13 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
       if (city !== 'Toutes' && cityName !== city) return false
       if (category !== 'Toutes' && c.category !== category) return false
       if (gender !== 'Tous' && c.gender !== gender) return false
+      if (competitionId !== 'Toutes') {
+        const comp = competitions.find((cp) => cp.name === competitionId)
+        if (!comp || !c.competitionIds.includes(comp.id)) return false
+      }
       return true
     })
-  }, [clubs, city, category, gender])
+  }, [clubs, city, category, gender, competitionId])
 
   const byLeague = useMemo(() => {
     const map = new Map<string, Club[]>()
@@ -68,6 +75,7 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
         <FilterSelect label="Ville" value={city} options={cityOptions} onChange={setCity} />
         <FilterSelect label="Catégorie" value={category} options={categories} onChange={setCategory} />
         <FilterSelect label="Genre" value={gender} options={['Tous', 'M', 'F']} onChange={setGender} />
+        <FilterSelect label="Compétition" value={competitionId} options={competitionOptions} onChange={setCompetitionId} />
         <div className="tab-bar" style={{ borderBottom: 0, marginBottom: 0 }}>
           <button type="button" className={view === 'ligue' ? 'tab active' : 'tab'} onClick={() => setView('ligue')}><List size={14} /> Par ligue</button>
           <button type="button" className={view === 'carte' ? 'tab active' : 'tab'} onClick={() => setView('carte')}><MapIcon size={14} /> Par ville</button>
@@ -91,7 +99,7 @@ export function ClubExplorer({ clubs }: { clubs: Club[] }) {
 
       {view === 'carte' && (
         <div>
-          <p className="lede" style={{ marginBottom: 20 }}>Clubs regroupés par ville — pour la localisation géographique, consultez la carte interactive ci-dessus.</p>
+          <p className="lede" style={{ marginBottom: 20 }}>Clubs regroupés par ville. Pour visualiser leur localisation géographique réelle et chercher par distance, ouvrez la <Link href="/carte">carte interactive du football ivoirien</Link>.</p>
           {byCity.map(([cityName, list]) => (
             <div key={cityName} style={{ marginBottom: 24 }}>
               <p className="section-tag">{cityName} · {list.length} club{list.length > 1 ? 's' : ''}</p>

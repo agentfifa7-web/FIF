@@ -19,11 +19,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 const statusTone: Record<string, string> = { Valide: 'ok', 'En attente': 'pending', Expirée: 'error' }
 
+function palmaresFor(player: ReturnType<typeof getPlayer>) {
+  if (!player) return []
+  const rows: { competition: string; year: number; result: string; clubName: string }[] = []
+  for (const h of player.history) {
+    const club = getClubById(h.clubId)
+    if (!club) continue
+    for (const a of club.achievements) {
+      if (a.result !== 'Champion' && a.result !== 'Podium (3e)') continue
+      if (a.year < h.from || (h.to !== null && a.year > h.to)) continue
+      rows.push({ competition: a.competition, year: a.year, result: a.result, clubName: club.name })
+    }
+  }
+  return rows.sort((a, b) => b.year - a.year)
+}
+
 export default async function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const player = getPlayer(slug)
   if (!player) notFound()
   const club = getClubById(player.clubId)
+  const palmares = palmaresFor(player)
 
   return (
     <main>
@@ -89,6 +105,27 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                     </tr>
                   )
                 })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {palmares.length > 0 && (
+        <section className="page-section tight">
+          <p className="section-tag">Palmarès</p>
+          <div className="table-wrap" style={{ marginTop: 16 }}>
+            <table className="data-table">
+              <thead><tr><th className="align-left">COMPÉTITION</th><th className="align-left">CLUB</th><th>ANNÉE</th><th>RÉSULTAT</th></tr></thead>
+              <tbody>
+                {palmares.map((p, i) => (
+                  <tr key={i}>
+                    <td className="align-left">{p.competition}</td>
+                    <td className="align-left">{p.clubName}</td>
+                    <td>{p.year}</td>
+                    <td><span className={`status-pill ${p.result === 'Champion' ? 'ok' : 'neutral'}`}>{p.result}</span></td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

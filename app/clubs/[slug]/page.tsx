@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches } from '@/lib/data/mock'
+import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, MatchCard, PlayerCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -27,6 +27,15 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   const clubMatches = matchesOf(club.id)
   const upcoming = clubMatches.filter((m) => m.status === 'À venir').slice(0, 4)
   const results = clubMatches.filter((m) => m.status === 'Terminé').slice(-4).reverse()
+  const clubCompetitions = club.competitionIds
+    .map((id) => competitions.find((c) => c.id === id))
+    .filter((c) => c !== undefined)
+    .map((comp) => {
+      const standings = standingsFor(comp.id)
+      const position = standings.findIndex((r) => r.clubId === club.id) + 1
+      const row = standings.find((r) => r.clubId === club.id)
+      return { comp, position: position || null, row }
+    })
 
   return (
     <main>
@@ -51,12 +60,30 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
 
       <section className="page-section tight">
         <div className="chip-row">
-          <span className="chip"><MapPin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{stadium?.name}</span>
+          {stadium ? (
+            <Link href={`/stades/${stadium.slug}`} className="chip"><MapPin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{stadium.name}</Link>
+          ) : null}
           <span className="chip"><User size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Président : {club.president}</span>
           {coach && <span className="chip"><Shield size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Entraîneur : {coach.name}</span>}
-          <span className="chip"><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{club.website}</span>
+          <a href={`https://${club.website}`} target="_blank" rel="noopener noreferrer" className="chip"><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{club.website}</a>
         </div>
       </section>
+
+      {clubCompetitions.length > 0 && (
+        <section className="page-section tight">
+          <p className="section-tag">Compétitions engagées & classement</p>
+          <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+            {clubCompetitions.map(({ comp, position, row }) => (
+              <Link href={`/competitions/${comp.slug}`} className="entity-card" key={comp.id}>
+                <div>
+                  <strong>{comp.name}</strong>
+                  <span>{position ? `${position}${position === 1 ? 'ère' : 'e'} place` : 'Classement à venir'}{row ? ` · ${row.points} pts · ${row.played} matchs joués` : ''}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="page-section tight">
         <p className="section-tag">Effectif — {roster.length} joueurs</p>

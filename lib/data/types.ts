@@ -61,6 +61,7 @@ export interface Coach {
   fifId: string
   birthdate: string
   bio: string
+  history: { clubId: string; from: number; to: number | null }[]
 }
 
 export interface Referee {
@@ -75,6 +76,7 @@ export interface Referee {
   fifId: string
   birthdate: string
   bio: string
+  trainings: { title: string; date: string }[]
 }
 
 export interface Official {
@@ -234,6 +236,7 @@ export interface Match {
   awayScore: number | null
   events: MatchEvent[]
   refereeId: string
+  delegateId: string | null
   attendance?: number
 }
 

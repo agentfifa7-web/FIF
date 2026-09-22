@@ -42,6 +42,14 @@ export const IS_DEMO_DATA = true
 
 const rng = makeRng(20260917)
 
+const TODAY = new Date('2026-09-17T12:00:00Z')
+
+function addDays(base: Date, days: number) {
+  const d = new Date(base)
+  d.setDate(d.getDate() + days)
+  return d
+}
+
 // ---------------------------------------------------------------------------
 // Geography
 // ---------------------------------------------------------------------------
@@ -219,6 +227,10 @@ function randomBirthdate(minAge: number, maxAge: number) {
 export const coaches: Coach[] = clubs.map((club, i) => {
   const name = fullName(club.gender === 'F' ? 'F' : 'M')
   const license = rng.pick(['CAF Pro', 'CAF A', 'CAF B', 'CAF C'] as const)
+  const since = rng.int(2018, 2025)
+  const previousClub = rng.pick(clubs.filter((c) => c.id !== club.id))
+  const previousTo = since - rng.int(1, 2)
+  const previousFrom = previousTo - rng.int(1, 3)
   return {
     id: `coach-${i}`,
     slug: `coach-${slugify(club.name)}`,
@@ -226,20 +238,27 @@ export const coaches: Coach[] = clubs.map((club, i) => {
     clubId: club.id,
     nationalTeamId: null,
     license,
-    since: rng.int(2018, 2025),
+    since,
     fifId: `FIF-CO-${(2000 + i).toString().padStart(5, '0')}`,
     birthdate: randomBirthdate(32, 62),
-    bio: `Titulaire de la licence ${license}, ${name} dirige l’équipe première de ${club.name} depuis ${rng.int(2018, 2025)}, après plusieurs saisons comme adjoint dans le football régional.`,
+    bio: `Titulaire de la licence ${license}, ${name} dirige l’équipe première de ${club.name} depuis ${since}, après plusieurs saisons comme adjoint dans le football régional.`,
+    history: [
+      { clubId: previousClub.id, from: previousFrom, to: previousTo },
+      { clubId: club.id, from: since, to: null },
+    ],
   }
 })
 
 // ---------------------------------------------------------------------------
 // Referees / Officials / Agents
 // ---------------------------------------------------------------------------
+const refereeTrainingModules = ['Lois du jeu', 'Gestion de match', 'VAR — sensibilisation', 'Examen pratique']
+
 export const referees: Referee[] = Array.from({ length: 42 }, (_, i) => {
   const gender = rng.bool(0.85) ? 'M' : 'F'
   const name = fullName(gender)
   const category = rng.pick(['FIFA', 'Fédérale 1', 'Fédérale 2', 'Régionale'] as const)
+  const completedModules = rng.int(0, refereeTrainingModules.length)
   return {
     id: `ref-${i}`,
     slug: `${slugify(name)}-${i}`,
@@ -252,6 +271,10 @@ export const referees: Referee[] = Array.from({ length: 42 }, (_, i) => {
     fifId: `FIF-AR-${(3000 + i).toString().padStart(5, '0')}`,
     birthdate: randomBirthdate(24, 55),
     bio: `Arbitre de catégorie ${category}, ${name} officie sur les rencontres du football ivoirien depuis ${rng.int(2010, 2022)} et a dirigé ${rng.int(4, 210)} matchs à ce jour.`,
+    trainings: refereeTrainingModules.slice(0, completedModules).map((title, mi) => ({
+      title,
+      date: addDays(TODAY, -rng.int(30, 900) - mi * 10).toISOString(),
+    })),
   }
 })
 
@@ -398,6 +421,23 @@ export const commissions: Commission[] = [
   { id: 'com-jeunes', slug: 'football-jeunes', name: 'Commission du Football des Jeunes', mission: 'Coordonne les filières de détection et les compétitions de jeunes.' },
 ]
 
+export const federationDirections: { name: string; mission: string }[] = [
+  { name: 'Direction Technique Nationale', mission: 'Pilote la politique technique fédérale : sélections nationales, formation des cadres et détection des talents.' },
+  { name: 'Direction Administrative et Financière', mission: 'Gère le budget, la comptabilité et les ressources de la Fédération.' },
+  { name: 'Direction des Compétitions', mission: 'Organise le calendrier, l’homologation des rencontres et le suivi administratif des championnats.' },
+  { name: 'Direction de la Communication et du Digital', mission: 'Anime les canaux d’information officiels et la plateforme FIF Digital.' },
+  { name: 'Direction du Football Féminin et des Jeunes', mission: 'Coordonne le développement de la pratique féminine et des filières jeunes.' },
+  { name: 'Direction Juridique', mission: 'Assure la conformité des textes fédéraux et le suivi des contentieux.' },
+]
+
+export const federationMilestones: { year: number; event: string }[] = [
+  { year: 1960, event: 'Naissance du football fédéral ivoirien avec l’indépendance de la Côte d’Ivoire.' },
+  { year: 1965, event: 'Affiliation à la Confédération Africaine de Football (CAF) et à la FIFA.' },
+  { year: 1992, event: 'Premier sacre continental des Éléphants, Coupe d’Afrique des Nations.' },
+  { year: 2024, event: 'Deuxième sacre continental des Éléphants, Coupe d’Afrique des Nations disputée à domicile.' },
+  { year: 2026, event: 'Lancement de FIF Digital Universe, la plateforme numérique centrale du football ivoirien.' },
+]
+
 const execRoles = ['1er Vice-Président', '2e Vice-Président', 'Secrétaire Général', 'Trésorier Général', 'Membre chargé des Ligues', 'Membre chargé du Football Amateur', 'Membre chargé du Football Féminin', 'Membre chargé de la Formation', 'Membre chargé du Marketing', 'Membre chargé des Relations Internationales', 'Membre chargé du Numérique']
 export const executiveCommittee: ExecutiveMember[] = execRoles.map((role, i) => {
   const name = fullName(rng.bool(0.25) ? 'F' : 'M')
@@ -538,13 +578,6 @@ function competitionBySlug(slug: string) {
 // ---------------------------------------------------------------------------
 // Matches (past = results, future = calendar) + standings
 // ---------------------------------------------------------------------------
-const TODAY = new Date('2026-09-17T12:00:00Z')
-
-function addDays(base: Date, days: number) {
-  const d = new Date(base)
-  d.setDate(d.getDate() + days)
-  return d
-}
 
 function roundRobinPairs(ids: string[]) {
   const pairs: [string, string][] = []
@@ -558,6 +591,7 @@ function roundRobinPairs(ids: string[]) {
 
 export const matches: Match[] = []
 let matchCounter = 0
+const matchDelegates = officials.filter((o) => o.role === 'Délégué de match' || o.role === 'Commissaire au match')
 
 for (const comp of competitions) {
   if (comp.clubIds.length < 2) continue
@@ -609,6 +643,7 @@ for (const comp of competitions) {
       awayScore,
       events,
       refereeId: rng.pick(referees).id,
+      delegateId: matchDelegates.length ? rng.pick(matchDelegates).id : null,
       attendance: isPast ? rng.int(800, 42000) : undefined,
     })
   })
@@ -649,6 +684,27 @@ export function topScorersFor(competitionId: string) {
     .filter((r) => r.player)
     .sort((a, b) => b.goals - a.goals)
     .slice(0, 10)
+}
+
+export function topAssistsFor(competitionId: string) {
+  const comp = competitions.find((c) => c.id === competitionId)
+  if (!comp) return []
+  return comp.clubIds
+    .flatMap((clubId) => players.filter((p) => p.clubId === clubId))
+    .filter((p) => p.stats.assists > 0)
+    .sort((a, b) => b.stats.assists - a.stats.assists)
+    .slice(0, 10)
+    .map((player) => ({ player, assists: player.stats.assists }))
+}
+
+export function refereesFor(competitionId: string) {
+  const compMatches = matches.filter((m) => m.competitionId === competitionId)
+  const tally = new Map<string, number>()
+  for (const m of compMatches) tally.set(m.refereeId, (tally.get(m.refereeId) ?? 0) + 1)
+  return [...tally.entries()]
+    .map(([refereeId, count]) => ({ referee: referees.find((r) => r.id === refereeId)!, count }))
+    .filter((r) => r.referee)
+    .sort((a, b) => b.count - a.count)
 }
 
 // ---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { competitions, getCompetition, standingsFor, topScorersFor, matches } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -24,6 +24,9 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const upcoming = compMatches.filter((m) => m.status === 'À venir').sort((a, b) => +new Date(a.date) - +new Date(b.date))
   const results = compMatches.filter((m) => m.status === 'Terminé').sort((a, b) => +new Date(b.date) - +new Date(a.date))
   const scorers = topScorersFor(competition.id)
+  const assisters = topAssistsFor(competition.id)
+  const officiatingReferees = refereesFor(competition.id)
+  const compPlayers = competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
 
   return (
     <main>
@@ -39,7 +42,17 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         ]}
       />
       <section className="page-section tight">
-        <CompetitionTabs competition={competition} standings={standings} upcoming={upcoming} results={results} scorers={scorers} />
+        <CompetitionTabs
+          competition={competition}
+          standings={standings}
+          upcoming={upcoming}
+          results={results}
+          scorers={scorers}
+          assisters={assisters}
+          officiatingReferees={officiatingReferees}
+          compPlayers={compPlayers}
+          allMatches={compMatches}
+        />
       </section>
       <section className="page-section tight"><DemoBadge /></section>
     </main>
