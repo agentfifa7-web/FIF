@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { CalendarDays, Info, MapPin, Trophy } from 'lucide-react'
 import {
   getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, getStadiumById, getClubById,
-  elephantsCoach, elephantsCallUp, elephantsCallUpDate, elephantsFixtures, elephantsSourceNote,
+  elephantsCoach, elephantsCallUp, elephantsCallUpDate, elephantsFixtures, elephantsSourceNote, elephantsFlag,
 } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
@@ -68,9 +68,9 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
               <div className="next-card" key={i}>
                 <div className="next-card-top"><span>{f.competition.toUpperCase()}</span><span>{formatDate(f.date).toUpperCase()}</span></div>
                 <div className="teams">
-                  <div className="team"><div className="crest ivory">CI</div><strong>Côte<br />d&apos;Ivoire</strong></div>
+                  <div className="team"><div className="crest ivory">CI</div><span style={{ fontSize: 20 }}>{elephantsFlag}</span><strong>Côte<br />d&apos;Ivoire</strong></div>
                   <div className="versus"><small>{f.time}</small><b>VS</b><span>{f.venue}<br />{f.home ? 'Domicile' : 'Extérieur'}</span></div>
-                  <div className="team"><div className="crest red">{f.opponent.slice(0, 2).toUpperCase()}</div><strong>{f.opponent}</strong></div>
+                  <div className="team"><div className="crest red">{f.opponent.slice(0, 2).toUpperCase()}</div><span style={{ fontSize: 20 }}>{f.opponentFlag}</span><strong>{f.opponent}</strong></div>
                 </div>
               </div>
             ))}

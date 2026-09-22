@@ -1019,6 +1019,7 @@ export const elephantsCallUp: RealCallUp[] = elephantsCallUpRaw.map((p) => ({ ..
 
 export interface RealFixture {
   opponent: string
+  opponentFlag: string
   date: string
   time: string
   venue: string
@@ -1026,10 +1027,12 @@ export interface RealFixture {
   home: boolean
 }
 
+export const elephantsFlag = '🇨🇮'
+
 export const elephantsFixtures: RealFixture[] = [
-  { opponent: 'Ghana', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
-  { opponent: 'Somalie', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
-  { opponent: 'Cameroun', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true },
+  { opponent: 'Ghana', opponentFlag: '🇬🇭', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
+  { opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
+  { opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
