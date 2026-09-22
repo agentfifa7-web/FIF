@@ -387,7 +387,6 @@ const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
     const name = fullName(gender === 'F' ? 'F' : 'M')
     const id = `player-${ci}-${pi}`
     const birthYear = rng.int(1994, 2009)
-    const goals = rng.int(0, 18)
     return {
       id,
       slug: `${slugify(name)}-${ci}${pi}`,
@@ -400,14 +399,8 @@ const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
       nationality: 'Côte d’Ivoire',
       fifId: `FIF-${(10000 + ci * 20 + pi).toString().padStart(6, '0')}`,
       licenseStatus: rng.bool(0.85) ? 'Valide' : rng.bool() ? 'En attente' : 'Expirée',
-      stats: {
-        matches: rng.int(2, 30),
-        minutes: rng.int(200, 2700),
-        goals,
-        assists: rng.int(0, 12),
-        yellow: rng.int(0, 8),
-        red: rng.bool(0.1) ? 1 : 0,
-      },
+      // Saison à venir non encore débutée : compteurs de la saison en cours à zéro.
+      stats: { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 },
       history: makeCareerHistory(club, birthYear, rng.int(2019, 2024)),
       nationalSelections: [],
     }
@@ -522,7 +515,11 @@ function buildScoutingProfile(p: BasePlayer) {
   const club = getClubById(p.clubId)!
   const age = ageFromBirthdate(p.birthdate)
   const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
-  const tier = clampTier(rng.int(30, 88) + Math.min(12, p.stats.goals + p.stats.assists) - 6)
+  // Contribution de référence (saisons passées) : p.stats est à zéro (saison à
+  // venir non débutée), donc ce niveau est tiré indépendamment plutôt que
+  // déduit des compteurs de la saison en cours.
+  const careerGoalContribution = rng.int(0, 18)
+  const tier = clampTier(rng.int(30, 88) + Math.min(12, careerGoalContribution) - 6)
 
   const technical: Record<string, number> = {}
   for (const attr of TECHNICAL_ATTRS) {
@@ -582,6 +579,11 @@ function buildScoutingProfile(p: BasePlayer) {
   const competitionLabel = CATEGORY_COMPETITION_LABEL[club.category] ?? 'Championnat national'
   const currentYear = TODAY.getFullYear()
   const priorSeasonsCount = Math.min(3, Math.max(0, age - 18))
+  // Historique de carrière (saisons déjà jouées) : indépendant des compteurs
+  // de la saison à venir, qui restent à zéro tant qu'elle n'a pas débuté.
+  const careerMatches = rng.int(2, 30)
+  const careerGoals = rng.int(0, 18)
+  const careerAssists = rng.int(0, 12)
   const seasonStats: SeasonStat[] = []
   for (let s = priorSeasonsCount; s >= 1; s--) {
     const startYear = currentYear - s
@@ -589,19 +591,20 @@ function buildScoutingProfile(p: BasePlayer) {
     seasonStats.push({
       season: `${startYear}-${startYear + 1}`,
       competition: competitionLabel,
-      matches: Math.max(0, Math.round(p.stats.matches * (0.6 + rng.float() * 0.5) * decay)),
-      goals: Math.max(0, Math.round(p.stats.goals * (0.4 + rng.float() * 0.6) * decay)),
-      assists: Math.max(0, Math.round(p.stats.assists * (0.4 + rng.float() * 0.6) * decay)),
+      matches: Math.max(0, Math.round(careerMatches * (0.6 + rng.float() * 0.5) * decay)),
+      goals: Math.max(0, Math.round(careerGoals * (0.4 + rng.float() * 0.6) * decay)),
+      assists: Math.max(0, Math.round(careerAssists * (0.4 + rng.float() * 0.6) * decay)),
       avgRating: Math.round((5.3 + abilityFactor * 2.3 + (rng.float() * 0.6 - 0.3)) * 10) / 10,
     })
   }
+  // Saison à venir : pas encore débutée, compteurs à zéro.
   seasonStats.push({
     season: `${currentYear}-${currentYear + 1}`,
     competition: competitionLabel,
-    matches: p.stats.matches,
-    goals: p.stats.goals,
-    assists: p.stats.assists,
-    avgRating: Math.round((5.5 + abilityFactor * 2.5 + (rng.float() * 0.6 - 0.3)) * 10) / 10,
+    matches: 0,
+    goals: 0,
+    assists: 0,
+    avgRating: 0,
   })
 
   return {
@@ -907,7 +910,9 @@ const matchDelegates = officials.filter((o) => o.role === 'Délégué de match' 
 
 function generateMatchesForPairs(comp: Competition, pairs: [string, string][], matchdayChunk: number) {
   pairs.forEach(([home, away], idx) => {
-    const dayOffset = -60 + idx * 3 + rng.int(-1, 1)
+    // Les compétitions démarrent très prochainement : aucun match n'a encore
+    // été joué, tous les calendriers restent entièrement à venir.
+    const dayOffset = 4 + idx * 3 + rng.int(-1, 1)
     const date = addDays(TODAY, dayOffset)
     const isPast = date.getTime() < TODAY.getTime() - 1000 * 60 * 60 * 2
     const homeClub = clubs.find((c) => c.id === home)!
