@@ -966,12 +966,32 @@ export const internationalFixtures: InternationalFixture[] = nationalTeams.map((
 // foot-africa.com, pulse.ci — 16 au 20 septembre 2026.
 // ---------------------------------------------------------------------------
 export interface RealCallUp {
+  slug: string
   name: string
   club: string
   country: string
   flag: string
   position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant'
   note?: string
+  birthdate: string
+  photoUrl?: string
+  currentAbilityStars: number
+  potentialAbilityStars: number
+  personality: string
+  attributes: PlayerAttributes
+  traits: string[]
+  scoutReport: ScoutReport
+  preferredPositions: PositionFamiliarity[]
+}
+
+interface RealCallUpRaw {
+  name: string
+  club: string
+  country: string
+  position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant'
+  note?: string
+  birthdate: string
+  photoUrl?: string
 }
 
 const COUNTRY_FLAG: Record<string, string> = {
@@ -986,38 +1006,117 @@ const COUNTRY_FLAG: Record<string, string> = {
   France: '🇫🇷',
 }
 
+const WIKIMEDIA_FILE_PATH = 'https://commons.wikimedia.org/wiki/Special:FilePath/'
+
 export const elephantsCoach = 'Hervé Renard'
 export const elephantsCallUpDate = '2026-09-20'
-const elephantsCallUpRaw: Omit<RealCallUp, 'flag'>[] = [
-  { name: 'Yahia Fofana', club: 'Çaykur Rizespor', country: 'Turquie', position: 'Gardien' },
-  { name: 'Mohamed Koné', club: 'Royal Charleroi SC', country: 'Belgique', position: 'Gardien' },
-  { name: 'Alban Lafont', club: 'Panathinaïkos', country: 'Grèce', position: 'Gardien' },
-  { name: 'Emmanuel Agbadou', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur' },
-  { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur' },
-  { name: 'Ghislain Konan', club: 'Gil Vicente', country: 'Portugal', position: 'Défenseur' },
-  { name: 'Kassoum Ouattara', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur' },
-  { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur' },
-  { name: 'Christ Tapé', club: 'Toulouse FC', country: 'France', position: 'Défenseur' },
-  { name: 'Junior Diaz', club: 'ES Troyes AC', country: 'France', position: 'Défenseur', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
-  { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
-  { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu' },
-  { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu' },
-  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu' },
-  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu' },
-  { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu' },
-  { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu' },
-  { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu' },
-  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant' },
-  { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant' },
-  { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant' },
-  { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant' },
-  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant' },
-  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant' },
-  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant' },
+const elephantsCallUpRaw: RealCallUpRaw[] = [
+  { name: 'Yahia Fofana', club: 'Çaykur Rizespor', country: 'Turquie', position: 'Gardien', birthdate: '2000-08-21' },
+  { name: 'Mohamed Koné', club: 'Royal Charleroi SC', country: 'Belgique', position: 'Gardien', birthdate: '2002-03-07' },
+  { name: 'Alban Lafont', club: 'Panathinaïkos', country: 'Grèce', position: 'Gardien', birthdate: '1999-01-23' },
+  { name: 'Emmanuel Agbadou', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '1996-05-12', photoUrl: `${WIKIMEDIA_FILE_PATH}Emmanuel_Agbadou.jpg` },
+  { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur', birthdate: '1999-08-20' },
+  { name: 'Ghislain Konan', club: 'Gil Vicente', country: 'Portugal', position: 'Défenseur', birthdate: '1994-05-20' },
+  { name: 'Kassoum Ouattara', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '2004-10-14' },
+  { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur', birthdate: '2002-06-04' },
+  { name: 'Christ Tapé', club: 'Toulouse FC', country: 'France', position: 'Défenseur', birthdate: '2006-03-02' },
+  { name: 'Junior Diaz', club: 'ES Troyes AC', country: 'France', position: 'Défenseur', birthdate: '2003-07-23', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
+  { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', birthdate: '2005-03-24', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
+  { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu', birthdate: '2005-05-14' },
+  { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu', birthdate: '2005-12-11' },
+  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu', birthdate: '1996-12-19', photoUrl: `${WIKIMEDIA_FILE_PATH}Franck_Kessié.jpg` },
+  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu', birthdate: '1997-12-02', photoUrl: `${WIKIMEDIA_FILE_PATH}Ibrahim_Sangaré_(2018-05-09).jpg` },
+  { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu', birthdate: '2006-04-06' },
+  { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu', birthdate: '2005-11-18' },
+  { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu', birthdate: '2006-09-24' },
+  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21' },
+  { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02' },
+  { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: `${WIKIMEDIA_FILE_PATH}Elye_Wahi_2022.jpg` },
+  { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14' },
+  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant', birthdate: '2006-02-12' },
+  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: `${WIKIMEDIA_FILE_PATH}Nicolas_Pepe_LOSC.jpg` },
+  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-02-12' },
 ]
-export const elephantsCallUp: RealCallUp[] = elephantsCallUpRaw.map((p) => ({ ...p, flag: COUNTRY_FLAG[p.country] ?? '' }))
+
+function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
+  const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
+  const tier = clampAttr(rng.int(60, 96))
+
+  const technical: Record<string, number> = {}
+  for (const attr of TECHNICAL_ATTRS) {
+    const isGkAttr = GK_ONLY_ATTRS.includes(attr)
+    if (p.position === 'Gardien') {
+      technical[attr] = isGkAttr ? genAttrValue(tier, keyAttrs.includes(attr)) : clampAttr(rng.int(4, 12))
+    } else {
+      technical[attr] = isGkAttr ? clampAttr(rng.int(1, 7)) : genAttrValue(tier, keyAttrs.includes(attr))
+    }
+  }
+  const mental: Record<string, number> = {}
+  for (const attr of MENTAL_ATTRS) mental[attr] = genAttrValue(tier, keyAttrs.includes(attr))
+  const physical: Record<string, number> = {}
+  for (const attr of PHYSICAL_ATTRS) physical[attr] = genAttrValue(tier, keyAttrs.includes(attr))
+
+  const preferredPositions: PositionFamiliarity[] = [{ position: p.position, familiarity: rng.int(18, 20) }]
+  for (const adj of POSITION_ADJACENCY[p.position] ?? []) {
+    if (rng.bool(0.5)) preferredPositions.push({ position: adj.position, familiarity: rng.int(adj.range[0], adj.range[1]) })
+  }
+
+  const personality = rng.pick(PERSONALITIES)
+  const traits = rng.pickN(TRAITS_POOL[p.position] ?? [], rng.int(2, 4))
+
+  const allAttrs = [...Object.entries(technical), ...Object.entries(mental), ...Object.entries(physical)]
+  const sortedAttrs = [...allAttrs].sort((a, b) => b[1] - a[1])
+  const pros = sortedAttrs.slice(0, 3).map(([k, v]) => `${k} (${v}/20)`)
+  const cons = sortedAttrs.slice(-2).map(([k, v]) => `${k} (${v}/20)`)
+  const scoutReport: ScoutReport = {
+    pros,
+    cons,
+    summary: `Sélectionné par Hervé Renard, ${p.name} évolue à ${p.club}. Profil technique estimé fort en ${sortedAttrs[0][0].toLowerCase()} et ${sortedAttrs[1][0].toLowerCase()}.`,
+  }
+
+  return {
+    slug: slugify(p.name),
+    name: p.name,
+    club: p.club,
+    country: p.country,
+    position: p.position,
+    note: p.note,
+    birthdate: p.birthdate,
+    photoUrl: p.photoUrl,
+    currentAbilityStars: 0,
+    potentialAbilityStars: 0,
+    personality,
+    attributes: { technical, mental, physical } as PlayerAttributes,
+    traits,
+    scoutReport,
+    preferredPositions,
+  }
+}
+
+export const elephantsCallUp: RealCallUp[] = elephantsCallUpRaw
+  .map(buildElephantsProfile)
+  .map((p) => ({ ...p, flag: COUNTRY_FLAG[p.country] ?? '' }))
+
+// Étoiles Niveau actuel / Potentiel — calculées par rang au sein de la sélection (25 joueurs).
+{
+  const ranked = elephantsCallUp.map((p) => {
+    const values = [...Object.values(p.attributes.technical), ...Object.values(p.attributes.mental), ...Object.values(p.attributes.physical)]
+    const overall = values.reduce((a, b) => a + b, 0) / values.length
+    const potential = Math.min(20, overall + growthHeadroom(ageFromBirthdate(p.birthdate)))
+    return { player: p, overall, potential }
+  })
+  const byOverall = [...ranked].sort((a, b) => b.overall - a.overall)
+  const byPotential = [...ranked].sort((a, b) => b.potential - a.potential)
+  byOverall.forEach((r, i) => { r.player.currentAbilityStars = starsFromRank(i, byOverall.length) })
+  byPotential.forEach((r, i) => { r.player.potentialAbilityStars = starsFromRank(i, byPotential.length) })
+}
+
+export function getElephantsPlayer(slug: string) {
+  return elephantsCallUp.find((p) => p.slug === slug)
+}
 
 export interface RealFixture {
+  slug: string
   opponent: string
   opponentFlag: string
   date: string
@@ -1025,17 +1124,22 @@ export interface RealFixture {
   venue: string
   competition: string
   home: boolean
+  ticketCategories: { name: string; price: number; available: number }[]
 }
 
 export const elephantsFlag = '🇨🇮'
 
 export const elephantsFixtures: RealFixture[] = [
-  { opponent: 'Ghana', opponentFlag: '🇬🇭', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
-  { opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
-  { opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true },
+  { slug: 'elephants-ghana-2026-09-24', opponent: 'Ghana', opponentFlag: '🇬🇭', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [{ name: 'VIP', price: 25000, available: 400 }, { name: 'Tribune officielle', price: 15000, available: 2200 }, { name: 'Tribune populaire', price: 5000, available: 12000 }] },
+  { slug: 'elephants-somalie-2026-09-29', opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [{ name: 'VIP', price: 25000, available: 500 }, { name: 'Tribune officielle', price: 15000, available: 3000 }, { name: 'Tribune populaire', price: 5000, available: 15000 }] },
+  { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 20000, available: 600 }, { name: 'Tribune officielle', price: 10000, available: 3500 }, { name: 'Tribune populaire', price: 3000, available: 18000 }] },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
+
+export function getElephantsFixture(slug: string) {
+  return elephantsFixtures.find((f) => f.slug === slug)
+}
 
 export function nextFixtureFor(teamId: string) {
   return internationalFixtures

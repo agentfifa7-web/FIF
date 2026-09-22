@@ -8,6 +8,7 @@ import {
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { formatDate, formatDateLong, formatTime, age } from '@/lib/format'
 
 const callUpPositionOrder = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
@@ -65,14 +66,15 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
           <p className="section-tag">Prochains matchs — fenêtre FIFA septembre-octobre 2026</p>
           <div className="card-grid cols-3" style={{ marginTop: 16 }}>
             {elephantsFixtures.map((f, i) => (
-              <div className="next-card" key={i}>
+              <Link href={`/equipes-nationales/elephants/matchs/${f.slug}`} className="next-card" key={i} style={{ display: 'block' }}>
                 <div className="next-card-top"><span>{f.competition.toUpperCase()}</span><span>{formatDate(f.date).toUpperCase()}</span></div>
                 <div className="teams">
-                  <div className="team"><div className="crest ivory">CI</div><span style={{ fontSize: 20 }}>{elephantsFlag}</span><strong>Côte<br />d&apos;Ivoire</strong></div>
+                  <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
                   <div className="versus"><small>{f.time}</small><b>VS</b><span>{f.venue}<br />{f.home ? 'Domicile' : 'Extérieur'}</span></div>
-                  <div className="team"><div className="crest red">{f.opponent.slice(0, 2).toUpperCase()}</div><span style={{ fontSize: 20 }}>{f.opponentFlag}</span><strong>{f.opponent}</strong></div>
+                  <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{f.opponentFlag}</div><strong>{f.opponent}</strong></div>
                 </div>
-              </div>
+                <p className="text-link" style={{ justifyContent: 'center', marginTop: 4 }}>Billets, infos & direct</p>
+              </Link>
             ))}
           </div>
         </section>
@@ -98,16 +100,16 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
               <b style={{ fontSize: 12, letterSpacing: '.06em', color: 'var(--muted)', textTransform: 'uppercase' }}>{group.position}s</b>
               <div className="card-grid cols-4" style={{ marginTop: 12 }}>
                 {group.entries.map((p, i) => (
-                  <div key={i} className="entity-card player-card">
+                  <Link key={i} href={`/equipes-nationales/elephants/${p.slug}`} className="entity-card player-card">
                     <span className="avatar-wrap">
-                      <span className="avatar" style={{ background: 'var(--forest)' }}>{p.name.split(' ').map((n) => n[0]).join('')}</span>
+                      <PlayerPhoto name={p.name} photoUrl={p.photoUrl} size={44} background="var(--forest)" />
                     </span>
                     <div>
                       <strong>{p.name}</strong>
                       <span>{p.flag} {p.club} ({p.country})</span>
                       {p.note && <span style={{ color: 'var(--orange)' }}>{p.note}</span>}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
