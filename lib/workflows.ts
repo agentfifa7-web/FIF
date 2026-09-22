@@ -14,6 +14,9 @@ export type TransfertStage = (typeof TRANSFERT_STAGES)[number]
 export const AIDE_STAGES = ['Brouillon', 'Soumis', 'En instruction', 'Approuvé', 'Payé'] as const
 export type AideStage = (typeof AIDE_STAGES)[number] | 'Rejeté'
 
+export const EXAMEN_STAGES = ['Inscription', 'Formation initiale', 'Examen théorique', 'Examen pratique', 'Résultat'] as const
+export type ExamenStage = (typeof EXAMEN_STAGES)[number]
+
 export interface LicenceDossier {
   id: string
   acteur: string
@@ -42,17 +45,27 @@ export interface AideDossier {
   updatedAt: string
 }
 
+export interface ExamenDossier {
+  id: string
+  candidat: string
+  categorie: string
+  stage: ExamenStage
+  createdAt: string
+  updatedAt: string
+}
+
 interface Store {
   licence: LicenceDossier[]
   transfert: TransfertDossier[]
   aide: AideDossier[]
+  examen: ExamenDossier[]
 }
 
 const STORAGE_KEY = 'fif-dossiers-v1'
 export const WORKFLOW_EVENT = 'fif-workflow-updated'
 
 function emptyStore(): Store {
-  return { licence: [], transfert: [], aide: [] }
+  return { licence: [], transfert: [], aide: [], examen: [] }
 }
 
 function load(): Store {
@@ -74,6 +87,7 @@ function save(store: Store) {
 export function getLicenceDossiers(): LicenceDossier[] { return load().licence }
 export function getTransfertDossiers(): TransfertDossier[] { return load().transfert }
 export function getAideDossiers(): AideDossier[] { return load().aide }
+export function getExamenDossiers(): ExamenDossier[] { return load().examen }
 
 export function submitLicence(acteur: string, nom: string): LicenceDossier {
   const store = load()
@@ -100,6 +114,27 @@ export function submitAide(programme: string, club: string): AideDossier {
   store.aide = [dossier, ...store.aide]
   save(store)
   return dossier
+}
+
+export function submitExamen(candidat: string, categorie: string): ExamenDossier {
+  const store = load()
+  const now = new Date().toISOString()
+  const dossier: ExamenDossier = { id: `exa-${Date.now()}`, candidat, categorie, stage: 'Inscription', createdAt: now, updatedAt: now }
+  store.examen = [dossier, ...store.examen]
+  save(store)
+  return dossier
+}
+
+export function advanceExamen(id: string) {
+  const store = load()
+  const d = store.examen.find((x) => x.id === id)
+  if (!d) return
+  const idx = EXAMEN_STAGES.indexOf(d.stage)
+  if (idx < EXAMEN_STAGES.length - 1) {
+    d.stage = EXAMEN_STAGES[idx + 1]
+    d.updatedAt = new Date().toISOString()
+    save(store)
+  }
 }
 
 export function advanceLicence(id: string) {

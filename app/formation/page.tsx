@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { GraduationCap, MapPin, Users } from 'lucide-react'
 import { trainingCourses } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { MyFormations } from '@/components/site/MyFormations'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'FIF Academy — Formation' }
@@ -16,6 +17,8 @@ export default function FormationPage() {
         breadcrumb={[{ label: 'Formation' }]}
         meta={[{ value: String(trainingCourses.length), label: 'Sessions programmées' }]}
       />
+      <MyFormations />
+
       <section className="page-section tight">
         <div className="card-grid cols-2">
           {trainingCourses.map((c) => (

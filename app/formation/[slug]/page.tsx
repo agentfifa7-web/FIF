@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { CalendarDays, MapPin, Users } from 'lucide-react'
 import { trainingCourses } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
+import { FormationEnrollment } from '@/components/site/FormationEnrollment'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export function generateStaticParams() {
@@ -41,12 +42,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
               {course.modules.map((m) => <li key={m}>{m}</li>)}
             </ul>
           </div>
-          <div className="dashboard-panel">
-            <h3>Inscription</h3>
-            <p className="lede">Durée : {course.duration}. Places limitées à {course.seats} participants.</p>
-            <button type="button" className="button button-primary" style={{ justifyContent: 'center', marginTop: 16, width: '100%' }}>S’inscrire</button>
-            <p className="form-foot">Confirmation par email + suivi de progression (0 → 100 %) dans votre espace Mon FIF.</p>
-          </div>
+          <FormationEnrollment slug={course.slug} title={course.title} duration={course.duration} seats={course.seats} />
         </div>
       </section>
       <section className="page-section tight"><DemoBadge /></section>

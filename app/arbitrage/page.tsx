@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { referees, matches, clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { ArbitrageWorkflow } from '@/components/site/ArbitrageWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Arbitrage Center — FIF Digital' }
@@ -55,6 +56,12 @@ export default function ArbitragePage() {
           <div className="info-tile"><strong>Évaluation continue</strong><p>Rapports d’observateurs, statistiques de performance et plan de progression individualisé.</p></div>
         </div>
         <Link href="/formation" className="button-outline" style={{ marginTop: 20, display: 'inline-flex' }}>Voir les sessions de formation arbitrage</Link>
+      </section>
+
+      <section className="page-section tight dark-section">
+        <p className="section-tag" style={{ color: 'var(--orange)' }}>Mon parcours arbitre</p>
+        <p className="lede" style={{ color: '#a9b7af' }}>Inscription, formation initiale, examen théorique, examen pratique puis résultat — suivez votre parcours de candidat arbitre.</p>
+        <ArbitrageWorkflow />
       </section>
 
       <section className="page-section tight"><DemoBadge /></section>
