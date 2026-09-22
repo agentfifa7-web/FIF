@@ -144,8 +144,9 @@ export interface Player {
   stats: { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }
   history: { clubId: string; from: number; to: number | null }[]
   nationalSelections: { teamId: string; caps: number; goals: number }[]
-  marketValue: number
-  monthlySalary: number
+  height: number
+  weight: number
+  preferredFoot: 'Droit' | 'Gauche' | 'Ambidextre'
   contractUntil: string
   preferredPositions: PositionFamiliarity[]
   currentAbilityStars: number

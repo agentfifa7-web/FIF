@@ -7,7 +7,7 @@ import { ClubCrest, StatCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
 import { PlayerRadar } from '@/components/site/PlayerRadar'
-import { radarAxesFor, formatFcfa, statusFlagTone } from '@/lib/attributes'
+import { radarAxesFor, statusFlagTone } from '@/lib/attributes'
 import { age, formatDate } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -87,8 +87,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <h3>Identité & contrat</h3>
             <div className="dashboard-list">
               <div><small>Nationalité</small><b>{player.nationality}</b></div>
-              <div><small>Valeur marchande</small><b>{formatFcfa(player.marketValue)}</b></div>
-              <div><small>Salaire mensuel</small><b>{formatFcfa(player.monthlySalary)}</b></div>
+              <div><small>Taille</small><b>{player.height} cm</b></div>
+              <div><small>Poids</small><b>{player.weight} kg</b></div>
+              <div><small>Meilleur pied</small><b>{player.preferredFoot}</b></div>
               <div><small>Contrat jusqu’au</small><b>{formatDate(player.contractUntil)}</b></div>
             </div>
           </div>
@@ -233,7 +234,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       <section className="page-section tight">
         <p className="section-tag">Historique des clubs</p>
         <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-          {player.history.map((h, i) => {
+          {[...player.history].reverse().map((h, i) => {
             const c = getClubById(h.clubId)
             return c ? (
               <Link key={i} href={`/clubs/${c.slug}`} className="entity-card">

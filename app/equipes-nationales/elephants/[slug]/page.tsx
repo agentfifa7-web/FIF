@@ -51,7 +51,7 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       </section>
 
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</p>
+        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
         {player.note && (
           <p className="status-flag pending" style={{ display: 'inline-block', marginTop: 12 }}>{player.note}</p>
         )}

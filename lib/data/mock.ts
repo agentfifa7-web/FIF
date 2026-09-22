@@ -348,8 +348,32 @@ export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
 // ---------------------------------------------------------------------------
 const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
+function makeCareerHistory(club: Club, birthYear: number, joinYear: number) {
+  const debutYear = birthYear + 17
+  const spanAvailable = joinYear - debutYear
+  const history: { clubId: string; from: number; to: number | null }[] = []
+  if (spanAvailable >= 2) {
+    const stintCount = spanAvailable <= 3 ? rng.int(0, 1) : spanAvailable <= 6 ? rng.int(1, 2) : rng.int(1, 3)
+    if (stintCount > 0) {
+      const pool = clubs.filter((c) => c.gender === club.gender && c.category === club.category && c.id !== club.id)
+      const chosen = rng.pickN(pool, Math.min(stintCount, pool.length))
+      const historyStart = Math.max(debutYear, joinYear - rng.int(2, spanAvailable))
+      const span = Math.max(chosen.length, joinYear - historyStart)
+      const step = Math.max(1, Math.round(span / chosen.length))
+      let cursor = historyStart
+      chosen.forEach((c, i) => {
+        const to = i === chosen.length - 1 ? joinYear : Math.min(joinYear - 1, cursor + step)
+        history.push({ clubId: c.id, from: cursor, to })
+        cursor = to
+      })
+    }
+  }
+  history.push({ clubId: club.id, from: joinYear, to: null })
+  return history
+}
+
 type BasePlayer = Omit<Player,
-  'marketValue' | 'monthlySalary' | 'contractUntil' | 'preferredPositions' |
+  'height' | 'weight' | 'preferredFoot' | 'contractUntil' | 'preferredPositions' |
   'currentAbilityStars' | 'potentialAbilityStars' | 'personality' | 'statusFlags' |
   'attributes' | 'traits' | 'scoutReport' | 'seasonStats'>
 
@@ -380,7 +404,7 @@ const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
         yellow: rng.int(0, 8),
         red: rng.bool(0.1) ? 1 : 0,
       },
-      history: [{ clubId: club.id, from: rng.int(2019, 2024), to: null }],
+      history: makeCareerHistory(club, birthYear, rng.int(2019, 2024)),
       nationalSelections: [],
     }
   }),
@@ -408,6 +432,13 @@ const PHYSICAL_ATTRS = [
   'Accélération', 'Agilité', 'Détente verticale', 'Endurance', 'Équilibre', 'Puissance',
   'Qualités phys. nat.', 'Vitesse',
 ] as const
+
+const HEIGHT_RANGE_BY_POSITION: Record<string, [number, number]> = {
+  Gardien: [183, 199],
+  Défenseur: [176, 196],
+  Milieu: [168, 188],
+  Attaquant: [170, 192],
+}
 
 export const KEY_ATTRS_BY_POSITION: Record<string, string[]> = {
   Gardien: ['Réflexes', 'Un contre un', 'Jeu au pied', 'Prise de balle aérienne', 'Placement', 'Concentration', 'Agilité'],
@@ -447,6 +478,10 @@ function clampAttr(v: number) {
   return Math.max(1, Math.min(20, Math.round(v)))
 }
 
+function clampTier(v: number) {
+  return Math.max(0, Math.min(100, Math.round(v)))
+}
+
 function genAttrValue(tier: number, isKey: boolean) {
   const center = Math.round((tier / 100) * 15) + 2
   const bonus = isKey ? rng.int(1, 4) : 0
@@ -483,7 +518,7 @@ function buildScoutingProfile(p: BasePlayer) {
   const club = getClubById(p.clubId)!
   const age = ageFromBirthdate(p.birthdate)
   const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
-  const tier = clampAttr(rng.int(30, 88) + Math.min(12, p.stats.goals + p.stats.assists) - 6)
+  const tier = clampTier(rng.int(30, 88) + Math.min(12, p.stats.goals + p.stats.assists) - 6)
 
   const technical: Record<string, number> = {}
   for (const attr of TECHNICAL_ATTRS) {
@@ -515,10 +550,12 @@ function buildScoutingProfile(p: BasePlayer) {
 
   const abilityFactor = tier / 100
   const ageFactor = age <= 22 ? 0.55 + (age - 17) * 0.09 : age <= 29 ? 1 : Math.max(0.25, 1 - (age - 29) * 0.09)
-  const positionMultiplier = p.position === 'Attaquant' ? 1.3 : p.position === 'Milieu' ? 1.1 : p.position === 'Défenseur' ? 0.9 : 0.8
-  const rawValue = 4_000_000 + 520_000_000 * Math.pow(abilityFactor, 3) * ageFactor * positionMultiplier
-  const marketValue = Math.round(rawValue / 500_000) * 500_000
-  const monthlySalary = Math.max(90_000, Math.round((marketValue / rng.int(160, 240)) / 5_000) * 5_000)
+
+  const [hMin, hMax] = HEIGHT_RANGE_BY_POSITION[p.position] ?? [170, 190]
+  const height = rng.int(hMin, hMax)
+  const weight = height - 100 + rng.int(-3, 6)
+  const footRoll = rng.float()
+  const preferredFoot: Player['preferredFoot'] = footRoll < 0.7 ? 'Droit' : footRoll < 0.94 ? 'Gauche' : 'Ambidextre'
 
   const statusFlags: string[] = []
   if (rng.bool(0.07)) statusFlags.push('Blessé')
@@ -564,8 +601,9 @@ function buildScoutingProfile(p: BasePlayer) {
   })
 
   return {
-    marketValue,
-    monthlySalary,
+    height,
+    weight,
+    preferredFoot,
     contractUntil,
     preferredPositions,
     currentAbilityStars: 0,
@@ -644,7 +682,7 @@ function teamAchievements(competitionLabel: string, honours: { title: string; ye
 }
 
 export const nationalTeams: NationalTeam[] = [
-  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
+  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 2015 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
   { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 78, honours: [], achievements: [] },
   { id: 'nt-u23', slug: 'u23', name: 'Éléphants U23', gender: 'M', category: 'U23', coachId: null, honours: [], achievements: [] },
   { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [{ title: 'Coupe UFOA U20', year: 2023 }], achievements: [] },
@@ -1027,6 +1065,7 @@ export interface RealCallUp {
   traits: string[]
   scoutReport: ScoutReport
   preferredPositions: PositionFamiliarity[]
+  fmCalibrated: boolean
 }
 
 interface RealCallUpRaw {
@@ -1037,6 +1076,9 @@ interface RealCallUpRaw {
   note?: string
   birthdate: string
   photoUrl?: string
+  /** Niveau (0-100) calibré à partir de données Football Manager 24/25/26 (CA/PA, notes
+   *  de rôle) trouvées pour ce joueur — sinon le niveau reste tiré aléatoirement. */
+  tierOverride?: number
 }
 
 const COUNTRY_FLAG: Record<string, string> = {
@@ -1060,32 +1102,32 @@ const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Mohamed Koné', club: 'Royal Charleroi SC', country: 'Belgique', position: 'Gardien', birthdate: '2002-03-07' },
   { name: 'Alban Lafont', club: 'Panathinaïkos', country: 'Grèce', position: 'Gardien', birthdate: '1999-01-23' },
   { name: 'Emmanuel Agbadou', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '1996-05-12', photoUrl: `${WIKIMEDIA_FILE_PATH}Emmanuel_Agbadou.jpg` },
-  { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur', birthdate: '1999-08-20' },
+  { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur', birthdate: '1999-08-20', tierOverride: 83 },
   { name: 'Ghislain Konan', club: 'Gil Vicente', country: 'Portugal', position: 'Défenseur', birthdate: '1994-05-20' },
   { name: 'Kassoum Ouattara', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '2004-10-14' },
-  { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur', birthdate: '2002-06-04' },
+  { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur', birthdate: '2002-06-04', tierOverride: 78 },
   { name: 'Christ Tapé', club: 'Toulouse FC', country: 'France', position: 'Défenseur', birthdate: '2006-03-02' },
   { name: 'Junior Diaz', club: 'ES Troyes AC', country: 'France', position: 'Défenseur', birthdate: '2003-07-23', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
   { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', birthdate: '2005-03-24', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
   { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu', birthdate: '2005-05-14' },
   { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu', birthdate: '2005-12-11' },
-  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu', birthdate: '1996-12-19', photoUrl: `${WIKIMEDIA_FILE_PATH}Franck_Kessié.jpg` },
-  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu', birthdate: '1997-12-02', photoUrl: `${WIKIMEDIA_FILE_PATH}Ibrahim_Sangaré_(2018-05-09).jpg` },
+  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu', birthdate: '1996-12-19', photoUrl: `${WIKIMEDIA_FILE_PATH}Franck_Kessié.jpg`, tierOverride: 82 },
+  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu', birthdate: '1997-12-02', photoUrl: `${WIKIMEDIA_FILE_PATH}Ibrahim_Sangaré_(2018-05-09).jpg`, tierOverride: 84 },
   { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu', birthdate: '2006-04-06' },
   { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu', birthdate: '2005-11-18' },
   { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu', birthdate: '2006-09-24' },
-  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21' },
+  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21', tierOverride: 76 },
   { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02' },
   { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: `${WIKIMEDIA_FILE_PATH}Elye_Wahi_2022.jpg` },
   { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14' },
   { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant', birthdate: '2006-02-12' },
-  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: `${WIKIMEDIA_FILE_PATH}Nicolas_Pepe_LOSC.jpg` },
+  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: `${WIKIMEDIA_FILE_PATH}Nicolas_Pepe_LOSC.jpg`, tierOverride: 74 },
   { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-02-12' },
 ]
 
 function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
   const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
-  const tier = clampAttr(rng.int(60, 96))
+  const tier = clampTier(p.tierOverride ?? rng.int(60, 96))
 
   const technical: Record<string, number> = {}
   for (const attr of TECHNICAL_ATTRS) {
@@ -1135,6 +1177,7 @@ function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
     traits,
     scoutReport,
     preferredPositions,
+    fmCalibrated: p.tierOverride !== undefined,
   }
 }
 
