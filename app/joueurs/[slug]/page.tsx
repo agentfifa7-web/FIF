@@ -1,10 +1,13 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { QrCode } from 'lucide-react'
-import { players, getPlayer, getClubById, nationalTeams } from '@/lib/data/mock'
+import { players, getPlayer, getClubById, nationalTeams, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb, HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, StatCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
+import { PlayerRadar } from '@/components/site/PlayerRadar'
+import { radarAxesFor, formatFcfa, statusFlagTone } from '@/lib/attributes'
 import { age, formatDate } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -40,6 +43,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
   if (!player) notFound()
   const club = getClubById(player.clubId)
   const palmares = palmaresFor(player)
+  const keyAttrs = KEY_ATTRS_BY_POSITION[player.position] ?? []
+  const radarAxes = radarAxesFor(player.attributes)
+  const seasonStats = [...player.seasonStats].reverse()
 
   return (
     <main>
@@ -62,6 +68,98 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <div><strong>{player.stats.matches}</strong><span>Matchs joués</span></div>
             <div><strong>{player.stats.goals}</strong><span>Buts</span></div>
             <div><strong>{player.stats.assists}</strong><span>Passes décisives</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="page-section tight" style={{ paddingBottom: 0 }}>
+        <div className="player-status-bar">
+          {player.statusFlags.length > 0 ? player.statusFlags.map((f, i) => (
+            <span key={i} className={`status-flag ${statusFlagTone(f)}`}>{f}</span>
+          )) : <span className="status-flag ok">Sans particularité</span>}
+        </div>
+      </section>
+
+      <section className="page-section tight">
+        <p className="section-tag">Informations générales et statuts</p>
+        <div className="card-grid cols-3" style={{ marginTop: 16 }}>
+          <div className="dashboard-panel" style={{ margin: 0 }}>
+            <h3>Identité & contrat</h3>
+            <div className="dashboard-list">
+              <div><small>Nationalité</small><b>{player.nationality}</b></div>
+              <div><small>Valeur marchande</small><b>{formatFcfa(player.marketValue)}</b></div>
+              <div><small>Salaire mensuel</small><b>{formatFcfa(player.monthlySalary)}</b></div>
+              <div><small>Contrat jusqu’au</small><b>{formatDate(player.contractUntil)}</b></div>
+            </div>
+          </div>
+          <div className="dashboard-panel" style={{ margin: 0 }}>
+            <h3>Évaluation du staff</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <StarRating count={player.currentAbilityStars} label="Niveau actuel" />
+              <StarRating count={player.potentialAbilityStars} label="Potentiel" />
+            </div>
+            <p className="lede" style={{ fontSize: 12, marginTop: 14 }}>Estimation relative à l’effectif de {club?.name}.</p>
+          </div>
+          <div className="dashboard-panel" style={{ margin: 0 }}>
+            <h3>Postes préférentiels</h3>
+            <PositionChips positions={player.preferredPositions} />
+          </div>
+        </div>
+      </section>
+
+      <section className="page-section tight">
+        <p className="section-tag">Attributs — notés sur 20</p>
+        <div className="card-grid cols-3" style={{ marginTop: 16 }}>
+          <AttributePanel title="Technique" attrs={player.attributes.technical} keyAttrs={keyAttrs} />
+          <AttributePanel title="Mental" attrs={player.attributes.mental} keyAttrs={keyAttrs} />
+          <AttributePanel title="Physique" attrs={player.attributes.physical} keyAttrs={keyAttrs} />
+        </div>
+      </section>
+
+      <section className="page-section tight dark-section">
+        <p className="section-tag" style={{ color: 'var(--orange)' }}>Profil psychologique & rapports</p>
+        <div className="card-grid cols-3" style={{ marginTop: 16, alignItems: 'start' }}>
+          <div className="info-tile"><strong>Personnalité</strong><p>{player.personality}</p></div>
+          <div className="info-tile">
+            <strong>Points forts</strong>
+            <p>{player.scoutReport.pros.join(' · ')}</p>
+          </div>
+          <div className="info-tile">
+            <strong>Axes de progression</strong>
+            <p>{player.scoutReport.cons.join(' · ')}</p>
+          </div>
+        </div>
+        <p className="lede" style={{ color: '#cfe0d6', marginTop: 20 }}>{player.scoutReport.summary}</p>
+        {player.traits.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Caractéristiques du joueur</b>
+            <div className="chip-row" style={{ marginTop: 10 }}>
+              {player.traits.map((t, i) => <span key={i} className="chip">{t}</span>)}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="page-section tight">
+        <p className="section-tag">Vue d’ensemble des performances</p>
+        <div className="card-grid cols-2" style={{ alignItems: 'start', marginTop: 16 }}>
+          <div className="radar-wrap"><PlayerRadar axes={radarAxes} /></div>
+          <div className="table-wrap">
+            <table className="data-table">
+              <thead><tr><th className="align-left">SAISON</th><th className="align-left">COMPÉTITION</th><th>MJ</th><th>BUTS</th><th>PD</th><th>NOTE MOY.</th></tr></thead>
+              <tbody>
+                {seasonStats.map((s, i) => (
+                  <tr key={i}>
+                    <td className="align-left">{s.season}</td>
+                    <td className="align-left">{s.competition}</td>
+                    <td>{s.matches}</td>
+                    <td>{s.goals}</td>
+                    <td>{s.assists}</td>
+                    <td><b>{s.avgRating.toFixed(1)}</b></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>

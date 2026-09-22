@@ -629,3 +629,19 @@ h1, h2, h3, h4, h5, h6,
 .fan-pillar, .checkin-row, .rank-podium-row, .xp-toast {
   border-radius: var(--radius-md);
 }
+
+/* Fiche de recrutement joueur */
+.player-status-bar { align-items:center; background:var(--forest); color:#fff; display:flex; flex-wrap:wrap; gap:10px 12px; padding:16px 20px; }
+.status-flag { border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.05em; padding:6px 13px; text-transform:uppercase; }
+.status-flag.error { background:#c62828; color:#fff; }
+.status-flag.pending { background:#b45300; color:#fff; }
+.status-flag.ok { background:var(--green); color:#fff; }
+
+.attr-panel { background:#fff; border:1px solid var(--line); padding:20px 22px; }
+.attr-panel h4 { color:var(--muted); font-size:11px; letter-spacing:.08em; margin:0 0 14px; text-transform:uppercase; }
+.attr-row { align-items:center; border-bottom:1px solid #f0f1ef; display:flex; font-size:12.5px; justify-content:space-between; padding:6px 0; }
+.attr-row:last-child { border-bottom:0; }
+.attr-row.key { background:#fff8ef; border-radius:6px; font-weight:800; margin:0 -8px; padding:6px 8px; }
+.attr-row b { font-variant-numeric:tabular-nums; }
+
+.radar-wrap { align-items:center; background:#fff; border:1px solid var(--line); display:flex; justify-content:center; padding:20px; }

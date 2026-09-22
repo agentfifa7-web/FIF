@@ -23,12 +23,16 @@ import type {
   OfficialDocument,
   PartnerOffer,
   Player,
+  PlayerAttributes,
+  PositionFamiliarity,
   PresidentPromise,
   Product,
   QuizQuestion,
   Referee,
   Region,
   RewardEntry,
+  ScoutReport,
+  SeasonStat,
   Stadium,
   StandingRow,
   TicketEvent,
@@ -299,7 +303,12 @@ export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
 // ---------------------------------------------------------------------------
 const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
-export const players: Player[] = clubs.flatMap((club, ci) =>
+type BasePlayer = Omit<Player,
+  'marketValue' | 'monthlySalary' | 'contractUntil' | 'preferredPositions' |
+  'currentAbilityStars' | 'potentialAbilityStars' | 'personality' | 'statusFlags' |
+  'attributes' | 'traits' | 'scoutReport' | 'seasonStats'>
+
+const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
   Array.from({ length: club.category === 'Futsal' ? 10 : 20 }, (_, pi) => {
     const gender = club.gender
     const name = fullName(gender === 'F' ? 'F' : 'M')
@@ -331,6 +340,222 @@ export const players: Player[] = clubs.flatMap((club, ci) =>
     }
   }),
 )
+
+// ---------------------------------------------------------------------------
+// Player scouting profile — attributs (1-20), contrat, valeur marchande,
+// profil psychologique, historique de saisons. Généré de façon déterministe,
+// dans l'esprit d'une fiche de recrutement d'un jeu de gestion.
+// ---------------------------------------------------------------------------
+const TECHNICAL_ATTRS = [
+  'Centres', 'Contrôle de balle', 'Corners', 'Coups francs', 'Dribble', 'Finition',
+  'Jeu de tête', 'Marquage', 'Passes', 'Penalty', 'Tacles', 'Technique', 'Tirs de loin',
+  'Touches longues', 'Réflexes', 'Jeu au pied', 'Prise de balle aérienne', 'Un contre un',
+] as const
+const GK_ONLY_ATTRS = ['Réflexes', 'Jeu au pied', 'Prise de balle aérienne', 'Un contre un']
+
+const MENTAL_ATTRS = [
+  'Agressivité', 'Anticipation', 'Appels de balle', 'Collectif', 'Concentration', 'Courage',
+  'Décisions', 'Détermination', 'Inspiration', 'Leadership', 'Placement', 'Sang-froid',
+  'Vision du jeu', 'Volume de jeu',
+] as const
+
+const PHYSICAL_ATTRS = [
+  'Accélération', 'Agilité', 'Détente verticale', 'Endurance', 'Équilibre', 'Puissance',
+  'Qualités phys. nat.', 'Vitesse',
+] as const
+
+export const KEY_ATTRS_BY_POSITION: Record<string, string[]> = {
+  Gardien: ['Réflexes', 'Un contre un', 'Jeu au pied', 'Prise de balle aérienne', 'Placement', 'Concentration', 'Agilité'],
+  Défenseur: ['Tacles', 'Marquage', 'Jeu de tête', 'Anticipation', 'Détermination', 'Puissance', 'Placement'],
+  Milieu: ['Passes', 'Vision du jeu', 'Technique', 'Concentration', 'Volume de jeu', 'Endurance', 'Décisions'],
+  Attaquant: ['Finition', 'Dribble', 'Jeu de tête', 'Sang-froid', 'Appels de balle', 'Accélération', 'Vitesse'],
+}
+
+const POSITION_ADJACENCY: Record<string, { position: string; range: [number, number] }[]> = {
+  Gardien: [],
+  Défenseur: [{ position: 'Milieu défensif', range: [8, 15] }],
+  Milieu: [{ position: 'Défenseur', range: [6, 13] }, { position: 'Attaquant', range: [7, 14] }, { position: 'Milieu défensif', range: [10, 17] }],
+  Attaquant: [{ position: 'Milieu', range: [7, 15] }, { position: 'Ailier', range: [9, 17] }],
+}
+
+const PERSONALITIES = [
+  'Professionnel modèle', 'Déterminé', 'Ambitieux', 'Perfectionniste', 'Loyal', 'Équilibré',
+  'Fougueux', 'Battant', 'Charismatique', 'Réservé', 'Volage', 'Capricieux',
+]
+
+const TRAITS_POOL: Record<string, string[]> = {
+  Gardien: ['Sort dans les pieds de l’attaquant', 'Relance courte au pied', 'Balaie devant sa défense', 'Dégage systématiquement en touche', 'Joue en libéro'],
+  Défenseur: ['Monte se joindre à l’attaque', 'Tacle glissé fréquent', 'Sort jouer le ballon au pied', 'Reste toujours devant sa défense', 'Frappe de loin à l’occasion'],
+  Milieu: ['Joue en une touche', 'Tente des dribbles chaloupés', 'Vient chercher le ballon', 'Frappe souvent de loin', 'Distribue le jeu en éventail', 'Se déplace dans les espaces libres'],
+  Attaquant: ['Tente sa chance de loin', 'Vient chercher le ballon', 'Se déplace dans les espaces libres', 'Frappe en premier temps', 'Aime les une-deux', 'Provoque le un contre un'],
+}
+
+const CATEGORY_COMPETITION_LABEL: Record<string, string> = {
+  Professionnel: 'Ligue 1',
+  Amateur: 'Championnat Amateur',
+  Jeunes: 'Championnat Jeunes',
+  Féminin: 'Championnat Féminin',
+  Futsal: 'Futsal Élite',
+}
+
+function clampAttr(v: number) {
+  return Math.max(1, Math.min(20, Math.round(v)))
+}
+
+function genAttrValue(tier: number, isKey: boolean) {
+  const center = Math.round((tier / 100) * 15) + 2
+  const bonus = isKey ? rng.int(1, 4) : 0
+  const noise = rng.int(-3, 3)
+  return clampAttr(center + bonus + noise)
+}
+
+function ageFromBirthdate(birthdate: string) {
+  const b = new Date(birthdate)
+  let a = TODAY.getFullYear() - b.getFullYear()
+  const m = TODAY.getMonth() - b.getMonth()
+  if (m < 0 || (m === 0 && TODAY.getDate() < b.getDate())) a--
+  return a
+}
+
+function growthHeadroom(age: number) {
+  if (age <= 19) return 5
+  if (age <= 22) return 3.5
+  if (age <= 25) return 2
+  if (age <= 29) return 0.5
+  return 0
+}
+
+function starsFromRank(rank: number, count: number) {
+  const pct = (rank + 1) / count
+  if (pct <= 0.1) return 5
+  if (pct <= 0.35) return 4
+  if (pct <= 0.65) return 3
+  if (pct <= 0.9) return 2
+  return 1
+}
+
+function buildScoutingProfile(p: BasePlayer) {
+  const club = getClubById(p.clubId)!
+  const age = ageFromBirthdate(p.birthdate)
+  const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
+  const tier = clampAttr(rng.int(30, 88) + Math.min(12, p.stats.goals + p.stats.assists) - 6)
+
+  const technical: Record<string, number> = {}
+  for (const attr of TECHNICAL_ATTRS) {
+    const isGkAttr = GK_ONLY_ATTRS.includes(attr)
+    if (p.position === 'Gardien') {
+      technical[attr] = isGkAttr ? genAttrValue(tier, keyAttrs.includes(attr)) : clampAttr(rng.int(2, 9))
+    } else {
+      technical[attr] = isGkAttr ? clampAttr(rng.int(1, 6)) : genAttrValue(tier, keyAttrs.includes(attr))
+    }
+  }
+  const mental: Record<string, number> = {}
+  for (const attr of MENTAL_ATTRS) mental[attr] = genAttrValue(tier, keyAttrs.includes(attr))
+  const physical: Record<string, number> = {}
+  for (const attr of PHYSICAL_ATTRS) physical[attr] = genAttrValue(tier, keyAttrs.includes(attr))
+
+  const preferredPositions: PositionFamiliarity[] = [{ position: p.position, familiarity: rng.int(18, 20) }]
+  for (const adj of POSITION_ADJACENCY[p.position] ?? []) {
+    if (rng.bool(0.55)) preferredPositions.push({ position: adj.position, familiarity: rng.int(adj.range[0], adj.range[1]) })
+  }
+
+  const contractYears = rng.int(0, 4)
+  const contractDate = new Date(TODAY)
+  contractDate.setFullYear(contractDate.getFullYear() + contractYears)
+  contractDate.setMonth(rng.int(0, 11))
+  contractDate.setDate(rng.int(1, 28))
+  if (contractDate.getTime() <= TODAY.getTime()) contractDate.setFullYear(contractDate.getFullYear() + 1)
+  const contractUntil = contractDate.toISOString().slice(0, 10)
+  const monthsToContractEnd = (contractDate.getTime() - TODAY.getTime()) / (1000 * 60 * 60 * 24 * 30)
+
+  const abilityFactor = tier / 100
+  const ageFactor = age <= 22 ? 0.55 + (age - 17) * 0.09 : age <= 29 ? 1 : Math.max(0.25, 1 - (age - 29) * 0.09)
+  const positionMultiplier = p.position === 'Attaquant' ? 1.3 : p.position === 'Milieu' ? 1.1 : p.position === 'Défenseur' ? 0.9 : 0.8
+  const rawValue = 4_000_000 + 520_000_000 * Math.pow(abilityFactor, 3) * ageFactor * positionMultiplier
+  const marketValue = Math.round(rawValue / 500_000) * 500_000
+  const monthlySalary = Math.max(90_000, Math.round((marketValue / rng.int(160, 240)) / 5_000) * 5_000)
+
+  const statusFlags: string[] = []
+  if (rng.bool(0.07)) statusFlags.push('Blessé')
+  if (rng.bool(0.08)) statusFlags.push('Mécontent')
+  if (monthsToContractEnd <= 9) statusFlags.push('Fin de contrat proche')
+
+  const personality = rng.pick(PERSONALITIES)
+  const traits = rng.pickN(TRAITS_POOL[p.position] ?? [], rng.int(2, 4))
+
+  const allAttrs = [...Object.entries(technical), ...Object.entries(mental), ...Object.entries(physical)]
+  const sortedAttrs = [...allAttrs].sort((a, b) => b[1] - a[1])
+  const pros = sortedAttrs.slice(0, 3).map(([k, v]) => `${k} (${v}/20)`)
+  const cons = sortedAttrs.slice(-2).map(([k, v]) => `${k} (${v}/20)`)
+  const scoutReport: ScoutReport = {
+    pros,
+    cons,
+    summary: `Points forts confirmés en ${sortedAttrs[0][0].toLowerCase()} et ${sortedAttrs[1][0].toLowerCase()}. Axe de progression prioritaire : ${sortedAttrs[sortedAttrs.length - 1][0].toLowerCase()}.`,
+  }
+
+  const competitionLabel = CATEGORY_COMPETITION_LABEL[club.category] ?? 'Championnat national'
+  const currentYear = TODAY.getFullYear()
+  const priorSeasonsCount = Math.min(3, Math.max(0, age - 18))
+  const seasonStats: SeasonStat[] = []
+  for (let s = priorSeasonsCount; s >= 1; s--) {
+    const startYear = currentYear - s
+    const decay = 0.4 + s * 0.15
+    seasonStats.push({
+      season: `${startYear}-${startYear + 1}`,
+      competition: competitionLabel,
+      matches: Math.max(0, Math.round(p.stats.matches * (0.6 + rng.float() * 0.5) * decay)),
+      goals: Math.max(0, Math.round(p.stats.goals * (0.4 + rng.float() * 0.6) * decay)),
+      assists: Math.max(0, Math.round(p.stats.assists * (0.4 + rng.float() * 0.6) * decay)),
+      avgRating: Math.round((5.3 + abilityFactor * 2.3 + (rng.float() * 0.6 - 0.3)) * 10) / 10,
+    })
+  }
+  seasonStats.push({
+    season: `${currentYear}-${currentYear + 1}`,
+    competition: competitionLabel,
+    matches: p.stats.matches,
+    goals: p.stats.goals,
+    assists: p.stats.assists,
+    avgRating: Math.round((5.5 + abilityFactor * 2.5 + (rng.float() * 0.6 - 0.3)) * 10) / 10,
+  })
+
+  return {
+    marketValue,
+    monthlySalary,
+    contractUntil,
+    preferredPositions,
+    currentAbilityStars: 0,
+    potentialAbilityStars: 0,
+    personality,
+    statusFlags,
+    attributes: { technical, mental, physical } as PlayerAttributes,
+    traits,
+    scoutReport,
+    seasonStats,
+  }
+}
+
+export const players: Player[] = basePlayers.map((p) => ({ ...p, ...buildScoutingProfile(p) }))
+
+// Étoiles Niveau actuel / Potentiel — calculées par rang au sein de l'effectif du club.
+for (const club of clubs) {
+  const squad = players.filter((p) => p.clubId === club.id)
+  const ranked = squad
+    .map((p) => {
+      const values = [...Object.values(p.attributes.technical), ...Object.values(p.attributes.mental), ...Object.values(p.attributes.physical)]
+      const overall = values.reduce((a, b) => a + b, 0) / values.length
+      const potential = Math.min(20, overall + growthHeadroom(ageFromBirthdate(p.birthdate)))
+      return { player: p, overall, potential }
+    })
+  const byOverall = [...ranked].sort((a, b) => b.overall - a.overall)
+  const byPotential = [...ranked].sort((a, b) => b.potential - a.potential)
+  byOverall.forEach((r, i) => { r.player.currentAbilityStars = starsFromRank(i, byOverall.length) })
+  byPotential.forEach((r, i) => {
+    r.player.potentialAbilityStars = starsFromRank(i, byPotential.length)
+    const age = ageFromBirthdate(r.player.birthdate)
+    if (r.player.currentAbilityStars >= 5 || (r.player.currentAbilityStars === 4 && rng.bool(0.4))) r.player.statusFlags.push('Joueur clé')
+    if (age <= 21 && r.player.potentialAbilityStars >= 4) r.player.statusFlags.push('Espoir')
+  })
+}
 
 function playersOf(clubId: string) {
   return players.filter((p) => p.clubId === clubId)
@@ -743,39 +968,54 @@ export const internationalFixtures: InternationalFixture[] = nationalTeams.map((
 export interface RealCallUp {
   name: string
   club: string
+  country: string
+  flag: string
   position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant'
   note?: string
 }
 
+const COUNTRY_FLAG: Record<string, string> = {
+  Turquie: '🇹🇷',
+  Belgique: '🇧🇪',
+  Grèce: '🇬🇷',
+  Italie: '🇮🇹',
+  Portugal: '🇵🇹',
+  Angleterre: '🇬🇧',
+  Espagne: '🇪🇸',
+  'Arabie saoudite': '🇸🇦',
+  France: '🇫🇷',
+}
+
 export const elephantsCoach = 'Hervé Renard'
 export const elephantsCallUpDate = '2026-09-20'
-export const elephantsCallUp: RealCallUp[] = [
-  { name: 'Yahia Fofana', club: 'Çaykur Rizespor (Turquie)', position: 'Gardien' },
-  { name: 'Mohamed Koné', club: 'Royal Charleroi SC (Belgique)', position: 'Gardien' },
-  { name: 'Alban Lafont', club: 'Panathinaïkos (Grèce)', position: 'Gardien' },
-  { name: 'Emmanuel Agbadou', club: 'Beşiktaş (Turquie)', position: 'Défenseur' },
-  { name: 'Evan Ndicka', club: 'AS Roma (Italie)', position: 'Défenseur' },
-  { name: 'Ghislain Konan', club: 'Gil Vicente (Portugal)', position: 'Défenseur' },
-  { name: 'Kassoum Ouattara', club: 'Beşiktaş (Turquie)', position: 'Défenseur' },
-  { name: 'Ousmane Diomandé', club: 'Sporting CP (Portugal)', position: 'Défenseur' },
-  { name: 'Christ Tapé', club: 'Toulouse FC (France)', position: 'Défenseur' },
-  { name: 'Junior Diaz', club: 'ES Troyes AC (France)', position: 'Défenseur', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
-  { name: 'Luck Zogbé', club: 'Stade Brestois 29 (France)', position: 'Défenseur', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
-  { name: 'Amadou Koné', club: 'NEOM SC (Arabie saoudite)', position: 'Milieu' },
-  { name: 'Eddy Doué', club: 'CF Estrela Amadora (Portugal)', position: 'Milieu' },
-  { name: 'Franck Kessié', club: 'Al-Ahli (Arabie saoudite)', position: 'Milieu' },
-  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest (Angleterre)', position: 'Milieu' },
-  { name: 'Christ Inao Oulaï', club: 'Trabzonspor (Turquie)', position: 'Milieu' },
-  { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion (Angleterre)', position: 'Milieu' },
-  { name: 'Patrick Zabi', club: 'Paris FC (France)', position: 'Milieu' },
-  { name: 'Ange-Yoan Bonny', club: 'Inter Milan (Italie)', position: 'Attaquant' },
-  { name: 'Bazoumana Touré', club: 'Newcastle United (Angleterre)', position: 'Attaquant' },
-  { name: 'Elye Wahi', club: 'OGC Nice (France)', position: 'Attaquant' },
-  { name: 'Yan Diomandé', club: 'Real Madrid (Espagne)', position: 'Attaquant' },
-  { name: 'Rayan Fofana', club: 'Le Havre AC (France)', position: 'Attaquant' },
-  { name: 'Nicolas Pépé', club: 'Villarreal CF (Espagne)', position: 'Attaquant' },
-  { name: 'Yann Gboho', club: 'Coventry City (Angleterre)', position: 'Attaquant' },
+const elephantsCallUpRaw: Omit<RealCallUp, 'flag'>[] = [
+  { name: 'Yahia Fofana', club: 'Çaykur Rizespor', country: 'Turquie', position: 'Gardien' },
+  { name: 'Mohamed Koné', club: 'Royal Charleroi SC', country: 'Belgique', position: 'Gardien' },
+  { name: 'Alban Lafont', club: 'Panathinaïkos', country: 'Grèce', position: 'Gardien' },
+  { name: 'Emmanuel Agbadou', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur' },
+  { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur' },
+  { name: 'Ghislain Konan', club: 'Gil Vicente', country: 'Portugal', position: 'Défenseur' },
+  { name: 'Kassoum Ouattara', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur' },
+  { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur' },
+  { name: 'Christ Tapé', club: 'Toulouse FC', country: 'France', position: 'Défenseur' },
+  { name: 'Junior Diaz', club: 'ES Troyes AC', country: 'France', position: 'Défenseur', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
+  { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
+  { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu' },
+  { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu' },
+  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu' },
+  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu' },
+  { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu' },
+  { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu' },
+  { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu' },
+  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant' },
+  { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant' },
+  { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant' },
+  { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant' },
+  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant' },
+  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant' },
+  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant' },
 ]
+export const elephantsCallUp: RealCallUp[] = elephantsCallUpRaw.map((p) => ({ ...p, flag: COUNTRY_FLAG[p.country] ?? '' }))
 
 export interface RealFixture {
   opponent: string

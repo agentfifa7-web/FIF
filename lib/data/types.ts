@@ -103,6 +103,32 @@ export interface Agent {
   bio: string
 }
 
+export interface PlayerAttributes {
+  technical: Record<string, number>
+  mental: Record<string, number>
+  physical: Record<string, number>
+}
+
+export interface PositionFamiliarity {
+  position: string
+  familiarity: number
+}
+
+export interface ScoutReport {
+  pros: string[]
+  cons: string[]
+  summary: string
+}
+
+export interface SeasonStat {
+  season: string
+  competition: string
+  matches: number
+  goals: number
+  assists: number
+  avgRating: number
+}
+
 export interface Player {
   id: string
   slug: string
@@ -118,6 +144,18 @@ export interface Player {
   stats: { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }
   history: { clubId: string; from: number; to: number | null }[]
   nationalSelections: { teamId: string; caps: number; goals: number }[]
+  marketValue: number
+  monthlySalary: number
+  contractUntil: string
+  preferredPositions: PositionFamiliarity[]
+  currentAbilityStars: number
+  potentialAbilityStars: number
+  personality: string
+  statusFlags: string[]
+  attributes: PlayerAttributes
+  traits: string[]
+  scoutReport: ScoutReport
+  seasonStats: SeasonStat[]
 }
 
 export interface Academy {

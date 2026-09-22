@@ -75,7 +75,6 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
               </div>
             ))}
           </div>
-          <p className="press-source-note" style={{ marginTop: 16 }}><Info size={13} /> {elephantsSourceNote}</p>
         </section>
       ) : fixture && (
         <section className="page-section tight">
@@ -105,7 +104,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
                     </span>
                     <div>
                       <strong>{p.name}</strong>
-                      <span>{p.club}</span>
+                      <span>{p.flag} {p.club} ({p.country})</span>
                       {p.note && <span style={{ color: 'var(--orange)' }}>{p.note}</span>}
                     </div>
                   </div>
