@@ -1,8 +1,8 @@
+import { Award, Shield, Users } from 'lucide-react'
 import { players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
-import { Stepper } from '@/components/site/widgets'
+import { LicenceWorkflow } from '@/components/site/LicenceWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
-import { Award, Shield, Users } from 'lucide-react'
 
 export const metadata = { title: 'Licences — FIF Digital' }
 
@@ -41,18 +41,15 @@ export default function LicencesPage() {
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Parcours de licence</p>
-        <div style={{ marginTop: 20 }}>
-          <Stepper steps={['Création du dossier', 'Soumission', 'Contrôle FIF', 'Validation', 'Paiement', 'Émission', 'Renouvellement']} active={3} />
-        </div>
-        <p className="lede">Chaque étape génère une notification et met à jour le statut visible dans le Portail Clubs et l’espace Mon FIF du licencié. La licence numérique est associée au FIF ID et vérifiable via QR code.</p>
+        <p className="section-tag">Déposer une demande et suivre mon dossier</p>
+        <LicenceWorkflow />
       </section>
 
       <section className="page-section tight dark-section">
         <p className="section-tag" style={{ color: 'var(--orange)' }}>Documents requis</p>
         <div className="card-grid cols-4" style={{ marginTop: 16 }}>
           {['Certificat médical', 'Pièce d’identité', 'Photo d’identité', 'Justificatif de club'].map((d) => (
-            <div className="info-tile" key={d}><strong>{d}</strong><p>Formats acceptés : PDF, JPEG, PNG.</p></div>
+            <div className="entity-card" key={d}><div><strong>{d}</strong><span>Formats acceptés : PDF, JPEG, PNG.</span></div></div>
           ))}
         </div>
       </section>

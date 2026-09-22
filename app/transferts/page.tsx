@@ -1,7 +1,7 @@
 import { ArrowRightLeft } from 'lucide-react'
 import { clubs, players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
-import { Stepper } from '@/components/site/widgets'
+import { TransfertWorkflow } from '@/components/site/TransfertWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Transfer Center — FIF Digital' }
@@ -14,6 +14,8 @@ const sample = [0, 1, 2, 3, 4].map((i) => {
 })
 
 export default function TransfersPage() {
+  const clubOptions = clubs.map((c) => ({ id: c.id, name: c.name }))
+
   return (
     <main>
       <PageHero
@@ -24,11 +26,12 @@ export default function TransfersPage() {
       />
 
       <section className="page-section tight">
-        <Stepper steps={['Demande', 'Contrat', 'Documents', 'Validation club vendeur', 'Validation club acheteur', 'Validation FIF', 'Statut mis à jour']} active={4} />
+        <p className="section-tag">Déposer une demande de transfert</p>
+        <TransfertWorkflow clubs={clubOptions} />
       </section>
 
-      <section className="page-section tight">
-        <p className="section-tag">Transferts récents (démonstration)</p>
+      <section className="page-section tight dark-section">
+        <p className="section-tag" style={{ color: 'var(--orange)' }}>Transferts récents (démonstration)</p>
         <div className="table-wrap" style={{ marginTop: 16 }}>
           <table className="data-table">
             <thead><tr><th className="align-left">JOUEUR</th><th className="align-left">CLUB VENDEUR</th><th className="align-left">CLUB ACHETEUR</th><th>STATUT</th></tr></thead>

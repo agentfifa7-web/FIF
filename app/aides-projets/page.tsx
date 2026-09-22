@@ -1,5 +1,5 @@
-import { Stepper } from '@/components/site/widgets'
 import { PageHero } from '@/components/site/PageHero'
+import { AideWorkflow } from '@/components/site/AideWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'FIF Aides & Projets — FIF Digital' }
@@ -28,11 +28,8 @@ export default function GrantsPage() {
         </div>
       </section>
       <section className="page-section tight">
-        <p className="section-tag">Suivi d’un dossier</p>
-        <div style={{ marginTop: 20 }}>
-          <Stepper steps={['Brouillon', 'Soumis', 'En instruction', 'Approuvé', 'Payé']} active={2} />
-        </div>
-        <p className="lede">Chaque dossier est notifié à chaque étape et consultable depuis le Portail Clubs.</p>
+        <p className="section-tag">Déposer un dossier et suivre son instruction</p>
+        <AideWorkflow programs={programs.map((p) => ({ title: p.title }))} />
       </section>
       <section className="page-section tight"><DemoBadge /></section>
     </main>
