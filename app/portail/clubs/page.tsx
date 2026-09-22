@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { Banknote, FileText, GraduationCap, Repeat, ShieldCheck, Users } from 'lucide-react'
+import { Banknote, ClipboardList, FileText, GraduationCap, Repeat, ShieldCheck, Users } from 'lucide-react'
 import { clubs, players, matchesOf, competitions, cityName } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchCard } from '@/components/site/cards'
+import { ClubPortalTeams, ClubPortalRoster } from '@/components/site/ClubPortalTools'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Portail Clubs — FIF Digital' }
@@ -51,10 +52,12 @@ export default function ClubPortalPage() {
           <aside>
             <nav className="sidebar-nav">
               <a href="#effectifs" className="active"><Users size={15} /> Effectifs</a>
+              <a href="#equipes"><Repeat size={15} /> Équipes</a>
               <a href="#licences"><ShieldCheck size={15} /> Licences</a>
               <a href="#competitions"><Repeat size={15} /> Compétitions & matchs</a>
+              <a href="#feuille-de-match"><ClipboardList size={15} /> Feuille de match</a>
               <a href="#documents"><FileText size={15} /> Documents</a>
-              <a href="#finances"><Banknote size={15} /> Finances</a>
+              <a href="#finances"><Banknote size={15} /> Finances & projets</a>
               <a href="#formation"><GraduationCap size={15} /> Formation</a>
             </nav>
           </aside>
@@ -70,6 +73,14 @@ export default function ClubPortalPage() {
                 ))}
               </div>
               <Link href={`/clubs/${club.slug}`} className="text-link" style={{ marginTop: 16, display: 'inline-flex' }}>Voir la fiche club publique →</Link>
+              <h3 style={{ marginTop: 24 }}>Ajouter un joueur / demander une licence ou un transfert</h3>
+              <ClubPortalRoster />
+            </div>
+
+            <div className="dashboard-panel" id="equipes">
+              <h3>Gestion des équipes</h3>
+              <p className="lede">Activez les catégories d’équipes engagées par le club cette saison.</p>
+              <ClubPortalTeams />
             </div>
 
             <div className="dashboard-panel" id="licences">
@@ -94,6 +105,21 @@ export default function ClubPortalPage() {
               </div>
             </div>
 
+            <div className="dashboard-panel" id="feuille-de-match">
+              <h3>Feuille de match</h3>
+              <p className="lede">Saisissez la composition, les événements et le rapport de vos prochaines rencontres.</p>
+              {upcoming.length ? (
+                <div className="dashboard-list">
+                  {upcoming.map((m) => (
+                    <div key={m.id}>
+                      <div><b>vs {clubs.find((c) => c.id === (m.homeClubId === club.id ? m.awayClubId : m.homeClubId))?.name}</b><small>{new Date(m.date).toLocaleDateString('fr-FR')}</small></div>
+                      <Link href={`/admin/feuille-de-match/${m.id}`} className="status-pill neutral">Saisir</Link>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="lede">Aucun match à venir.</p>}
+            </div>
+
             <div className="dashboard-panel" id="documents">
               <h3>Documents du club</h3>
               <div className="dashboard-list">
@@ -109,6 +135,11 @@ export default function ClubPortalPage() {
                 {requests.map((r, i) => (
                   <div key={i}><b>{r.title}</b><span className={`status-pill ${r.status}`}>{r.status === 'ok' ? 'Validé' : r.status === 'pending' ? 'En cours' : 'Action requise'}</span></div>
                 ))}
+              </div>
+              <h3 style={{ marginTop: 24 }}>Structurer le club</h3>
+              <div className="button-group">
+                <Link href="/projet-club" className="button-outline">Projet Club</Link>
+                <Link href="/aides-projets" className="button-outline">Aides & financement</Link>
               </div>
             </div>
 
