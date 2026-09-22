@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Shield } from 'lucide-react'
-import { nationalTeams, nextFixtureFor } from '@/lib/data/mock'
+import { nationalTeams, nextFixtureFor, elephantsFixtures } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -34,7 +34,7 @@ export default function NationalTeamsPage() {
             {group.ids.map((id) => {
               const team = nationalTeams.find((t) => t.id === id)
               if (!team) return null
-              const fixture = nextFixtureFor(team.id)
+              const fixture = team.id === 'nt-elephants' ? elephantsFixtures[0] : nextFixtureFor(team.id)
               return (
                 <Link key={team.id} href={`/equipes-nationales/${team.slug}`} className="entity-card">
                   <span className="comp-badge"><Shield /></span>

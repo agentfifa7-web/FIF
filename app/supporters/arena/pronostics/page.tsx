@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
-import { upcomingMatches, getClubById, nextFixtureFor } from '@/lib/data/mock'
+import { upcomingMatches, getClubById, elephantsFixtures } from '@/lib/data/mock'
 import { recordPronostic, type FanProfile } from '@/lib/fan'
 import { FanIdGate } from '@/components/site/FanIdGate'
 import { PageHero } from '@/components/site/PageHero'
@@ -13,10 +13,10 @@ interface PronosticTarget { id: string; home: string; away: string; competition:
 
 function buildTargets(): PronosticTarget[] {
   const targets: PronosticTarget[] = []
-  const fixture = nextFixtureFor('nt-elephants')
+  const fixture = elephantsFixtures[0]
   if (fixture) {
     targets.push({
-      id: fixture.id,
+      id: fixture.slug,
       home: fixture.home ? 'Côte d’Ivoire' : fixture.opponent,
       away: fixture.home ? fixture.opponent : 'Côte d’Ivoire',
       competition: fixture.competition,

@@ -1,5 +1,5 @@
 import { CalendarDays, MapPin, QrCode, Tv } from 'lucide-react'
-import { nextFixtureFor, getStadium, cityName, nationalSquads, getPlayerById } from '@/lib/data/mock'
+import { elephantsFixtures, elephantsCallUp } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchdayVote } from '@/components/site/MatchdayVote'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -8,10 +8,8 @@ import { formatDateLong } from '@/lib/format'
 export const metadata = { title: 'Mode Matchday — FIF Digital' }
 
 export default function MatchdayPage() {
-  const fixture = nextFixtureFor('nt-elephants')
-  const stadium = fixture ? getStadium(fixture.stadiumId) : undefined
-  const squad = (nationalSquads['nt-elephants'] ?? []).slice(0, 6)
-  const candidates = squad.map((s) => getPlayerById(s.playerId)).filter((p): p is NonNullable<typeof p> => Boolean(p)).map((p) => ({ id: p.id, name: p.name }))
+  const fixture = elephantsFixtures[0]
+  const candidates = elephantsCallUp.slice(0, 6).map((p) => ({ id: p.slug, name: p.name }))
 
   return (
     <main>
@@ -22,11 +20,11 @@ export default function MatchdayPage() {
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Matchday' }]}
       />
 
-      {fixture && stadium && (
+      {fixture && (
         <section className="page-section tight">
           <div className="sim-panel" style={{ marginLeft: 0, marginRight: 0 }}>
             <p><CalendarDays size={15} /> Côte d’Ivoire vs {fixture.opponent} · {formatDateLong(fixture.date)}</p>
-            <p><MapPin size={15} /> {stadium.name}, {cityName(stadium.cityId)}</p>
+            <p><MapPin size={15} /> {fixture.venue}</p>
           </div>
         </section>
       )}

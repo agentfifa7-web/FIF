@@ -158,6 +158,46 @@ function makeClubName(city: string, used: Set<string>) {
 }
 
 const usedClubNames = new Set<string>()
+
+// Clubs réels de Ligue 1 (16, saison 2026-2027) et Ligue 2 (28, poules A/B,
+// saison 2026-2027), communiqués par la presse ivoirienne (flashscore.fr,
+// ami-sportif.com, africasport.org, sport-ivoire.ci) — au 20 septembre 2026.
+const REAL_LIGUE1_CLUBS = [
+  'ASEC Mimosas', 'Yakro FC', 'FC San Pedro', 'Zoman FC', 'SOA', 'Stella Club',
+  'Bouaké FC', 'AFAD Plateau', 'CO Korhogo', 'ES Agboville', 'Stade d’Abidjan',
+  'FC Mouna', 'OFC Adiaké', 'SOL FC', 'US Tchologo', 'ISCA Inova',
+]
+const REAL_LIGUE2_POULE_A = [
+  'FC OSA', 'AS Athletic', 'Leader Foot', 'Denguélé FC', 'Africa Sports', 'SC Gagnoa',
+  'AS Tanda', 'AS Divo', 'CO Bouaflé', 'Leader SC Marcory', 'JAC Angré', 'Lanfiara FC',
+  'Sirocco FC', 'Don Koff FC',
+]
+const REAL_LIGUE2_POULE_B = [
+  'Racing Club Abidjan', 'JAC Zuénoula', 'Siguilolo FC', 'ES Bingerville', 'Séwé Sport',
+  'WAC', 'Issia Wazy', 'LYS FC', 'Agir FC', 'Atlantis FC', '2 Plateaux FC', 'ESPI',
+  'RFC Aboisso', 'Nour FC',
+]
+const REAL_PRO_CLUBS = [...REAL_LIGUE1_CLUBS, ...REAL_LIGUE2_POULE_A, ...REAL_LIGUE2_POULE_B]
+
+const REAL_CLUB_CITY: Record<string, string> = {
+  'ASEC Mimosas': 'c-abidjan',
+  'Yakro FC': 'c-yamoussoukro',
+  'FC San Pedro': 'c-san-pedro',
+  'Stella Club': 'c-abidjan',
+  'Bouaké FC': 'c-bouake',
+  'AFAD Plateau': 'c-abidjan',
+  'CO Korhogo': 'c-korhogo',
+  'Stade d’Abidjan': 'c-abidjan',
+  'SOL FC': 'c-abidjan',
+  'Africa Sports': 'c-abidjan',
+  'SC Gagnoa': 'c-gagnoa',
+  'Leader SC Marcory': 'c-abidjan',
+  'JAC Angré': 'c-abidjan',
+  'Racing Club Abidjan': 'c-abidjan',
+  'ES Bingerville': 'c-abidjan',
+  'Séwé Sport': 'c-san-pedro',
+  '2 Plateaux FC': 'c-abidjan',
+}
 const clubColorPairs: [string, string][] = [
   ['#087443', '#ffffff'], ['#ff7a00', '#041b12'], ['#041b12', '#ff7a00'],
   ['#d42d28', '#ffffff'], ['#0b1110', '#f5f3ee'], ['#ffffff', '#087443'],
@@ -182,10 +222,15 @@ function makeAchievements(competitionLabel: string, championCount: number, yearF
   return records.sort((a, b) => b.year - a.year)
 }
 
-export const clubs: Club[] = Array.from({ length: 40 }, (_, i) => {
-  const city = rng.pick(cities)
-  const name = makeClubName(city.name, usedClubNames)
-  const category = i < 24 ? 'Professionnel' : i < 30 ? 'Féminin' : i < 36 ? 'Jeunes' : 'Futsal'
+const PRO_CLUB_COUNT = REAL_PRO_CLUBS.length
+
+export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) => {
+  const isRealPro = i < PRO_CLUB_COUNT
+  const city = isRealPro
+    ? cities.find((c) => c.id === REAL_CLUB_CITY[REAL_PRO_CLUBS[i]]) ?? rng.pick(cities)
+    : rng.pick(cities)
+  const name = isRealPro ? REAL_PRO_CLUBS[i] : makeClubName(city.name, usedClubNames)
+  const category = i < PRO_CLUB_COUNT ? 'Professionnel' : i < PRO_CLUB_COUNT + 6 ? 'Féminin' : i < PRO_CLUB_COUNT + 12 ? 'Jeunes' : 'Futsal'
   const clubStadiums = stadiums.filter((s) => s.cityId === city.id)
   const slug = slugify(name)
   const championCount = rng.bool(0.4) ? rng.int(1, 5) : 0
@@ -777,8 +822,8 @@ const youthClubs = clubs.filter((c) => c.category === 'Jeunes')
 const futsalClubs = clubs.filter((c) => c.category === 'Futsal')
 
 export const competitions: Competition[] = [
-  { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 14).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
-  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(14, 24).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L2' },
+  { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 16).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
+  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(16, 44).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L2' },
   { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CN' },
   { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 2).map((c) => c.id), format: 'Match unique', logoInitials: 'SC' },
   { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },

@@ -9,7 +9,8 @@ import {
   getStadiumById,
   getTeam,
   liveMatches,
-  nextFixtureFor,
+  elephantsFixtures,
+  elephantsFlag,
   upcomingMatches,
   videos,
 } from '@/lib/data/mock'
@@ -28,8 +29,7 @@ export default function Page() {
   const nextMatch = upcomingMatches(1)[0]
   const live = liveMatches()[0]
   const elephants = getTeam('elephants')!
-  const nextFixture = nextFixtureFor(elephants.id)
-  const fixtureStadium = getStadiumById(nextFixture.stadiumId)
+  const nextFixture = elephantsFixtures[0]
   const ticker = [...articles.slice(0, 3), ...upcomingMatches(2)].slice(0, 4)
 
   return (
@@ -97,15 +97,15 @@ export default function Page() {
           <p className="muted">Les champions d&apos;Afrique retrouvent le terrain pour une nouvelle bataille.</p>
           <Link className="text-link" href="/equipes-nationales/elephants">Tout sur les Éléphants <ArrowRight /></Link>
         </div>
-        <div className="next-card">
+        <Link href={`/equipes-nationales/elephants/matchs/${nextFixture.slug}`} className="next-card" style={{ display: 'block' }}>
           <div className="next-card-top"><span>{nextFixture.competition.toUpperCase()}</span><span>{formatDate(nextFixture.date).toUpperCase()}</span></div>
           <div className="teams">
-            <div className="team"><div className="crest ivory">CI</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-            <div className="versus"><small>{formatTime(nextFixture.date)}</small><b>VS</b><span>{fixtureStadium?.name}<br />{nextFixture.home ? 'Domicile' : 'Extérieur'}</span></div>
-            <div className="team"><div className="crest red">{nextFixture.opponent.slice(0, 2).toUpperCase()}</div><strong>{nextFixture.opponent}</strong></div>
+            <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
+            <div className="versus"><small>{nextFixture.time}</small><b>VS</b><span>{nextFixture.venue}<br />{nextFixture.home ? 'Domicile' : 'Extérieur'}</span></div>
+            <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{nextFixture.opponentFlag}</div><strong>{nextFixture.opponent}</strong></div>
           </div>
           <CountdownBar targetIso={nextFixture.date} />
-        </div>
+        </Link>
       </section>
 
       <section className="news-section" id="actualites">
