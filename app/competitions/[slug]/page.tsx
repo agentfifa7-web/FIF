@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -20,6 +20,13 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   if (!competition) notFound()
 
   const standings = standingsFor(competition.id)
+  const poules = competition.id === 'comp-l2'
+    ? (['A', 'B'] as const).map((g) => ({
+      label: `Poule ${g}`,
+      standings: standingsFor(competition.id, g),
+      clubIds: competition.clubIds.filter((id) => getClubById(id)?.group === g),
+    }))
+    : undefined
   const compMatches = matches.filter((m) => m.competitionId === competition.id)
   const upcoming = compMatches.filter((m) => m.status === 'À venir').sort((a, b) => +new Date(a.date) - +new Date(b.date))
   const results = compMatches.filter((m) => m.status === 'Terminé').sort((a, b) => +new Date(b.date) - +new Date(a.date))
@@ -45,6 +52,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         <CompetitionTabs
           competition={competition}
           standings={standings}
+          poules={poules}
           upcoming={upcoming}
           results={results}
           scorers={scorers}

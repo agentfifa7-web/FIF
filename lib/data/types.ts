@@ -44,6 +44,7 @@ export interface Club {
   crestInitials: string
   gender: Gender
   category: 'Professionnel' | 'Amateur' | 'Jeunes' | 'Féminin' | 'Futsal'
+  group: 'A' | 'B' | null
   competitionIds: string[]
   website: string
   honours: { title: string; count: number }[]

@@ -223,6 +223,8 @@ function makeAchievements(competitionLabel: string, championCount: number, yearF
 }
 
 const PRO_CLUB_COUNT = REAL_PRO_CLUBS.length
+const L2_POULE_A_START = REAL_LIGUE1_CLUBS.length
+const L2_POULE_B_START = L2_POULE_A_START + REAL_LIGUE2_POULE_A.length
 
 export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) => {
   const isRealPro = i < PRO_CLUB_COUNT
@@ -231,6 +233,7 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) 
     : rng.pick(cities)
   const name = isRealPro ? REAL_PRO_CLUBS[i] : makeClubName(city.name, usedClubNames)
   const category = i < PRO_CLUB_COUNT ? 'Professionnel' : i < PRO_CLUB_COUNT + 6 ? 'Féminin' : i < PRO_CLUB_COUNT + 12 ? 'Jeunes' : 'Futsal'
+  const group: Club['group'] = i >= L2_POULE_A_START && i < L2_POULE_B_START ? 'A' : i >= L2_POULE_B_START && i < PRO_CLUB_COUNT ? 'B' : null
   const clubStadiums = stadiums.filter((s) => s.cityId === city.id)
   const slug = slugify(name)
   const championCount = rng.bool(0.4) ? rng.int(1, 5) : 0
@@ -253,6 +256,7 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) 
       .toUpperCase(),
     gender: category === 'Féminin' ? 'F' : 'M',
     category: category as Club['category'],
+    group,
     competitionIds: [],
     website: `https://${slug}.fif.ci`,
     honours: championCount > 0 ? [{ title: 'Champion national', count: championCount }] : [],
@@ -861,7 +865,7 @@ const futsalClubs = clubs.filter((c) => c.category === 'Futsal')
 
 export const competitions: Competition[] = [
   { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 16).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
-  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(16, 44).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L2' },
+  { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(16, 44).map((c) => c.id), format: '2 poules de 14 clubs, matchs aller-retour au sein de la poule', logoInitials: 'L2' },
   { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CN' },
   { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2025-2026', clubIds: proClubs.slice(0, 2).map((c) => c.id), format: 'Match unique', logoInitials: 'SC' },
   { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2025-2026', clubIds: youthClubs.map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },
@@ -901,12 +905,7 @@ export const matches: Match[] = []
 let matchCounter = 0
 const matchDelegates = officials.filter((o) => o.role === 'Délégué de match' || o.role === 'Commissaire au match')
 
-for (const comp of competitions) {
-  if (comp.clubIds.length < 2) continue
-  const pairs = comp.format === 'Élimination directe' || comp.format === 'Match unique' || comp.format === 'Tournoi'
-    ? rng.shuffle(roundRobinPairs(comp.clubIds)).slice(0, Math.max(4, Math.floor(comp.clubIds.length / 2)))
-    : roundRobinPairs(comp.clubIds).slice(0, comp.clubIds.length * 3)
-
+function generateMatchesForPairs(comp: Competition, pairs: [string, string][], matchdayChunk: number) {
   pairs.forEach(([home, away], idx) => {
     const dayOffset = -60 + idx * 3 + rng.int(-1, 1)
     const date = addDays(TODAY, dayOffset)
@@ -940,7 +939,7 @@ for (const comp of competitions) {
     matches.push({
       id: matchId,
       competitionId: comp.id,
-      matchday: Math.floor(idx / Math.max(1, Math.floor(comp.clubIds.length / 2))) + 1,
+      matchday: Math.floor(idx / Math.max(1, matchdayChunk)) + 1,
       homeClubId: home,
       awayClubId: away,
       stadiumId,
@@ -957,11 +956,30 @@ for (const comp of competitions) {
   })
 }
 
-export function standingsFor(competitionId: string): StandingRow[] {
+for (const comp of competitions) {
+  if (comp.clubIds.length < 2) continue
+  if (comp.id === 'comp-l2') {
+    // Ligue 2 : 2 poules de 14 clubs, chaque club affronte les 13 autres de sa
+    // poule en aller-retour (round-robin complet, sans troncature).
+    const groupAIds = comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === 'A')
+    const groupBIds = comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === 'B')
+    const chunk = Math.max(1, Math.floor(groupAIds.length / 2))
+    generateMatchesForPairs(comp, roundRobinPairs(groupAIds), chunk)
+    generateMatchesForPairs(comp, roundRobinPairs(groupBIds), chunk)
+    continue
+  }
+  const pairs = comp.format === 'Élimination directe' || comp.format === 'Match unique' || comp.format === 'Tournoi'
+    ? rng.shuffle(roundRobinPairs(comp.clubIds)).slice(0, Math.max(4, Math.floor(comp.clubIds.length / 2)))
+    : roundRobinPairs(comp.clubIds).slice(0, comp.clubIds.length * 3)
+  generateMatchesForPairs(comp, pairs, Math.max(1, Math.floor(comp.clubIds.length / 2)))
+}
+
+export function standingsFor(competitionId: string, group?: 'A' | 'B'): StandingRow[] {
   const comp = competitions.find((c) => c.id === competitionId)
   if (!comp) return []
+  const clubIds = group ? comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === group) : comp.clubIds
   const rows = new Map<string, StandingRow>()
-  for (const clubId of comp.clubIds) {
+  for (const clubId of clubIds) {
     rows.set(clubId, { clubId, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 })
   }
   for (const m of matches) {

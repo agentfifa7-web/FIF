@@ -13,6 +13,7 @@ const TABS = ['Présentation', 'Classement', 'Calendrier', 'Résultats', 'Buteur
 export function CompetitionTabs({
   competition,
   standings,
+  poules,
   upcoming,
   results,
   scorers,
@@ -23,6 +24,7 @@ export function CompetitionTabs({
 }: {
   competition: Competition
   standings: StandingRow[]
+  poules?: { label: string; standings: StandingRow[]; clubIds: string[] }[]
   upcoming: Match[]
   results: Match[]
   scorers: { player: Player; goals: number }[]
@@ -40,7 +42,7 @@ export function CompetitionTabs({
 
       {tab === 'Présentation' && (
         <div>
-          <p className="lede">{competition.name} réunit {clubs.length} équipes pour la saison {competition.season}. Format : {competition.format}.</p>
+          <p className="lede">{competition.name} réunit {clubs.length} équipes pour la saison {competition.season}. Format : {competition.format}.{poules ? ` Chaque club affronte les 13 autres clubs de sa poule à domicile et à l’extérieur.` : ''}</p>
           <div className="card-grid cols-4" style={{ marginTop: 24 }}>
             <div className="stat-card"><strong>{clubs.length}</strong><span>Équipes engagées</span></div>
             <div className="stat-card"><strong>{results.length}</strong><span>Matchs joués</span></div>
@@ -51,7 +53,22 @@ export function CompetitionTabs({
       )}
 
       {tab === 'Classement' && (
-        standings.length ? <RankingTable rows={standings} highlightTop={competition.category === 'Seniors' ? 1 : 0} highlightBottom={competition.category === 'Seniors' ? 3 : 0} /> : <p className="lede">Aucun résultat enregistré pour construire un classement sur cette compétition.</p>
+        poules ? (
+          <div className="card-grid cols-2" style={{ alignItems: 'start' }}>
+            {poules.map((p) => (
+              <div key={p.label}>
+                <p className="section-tag">{p.label}</p>
+                {p.standings.length ? (
+                  <div style={{ marginTop: 12 }}><RankingTable rows={p.standings} highlightTop={1} highlightBottom={3} /></div>
+                ) : (
+                  <p className="lede">Aucun résultat enregistré pour construire un classement sur cette poule.</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          standings.length ? <RankingTable rows={standings} highlightTop={competition.category === 'Seniors' ? 1 : 0} highlightBottom={competition.category === 'Seniors' ? 3 : 0} /> : <p className="lede">Aucun résultat enregistré pour construire un classement sur cette compétition.</p>
+        )
       )}
 
       {tab === 'Calendrier' && (
@@ -130,9 +147,22 @@ export function CompetitionTabs({
       })()}
 
       {tab === 'Clubs' && (
-        <div className="card-grid">
-          {clubs.map((c) => c && <ClubCard key={c.id} club={c} />)}
-        </div>
+        poules ? (
+          <div>
+            {poules.map((p) => (
+              <div key={p.label} style={{ marginBottom: 28 }}>
+                <p className="section-tag">{p.label} — {p.clubIds.length} clubs</p>
+                <div className="card-grid" style={{ marginTop: 12 }}>
+                  {p.clubIds.map((id) => getClubById(id)).filter(Boolean).map((c) => c && <ClubCard key={c.id} club={c} />)}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="card-grid">
+            {clubs.map((c) => c && <ClubCard key={c.id} club={c} />)}
+          </div>
+        )
       )}
 
       {tab === 'Joueurs' && (

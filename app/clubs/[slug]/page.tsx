@@ -31,10 +31,11 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
     .map((id) => competitions.find((c) => c.id === id))
     .filter((c) => c !== undefined)
     .map((comp) => {
-      const standings = standingsFor(comp.id)
+      const standings = comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
       const position = standings.findIndex((r) => r.clubId === club.id) + 1
       const row = standings.find((r) => r.clubId === club.id)
-      return { comp, position: position || null, row }
+      const label = comp.id === 'comp-l2' && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
+      return { comp, label, position: position || null, row }
     })
 
   return (
@@ -73,10 +74,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         <section className="page-section tight">
           <p className="section-tag">Compétitions engagées & classement</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            {clubCompetitions.map(({ comp, position, row }) => (
+            {clubCompetitions.map(({ comp, label, position, row }) => (
               <Link href={`/competitions/${comp.slug}`} className="entity-card" key={comp.id}>
                 <div>
-                  <strong>{comp.name}</strong>
+                  <strong>{label}</strong>
                   <span>{position ? `${position}${position === 1 ? 'ère' : 'e'} place` : 'Classement à venir'}{row ? ` · ${row.points} pts · ${row.played} matchs joués` : ''}</span>
                 </div>
               </Link>
