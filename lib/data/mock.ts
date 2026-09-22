@@ -732,6 +732,68 @@ export const internationalFixtures: InternationalFixture[] = nationalTeams.map((
   home: rng.bool(0.6),
 }))
 
+// ---------------------------------------------------------------------------
+// Éléphants (équipe A masculine) — sélection et calendrier réels, non générés.
+// Contenu figé à la date indiquée (communiqué FIF, relayé par la presse
+// ivoirienne et internationale) ; à actualiser après chaque fenêtre FIFA.
+// Sources : mondialsport.ci, connectionivoirienne.net, koaci.com,
+// footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com,
+// foot-africa.com, pulse.ci — 16 au 20 septembre 2026.
+// ---------------------------------------------------------------------------
+export interface RealCallUp {
+  name: string
+  club: string
+  position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant'
+  note?: string
+}
+
+export const elephantsCoach = 'Hervé Renard'
+export const elephantsCallUpDate = '2026-09-20'
+export const elephantsCallUp: RealCallUp[] = [
+  { name: 'Yahia Fofana', club: 'Çaykur Rizespor (Turquie)', position: 'Gardien' },
+  { name: 'Mohamed Koné', club: 'Royal Charleroi SC (Belgique)', position: 'Gardien' },
+  { name: 'Alban Lafont', club: 'Panathinaïkos (Grèce)', position: 'Gardien' },
+  { name: 'Emmanuel Agbadou', club: 'Beşiktaş (Turquie)', position: 'Défenseur' },
+  { name: 'Evan Ndicka', club: 'AS Roma (Italie)', position: 'Défenseur' },
+  { name: 'Ghislain Konan', club: 'Gil Vicente (Portugal)', position: 'Défenseur' },
+  { name: 'Kassoum Ouattara', club: 'Beşiktaş (Turquie)', position: 'Défenseur' },
+  { name: 'Ousmane Diomandé', club: 'Sporting CP (Portugal)', position: 'Défenseur' },
+  { name: 'Christ Tapé', club: 'Toulouse FC (France)', position: 'Défenseur' },
+  { name: 'Junior Diaz', club: 'ES Troyes AC (France)', position: 'Défenseur', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
+  { name: 'Luck Zogbé', club: 'Stade Brestois 29 (France)', position: 'Défenseur', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
+  { name: 'Amadou Koné', club: 'NEOM SC (Arabie saoudite)', position: 'Milieu' },
+  { name: 'Eddy Doué', club: 'CF Estrela Amadora (Portugal)', position: 'Milieu' },
+  { name: 'Franck Kessié', club: 'Al-Ahli (Arabie saoudite)', position: 'Milieu' },
+  { name: 'Ibrahim Sangaré', club: 'Nottingham Forest (Angleterre)', position: 'Milieu' },
+  { name: 'Christ Inao Oulaï', club: 'Trabzonspor (Turquie)', position: 'Milieu' },
+  { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion (Angleterre)', position: 'Milieu' },
+  { name: 'Patrick Zabi', club: 'Paris FC (France)', position: 'Milieu' },
+  { name: 'Ange-Yoan Bonny', club: 'Inter Milan (Italie)', position: 'Attaquant' },
+  { name: 'Bazoumana Touré', club: 'Newcastle United (Angleterre)', position: 'Attaquant' },
+  { name: 'Elye Wahi', club: 'OGC Nice (France)', position: 'Attaquant' },
+  { name: 'Yan Diomandé', club: 'Real Madrid (Espagne)', position: 'Attaquant' },
+  { name: 'Rayan Fofana', club: 'Le Havre AC (France)', position: 'Attaquant' },
+  { name: 'Nicolas Pépé', club: 'Villarreal CF (Espagne)', position: 'Attaquant' },
+  { name: 'Yann Gboho', club: 'Coventry City (Angleterre)', position: 'Attaquant' },
+]
+
+export interface RealFixture {
+  opponent: string
+  date: string
+  time: string
+  venue: string
+  competition: string
+  home: boolean
+}
+
+export const elephantsFixtures: RealFixture[] = [
+  { opponent: 'Ghana', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
+  { opponent: 'Somalie', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true },
+  { opponent: 'Cameroun', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true },
+]
+
+export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
+
 export function nextFixtureFor(teamId: string) {
   return internationalFixtures
     .filter((f) => f.teamId === teamId)
