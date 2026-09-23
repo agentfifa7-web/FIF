@@ -11,7 +11,7 @@ interface PersonRef { id: string; name: string }
 interface StandingSnapshot { played: number; won: number; drawn: number; lost: number; goalsFor: number; goalsAgainst: number; points: number }
 
 export function MatchSheetForm({
-  matchId, matchLabel, homeClub, awayClub, homePlayers, awayPlayers, homeStanding, awayStanding,
+  matchId, matchLabel, homeClub, awayClub, homePlayers, awayPlayers, homeStanding, awayStanding, note,
 }: {
   matchId: string
   matchLabel: string
@@ -19,8 +19,9 @@ export function MatchSheetForm({
   awayClub: PersonRef
   homePlayers: PersonRef[]
   awayPlayers: PersonRef[]
-  homeStanding: StandingSnapshot
-  awayStanding: StandingSnapshot
+  homeStanding?: StandingSnapshot
+  awayStanding?: StandingSnapshot
+  note?: string
 }) {
   const [homeScore, setHomeScore] = useState(0)
   const [awayScore, setAwayScore] = useState(0)
@@ -69,8 +70,8 @@ export function MatchSheetForm({
     setPublished(sheet)
   }
 
-  const afterHome = applyResult(homeStanding, homeScore, awayScore)
-  const afterAway = applyResult(awayStanding, awayScore, homeScore)
+  const afterHome = homeStanding ? applyResult(homeStanding, homeScore, awayScore) : null
+  const afterAway = awayStanding ? applyResult(awayStanding, awayScore, homeScore) : null
   const goalTally = new Map<string, number>()
   for (const g of goals) goalTally.set(g.playerName, (goalTally.get(g.playerName) ?? 0) + 1)
 
@@ -79,6 +80,7 @@ export function MatchSheetForm({
       <form className="form-card" style={{ margin: 0, maxWidth: 'none' }} onSubmit={publish}>
         <h1 style={{ fontSize: 22 }}>Feuille de match</h1>
         <p className="muted-sm">{matchLabel}</p>
+        {note && <p className="muted-sm" style={{ marginTop: 4 }}>{note}</p>}
 
         <div className="matchsheet-score">
           <div className="text-field">
@@ -119,8 +121,8 @@ export function MatchSheetForm({
           ))}
         </div>
         <div className="button-group">
-          <button type="button" className="button-outline" onClick={() => addGoal('home')}><Plus size={14} /> But {homeClub.name}</button>
-          <button type="button" className="button-outline" onClick={() => addGoal('away')}><Plus size={14} /> But {awayClub.name}</button>
+          {homePlayers.length > 0 && <button type="button" className="button-outline" onClick={() => addGoal('home')}><Plus size={14} /> But {homeClub.name}</button>}
+          {awayPlayers.length > 0 && <button type="button" className="button-outline" onClick={() => addGoal('away')}><Plus size={14} /> But {awayClub.name}</button>}
         </div>
 
         <p className="section-tag" style={{ marginTop: 24 }}>Cartons</p>
@@ -149,8 +151,8 @@ export function MatchSheetForm({
           ))}
         </div>
         <div className="button-group">
-          <button type="button" className="button-outline" onClick={() => addCard('home')}><Plus size={14} /> Carton {homeClub.name}</button>
-          <button type="button" className="button-outline" onClick={() => addCard('away')}><Plus size={14} /> Carton {awayClub.name}</button>
+          {homePlayers.length > 0 && <button type="button" className="button-outline" onClick={() => addCard('home')}><Plus size={14} /> Carton {homeClub.name}</button>}
+          {awayPlayers.length > 0 && <button type="button" className="button-outline" onClick={() => addCard('away')}><Plus size={14} /> Carton {awayClub.name}</button>}
         </div>
 
         <div className="form-actions">
@@ -163,11 +165,15 @@ export function MatchSheetForm({
           <p className="matchsheet-published-head"><CheckCircle2 size={18} /> Feuille de match publiée — statistiques mises à jour (démonstration locale)</p>
           <p className="muted-sm">Publiée par {published.submittedBy} le {new Date(published.submittedAt).toLocaleString('fr-FR')}. Cette mise à jour est enregistrée dans votre navigateur ; une synchronisation avec la base fédérale serait nécessaire pour la rendre visible à tous les visiteurs.</p>
 
-          <p className="section-tag" style={{ marginTop: 20 }}>Impact sur le classement</p>
-          <div className="matchsheet-compare">
-            <StandingDelta name={homeClub.name} before={homeStanding} after={afterHome} />
-            <StandingDelta name={awayClub.name} before={awayStanding} after={afterAway} />
-          </div>
+          {homeStanding && awayStanding && afterHome && afterAway && (
+            <>
+              <p className="section-tag" style={{ marginTop: 20 }}>Impact sur le classement</p>
+              <div className="matchsheet-compare">
+                <StandingDelta name={homeClub.name} before={homeStanding} after={afterHome} />
+                <StandingDelta name={awayClub.name} before={awayStanding} after={afterAway} />
+              </div>
+            </>
+          )}
 
           {goalTally.size > 0 && (
             <>

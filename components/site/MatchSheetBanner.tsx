@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { CheckCircle2, ClipboardList } from 'lucide-react'
 import { getMatchSheet, MATCHSHEET_EVENT, type MatchSheetOverride } from '@/lib/matchsheet'
 
-export function MatchSheetBanner({ matchId, homeName, awayName }: { matchId: string; homeName: string; awayName: string }) {
+export function MatchSheetBanner({ matchId, homeName, awayName, editHref }: { matchId: string; homeName: string; awayName: string; editHref?: string }) {
   const [sheet, setSheet] = useState<MatchSheetOverride | null>(null)
+  const href = editHref ?? `/admin/feuille-de-match/${matchId}`
 
   useEffect(() => {
     const check = () => setSheet(getMatchSheet(matchId))
@@ -18,14 +19,14 @@ export function MatchSheetBanner({ matchId, homeName, awayName }: { matchId: str
   if (sheet) {
     return (
       <div className="sim-panel">
-        <p><CheckCircle2 size={15} /> Feuille de match saisie : {homeName} {sheet.homeScore}-{sheet.awayScore} {awayName} (démonstration locale, {new Date(sheet.submittedAt).toLocaleDateString('fr-FR')}) — <Link href={`/admin/feuille-de-match/${matchId}`} className="text-link" style={{ display: 'inline-flex' }}>modifier</Link></p>
+        <p><CheckCircle2 size={15} /> Feuille de match saisie : {homeName} {sheet.homeScore}-{sheet.awayScore} {awayName} (démonstration locale, {new Date(sheet.submittedAt).toLocaleDateString('fr-FR')}) — <Link href={href} className="text-link" style={{ display: 'inline-flex' }}>modifier</Link></p>
       </div>
     )
   }
 
   return (
     <div className="sim-panel">
-      <p><ClipboardList size={15} /> Aucune feuille de match saisie pour l’instant — <Link href={`/admin/feuille-de-match/${matchId}`} className="text-link" style={{ display: 'inline-flex' }}>saisir la feuille de match</Link></p>
+      <p><ClipboardList size={15} /> Aucune feuille de match saisie pour l’instant — <Link href={href} className="text-link" style={{ display: 'inline-flex' }}>saisir la feuille de match</Link></p>
     </div>
   )
 }

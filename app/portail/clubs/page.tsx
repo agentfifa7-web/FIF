@@ -19,7 +19,7 @@ export default function ClubPortalPage() {
   const clubCompetitions = competitions.filter((c) => club.competitionIds.includes(c.id))
   const documents = [
     { name: 'Statuts du club', status: 'À jour' },
-    { name: 'Licence fédérale 2025-2026', status: 'À jour' },
+    { name: 'Licence fédérale 2026-2027', status: 'À jour' },
     { name: 'Rapport financier annuel', status: 'En attente' },
     { name: 'Liste des effectifs', status: 'À jour' },
   ]

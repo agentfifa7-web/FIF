@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ClipboardList } from 'lucide-react'
-import { competitions, matches, getClubById } from '@/lib/data/mock'
+import { competitions, matches, getClubById, elephantsFixtures, elephantsFlag } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
@@ -18,8 +18,24 @@ export default function MatchSheetIndexPage() {
         title="Feuilles de match"
         subtitle="Saisissez le score, les buteurs et les cartons d’un match pour actualiser instantanément les statistiques de la compétition (démonstration locale au navigateur)."
         breadcrumb={[{ label: 'Admin', href: '/admin' }, { label: 'Feuilles de match' }]}
-        meta={[{ value: String(eligible.length), label: 'Matchs à renseigner' }]}
+        meta={[{ value: String(eligible.length + elephantsFixtures.length), label: 'Matchs à renseigner' }]}
       />
+
+      <section className="page-section tight">
+        <p className="section-tag">Équipes nationales — Éléphants</p>
+        <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+          {elephantsFixtures.map((f) => (
+            <Link href={`/admin/feuille-de-match/elephants/${f.slug}`} className="entity-card" key={f.slug}>
+              <ClipboardList size={18} color="var(--orange)" />
+              <div>
+                <strong>{elephantsFlag} Côte d’Ivoire vs {f.opponentFlag} {f.opponent}</strong>
+                <span>{formatDate(f.date)} · {f.competition}</span>
+              </div>
+              <MatchSheetIndicator matchId={f.slug} />
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {competitions.map((comp) => {
         const compMatches = eligible.filter((m) => m.competitionId === comp.id)

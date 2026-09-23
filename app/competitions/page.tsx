@@ -17,7 +17,7 @@ export default function CompetitionsPage() {
         breadcrumb={[{ label: 'Compétitions' }]}
         meta={[
           { value: String(competitions.length), label: 'Compétitions actives' },
-          { value: '2025-2026', label: 'Saison en cours' },
+          { value: competitions[0]?.season ?? '', label: 'Saison en cours' },
         ]}
       />
       <section className="page-section tight">

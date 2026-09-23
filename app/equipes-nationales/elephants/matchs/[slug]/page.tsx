@@ -6,6 +6,7 @@ import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { TicketPurchase, LivePreview } from '@/components/site/ElephantsMatchTools'
+import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
 import { formatDate, formatDateLong } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -65,6 +66,18 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
         <p className="section-tag" style={{ color: 'var(--orange)' }}>Suivre le match</p>
         <div style={{ marginTop: 16, maxWidth: 640 }}>
           <LivePreview isUpcoming />
+        </div>
+      </section>
+
+      <section className="page-section tight">
+        <p className="section-tag">Feuille de match</p>
+        <div style={{ marginTop: 16, maxWidth: 640 }}>
+          <MatchSheetBanner
+            matchId={fixture.slug}
+            homeName={fixture.home ? 'Côte d’Ivoire' : fixture.opponent}
+            awayName={fixture.home ? fixture.opponent : 'Côte d’Ivoire'}
+            editHref={`/admin/feuille-de-match/elephants/${fixture.slug}`}
+          />
         </div>
       </section>
 
