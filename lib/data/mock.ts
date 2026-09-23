@@ -211,6 +211,11 @@ const REAL_CLUB_CRESTS: Record<string, string> = {
   'Racing Club Abidjan': '/crests/racing-club-abidjan.png',
   'SOA': '/crests/soa.png',
   'SOL FC': '/crests/sol-fc.jpg',
+  'Stade d’Abidjan': '/crests/stade-dabidjan.png',
+  'Stella Club': '/crests/stella-club.jpg',
+  'US Tchologo': '/crests/us-tchologo.jpg',
+  'Yakro FC': '/crests/yakro-fc.png',
+  'Zoman FC': '/crests/zoman-fc.jpg',
 }
 
 const clubColorPairs: [string, string][] = [
