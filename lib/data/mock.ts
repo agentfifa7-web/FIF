@@ -1439,9 +1439,11 @@ export const ticketEvents: TicketEvent[] = matches
     id: `ticket-${m.id}`,
     matchId: m.id,
     categories: [
-      { name: 'Populaire', price: 2000, available: rng.int(500, 4000) },
-      { name: 'Tribune', price: 5000, available: rng.int(200, 2000) },
-      { name: 'VIP', price: 15000, available: rng.int(20, 300) },
+      { name: 'Populaire', price: 1500, available: rng.int(1000, 6000) },
+      { name: 'Tribune Latérale', price: 3000, available: rng.int(500, 3000) },
+      { name: 'Tribune Centrale', price: 5000, available: rng.int(300, 1500) },
+      { name: 'Catégorie 1', price: 8000, available: rng.int(100, 600) },
+      { name: 'Carré VIP', price: 15000, available: rng.int(20, 200) },
     ],
   }))
 

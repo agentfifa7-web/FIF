@@ -36,7 +36,7 @@ export default function TicketsPage() {
                 </div>
                 <div className="ticket-card-foot">
                   <span>Dès {formatMoney(minPrice)}</span>
-                  <Link href={`/matches/${match.id}`} className="button-outline">Voir le match</Link>
+                  <Link href={`/billetterie/${ev.id}`} className="button button-primary">Réserver</Link>
                 </div>
               </div>
             )
