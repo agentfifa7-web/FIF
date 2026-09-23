@@ -352,6 +352,47 @@ export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
 // ---------------------------------------------------------------------------
 const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
+// Effectif réel de l'ASEC Mimosas — numérotation officielle saison 2026-2027
+// (fiche club transmise par l'utilisateur). Nom, poste et numéro de maillot
+// réels ; âge, attributs, contrat et statistiques restent générés (non
+// communiqués par le club) — voir Player.realRoster.
+const REAL_ASEC_MIMOSAS_ROSTER: { number: number; name: string; position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant' }[] = [
+  { number: 2, name: 'Mohamed Ali Yabré', position: 'Défenseur' },
+  { number: 3, name: 'Gaoussou Samaké', position: 'Défenseur' },
+  { number: 4, name: 'Kouassi Mickael Blé', position: 'Défenseur' },
+  { number: 6, name: 'Wilfried Semelo Guei', position: 'Milieu' },
+  { number: 7, name: 'Deha Rivaldo Sro', position: 'Attaquant' },
+  { number: 9, name: 'Bakaré Kevin Ouato', position: 'Attaquant' },
+  { number: 10, name: 'Saint-Jean Firmin Koré', position: 'Attaquant' },
+  { number: 11, name: 'Brou David Koffi', position: 'Attaquant' },
+  { number: 12, name: 'Franck Eric Zaballa Kouassi', position: 'Attaquant' },
+  { number: 13, name: 'Abdoul Abass Maiga', position: 'Milieu' },
+  { number: 14, name: 'Younouss Tembely', position: 'Milieu' },
+  { number: 15, name: 'Seydou Fané', position: 'Milieu' },
+  { number: 16, name: 'Ruben Levy Yelo', position: 'Gardien' },
+  { number: 18, name: 'Othiniel Ephraim Godo', position: 'Défenseur' },
+  { number: 19, name: 'Ben Guel Kouyaté', position: 'Attaquant' },
+  { number: 20, name: 'Olivier D’avila Sou', position: 'Milieu' },
+  { number: 21, name: 'Ayayi Charles Folly', position: 'Gardien' },
+  { number: 22, name: 'Guy Stephane Bedi', position: 'Attaquant' },
+  { number: 23, name: 'Aimé Guy Urbain Lasme', position: 'Attaquant' },
+  { number: 24, name: 'Ousmane Diarra', position: 'Défenseur' },
+  { number: 25, name: 'Youssifou Atté', position: 'Défenseur' },
+  { number: 26, name: 'Franck Carlos Zouzou', position: 'Défenseur' },
+  { number: 27, name: 'Abdoulaye Samassa', position: 'Défenseur' },
+  { number: 28, name: 'Zoumana Kané', position: 'Milieu' },
+  { number: 29, name: 'Franck Armel Amany', position: 'Attaquant' },
+  { number: 31, name: 'Hibrahime Oularé', position: 'Milieu' },
+  { number: 32, name: 'Ziega Yannick Koutou', position: 'Attaquant' },
+  { number: 33, name: 'Adama Fofana', position: 'Milieu' },
+  { number: 35, name: 'Zokou Benito Zadi', position: 'Défenseur' },
+  { number: 36, name: 'Dakaud Guy Serge Gnahoré', position: 'Milieu' },
+  { number: 37, name: 'Cedric Jonathan Gobehi', position: 'Attaquant' },
+  { number: 38, name: 'Souhalio Bamba', position: 'Attaquant' },
+  { number: 39, name: 'Josué Caleb Zouzoua', position: 'Attaquant' },
+  { number: 40, name: 'Ousmane Zombra', position: 'Gardien' },
+]
+
 function makeCareerHistory(club: Club, birthYear: number, joinYear: number) {
   const debutYear = birthYear + 17
   const spanAvailable = joinYear - debutYear
@@ -381,10 +422,13 @@ type BasePlayer = Omit<Player,
   'currentAbilityStars' | 'potentialAbilityStars' | 'personality' | 'statusFlags' |
   'attributes' | 'traits' | 'scoutReport' | 'seasonStats'>
 
-const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
-  Array.from({ length: club.category === 'Futsal' ? 10 : 20 }, (_, pi) => {
+const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) => {
+  const realRoster = club.name === 'ASEC Mimosas' ? REAL_ASEC_MIMOSAS_ROSTER : null
+  const count = realRoster ? realRoster.length : club.category === 'Futsal' ? 10 : 20
+  return Array.from({ length: count }, (_, pi) => {
+    const real = realRoster?.[pi]
     const gender = club.gender
-    const name = fullName(gender === 'F' ? 'F' : 'M')
+    const name = real ? real.name : fullName(gender === 'F' ? 'F' : 'M')
     const id = `player-${ci}-${pi}`
     const birthYear = rng.int(1994, 2009)
     return {
@@ -392,20 +436,22 @@ const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) =>
       slug: `${slugify(name)}-${ci}${pi}`,
       name,
       photoSeed: id,
-      position: rng.pick(positions),
+      position: real ? real.position : rng.pick(positions),
       clubId: club.id,
       gender,
       birthdate: `${birthYear}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`,
       nationality: 'Côte d’Ivoire',
-      fifId: `FIF-${(10000 + ci * 20 + pi).toString().padStart(6, '0')}`,
+      fifId: `FIF-${(10000 + ci * 40 + pi).toString().padStart(6, '0')}`,
       licenseStatus: rng.bool(0.85) ? 'Valide' : rng.bool() ? 'En attente' : 'Expirée',
+      squadNumber: real?.number,
+      realRoster: Boolean(real),
       // Saison à venir non encore débutée : compteurs de la saison en cours à zéro.
       stats: { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 },
       history: makeCareerHistory(club, birthYear, rng.int(2019, 2024)),
       nationalSelections: [],
     }
-  }),
-)
+  })
+})
 
 // ---------------------------------------------------------------------------
 // Player scouting profile — attributs (1-20), contrat, valeur marchande,

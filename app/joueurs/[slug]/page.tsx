@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { QrCode } from 'lucide-react'
+import { Info, QrCode } from 'lucide-react'
 import { players, getPlayer, getClubById, nationalTeams, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb, HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, StatCard } from '@/components/site/cards'
@@ -59,7 +59,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               {club && <span className="avatar-crest-badge"><ClubCrest club={club} size={28} /></span>}
             </span>
             <div>
-              <p className="eyebrow"><span /> {player.position} · {club?.name}</p>
+              <p className="eyebrow"><span /> {player.squadNumber ? `N°${player.squadNumber} · ` : ''}{player.position} · {club?.name}</p>
               <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{player.name}</h1>
             </div>
           </div>
@@ -71,6 +71,12 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           </div>
         </div>
       </section>
+
+      {player.realRoster && (
+        <section className="page-section tight" style={{ paddingBottom: 0 }}>
+          <p className="press-source-note"><Info size={13} /> Nom, poste et numéro de maillot réels — numérotation officielle {club?.name}, saison 2026-2027. Âge, attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</p>
+        </section>
+      )}
 
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
         <div className="player-status-bar">
@@ -86,6 +92,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           <div className="dashboard-panel" style={{ margin: 0 }}>
             <h3>Identité & contrat</h3>
             <div className="dashboard-list">
+              {player.squadNumber && <div><small>Numéro de maillot</small><b>N°{player.squadNumber}</b></div>}
               <div><small>Nationalité</small><b>{player.nationality}</b></div>
               <div><small>Taille</small><b>{player.height} cm</b></div>
               <div><small>Poids</small><b>{player.weight} kg</b></div>

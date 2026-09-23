@@ -105,7 +105,7 @@ export function PlayerCard({ player }: { player: Player }) {
         {club && <span className="avatar-crest-badge avatar-crest-badge-sm"><ClubCrest club={club} size={16} /></span>}
       </span>
       <div>
-        <strong>{player.name}</strong>
+        <strong>{player.squadNumber ? `N°${player.squadNumber} ` : ''}{player.name}</strong>
         <span>{player.position} · {age(player.birthdate)} ans · {club?.shortName}</span>
       </div>
       <ArrowRight />

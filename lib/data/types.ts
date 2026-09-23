@@ -141,6 +141,10 @@ export interface Player {
   birthdate: string
   nationality: string
   fifId: string
+  squadNumber?: number
+  /** Nom, poste et numéro réels (source : numérotation officielle du club) —
+   *  le reste du profil (âge, attributs, contrat, statistiques) reste généré. */
+  realRoster?: boolean
   licenseStatus: 'Valide' | 'En attente' | 'Expirée'
   stats: { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }
   history: { clubId: string; from: number; to: number | null }[]
