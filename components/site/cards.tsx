@@ -7,6 +7,19 @@ import { formatDate, formatTime, age } from '@/lib/format'
 const SHIELD_PATH = 'M12,6 L88,6 L88,50 C88,73 70,89 50,96 C30,89 12,73 12,50 Z'
 
 export function ClubCrest({ club, size = 44 }: { club: Club; size?: number }) {
+  if (club.crestUrl) {
+    return (
+      <img
+        src={club.crestUrl}
+        alt={`Écusson ${club.name}`}
+        width={size}
+        height={size}
+        className="club-crest"
+        style={{ flexShrink: 0, height: size, objectFit: 'contain', width: size }}
+      />
+    )
+  }
+
   const idNum = parseInt(club.id.replace(/\D/g, ''), 10) || 0
   const diagonal = idNum % 2 === 1
   const clipId = `crest-clip-${club.id}`

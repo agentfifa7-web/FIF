@@ -198,6 +198,16 @@ const REAL_CLUB_CITY: Record<string, string> = {
   'Séwé Sport': 'c-san-pedro',
   '2 Plateaux FC': 'c-abidjan',
 }
+
+// Écussons officiels réels fournis par l'utilisateur — sinon écusson SVG généré.
+const REAL_CLUB_CRESTS: Record<string, string> = {
+  'Bouaké FC': '/crests/bouake-fc.png',
+  'ES Agboville': '/crests/es-agboville.jpg',
+  'FC Mouna': '/crests/fc-mouna.png',
+  'ISCA Inova': '/crests/isca-inova.webp',
+  'OFC Adiaké': '/crests/ofc-adiake.png',
+}
+
 const clubColorPairs: [string, string][] = [
   ['#087443', '#ffffff'], ['#ff7a00', '#041b12'], ['#041b12', '#ff7a00'],
   ['#d42d28', '#ffffff'], ['#0b1110', '#f5f3ee'], ['#ffffff', '#087443'],
@@ -254,6 +264,7 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) 
       .slice(0, 3)
       .join('')
       .toUpperCase(),
+    crestUrl: REAL_CLUB_CRESTS[name],
     gender: category === 'Féminin' ? 'F' : 'M',
     category: category as Club['category'],
     group,

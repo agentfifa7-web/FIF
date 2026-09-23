@@ -42,6 +42,8 @@ export interface Club {
   president: string
   colors: [string, string]
   crestInitials: string
+  /** Écusson officiel réel (image fournie), sinon l'écusson SVG généré est utilisé. */
+  crestUrl?: string
   gender: Gender
   category: 'Professionnel' | 'Amateur' | 'Jeunes' | 'Féminin' | 'Futsal'
   group: 'A' | 'B' | null
