@@ -206,6 +206,11 @@ const REAL_CLUB_CRESTS: Record<string, string> = {
   'FC Mouna': '/crests/fc-mouna.png',
   'ISCA Inova': '/crests/isca-inova.webp',
   'OFC Adiaké': '/crests/ofc-adiake.png',
+  'SC Gagnoa': '/crests/sc-gagnoa.jpg',
+  'FC OSA': '/crests/fc-osa.jpg',
+  'Racing Club Abidjan': '/crests/racing-club-abidjan.png',
+  'SOA': '/crests/soa.png',
+  'SOL FC': '/crests/sol-fc.jpg',
 }
 
 const clubColorPairs: [string, string][] = [
