@@ -1195,8 +1195,6 @@ const COUNTRY_FLAG: Record<string, string> = {
   France: '🇫🇷',
 }
 
-const WIKIMEDIA_FILE_PATH = 'https://commons.wikimedia.org/wiki/Special:FilePath/'
-
 export const elephantsCoach = 'Hervé Renard'
 export const elephantsCallUpDate = '2026-09-20'
 const elephantsCallUpRaw: RealCallUpRaw[] = [
@@ -1218,13 +1216,13 @@ const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu', birthdate: '2006-04-06', photoUrl: '/players/elephants/christ-inao-oulai.png' },
   { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu', birthdate: '2005-11-18', photoUrl: '/players/elephants/malick-yalcouye.png' },
   { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu', birthdate: '2006-09-24', photoUrl: '/players/elephants/patrick-zabi.jpg' },
-  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21', tierOverride: 76 },
-  { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02' },
-  { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: `${WIKIMEDIA_FILE_PATH}Elye_Wahi_2022.jpg` },
-  { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14' },
-  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant', birthdate: '2006-02-12' },
-  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: `${WIKIMEDIA_FILE_PATH}Nicolas_Pepe_LOSC.jpg`, tierOverride: 74 },
-  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-02-12' },
+  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21', photoUrl: '/players/elephants/ange-yoan-bonny.png', tierOverride: 76 },
+  { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02', photoUrl: '/players/elephants/bazoumana-toure.jpg' },
+  { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: '/players/elephants/elye-wahi.jpg' },
+  { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14', photoUrl: '/players/elephants/yan-diomande.jpg' },
+  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant', birthdate: '2006-02-12', photoUrl: '/players/elephants/rayan-fofana.jpg' },
+  { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: '/players/elephants/nicolas-pepe.png', tierOverride: 74 },
+  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-02-12', photoUrl: '/players/elephants/yann-gboho.png' },
 ]
 
 function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
