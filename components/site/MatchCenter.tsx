@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Link from 'next/link'
-import { CalendarDays, MapPin, Users, Zap } from 'lucide-react'
+import { CalendarDays, MapPin, Radio, Users } from 'lucide-react'
 import type { Match, MatchEvent, Player } from '@/lib/data/types'
 import { ClubCrest } from './cards'
 import { getClubById, getPlayerById, getStadiumById, getRefereeById } from '@/lib/data/mock'
+import { useLiveMatch } from '@/lib/liveMatch'
 import { formatDate, formatTime } from '@/lib/format'
 
 const eventLabel: Record<MatchEvent['type'], string> = {
@@ -21,33 +22,15 @@ export function MatchCenter({
   homeRoster: Player[]
   awayRoster: Player[]
 }) {
-  const [match, setMatch] = useState(initialMatch)
+  const live = useLiveMatch(initialMatch)
+  const match: Match = { ...initialMatch, ...live }
   const home = getClubById(match.homeClubId)!
   const away = getClubById(match.awayClubId)!
   const stadium = getStadiumById(match.stadiumId)
   const referee = getRefereeById(match.refereeId)
+  const hasLiveScript = !!initialMatch.liveScript?.length
 
   const sortedEvents = useMemo(() => [...match.events].sort((a, b) => a.minute - b.minute), [match.events])
-
-  function simulate(type: MatchEvent['type']) {
-    setMatch((prev) => {
-      const team: 'home' | 'away' = Math.random() > 0.5 ? 'home' : 'away'
-      const roster = team === 'home' ? homeRoster : awayRoster
-      const player = roster.length ? roster[Math.floor(Math.random() * roster.length)] : undefined
-      const minute = Math.min(90, (prev.minute ?? 1) + Math.floor(Math.random() * 4) + 1)
-      const event: MatchEvent = { minute, type, team, playerId: player?.id }
-      const homeScore = (prev.homeScore ?? 0) + (type === 'goal' && team === 'home' ? 1 : 0)
-      const awayScore = (prev.awayScore ?? 0) + (type === 'goal' && team === 'away' ? 1 : 0)
-      return {
-        ...prev,
-        status: type === 'ft' ? 'Terminé' : 'Live',
-        minute: type === 'ft' ? prev.minute : minute,
-        homeScore,
-        awayScore,
-        events: [...prev.events, event],
-      }
-    })
-  }
 
   const startingXI = (roster: Player[]) => {
     const gk = roster.filter((p) => p.position === 'Gardien').slice(0, 1)
@@ -85,21 +68,10 @@ export function MatchCenter({
         <span><MapPin /> {stadium?.name}</span>
         {match.attendance && <span><Users /> {match.attendance.toLocaleString('fr-FR')} spectateurs</span>}
         <span>Arbitre : {referee?.name ?? 'à confirmer'}</span>
+        {hasLiveScript && (
+          <span><Radio size={14} /> {match.status === 'Live' ? 'Suivi automatique en temps réel' : match.status === 'Terminé' ? 'Résultat automatique (coup d’envoi passé)' : 'Passera en direct au coup d’envoi'}</span>
+        )}
       </div>
-
-      {match.status !== 'Terminé' && (
-        <div className="sim-panel">
-          <p><Zap /> Simulateur live (démonstration admin) — déclenchez un événement pour voir le Match Center se mettre à jour en temps réel.</p>
-          <div className="button-group">
-            <button type="button" className="button-outline" onClick={() => simulate('goal')}>But</button>
-            <button type="button" className="button-outline" onClick={() => simulate('yellow')}>Carton jaune</button>
-            <button type="button" className="button-outline" onClick={() => simulate('red')}>Carton rouge</button>
-            <button type="button" className="button-outline" onClick={() => simulate('sub')}>Remplacement</button>
-            <button type="button" className="button-outline" onClick={() => simulate('ht')}>Mi-temps</button>
-            <button type="button" className="button-outline" onClick={() => simulate('ft')}>Fin du match</button>
-          </div>
-        </div>
-      )}
 
       <div className="match-center-grid">
         <div>

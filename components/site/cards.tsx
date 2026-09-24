@@ -1,8 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowRight, MapPin, CalendarDays, Play, Trophy } from 'lucide-react'
 import type { Article, Club, Competition, Match, Player, Video } from '@/lib/data/types'
 import { getClubById, getStadiumById, cityName } from '@/lib/data/mock'
 import { formatDate, formatTime, age } from '@/lib/format'
+import { useLiveMatch } from '@/lib/liveMatch'
 
 const SHIELD_PATH = 'M12,6 L88,6 L88,50 C88,73 70,89 50,96 C30,89 12,73 12,50 Z'
 
@@ -79,16 +82,17 @@ export function MatchCard({ match }: { match: Match }) {
   const home = getClubById(match.homeClubId)
   const away = getClubById(match.awayClubId)
   const stadium = getStadiumById(match.stadiumId)
+  const live = useLiveMatch(match)
   if (!home || !away) return null
   return (
-    <Link href={`/matches/${match.id}`} className={`match-card status-${match.status === 'Live' ? 'live' : match.status === 'Terminé' ? 'done' : 'upcoming'}`}>
+    <Link href={`/matches/${match.id}`} className={`match-card status-${live.status === 'Live' ? 'live' : live.status === 'Terminé' ? 'done' : 'upcoming'}`}>
       <div className="match-card-top">
         <span>{formatDate(match.date)} · {formatTime(match.date)}</span>
-        {match.status === 'Live' ? <b className="live-pill"><i /> {match.minute}&apos;</b> : <b>{match.status}</b>}
+        {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status}</b>}
       </div>
       <div className="match-card-teams">
         <div><ClubCrest club={home} size={36} /><span>{home.shortName}</span></div>
-        <strong>{match.homeScore !== null ? `${match.homeScore} - ${match.awayScore}` : 'VS'}</strong>
+        <strong>{live.homeScore !== null ? `${live.homeScore} - ${live.awayScore}` : 'VS'}</strong>
         <div><ClubCrest club={away} size={36} /><span>{away.shortName}</span></div>
       </div>
       <div className="match-card-bottom"><MapPin /> {stadium?.name ?? ''}</div>

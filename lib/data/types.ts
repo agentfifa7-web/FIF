@@ -284,6 +284,10 @@ export interface Match {
   refereeId: string
   delegateId: string | null
   attendance?: number
+  /** Scénario d'événements pré-généré (déterministe) utilisé pour dériver, côté
+   *  client et à partir de l'heure réelle, le score et la minute « en direct »
+   *  une fois le coup d'envoi (date) atteint — voir lib/liveMatch.ts. */
+  liveScript?: MatchEvent[]
 }
 
 export interface Article {

@@ -8,7 +8,7 @@ import {
   getClubById,
   getStadiumById,
   getTeam,
-  liveMatches,
+  matches,
   elephantsFixtures,
   elephantsFlag,
   upcomingMatches,
@@ -17,6 +17,7 @@ import {
 import { formatDate, formatTime } from '@/lib/format'
 import { NewsCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { useFirstLiveMatch } from '@/lib/liveMatch'
 
 const categories = ['Tous', 'Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Jeunes', 'Compétitions', 'Fédération']
 
@@ -27,7 +28,7 @@ export default function Page() {
     [category],
   )
   const nextMatch = upcomingMatches(1)[0]
-  const live = liveMatches()[0]
+  const live = useFirstLiveMatch(matches)
   const elephants = getTeam('elephants')!
   const nextFixture = elephantsFixtures[0]
   const ticker = [...articles.slice(0, 3), ...upcomingMatches(2)].slice(0, 4)

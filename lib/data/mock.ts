@@ -975,10 +975,34 @@ export const matches: Match[] = []
 let matchCounter = 0
 const matchDelegates = officials.filter((o) => o.role === 'Délégué de match' || o.role === 'Commissaire au match')
 
+function buildMatchEvents(home: string, away: string, homeScore: number, awayScore: number): MatchEvent[] {
+  const events: MatchEvent[] = []
+  events.push({ minute: 0, type: 'kickoff', team: 'home' })
+  const scorers = [
+    ...Array.from({ length: homeScore }, () => ({ team: 'home' as const })),
+    ...Array.from({ length: awayScore }, () => ({ team: 'away' as const })),
+  ]
+  for (const s of rng.shuffle(scorers)) {
+    const teamPlayers = playersOf(s.team === 'home' ? home : away)
+    const scorer = teamPlayers.length ? rng.pick(teamPlayers) : undefined
+    events.push({ minute: rng.int(1, 90), type: 'goal', team: s.team, playerId: scorer?.id })
+  }
+  for (let c = 0; c < rng.int(0, 4); c++) {
+    const team = rng.bool() ? 'home' : 'away'
+    const teamPlayers = playersOf(team === 'home' ? home : away)
+    events.push({ minute: rng.int(1, 90), type: 'yellow', team, playerId: teamPlayers.length ? rng.pick(teamPlayers).id : undefined })
+  }
+  events.push({ minute: 45, type: 'ht', team: 'home' })
+  events.push({ minute: 90, type: 'ft', team: 'home' })
+  events.sort((a, b) => a.minute - b.minute)
+  return events
+}
+
 function generateMatchesForPairs(comp: Competition, pairs: [string, string][], matchdayChunk: number) {
   pairs.forEach(([home, away], idx) => {
     // Les compétitions démarrent très prochainement : aucun match n'a encore
-    // été joué, tous les calendriers restent entièrement à venir.
+    // été officiellement joué, tous les calendriers restent entièrement à
+    // venir au moment de la génération statique.
     const dayOffset = 4 + idx * 3 + rng.int(-1, 1)
     const date = addDays(TODAY, dayOffset)
     const isPast = date.getTime() < TODAY.getTime() - 1000 * 60 * 60 * 2
@@ -987,27 +1011,14 @@ function generateMatchesForPairs(comp: Competition, pairs: [string, string][], m
     const matchId = `match-${matchCounter++}`
     const homeScore = isPast ? rng.int(0, 4) : null
     const awayScore = isPast ? rng.int(0, 4) : null
-    const events: MatchEvent[] = []
-    if (isPast && homeScore !== null && awayScore !== null) {
-      events.push({ minute: 0, type: 'kickoff', team: 'home' })
-      const scorers = [
-        ...Array.from({ length: homeScore }, () => ({ team: 'home' as const })),
-        ...Array.from({ length: awayScore }, () => ({ team: 'away' as const })),
-      ]
-      for (const s of rng.shuffle(scorers)) {
-        const teamPlayers = playersOf(s.team === 'home' ? home : away)
-        const scorer = teamPlayers.length ? rng.pick(teamPlayers) : undefined
-        events.push({ minute: rng.int(1, 90), type: 'goal', team: s.team, playerId: scorer?.id })
-      }
-      for (let c = 0; c < rng.int(0, 4); c++) {
-        const team = rng.bool() ? 'home' : 'away'
-        const teamPlayers = playersOf(team === 'home' ? home : away)
-        events.push({ minute: rng.int(1, 90), type: 'yellow', team, playerId: teamPlayers.length ? rng.pick(teamPlayers).id : undefined })
-      }
-      events.push({ minute: 45, type: 'ht', team: 'home' })
-      events.push({ minute: 90, type: 'ft', team: 'home' })
-      events.sort((a, b) => a.minute - b.minute)
-    }
+    const events: MatchEvent[] = isPast && homeScore !== null && awayScore !== null
+      ? buildMatchEvents(home, away, homeScore, awayScore)
+      : []
+
+    // Scénario « live » déterministe : dérivé côté client, une fois l'heure
+    // réelle du coup d'envoi (date) effectivement atteinte — voir lib/liveMatch.ts.
+    const liveScript = buildMatchEvents(home, away, rng.int(0, 4), rng.int(0, 4))
+
     matches.push({
       id: matchId,
       competitionId: comp.id,
@@ -1021,6 +1032,7 @@ function generateMatchesForPairs(comp: Competition, pairs: [string, string][], m
       homeScore,
       awayScore,
       events,
+      liveScript,
       refereeId: rng.pick(referees).id,
       delegateId: matchDelegates.length ? rng.pick(matchDelegates).id : null,
       attendance: isPast ? rng.int(800, 42000) : undefined,

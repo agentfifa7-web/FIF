@@ -1,21 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Competition, Match, Player, Referee, StandingRow } from '@/lib/data/types'
 import { getClubById } from '@/lib/data/mock'
+import { useLiveMatches } from '@/lib/liveMatch'
 import { RankingTable, Tabs } from './widgets'
 import { ClubCard, MatchCard } from './cards'
 import { PersonPortrait } from './PersonPortrait'
 
 const TABS = ['Présentation', 'Classement', 'Calendrier', 'Résultats', 'Buteurs', 'Passeurs', 'Statistiques', 'Clubs', 'Joueurs', 'Arbitres'] as const
 
+// Le calendrier et les résultats sont recalculés ici en direct à partir de
+// l'heure réelle (allMatches contient tous les matchs de la compétition) :
+// un match dont le coup d'envoi est passé bascule automatiquement de l'un à
+// l'autre. Classement, buteurs, passeurs et statistiques restent en revanche
+// figés à la génération du site (ou à la prochaine feuille de match validée
+// côté Portail Clubs) : les recalculer en direct nécessiterait de dupliquer
+// ici toute la logique de classement/agrégation côté serveur.
 export function CompetitionTabs({
   competition,
   standings,
   poules,
-  upcoming,
-  results,
   scorers,
   assisters,
   officiatingReferees,
@@ -25,8 +31,6 @@ export function CompetitionTabs({
   competition: Competition
   standings: StandingRow[]
   poules?: { label: string; standings: StandingRow[]; clubIds: string[] }[]
-  upcoming: Match[]
-  results: Match[]
   scorers: { player: Player; goals: number }[]
   assisters: { player: Player; assists: number }[]
   officiatingReferees: { referee: Referee; count: number }[]
@@ -35,6 +39,20 @@ export function CompetitionTabs({
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>('Présentation')
   const clubs = competition.clubIds.map((id) => getClubById(id)).filter(Boolean)
+  const liveMap = useLiveMatches(allMatches)
+
+  const upcoming = useMemo(
+    () => allMatches
+      .filter((m) => { const s = liveMap.get(m.id)?.status ?? m.status; return s === 'À venir' || s === 'Live' })
+      .sort((a, b) => +new Date(a.date) - +new Date(b.date)),
+    [allMatches, liveMap],
+  )
+  const results = useMemo(
+    () => allMatches
+      .filter((m) => (liveMap.get(m.id)?.status ?? m.status) === 'Terminé')
+      .sort((a, b) => +new Date(b.date) - +new Date(a.date)),
+    [allMatches, liveMap],
+  )
 
   return (
     <div>
@@ -128,7 +146,9 @@ export function CompetitionTabs({
       )}
 
       {tab === 'Statistiques' && (() => {
-        const played = allMatches.filter((m) => m.status === 'Terminé')
+        const played = allMatches
+          .filter((m) => (liveMap.get(m.id)?.status ?? m.status) === 'Terminé')
+          .map((m) => { const live = liveMap.get(m.id); return live ? { ...m, homeScore: live.homeScore, awayScore: live.awayScore, events: live.events } : m })
         const goals = played.reduce((sum, m) => sum + (m.homeScore ?? 0) + (m.awayScore ?? 0), 0)
         const yellows = played.reduce((sum, m) => sum + m.events.filter((e) => e.type === 'yellow').length, 0)
         const reds = played.reduce((sum, m) => sum + m.events.filter((e) => e.type === 'red').length, 0)

@@ -6,7 +6,6 @@ import { DemoBadge } from '@/components/site/DemoBadge'
 export const metadata = { title: 'Calendrier des matchs — FIF Digital' }
 
 export default function MatchesPage() {
-  const upcoming = matches.filter((m) => m.status === 'À venir' || m.status === 'Live').sort((a, b) => +new Date(a.date) - +new Date(b.date))
   return (
     <main>
       <PageHero
@@ -14,10 +13,10 @@ export default function MatchesPage() {
         title="Calendrier des matchs"
         subtitle="Tous les matchs à venir du football ivoirien : Ligue 1, Ligue 2, Coupe Nationale, championnats féminins et jeunes, futsal, beach soccer."
         breadcrumb={[{ label: 'Calendrier' }]}
-        meta={[{ value: String(upcoming.length), label: 'Matchs programmés' }]}
+        meta={[{ value: String(matches.length), label: 'Matchs programmés cette saison' }]}
       />
       <section className="page-section tight">
-        <MatchExplorer matches={upcoming} mode="calendrier" />
+        <MatchExplorer matches={matches} mode="calendrier" />
       </section>
       <section className="page-section tight"><DemoBadge /></section>
     </main>

@@ -28,8 +28,6 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
     }))
     : undefined
   const compMatches = matches.filter((m) => m.competitionId === competition.id)
-  const upcoming = compMatches.filter((m) => m.status === 'À venir').sort((a, b) => +new Date(a.date) - +new Date(b.date))
-  const results = compMatches.filter((m) => m.status === 'Terminé').sort((a, b) => +new Date(b.date) - +new Date(a.date))
   const scorers = topScorersFor(competition.id)
   const assisters = topAssistsFor(competition.id)
   const officiatingReferees = refereesFor(competition.id)
@@ -44,8 +42,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         breadcrumb={[{ label: 'Compétitions', href: '/competitions' }, { label: competition.name }]}
         meta={[
           { value: String(competition.clubIds.length), label: 'Équipes' },
-          { value: String(results.length), label: 'Matchs joués' },
-          { value: String(upcoming.length), label: 'À venir' },
+          { value: String(compMatches.length), label: 'Matchs cette saison' },
         ]}
       />
       <section className="page-section tight">
@@ -53,8 +50,6 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           competition={competition}
           standings={standings}
           poules={poules}
-          upcoming={upcoming}
-          results={results}
           scorers={scorers}
           assisters={assisters}
           officiatingReferees={officiatingReferees}
