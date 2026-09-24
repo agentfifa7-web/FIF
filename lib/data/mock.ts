@@ -1208,6 +1208,192 @@ const COUNTRY_FLAG: Record<string, string> = {
   France: '🇫🇷',
 }
 
+// Statistiques réelles (championnat/coupe de club de la saison en cours +
+// carrière en sélection), recherchées individuellement pour chacun des 25
+// Éléphants appelés — voir la note affichée sur chaque fiche joueur pour la
+// méthode de collecte et ses limites (transfermarkt.com était inaccessible
+// depuis cet environnement ; sources croisées : FotMob, sites officiels des
+// clubs, presse sportive, Wikipedia — au 24 septembre 2026). Passes
+// décisives en sélection laissées à 0 quand aucune source publique ne les
+// dénombre (plutôt qu'estimées).
+const ELEPHANTS_REAL_STATS: Record<string, ElephantsStats> = {
+  'Yahia Fofana': {
+    club: {
+      championship: { competition: 'Süper Lig', matches: 27, goals: 0, assists: 1 },
+      cup: { competition: 'Türkiye Kupası', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 39, goals: 0, assists: 0 },
+  },
+  'Mohamed Koné': {
+    club: {
+      championship: { competition: 'Jupiler Pro League', matches: 5, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de Belgique', matches: 2, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Alban Lafont': {
+    club: {
+      championship: { competition: 'Super League Greece', matches: 22, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de Grèce', matches: 5, goals: 0, assists: 0 },
+    },
+    national: { caps: 4, goals: 0, assists: 0 },
+  },
+  'Emmanuel Agbadou': {
+    club: {
+      championship: { competition: 'Süper Lig', matches: 4, goals: 1, assists: 1 },
+      cup: { competition: 'Türkiye Kupası', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 18, goals: 1, assists: 0 },
+  },
+  'Evan Ndicka': {
+    club: {
+      championship: { competition: 'Serie A', matches: 23, goals: 3, assists: 0 },
+      cup: { competition: 'Coppa Italia', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 28, goals: 0, assists: 0 },
+  },
+  'Ghislain Konan': {
+    club: {
+      championship: { competition: 'Liga Portugal', matches: 30, goals: 0, assists: 0 },
+      cup: { competition: 'Taça de Portugal', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 57, goals: 0, assists: 0 },
+  },
+  'Kassoum Ouattara': {
+    club: {
+      championship: { competition: 'Süper Lig', matches: 6, goals: 0, assists: 0 },
+      cup: { competition: 'Türkiye Kupası', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Ousmane Diomandé': {
+    club: {
+      championship: { competition: 'Liga Portugal', matches: 17, goals: 0, assists: 0 },
+      cup: { competition: 'Taça de Portugal', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 14, goals: 1, assists: 0 },
+  },
+  'Christ Tapé': {
+    club: {
+      championship: { competition: 'Ligue 1', matches: 2, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Junior Diaz': {
+    club: {
+      championship: { competition: 'Ligue 2', matches: 0, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 1, goals: 0, assists: 0 },
+  },
+  'Luck Zogbé': {
+    club: {
+      championship: { competition: 'Ligue 1', matches: 9, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Amadou Koné': {
+    club: {
+      championship: { competition: 'Saudi Pro League', matches: 18, goals: 1, assists: 0 },
+      cup: { competition: 'Coupe du Roi (Arabie saoudite)', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Eddy Doué': {
+    club: {
+      championship: { competition: 'Liga Portugal', matches: 7, goals: 0, assists: 0 },
+      cup: { competition: 'Taça de Portugal', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Franck Kessié': {
+    club: {
+      championship: { competition: 'Serie A', matches: 2, goals: 0, assists: 0 },
+      cup: { competition: 'Coppa Italia', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 101, goals: 14, assists: 0 },
+  },
+  'Ibrahim Sangaré': {
+    club: {
+      championship: { competition: 'Premier League', matches: 1, goals: 0, assists: 0 },
+      cup: { competition: 'EFL Cup', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 61, goals: 12, assists: 0 },
+  },
+  'Christ Inao Oulaï': {
+    club: {
+      championship: { competition: 'Serie A', matches: 3, goals: 0, assists: 0 },
+      cup: { competition: 'Coppa Italia', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 9, goals: 0, assists: 0 },
+  },
+  'Malick Yalcouyé': {
+    club: {
+      championship: { competition: 'Premier League', matches: 5, goals: 2, assists: 0 },
+      cup: { competition: 'EFL Cup', matches: 1, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Patrick Zabi': {
+    club: {
+      championship: { competition: 'Ligue 1', matches: 3, goals: 0, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Ange-Yoan Bonny': {
+    club: {
+      championship: { competition: 'Serie A', matches: 3, goals: 1, assists: 0 },
+      cup: { competition: 'Coppa Italia', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 5, goals: 0, assists: 0 },
+  },
+  'Bazoumana Touré': {
+    club: {
+      championship: { competition: 'Premier League', matches: 3, goals: 1, assists: 0 },
+      cup: { competition: 'EFL Cup', matches: 1, goals: 1, assists: 0 },
+    },
+    national: { caps: 9, goals: 2, assists: 0 },
+  },
+  'Elye Wahi': {
+    club: {
+      championship: { competition: 'Ligue 1', matches: 2, goals: 1, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 9, goals: 1, assists: 0 },
+  },
+  'Yan Diomandé': {
+    club: {
+      championship: { competition: 'La Liga', matches: 6, goals: 0, assists: 1 },
+      cup: { competition: 'Copa del Rey', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 14, goals: 3, assists: 0 },
+  },
+  'Rayan Fofana': {
+    club: {
+      championship: { competition: 'Ligue 1', matches: 2, goals: 1, assists: 0 },
+      cup: { competition: 'Coupe de France', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+  'Nicolas Pépé': {
+    club: {
+      championship: { competition: 'La Liga', matches: 6, goals: 2, assists: 0 },
+      cup: { competition: 'Copa del Rey', matches: 0, goals: 0, assists: 0 },
+    },
+    national: { caps: 60, goals: 14, assists: 0 },
+  },
+  'Yann Gboho': {
+    club: {
+      championship: { competition: 'Premier League', matches: 2, goals: 0, assists: 0 },
+      cup: { competition: 'EFL Cup', matches: 1, goals: 0, assists: 1 },
+    },
+    national: { caps: 0, goals: 0, assists: 0 },
+  },
+}
+
 export const elephantsCoach = 'Hervé Renard'
 export const elephantsCallUpDate = '2026-09-20'
 const elephantsCallUpRaw: RealCallUpRaw[] = [
@@ -1224,9 +1410,9 @@ const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', birthdate: '2005-03-24', photoUrl: '/players/elephants/luck-zogbe.jpg', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
   { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu', birthdate: '2005-05-14', photoUrl: '/players/elephants/amadou-kone.jpg' },
   { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu', birthdate: '2005-12-11', photoUrl: '/players/elephants/eddy-doue.png' },
-  { name: 'Franck Kessié', club: 'Al-Ahli', country: 'Arabie saoudite', position: 'Milieu', birthdate: '1996-12-19', photoUrl: '/players/elephants/franck-kessie.png', tierOverride: 82 },
+  { name: 'Franck Kessié', club: 'Atalanta BC', country: 'Italie', position: 'Milieu', birthdate: '1996-12-19', photoUrl: '/players/elephants/franck-kessie.png', tierOverride: 82 },
   { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu', birthdate: '1997-12-02', photoUrl: '/players/elephants/ibrahim-sangare.png', tierOverride: 84 },
-  { name: 'Christ Inao Oulaï', club: 'Trabzonspor', country: 'Turquie', position: 'Milieu', birthdate: '2006-04-06', photoUrl: '/players/elephants/christ-inao-oulai.png' },
+  { name: 'Christ Inao Oulaï', club: 'ACF Fiorentina', country: 'Italie', position: 'Milieu', birthdate: '2006-04-06', photoUrl: '/players/elephants/christ-inao-oulai.png' },
   { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu', birthdate: '2005-11-18', photoUrl: '/players/elephants/malick-yalcouye.png' },
   { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu', birthdate: '2006-09-24', photoUrl: '/players/elephants/patrick-zabi.jpg' },
   { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21', photoUrl: '/players/elephants/ange-yoan-bonny.png', tierOverride: 76 },
@@ -1274,44 +1460,15 @@ function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
     summary: `Sélectionné par Hervé Renard, ${p.name} évolue à ${p.club}. Profil technique estimé fort en ${sortedAttrs[0][0].toLowerCase()} et ${sortedAttrs[1][0].toLowerCase()}.`,
   }
 
-  // Statistiques (estimation générée — voir note affichée sur la fiche) :
-  // saison de club en cours, championnat et coupe nationale distingués, plus
-  // le total de sélections/buts en équipe nationale, calés sur le poste,
-  // l'âge et le niveau estimé du joueur.
-  const age = ageFromBirthdate(p.birthdate)
-  const abilityFactor = tier / 100
-  const goalRangeByPosition: Record<RealCallUpRaw['position'], [number, number]> = {
-    Gardien: [0, 0],
-    Défenseur: [0, 5],
-    Milieu: [1, 9],
-    Attaquant: [6, 22],
-  }
-  const assistRangeByPosition: Record<RealCallUpRaw['position'], [number, number]> = {
-    Gardien: [0, 1],
-    Défenseur: [1, 6],
-    Milieu: [2, 11],
-    Attaquant: [2, 10],
-  }
-  const [gMin, gMax] = goalRangeByPosition[p.position]
-  const [aMin, aMax] = assistRangeByPosition[p.position]
-
-  const champMatches = Math.round(rng.int(14, 30) * (0.65 + abilityFactor * 0.45))
-  const champGoals = Math.round(rng.int(gMin, gMax) * (0.6 + abilityFactor * 0.5))
-  const champAssists = Math.round(rng.int(aMin, aMax) * (0.6 + abilityFactor * 0.5))
-  const cupMatches = Math.max(0, Math.round(champMatches * (0.12 + rng.float() * 0.12)))
-  const cupGoals = Math.max(0, Math.round(champGoals * (0.15 + rng.float() * 0.15)))
-  const cupAssists = Math.max(0, Math.round(champAssists * (0.15 + rng.float() * 0.15)))
-
-  const caps = Math.min(95, Math.max(1, Math.round((age - 17) * (2 + rng.float() * 4) * (0.6 + abilityFactor * 0.7))))
-  const natGoals = Math.max(0, Math.round(caps * (gMax > 0 ? 0.05 + rng.float() * 0.3 : 0) * abilityFactor))
-  const natAssists = Math.max(0, Math.round(caps * (aMax > 0 ? 0.04 + rng.float() * 0.21 : 0) * abilityFactor))
-
-  const stats: ElephantsStats = {
+  // Statistiques réelles (voir note affichée sur la fiche pour la méthode et
+  // ses limites) — recherchées individuellement pour chacun des 25 appelés,
+  // saison de club en cours, championnat et coupe nationale distinguées.
+  const stats: ElephantsStats = ELEPHANTS_REAL_STATS[p.name] ?? {
     club: {
-      championship: { competition: `Championnat (${p.country})`, matches: champMatches, goals: champGoals, assists: champAssists },
-      cup: { competition: `Coupe nationale (${p.country})`, matches: cupMatches, goals: cupGoals, assists: cupAssists },
+      championship: { competition: `Championnat (${p.country})`, matches: 0, goals: 0, assists: 0 },
+      cup: { competition: `Coupe nationale (${p.country})`, matches: 0, goals: 0, assists: 0 },
     },
-    national: { caps, goals: natGoals, assists: natAssists },
+    national: { caps: 0, goals: 0, assists: 0 },
   }
 
   return {

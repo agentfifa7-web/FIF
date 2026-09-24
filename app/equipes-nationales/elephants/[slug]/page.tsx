@@ -52,7 +52,8 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       </section>
 
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, statistiques, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
+        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
+        <p className="press-source-note"><Info size={13} /> Statistiques (championnat, coupe, sélection) : chiffres réels compilés le 24 septembre 2026 depuis des sources publiques (FotMob, sites officiels des clubs, presse sportive, Wikipédia) — transfermarkt.com n’étant pas accessible depuis cet environnement. Certains chiffres restaient contradictoires selon les sources au moment de la recherche ; les passes décisives en sélection nationale, rarement recensées publiquement, sont laissées à 0 plutôt qu’estimées.</p>
         {player.note && (
           <p className="status-flag pending" style={{ display: 'inline-block', marginTop: 12 }}>{player.note}</p>
         )}
@@ -77,7 +78,7 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Statistiques (estimation)</p>
+        <p className="section-tag">Statistiques (saison 2026-2027)</p>
         <div className="stats-highlight-grid" style={{ marginTop: 16 }}>
           <div className="stats-highlight-card tone-orange">
             <Trophy size={22} />
