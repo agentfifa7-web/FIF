@@ -30,6 +30,8 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
   return (
     <main>
       <section className="page-hero tone-forest">
+        <video className="hero-video" src="/flags/cote-divoire-flottante.mp4" autoPlay muted loop playsInline preload="auto" aria-hidden="true" />
+        <div className="page-hero-scrim" />
         <div className="page-hero-content">
           <div style={{ padding: '0 0 8px' }}>
             <Breadcrumb items={[{ label: 'Équipes nationales', href: '/equipes-nationales' }, { label: 'Éléphants', href: '/equipes-nationales/elephants' }, { label: player.name }]} />
