@@ -46,6 +46,7 @@ const PILLARS = [
     title: 'Fan Life',
     description: 'Matchday, associations, partenaires, récompenses.',
     links: [
+      { label: 'Club des Supporters', href: '/supporters/club-des-supporters' },
       { label: 'Mode Matchday', href: '/supporters/matchday' },
       { label: 'Fan Clubs & associations', href: '/supporters/associations' },
       { label: 'Avantages partenaires', href: '/supporters/partenaires' },

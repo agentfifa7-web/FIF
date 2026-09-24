@@ -15,6 +15,13 @@ export interface FanZoneDraft {
   submittedAt: string
 }
 
+export interface FanMembership {
+  tier: string
+  memberNumber: string
+  since: string
+  giftedTo?: string
+}
+
 export interface FanProfile {
   pseudo: string
   cityId: string
@@ -28,6 +35,7 @@ export interface FanProfile {
   chantsViewed: string[]
   fanZonePosts: FanZoneDraft[]
   badges: string[]
+  membership: FanMembership | null
 }
 
 const STORAGE_KEY = 'fif-fan-profile-v1'
@@ -47,6 +55,7 @@ function emptyProfile(pseudo: string, cityId: string, favoriteTeamId: string): F
     chantsViewed: [],
     fanZonePosts: [],
     badges: [],
+    membership: null,
   }
 }
 
@@ -162,6 +171,21 @@ export function publishFanZonePost(type: FanZoneDraft['type'], caption: string):
   const draft: FanZoneDraft = { id: `local-${Date.now()}`, type, caption, submittedAt: new Date().toISOString() }
   const updated: FanProfile = { ...profile, fanZonePosts: [draft, ...profile.fanZonePosts] }
   const withXp = applyXp(updated, 20)
+  save(withXp)
+  return withXp
+}
+
+export function subscribeMembership(tier: string, giftedTo?: string): FanProfile | null {
+  const profile = getFanProfile()
+  if (!profile) return null
+  const membership: FanMembership = {
+    tier,
+    memberNumber: `CDS-${Date.now().toString(36).toUpperCase()}`,
+    since: new Date().toISOString(),
+    giftedTo: giftedTo || undefined,
+  }
+  const updated: FanProfile = { ...profile, membership }
+  const withXp = applyXp(updated, 100)
   save(withXp)
   return withXp
 }
