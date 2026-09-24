@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { articles, getArticle } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { NewsCard } from '@/components/site/cards'
+import { NewsThumb } from '@/components/site/NewsThumb'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 
@@ -34,7 +35,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span>Par {article.author}</span>
           <span>{formatDate(article.date, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
         </div>
-        <div className="article-image" style={{ backgroundImage: `url(${article.image})` }} />
+        <div className="article-image"><NewsThumb article={article} /></div>
         <div className="article-body">
           {article.body.map((p, i) => <p key={i}>{p}</p>)}
         </div>

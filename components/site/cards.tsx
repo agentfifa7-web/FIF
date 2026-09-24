@@ -6,6 +6,7 @@ import type { Article, Club, Competition, Match, Player, Video } from '@/lib/dat
 import { getClubById, getStadiumById, cityName } from '@/lib/data/mock'
 import { formatDate, formatTime, age } from '@/lib/format'
 import { useLiveMatch } from '@/lib/liveMatch'
+import { NewsThumb } from './NewsThumb'
 
 const SHIELD_PATH = 'M12,6 L88,6 L88,50 C88,73 70,89 50,96 C30,89 12,73 12,50 Z'
 
@@ -133,7 +134,8 @@ export function PlayerCard({ player }: { player: Player }) {
 export function NewsCard({ article, featured = false }: { article: Article; featured?: boolean }) {
   return (
     <article className={featured ? 'news-card featured' : 'news-card'}>
-      <Link href={`/actualites/${article.slug}`} className="news-image" style={{ backgroundImage: `url(${article.image})` }}>
+      <Link href={`/actualites/${article.slug}`} className="news-image">
+        <NewsThumb article={article} />
         <span>{article.category}</span>
       </Link>
       <div className="news-body">
