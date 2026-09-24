@@ -1150,6 +1150,18 @@ export const internationalFixtures: InternationalFixture[] = nationalTeams.map((
 // footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com,
 // foot-africa.com, pulse.ci — 16 au 20 septembre 2026.
 // ---------------------------------------------------------------------------
+export interface ElephantsCompetitionStats {
+  competition: string
+  matches: number
+  goals: number
+  assists: number
+}
+
+export interface ElephantsStats {
+  club: { championship: ElephantsCompetitionStats; cup: ElephantsCompetitionStats }
+  national: { caps: number; goals: number; assists: number }
+}
+
 export interface RealCallUp {
   slug: string
   name: string
@@ -1167,6 +1179,7 @@ export interface RealCallUp {
   traits: string[]
   scoutReport: ScoutReport
   preferredPositions: PositionFamiliarity[]
+  stats: ElephantsStats
   fmCalibrated: boolean
 }
 
@@ -1261,6 +1274,46 @@ function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
     summary: `Sélectionné par Hervé Renard, ${p.name} évolue à ${p.club}. Profil technique estimé fort en ${sortedAttrs[0][0].toLowerCase()} et ${sortedAttrs[1][0].toLowerCase()}.`,
   }
 
+  // Statistiques (estimation générée — voir note affichée sur la fiche) :
+  // saison de club en cours, championnat et coupe nationale distingués, plus
+  // le total de sélections/buts en équipe nationale, calés sur le poste,
+  // l'âge et le niveau estimé du joueur.
+  const age = ageFromBirthdate(p.birthdate)
+  const abilityFactor = tier / 100
+  const goalRangeByPosition: Record<RealCallUpRaw['position'], [number, number]> = {
+    Gardien: [0, 0],
+    Défenseur: [0, 5],
+    Milieu: [1, 9],
+    Attaquant: [6, 22],
+  }
+  const assistRangeByPosition: Record<RealCallUpRaw['position'], [number, number]> = {
+    Gardien: [0, 1],
+    Défenseur: [1, 6],
+    Milieu: [2, 11],
+    Attaquant: [2, 10],
+  }
+  const [gMin, gMax] = goalRangeByPosition[p.position]
+  const [aMin, aMax] = assistRangeByPosition[p.position]
+
+  const champMatches = Math.round(rng.int(14, 30) * (0.65 + abilityFactor * 0.45))
+  const champGoals = Math.round(rng.int(gMin, gMax) * (0.6 + abilityFactor * 0.5))
+  const champAssists = Math.round(rng.int(aMin, aMax) * (0.6 + abilityFactor * 0.5))
+  const cupMatches = Math.max(0, Math.round(champMatches * (0.12 + rng.float() * 0.12)))
+  const cupGoals = Math.max(0, Math.round(champGoals * (0.15 + rng.float() * 0.15)))
+  const cupAssists = Math.max(0, Math.round(champAssists * (0.15 + rng.float() * 0.15)))
+
+  const caps = Math.min(95, Math.max(1, Math.round((age - 17) * (2 + rng.float() * 4) * (0.6 + abilityFactor * 0.7))))
+  const natGoals = Math.max(0, Math.round(caps * (gMax > 0 ? 0.05 + rng.float() * 0.3 : 0) * abilityFactor))
+  const natAssists = Math.max(0, Math.round(caps * (aMax > 0 ? 0.04 + rng.float() * 0.21 : 0) * abilityFactor))
+
+  const stats: ElephantsStats = {
+    club: {
+      championship: { competition: `Championnat (${p.country})`, matches: champMatches, goals: champGoals, assists: champAssists },
+      cup: { competition: `Coupe nationale (${p.country})`, matches: cupMatches, goals: cupGoals, assists: cupAssists },
+    },
+    national: { caps, goals: natGoals, assists: natAssists },
+  }
+
   return {
     slug: slugify(p.name),
     name: p.name,
@@ -1273,6 +1326,7 @@ function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
     currentAbilityStars: 0,
     potentialAbilityStars: 0,
     personality,
+    stats,
     attributes: { technical, mental, physical } as PlayerAttributes,
     traits,
     scoutReport,

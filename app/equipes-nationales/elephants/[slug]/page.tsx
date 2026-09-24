@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Info } from 'lucide-react'
+import { Award, Flag, Info, Trophy } from 'lucide-react'
 import { elephantsCallUp, getElephantsPlayer, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -52,7 +52,7 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       </section>
 
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
+        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Étoiles, statistiques, attributs, personnalité et rapport de recrutement ci-dessous sont des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
         {player.note && (
           <p className="status-flag pending" style={{ display: 'inline-block', marginTop: 12 }}>{player.note}</p>
         )}
@@ -61,7 +61,7 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       <section className="page-section tight">
         <p className="section-tag">Informations générales et statuts</p>
         <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-          <div className="dashboard-panel" style={{ margin: 0 }}>
+          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
             <h3>Évaluation (estimation)</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <StarRating count={player.currentAbilityStars} label="Niveau actuel" />
@@ -69,9 +69,45 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
             </div>
             <p className="lede" style={{ fontSize: 12, marginTop: 14 }}>Estimation relative à l’ensemble des 25 Éléphants sélectionnés.</p>
           </div>
-          <div className="dashboard-panel" style={{ margin: 0 }}>
+          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
             <h3>Postes préférentiels</h3>
             <PositionChips positions={player.preferredPositions} />
+          </div>
+        </div>
+      </section>
+
+      <section className="page-section tight">
+        <p className="section-tag">Statistiques (estimation)</p>
+        <div className="stats-highlight-grid" style={{ marginTop: 16 }}>
+          <div className="stats-highlight-card tone-orange">
+            <Trophy size={22} />
+            <h3>Championnat</h3>
+            <span className="stats-highlight-sub">{player.stats.club.championship.competition}</span>
+            <div className="stats-highlight-numbers">
+              <div><strong>{player.stats.club.championship.matches}</strong><span>Matchs</span></div>
+              <div><strong>{player.stats.club.championship.goals}</strong><span>Buts</span></div>
+              <div><strong>{player.stats.club.championship.assists}</strong><span>Passes D.</span></div>
+            </div>
+          </div>
+          <div className="stats-highlight-card tone-green">
+            <Award size={22} />
+            <h3>Coupe nationale</h3>
+            <span className="stats-highlight-sub">{player.stats.club.cup.competition}</span>
+            <div className="stats-highlight-numbers">
+              <div><strong>{player.stats.club.cup.matches}</strong><span>Matchs</span></div>
+              <div><strong>{player.stats.club.cup.goals}</strong><span>Buts</span></div>
+              <div><strong>{player.stats.club.cup.assists}</strong><span>Passes D.</span></div>
+            </div>
+          </div>
+          <div className="stats-highlight-card tone-flag">
+            <Flag size={22} />
+            <h3>Sélection Éléphants</h3>
+            <span className="stats-highlight-sub">Côte d’Ivoire · toutes compétitions</span>
+            <div className="stats-highlight-numbers">
+              <div><strong>{player.stats.national.caps}</strong><span>Sélections</span></div>
+              <div><strong>{player.stats.national.goals}</strong><span>Buts</span></div>
+              <div><strong>{player.stats.national.assists}</strong><span>Passes D.</span></div>
+            </div>
           </div>
         </div>
       </section>
