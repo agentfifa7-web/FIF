@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Info, QrCode } from 'lucide-react'
+import { Award, Flag, Info, QrCode, Trophy } from 'lucide-react'
 import { players, getPlayer, getClubById, nationalTeams, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb, HeroCarousel } from '@/components/site/PageHero'
-import { ClubCrest, StatCard } from '@/components/site/cards'
+import { ClubCrest } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
 import { PlayerRadar } from '@/components/site/PlayerRadar'
@@ -89,7 +89,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       <section className="page-section tight">
         <p className="section-tag">Informations générales et statuts</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
-          <div className="dashboard-panel" style={{ margin: 0 }}>
+          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
             <h3>Identité & contrat</h3>
             <div className="dashboard-list">
               {player.squadNumber && <div><small>Numéro de maillot</small><b>N°{player.squadNumber}</b></div>}
@@ -100,7 +100,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               <div><small>Contrat jusqu’au</small><b>{formatDate(player.contractUntil)}</b></div>
             </div>
           </div>
-          <div className="dashboard-panel" style={{ margin: 0 }}>
+          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
             <h3>Évaluation du staff</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <StarRating count={player.currentAbilityStars} label="Niveau actuel" />
@@ -108,7 +108,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             </div>
             <p className="lede" style={{ fontSize: 12, marginTop: 14 }}>Estimation relative à l’effectif de {club?.name}.</p>
           </div>
-          <div className="dashboard-panel" style={{ margin: 0 }}>
+          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
             <h3>Postes préférentiels</h3>
             <PositionChips positions={player.preferredPositions} />
           </div>
@@ -173,11 +173,39 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight">
-        <div className="card-grid cols-4">
-          <StatCard label="Minutes jouées" value={player.stats.minutes} />
-          <StatCard label="Cartons jaunes" value={player.stats.yellow} />
-          <StatCard label="Cartons rouges" value={player.stats.red} />
-          <StatCard label="Sélections nationales" value={player.nationalSelections.reduce((a, s) => a + s.caps, 0)} />
+        <p className="section-tag">Statistiques</p>
+        <div className="stats-highlight-grid" style={{ marginTop: 16 }}>
+          <div className="stats-highlight-card tone-orange">
+            <Trophy size={22} />
+            <h3>Saison en cours</h3>
+            <span className="stats-highlight-sub">{club?.name}</span>
+            <div className="stats-highlight-numbers">
+              <div><strong>{player.stats.matches}</strong><span>Matchs</span></div>
+              <div><strong>{player.stats.goals}</strong><span>Buts</span></div>
+              <div><strong>{player.stats.assists}</strong><span>Passes D.</span></div>
+            </div>
+          </div>
+          <div className="stats-highlight-card tone-green">
+            <Award size={22} />
+            <h3>Discipline & temps de jeu</h3>
+            <span className="stats-highlight-sub">Saison en cours</span>
+            <div className="stats-highlight-numbers">
+              <div><strong>{player.stats.minutes}</strong><span>Minutes</span></div>
+              <div><strong>{player.stats.yellow}</strong><span>Jaunes</span></div>
+              <div><strong>{player.stats.red}</strong><span>Rouges</span></div>
+            </div>
+          </div>
+          {player.nationalSelections.length > 0 && (
+            <div className="stats-highlight-card tone-flag">
+              <Flag size={22} />
+              <h3>Sélection nationale</h3>
+              <span className="stats-highlight-sub">Toutes compétitions</span>
+              <div className="stats-highlight-numbers">
+                <div><strong>{player.nationalSelections.reduce((a, s) => a + s.caps, 0)}</strong><span>Sélections</span></div>
+                <div><strong>{player.nationalSelections.reduce((a, s) => a + s.goals, 0)}</strong><span>Buts</span></div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
