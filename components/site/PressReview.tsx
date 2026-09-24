@@ -2,6 +2,18 @@ import { ArrowRight, Newspaper } from 'lucide-react'
 import type { PressItem } from '@/lib/news/rss'
 import { EmptyState } from './widgets'
 
+// Même logique de vignette générée que NewsThumb.tsx : les flux de presse
+// réels (Google Actualités) ne fournissent qu'un titre/lien/source, jamais
+// de vignette, donc chaque carte reçoit un dégradé + icône déterministe par
+// titre plutôt qu'une simple alternance de deux teintes.
+const TONES = ['#087443', '#c85a00', '#0b1110', '#1c4587', '#7a4706', '#6d2d6d', '#0a5c33', '#a4501f']
+
+function hashString(value: string) {
+  let h = 0
+  for (let i = 0; i < value.length; i++) h = (h * 31 + value.charCodeAt(i)) >>> 0
+  return h
+}
+
 function timeAgo(pubDate: string | null) {
   if (!pubDate) return ''
   const d = new Date(pubDate)
@@ -25,9 +37,17 @@ export function PressReview({ items, ok }: { items: PressItem[]; ok: boolean }) 
 
   return (
     <div className="card-grid press-news-grid">
-      {items.map((item, i) => (
+      {items.map((item, i) => {
+        const seed = hashString(item.title)
+        const tone = TONES[seed % TONES.length]
+        const tone2 = TONES[(seed >> 4) % TONES.length]
+        const diagonal = seed % 2 === 1
+        return (
         <article className="news-card press-card" key={i}>
-          <a href={item.link} target="_blank" rel="noopener noreferrer" className={`news-image press-card-image ${i % 2 === 0 ? 'tone-a' : 'tone-b'}`}>
+          <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-image press-card-image" style={{ background: tone }}>
+            <svg className="press-card-bg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              {diagonal ? <polygon points="100,0 100,100 0,100" fill={tone2} opacity="0.55" /> : <polygon points="0,0 100,0 100,100" fill={tone2} opacity="0.55" />}
+            </svg>
             <Newspaper />
             <span>{item.source}</span>
           </a>
@@ -37,7 +57,8 @@ export function PressReview({ items, ok }: { items: PressItem[]; ok: boolean }) 
             <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`Lire sur ${item.source} : ${item.title}`}><ArrowRight /></a>
           </div>
         </article>
-      ))}
+        )
+      })}
     </div>
   )
 }
