@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Award, Flag, Info, Trophy } from 'lucide-react'
+import { Award, Flag, Trophy } from 'lucide-react'
 import { elephantsCallUp, getElephantsPlayer, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -51,12 +51,11 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
         </div>
       </section>
 
-      <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <p className="press-source-note"><Info size={13} /> Identité, club et âge réels — sélection communiquée par Hervé Renard. Statistiques de championnat, coupe et sélection réelles, compilées le 24 septembre 2026 depuis des sources publiques. Étoiles, attributs, personnalité et rapport de recrutement ci-dessous restent des estimations générées à titre indicatif, non des données officielles.{player.fmCalibrated ? ' Niveau global calibré à partir de données Football Manager 24/25/26 publiquement disponibles pour ce joueur.' : ''}</p>
-        {player.note && (
-          <p className="status-flag pending" style={{ display: 'inline-block', marginTop: 12 }}>{player.note}</p>
-        )}
-      </section>
+      {player.note && (
+        <section className="page-section tight" style={{ paddingBottom: 0 }}>
+          <p className="status-flag pending" style={{ display: 'inline-block' }}>{player.note}</p>
+        </section>
+      )}
 
       <section className="page-section tight">
         <p className="section-tag">Informations générales et statuts</p>
