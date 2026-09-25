@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Info, MapPin } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import type { RealFixtureEvent } from '@/lib/data/mock'
-import { elephantsFixtures, getElephantsFixture, elephantsFlag, elephantsCallUp, elephantsSourceNote } from '@/lib/data/mock'
+import { elephantsFixtures, getElephantsFixture, elephantsFlag, elephantsCallUp } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
@@ -65,7 +65,6 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
             <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{fixture.opponentFlag}</div><strong>{fixture.opponent}</strong></div>
           </div>
         </div>
-        <p className="press-source-note" style={{ marginTop: 16 }}><Info size={13} /> {elephantsSourceNote}</p>
       </section>
 
       {result ? (
@@ -83,7 +82,6 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
             ))}
             {!result.events.length && <p className="lede" style={{ color: '#cfe0d6' }}>Aucun but ni carton recensé pour ce match.</p>}
           </div>
-          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20, maxWidth: 640 }}><Info size={13} /> {result.source}</p>
         </section>
       ) : (
         <>

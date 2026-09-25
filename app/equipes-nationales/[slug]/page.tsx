@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CalendarDays, Info, MapPin, Trophy } from 'lucide-react'
+import { CalendarDays, MapPin, Trophy } from 'lucide-react'
 import {
   getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, getStadiumById, getClubById,
-  elephantsCoach, elephantsCallUp, elephantsCallUpDate, elephantsFixtures, elephantsSourceNote, elephantsFlag,
+  elephantsCoach, elephantsCallUp, elephantsCallUpDate, elephantsFixtures, elephantsFlag,
 } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
@@ -118,7 +118,6 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
               </div>
             </div>
           ))}
-          <p className="press-source-note" style={{ marginTop: 16 }}><Info size={13} /> {elephantsSourceNote}</p>
         </section>
       ) : (
         <section className="page-section tight">
