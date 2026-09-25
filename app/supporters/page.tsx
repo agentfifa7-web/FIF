@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Gamepad2, IdCard, MessageCircle, Users } from 'lucide-react'
-import { elephantsFixtures, quizQuestions, fanZonePosts } from '@/lib/data/mock'
+import { nextElephantsFixture, quizQuestions, fanZonePosts } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { FanHomeDashboard } from '@/components/site/FanHomeDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -58,7 +58,7 @@ const PILLARS = [
 ]
 
 export default function SupportersPage() {
-  const fixture = elephantsFixtures[0]
+  const fixture = nextElephantsFixture()
   const dailyQuestion = quizQuestions[5]
   const recentPosts = fanZonePosts.slice(0, 3).map((p) => ({ authorName: p.authorName, type: p.type, caption: p.caption }))
 

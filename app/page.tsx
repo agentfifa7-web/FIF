@@ -9,7 +9,7 @@ import {
   getStadiumById,
   getTeam,
   matches,
-  elephantsFixtures,
+  nextElephantsFixture,
   elephantsFlag,
   upcomingMatches,
   videos,
@@ -30,7 +30,7 @@ export default function Page() {
   const nextMatch = upcomingMatches(1)[0]
   const live = useFirstLiveMatch(matches)
   const elephants = getTeam('elephants')!
-  const nextFixture = elephantsFixtures[0]
+  const nextFixture = nextElephantsFixture()
   const ticker = [...articles.slice(0, 3), ...upcomingMatches(2)].slice(0, 4)
 
   return (

@@ -70,10 +70,14 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
                 <div className="next-card-top"><span>{f.competition.toUpperCase()}</span><span>{formatDate(f.date).toUpperCase()}</span></div>
                 <div className="teams">
                   <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-                  <div className="versus"><small>{f.time}</small><b>VS</b><span>{f.venue}<br />{f.home ? 'Domicile' : 'Extérieur'}</span></div>
+                  {f.result ? (
+                    <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{f.result.civScore} - {f.result.opponentScore}</b><span>{f.venue}</span></div>
+                  ) : (
+                    <div className="versus"><small>{f.time}</small><b>VS</b><span>{f.venue}<br />{f.home ? 'Domicile' : 'Extérieur'}</span></div>
+                  )}
                   <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{f.opponentFlag}</div><strong>{f.opponent}</strong></div>
                 </div>
-                <p className="text-link" style={{ justifyContent: 'center', marginTop: 4 }}>Billets, infos & direct</p>
+                <p className="text-link" style={{ justifyContent: 'center', marginTop: 4 }}>{f.result ? 'Résultat & résumé' : 'Billets, infos & direct'}</p>
               </Link>
             ))}
           </div>

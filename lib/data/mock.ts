@@ -1514,6 +1514,21 @@ export function getElephantsPlayer(slug: string) {
   return elephantsCallUp.find((p) => p.slug === slug)
 }
 
+export interface RealFixtureEvent {
+  minute: number
+  type: 'goal' | 'penalty' | 'yellow' | 'red'
+  team: 'civ' | 'opponent'
+  scorer?: string
+}
+
+export interface RealFixtureResult {
+  civScore: number
+  opponentScore: number
+  events: RealFixtureEvent[]
+  attendance?: number
+  source: string
+}
+
 export interface RealFixture {
   slug: string
   opponent: string
@@ -1524,12 +1539,27 @@ export interface RealFixture {
   competition: string
   home: boolean
   ticketCategories: { name: string; price: number; available: number }[]
+  /** Résultat réel, ajouté une fois le match joué et confirmé par la presse —
+   *  voir `source` sur le résultat. Absent tant que le match n'a pas eu lieu. */
+  result?: RealFixtureResult
 }
 
 export const elephantsFlag = '🇨🇮'
 
 export const elephantsFixtures: RealFixture[] = [
-  { slug: 'elephants-ghana-2026-09-24', opponent: 'Ghana', opponentFlag: '🇬🇭', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [{ name: 'VIP', price: 25000, available: 400 }, { name: 'Tribune officielle', price: 15000, available: 2200 }, { name: 'Tribune populaire', price: 5000, available: 12000 }] },
+  {
+    slug: 'elephants-ghana-2026-09-24', opponent: 'Ghana', opponentFlag: '🇬🇭', date: '2026-09-24', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true,
+    ticketCategories: [{ name: 'VIP', price: 25000, available: 400 }, { name: 'Tribune officielle', price: 15000, available: 2200 }, { name: 'Tribune populaire', price: 5000, available: 12000 }],
+    result: {
+      civScore: 2,
+      opponentScore: 0,
+      events: [
+        { minute: 44, type: 'goal', team: 'civ', scorer: 'Malick Yalcouyé' },
+        { minute: 58, type: 'penalty', team: 'civ', scorer: 'Franck Kessié' },
+      ],
+      source: 'Résultat réel confirmé par la presse ivoirienne et internationale (Al Jazeera, ESPN, Connectionivoirienne, L’Intelligent d’Abidjan) — victoire 2-0 pour les débuts d’Hervé Renard sur le banc des Éléphants.',
+    },
+  },
   { slug: 'elephants-somalie-2026-09-29', opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [{ name: 'VIP', price: 25000, available: 500 }, { name: 'Tribune officielle', price: 15000, available: 3000 }, { name: 'Tribune populaire', price: 5000, available: 15000 }] },
   { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 20000, available: 600 }, { name: 'Tribune officielle', price: 10000, available: 3500 }, { name: 'Tribune populaire', price: 3000, available: 18000 }] },
 ]
@@ -1538,6 +1568,14 @@ export const elephantsSourceNote = 'Sélection et calendrier réels, communiqué
 
 export function getElephantsFixture(slug: string) {
   return elephantsFixtures.find((f) => f.slug === slug)
+}
+
+/** Premier match de la fenêtre qui n'a pas encore de résultat réel renseigné
+ *  — à utiliser partout où le site affiche « le prochain match » des
+ *  Éléphants, plutôt que elephantsFixtures[0] qui reste le premier de la
+ *  liste même une fois ce match joué. */
+export function nextElephantsFixture() {
+  return elephantsFixtures.find((f) => !f.result) ?? elephantsFixtures[0]
 }
 
 export function nextFixtureFor(teamId: string) {

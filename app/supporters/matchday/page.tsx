@@ -1,5 +1,5 @@
 import { CalendarDays, MapPin, QrCode, Tv } from 'lucide-react'
-import { elephantsFixtures, elephantsCallUp } from '@/lib/data/mock'
+import { nextElephantsFixture, elephantsCallUp } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchdayVote } from '@/components/site/MatchdayVote'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -8,7 +8,7 @@ import { formatDateLong } from '@/lib/format'
 export const metadata = { title: 'Mode Matchday — FIF Digital' }
 
 export default function MatchdayPage() {
-  const fixture = elephantsFixtures[0]
+  const fixture = nextElephantsFixture()
   const candidates = elephantsCallUp.slice(0, 6).map((p) => ({ id: p.slug, name: p.name }))
 
   return (
