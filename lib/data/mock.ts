@@ -1521,10 +1521,38 @@ export interface RealFixtureEvent {
   scorer?: string
 }
 
+export interface RealFixtureCard {
+  player: string
+  team: 'civ' | 'opponent'
+  type: 'yellow' | 'red'
+}
+
+export interface RealFixtureSubstitution {
+  team: 'civ' | 'opponent'
+  playerIn: string
+  playerOut?: string
+  minute?: number
+}
+
+export interface RealFixtureLineup {
+  formation: string
+  startingXI: string[]
+}
+
+export interface RealFixtureReferee {
+  name: string
+  assistants: string[]
+  fourthOfficial?: string
+}
+
 export interface RealFixtureResult {
   civScore: number
   opponentScore: number
   events: RealFixtureEvent[]
+  cards?: RealFixtureCard[]
+  substitutions?: RealFixtureSubstitution[]
+  lineups?: { civ: RealFixtureLineup; opponent: RealFixtureLineup }
+  referee?: RealFixtureReferee
   attendance?: number
   source: string
 }
@@ -1557,6 +1585,32 @@ export const elephantsFixtures: RealFixture[] = [
         { minute: 44, type: 'goal', team: 'civ', scorer: 'Malick Yalcouyé' },
         { minute: 58, type: 'penalty', team: 'civ', scorer: 'Franck Kessié' },
       ],
+      lineups: {
+        civ: {
+          formation: '4-3-3',
+          startingXI: ['Yahia Fofana', 'Luck Zogbé', 'Ousmane Diomandé', 'Evan Ndicka', 'Ghislain Konan', 'Franck Kessié', 'Ibrahim Sangaré', 'Malick Yalcouyé', 'Nicolas Pépé', 'Ange-Yoan Bonny', 'Yan Diomandé'],
+        },
+        opponent: {
+          formation: '4-4-2',
+          startingXI: ['Lawrence Ati-Zigi', 'Kojo Oppong Peprah', 'Jerome Opoku', 'Gideon Mensah', 'Alexander Djiku', 'Caleb Yirenkyi', 'Kwasi Sibo', 'Abdul Fatawu Issahaku', 'Christopher Bonsu Baah', 'Ernest Nuamah', 'Brandon Thomas-Asante'],
+        },
+      },
+      substitutions: [
+        { team: 'civ', playerOut: 'Ibrahim Sangaré', playerIn: 'Christ Inao Oulaï' },
+        { team: 'civ', playerOut: 'Nicolas Pépé', playerIn: 'Bazoumana Touré' },
+        { team: 'civ', playerOut: 'Ange-Yoan Bonny', playerIn: 'Elye Wahi' },
+        { team: 'opponent', playerOut: 'Kojo Oppong Peprah', playerIn: 'Ibrahim Sulemana', minute: 71 },
+        { team: 'opponent', playerOut: 'Alexander Djiku', playerIn: 'Jonas Adjetey' },
+        { team: 'opponent', playerOut: 'Christopher Bonsu Baah', playerIn: 'Augustine Boakye' },
+        { team: 'opponent', playerIn: 'Felix Afena-Gyan' },
+        { team: 'opponent', playerIn: 'Benjamin Tetteh' },
+      ],
+      cards: [
+        { player: 'Christ Inao Oulaï', team: 'civ', type: 'yellow' },
+        { player: 'Christopher Bonsu Baah', team: 'opponent', type: 'yellow' },
+        { player: 'Brandon Thomas-Asante', team: 'opponent', type: 'yellow' },
+      ],
+      referee: { name: 'Mustapha Ghorbal (Algérie)', assistants: ['Abbes Zerhouni', 'Gourani Mokrane'], fourthOfficial: 'Loutfi Bekouassa' },
       source: 'Résultat réel confirmé par la presse ivoirienne et internationale (Al Jazeera, ESPN, Connectionivoirienne, L’Intelligent d’Abidjan) — victoire 2-0 pour les débuts d’Hervé Renard sur le banc des Éléphants.',
     },
   },
