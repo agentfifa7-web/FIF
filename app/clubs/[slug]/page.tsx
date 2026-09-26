@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Globe, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor } from '@/lib/data/mock'
+import { Globe, Info, MapPin, Shield, Trophy, User } from 'lucide-react'
+import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor, realLeagueMatchesForClub } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, MatchCard, PlayerCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { formatDateLong } from '@/lib/format'
 
 export function generateStaticParams() {
   return clubs.map((c) => ({ slug: c.slug }))
@@ -37,6 +38,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
       const label = comp.id === 'comp-l2' && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
       return { comp, label, position: position || null, row }
     })
+  const realResults = realLeagueMatchesForClub(club.name)
 
   return (
     <main>
@@ -69,6 +71,25 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           <a href={`https://${club.website}`} target="_blank" rel="noopener noreferrer" className="chip"><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{club.website}</a>
         </div>
       </section>
+
+      {realResults.length > 0 && (
+        <section className="page-section tight dark-section">
+          <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
+          <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+            {realResults.map((m) => {
+              const opponent = m.homeClub === club.name ? m.awayClub : m.homeClub
+              const isHome = m.homeClub === club.name
+              return (
+                <div key={m.slug} className="info-tile">
+                  <strong>J{m.matchday} · {isHome ? 'Domicile' : 'Extérieur'} vs {opponent}</strong>
+                  <p>{m.homeClub} {m.homeScore} - {m.awayScore} {m.awayClub} · {formatDateLong(m.date)}</p>
+                </div>
+              )
+            })}
+          </div>
+          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultat réel confirmé par la presse ivoirienne (Ligue 1 LONACI 2026-2027).</p>
+        </section>
+      )}
 
       {clubCompetitions.length > 0 && (
         <section className="page-section tight">

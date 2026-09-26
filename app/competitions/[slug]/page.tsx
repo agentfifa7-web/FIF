@@ -1,8 +1,12 @@
 import { notFound } from 'next/navigation'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById } from '@/lib/data/mock'
+import Link from 'next/link'
+import { Info } from 'lucide-react'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, getClubByName } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { RankingTable } from '@/components/site/widgets'
+import { formatDateLong } from '@/lib/format'
 
 export function generateStaticParams() {
   return competitions.map((c) => ({ slug: c.slug }))
@@ -32,6 +36,8 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const assisters = topAssistsFor(competition.id)
   const officiatingReferees = refereesFor(competition.id)
   const compPlayers = competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
+  const realMatches = competition.id === 'comp-l1' ? realLigue1Matches : []
+  const realStandings = competition.id === 'comp-l1' ? realLigue1Standings() : []
 
   return (
     <main>
@@ -45,6 +51,41 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           { value: String(compMatches.length), label: 'Matchs cette saison' },
         ]}
       />
+
+      {realMatches.length > 0 && (
+        <section className="page-section tight dark-section">
+          <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels — Journée {realMatches[realMatches.length - 1].matchday}</p>
+          <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+            {realMatches.map((m) => {
+              const home = getClubByName(m.homeClub)
+              const away = getClubByName(m.awayClub)
+              return (
+                <div key={m.slug} className="next-card" style={{ background: '#fff' }}>
+                  <div className="next-card-top"><span>J{m.matchday}</span><span>{formatDateLong(m.date).toUpperCase()}</span></div>
+                  <div className="teams">
+                    <div className="team">{home && <Link href={`/clubs/${home.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><strong>{m.homeClub}</strong></Link>}{!home && <strong>{m.homeClub}</strong>}</div>
+                    <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{m.homeScore} - {m.awayScore}</b></div>
+                    <div className="team">{away && <Link href={`/clubs/${away.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><strong>{m.awayClub}</strong></Link>}{!away && <strong>{m.awayClub}</strong>}</div>
+                  </div>
+                  {m.events.length > 0 && (
+                    <p className="lede" style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
+                      {m.events.map((e, i) => `⚽ ${e.player ?? '?'} (${e.minute}')`).join(' · ')}
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          {realStandings.length > 0 && (
+            <div style={{ marginTop: 24 }}>
+              <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Classement réel (clubs ayant déjà joué)</b>
+              <div style={{ marginTop: 10 }}><RankingTable rows={realStandings} /></div>
+            </div>
+          )}
+          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées. Le reste de cette page (calendrier complet, classement général, statistiques) reste une saison de démonstration générée.</p>
+        </section>
+      )}
+
       <section className="page-section tight">
         <CompetitionTabs
           competition={competition}

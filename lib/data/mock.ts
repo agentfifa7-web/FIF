@@ -1118,6 +1118,94 @@ export function refereesFor(competitionId: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Ligue 1 — résultats réels de la vraie Ligue 1 LONACI, journée par journée.
+// Distinct du calendrier généré/fictif ci-dessus (qui reste utilisé pour la
+// démonstration du direct, des classements complets, etc.) : ce bloc ne
+// contient que des matchs réellement joués, confirmés par plusieurs sources
+// de presse, ajoutés manuellement après chaque journée.
+// ---------------------------------------------------------------------------
+export interface RealLeagueMatchEvent {
+  minute?: number
+  type: 'goal' | 'yellow' | 'red'
+  team: 'home' | 'away'
+  player?: string
+}
+
+export interface RealLeagueMatch {
+  slug: string
+  competitionId: string
+  matchday: number
+  date: string
+  homeClub: string
+  awayClub: string
+  homeScore: number
+  awayScore: number
+  events: RealLeagueMatchEvent[]
+  source: string
+}
+
+export const realLigue1Matches: RealLeagueMatch[] = [
+  {
+    slug: 'l1-j1-yakro-fc-asec-mimosas',
+    competitionId: 'comp-l1',
+    matchday: 1,
+    date: '2026-09-26',
+    homeClub: 'Yakro FC',
+    awayClub: 'ASEC Mimosas',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ minute: 33, type: 'goal', team: 'home', player: 'Doumbia Mory' }],
+    source: 'Résultat réel confirmé par la presse ivoirienne (Afrique-sur7, Agence Ivoirienne de Presse) — le promu Yakro FC (Yamoussoukro FC) bat le champion en titre ASEC Mimosas pour la 1ère journée de Ligue 1 LONACI 2026-2027.',
+  },
+  {
+    slug: 'l1-j1-stade-dabidjan-fc-mouna',
+    competitionId: 'comp-l1',
+    matchday: 1,
+    date: '2026-09-26',
+    homeClub: 'Stade d’Abidjan',
+    awayClub: 'FC Mouna',
+    homeScore: 0,
+    awayScore: 0,
+    events: [],
+    source: 'Résultat réel confirmé par la presse ivoirienne (Afrique-sur7) — match nul et vierge pour la 1ère journée de Ligue 1 LONACI 2026-2027.',
+  },
+]
+
+export function getClubByName(name: string) {
+  return clubs.find((c) => c.name === name)
+}
+
+export function realLigue1Standings(): StandingRow[] {
+  const rows = new Map<string, StandingRow>()
+  for (const m of realLigue1Matches) {
+    for (const name of [m.homeClub, m.awayClub]) {
+      const clubId = getClubByName(name)?.id
+      if (clubId && !rows.has(clubId)) rows.set(clubId, { clubId, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 })
+    }
+    const homeId = getClubByName(m.homeClub)?.id
+    const awayId = getClubByName(m.awayClub)?.id
+    const home = homeId ? rows.get(homeId) : undefined
+    const away = awayId ? rows.get(awayId) : undefined
+    if (!home || !away) continue
+    home.played++; away.played++
+    home.goalsFor += m.homeScore; home.goalsAgainst += m.awayScore
+    away.goalsFor += m.awayScore; away.goalsAgainst += m.homeScore
+    if (m.homeScore > m.awayScore) { home.won++; home.points += 3; away.lost++ }
+    else if (m.homeScore < m.awayScore) { away.won++; away.points += 3; home.lost++ }
+    else { home.drawn++; away.drawn++; home.points++; away.points++ }
+  }
+  return [...rows.values()].sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst))
+}
+
+export function realLeagueMatchesForClub(clubName: string) {
+  return realLigue1Matches.filter((m) => m.homeClub === clubName || m.awayClub === clubName)
+}
+
+export function realLigue1LatestMatchday() {
+  return realLigue1Matches.reduce((max, m) => Math.max(max, m.matchday), 0)
+}
+
+// ---------------------------------------------------------------------------
 // International fixtures (national teams) — upcoming only, no fabricated
 // results for real opponent federations.
 // ---------------------------------------------------------------------------
