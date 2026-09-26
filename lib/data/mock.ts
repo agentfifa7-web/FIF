@@ -1131,16 +1131,39 @@ export interface RealLeagueMatchEvent {
   player?: string
 }
 
+export interface RealLeagueMatchSubstitution {
+  team: 'home' | 'away'
+  playerIn: string
+  playerOut?: string
+  minute?: number
+}
+
+export interface RealLeagueMatchReferee {
+  name: string
+  assistants?: string[]
+  fourthOfficial?: string
+}
+
+export interface RealLeagueMatchLineup {
+  formation?: string
+  startingXI: string[]
+}
+
 export interface RealLeagueMatch {
   slug: string
   competitionId: string
   matchday: number
   date: string
+  venue?: string
   homeClub: string
   awayClub: string
   homeScore: number
   awayScore: number
   events: RealLeagueMatchEvent[]
+  lineups?: { home: RealLeagueMatchLineup; away: RealLeagueMatchLineup }
+  substitutions?: RealLeagueMatchSubstitution[]
+  referee?: RealLeagueMatchReferee
+  attendance?: number
   source: string
 }
 
@@ -1197,12 +1220,31 @@ export function realLigue1Standings(): StandingRow[] {
   return [...rows.values()].sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst))
 }
 
+export function getRealLeagueMatch(slug: string) {
+  return realLigue1Matches.find((m) => m.slug === slug)
+}
+
 export function realLeagueMatchesForClub(clubName: string) {
   return realLigue1Matches.filter((m) => m.homeClub === clubName || m.awayClub === clubName)
 }
 
 export function realLigue1LatestMatchday() {
   return realLigue1Matches.reduce((max, m) => Math.max(max, m.matchday), 0)
+}
+
+export function realLigue1TopScorers(): { player: string; club: string; goals: number }[] {
+  const tally = new Map<string, { player: string; club: string; goals: number }>()
+  for (const m of realLigue1Matches) {
+    for (const e of m.events) {
+      if (e.type !== 'goal' || !e.player) continue
+      const club = e.team === 'home' ? m.homeClub : m.awayClub
+      const key = `${e.player}|${club}`
+      const row = tally.get(key) ?? { player: e.player, club, goals: 0 }
+      row.goals++
+      tally.set(key, row)
+    }
+  }
+  return [...tally.values()].sort((a, b) => b.goals - a.goals)
 }
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Info } from 'lucide-react'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, getClubByName } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, realLigue1TopScorers } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -38,6 +38,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const compPlayers = competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
   const realMatches = competition.id === 'comp-l1' ? realLigue1Matches : []
   const realStandings = competition.id === 'comp-l1' ? realLigue1Standings() : []
+  const realScorers = competition.id === 'comp-l1' ? realLigue1TopScorers() : []
 
   return (
     <main>
@@ -56,32 +57,51 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         <section className="page-section tight dark-section">
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels — Journée {realMatches[realMatches.length - 1].matchday}</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            {realMatches.map((m) => {
-              const home = getClubByName(m.homeClub)
-              const away = getClubByName(m.awayClub)
-              return (
-                <div key={m.slug} className="next-card" style={{ background: '#fff' }}>
-                  <div className="next-card-top"><span>J{m.matchday}</span><span>{formatDateLong(m.date).toUpperCase()}</span></div>
-                  <div className="teams">
-                    <div className="team">{home && <Link href={`/clubs/${home.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><strong>{m.homeClub}</strong></Link>}{!home && <strong>{m.homeClub}</strong>}</div>
-                    <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{m.homeScore} - {m.awayScore}</b></div>
-                    <div className="team">{away && <Link href={`/clubs/${away.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><strong>{m.awayClub}</strong></Link>}{!away && <strong>{m.awayClub}</strong>}</div>
-                  </div>
-                  {m.events.length > 0 && (
-                    <p className="lede" style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
-                      {m.events.map((e, i) => `⚽ ${e.player ?? '?'} (${e.minute}')`).join(' · ')}
-                    </p>
-                  )}
+            {realMatches.map((m) => (
+              <Link key={m.slug} href={`/competitions/ligue-1/matchs/${m.slug}`} className="next-card" style={{ background: '#fff', display: 'block' }}>
+                <div className="next-card-top"><span>J{m.matchday}</span><span>{formatDateLong(m.date).toUpperCase()}</span></div>
+                <div className="teams">
+                  <div className="team"><strong>{m.homeClub}</strong></div>
+                  <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{m.homeScore} - {m.awayScore}</b></div>
+                  <div className="team"><strong>{m.awayClub}</strong></div>
                 </div>
-              )
-            })}
+                {m.events.length > 0 && (
+                  <p className="lede" style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
+                    {m.events.map((e) => `⚽ ${e.player ?? '?'} (${e.minute}')`).join(' · ')}
+                  </p>
+                )}
+                <p className="text-link" style={{ justifyContent: 'center', marginTop: 8 }}>Détails du match</p>
+              </Link>
+            ))}
           </div>
-          {realStandings.length > 0 && (
-            <div style={{ marginTop: 24 }}>
-              <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Classement réel (clubs ayant déjà joué)</b>
-              <div style={{ marginTop: 10 }}><RankingTable rows={realStandings} /></div>
-            </div>
-          )}
+          <div className="card-grid cols-2" style={{ marginTop: 24, alignItems: 'start' }}>
+            {realStandings.length > 0 && (
+              <div>
+                <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Classement réel (clubs ayant déjà joué)</b>
+                <div style={{ marginTop: 10 }}><RankingTable rows={realStandings} /></div>
+              </div>
+            )}
+            {realScorers.length > 0 && (
+              <div>
+                <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Meilleurs buteurs réels</b>
+                <div className="table-wrap" style={{ marginTop: 10 }}>
+                  <table className="data-table">
+                    <thead><tr><th>POS</th><th className="align-left">JOUEUR</th><th className="align-left">CLUB</th><th>BUTS</th></tr></thead>
+                    <tbody>
+                      {realScorers.map((s, i) => (
+                        <tr key={`${s.player}-${s.club}`}>
+                          <td>{i + 1}</td>
+                          <td className="align-left">{s.player}</td>
+                          <td className="align-left">{s.club}</td>
+                          <td>{s.goals}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
           <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées. Le reste de cette page (calendrier complet, classement général, statistiques) reste une saison de démonstration générée.</p>
         </section>
       )}
