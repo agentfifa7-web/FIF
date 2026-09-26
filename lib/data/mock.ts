@@ -1175,10 +1175,11 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     date: '2026-09-26',
     homeClub: 'Yakro FC',
     awayClub: 'ASEC Mimosas',
+    venue: 'Stade Charles Konan Banny, Yamoussoukro',
     homeScore: 1,
     awayScore: 0,
     events: [{ minute: 33, type: 'goal', team: 'home', player: 'Doumbia Mory' }],
-    source: 'Résultat réel confirmé par la presse ivoirienne (Afrique-sur7, Agence Ivoirienne de Presse) — le promu Yakro FC (Yamoussoukro FC) bat le champion en titre ASEC Mimosas pour la 1ère journée de Ligue 1 LONACI 2026-2027.',
+    source: 'Résultat réel confirmé par la presse ivoirienne (Afrique-sur7, Agence Ivoirienne de Presse) — le promu Yakro FC (Yamoussoukro FC) bat le champion en titre ASEC Mimosas pour la 1ère journée de Ligue 1 LONACI 2026-2027. Doumbia Mory (Mory Ismael Doumbia), ailier gauche international U20 ivoirien recruté à Sirocco FC, inscrit son premier but sous ses nouvelles couleurs.',
   },
   {
     slug: 'l1-j1-stade-dabidjan-fc-mouna',
