@@ -65,9 +65,9 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
                   <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{m.homeScore} - {m.awayScore}</b></div>
                   <div className="team"><strong>{m.awayClub}</strong></div>
                 </div>
-                {m.events.length > 0 && (
+                {m.events.some((e) => e.player) && (
                   <p className="lede" style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
-                    {m.events.map((e) => `⚽ ${e.player ?? '?'} (${e.minute}')`).join(' · ')}
+                    {m.events.filter((e) => e.player).map((e) => `⚽ ${e.player}${e.minute ? ` (${e.minute}')` : ''}`).join(' · ')}
                   </p>
                 )}
                 <p className="text-link" style={{ justifyContent: 'center', marginTop: 8 }}>Détails du match</p>
