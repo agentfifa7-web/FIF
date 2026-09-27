@@ -1248,10 +1248,22 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     date: '2026-09-27',
     homeClub: 'SOA',
     awayClub: 'Stella Club',
+    homeScore: 2,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Résultat réel confirmé via Eurosport.fr (calendrier & résultats Ligue 1 2026-2027, Côte d’Ivoire) — victoire 2-1 de SOA pour la 1ère journée. Un premier relevé pris en cours de match (Flashscore.fr, 64e minute, 0-1) avait suggéré à tort une victoire de Stella Club ; SOA a renversé la situation en seconde période.',
+  },
+  {
+    slug: 'l1-j1-co-korhogo-es-agboville',
+    competitionId: 'comp-l1',
+    matchday: 1,
+    date: '2026-09-27',
+    homeClub: 'CO Korhogo',
+    awayClub: 'ES Agboville',
     homeScore: 0,
     awayScore: 1,
     events: [{ type: 'goal', team: 'away' }],
-    source: 'Résultat réel confirmé via Flashscore.fr (classement Ligue 1 2026-2027, Côte d’Ivoire) — victoire 1-0 de Stella Club pour la 1ère journée.',
+    source: 'Résultat réel confirmé via Eurosport.fr (calendrier & résultats Ligue 1 2026-2027, Côte d’Ivoire) — victoire 1-0 d’ES Agboville pour la 1ère journée.',
   },
 ]
 
