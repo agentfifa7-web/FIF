@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Info } from 'lucide-react'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, realLigue1TopScorers } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, getClubByName, realLigue1Matches, realLigue1Standings, realLigue1TopScorers } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { RankingTable } from '@/components/site/widgets'
+import { ClubCrest } from '@/components/site/cards'
 import { formatDateLong } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -57,13 +58,16 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         <section className="page-section tight dark-section">
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels — Journée {realMatches[realMatches.length - 1].matchday}</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            {realMatches.map((m) => (
+            {realMatches.map((m) => {
+              const home = getClubByName(m.homeClub)
+              const away = getClubByName(m.awayClub)
+              return (
               <Link key={m.slug} href={`/competitions/ligue-1/matchs/${m.slug}`} className="next-card" style={{ background: '#fff', display: 'block' }}>
                 <div className="next-card-top"><span>J{m.matchday}</span><span>{formatDateLong(m.date).toUpperCase()}</span></div>
                 <div className="teams">
-                  <div className="team"><strong>{m.homeClub}</strong></div>
+                  <div className="team">{home && <ClubCrest club={home} size={32} />}<strong>{m.homeClub}</strong></div>
                   <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 22 }}>{m.homeScore} - {m.awayScore}</b></div>
-                  <div className="team"><strong>{m.awayClub}</strong></div>
+                  <div className="team">{away && <ClubCrest club={away} size={32} />}<strong>{m.awayClub}</strong></div>
                 </div>
                 {m.events.some((e) => e.player) && (
                   <p className="lede" style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
@@ -72,7 +76,8 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
                 )}
                 <p className="text-link" style={{ justifyContent: 'center', marginTop: 8 }}>Détails du match</p>
               </Link>
-            ))}
+              )
+            })}
           </div>
           <div className="card-grid cols-2" style={{ marginTop: 24, alignItems: 'start' }}>
             {realStandings.length > 0 && (
