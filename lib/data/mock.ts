@@ -201,7 +201,10 @@ const REAL_CLUB_CITY: Record<string, string> = {
 
 // Écussons officiels réels fournis par l'utilisateur — sinon écusson SVG généré.
 const REAL_CLUB_CRESTS: Record<string, string> = {
+  'AFAD Plateau': '/crests/afad-plateau.png',
+  'ASEC Mimosas': '/crests/asec-mimosas.png',
   'Bouaké FC': '/crests/bouake-fc.png',
+  'CO Korhogo': '/crests/co-korhogo.png',
   'ES Agboville': '/crests/es-agboville.jpg',
   'FC Mouna': '/crests/fc-mouna.png',
   'ISCA Inova': '/crests/isca-inova.webp',
