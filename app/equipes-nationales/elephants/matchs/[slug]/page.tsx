@@ -78,7 +78,7 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
             <div className="timeline" style={{ marginTop: 16, maxWidth: 640 }}>
               {result.events.map((e, i) => (
                 <div key={i}>
-                  <b>{e.minute}&apos;</b>
+                  <b>{e.minute}{e.stoppage ? `+${e.stoppage}` : ''}&apos;</b>
                   <div>
                     <strong>{eventLabel[e.type]}</strong>
                     <span>{e.team === 'civ' ? 'Côte d’Ivoire' : fixture.opponent}{e.scorer ? ` · ${e.scorer}` : ''}</span>

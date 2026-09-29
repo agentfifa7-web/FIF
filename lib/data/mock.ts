@@ -1892,6 +1892,8 @@ export function getElephantsPlayer(slug: string) {
 
 export interface RealFixtureEvent {
   minute: number
+  /** Minutes de temps additionnel (ex. 5 pour « 90+5' »). */
+  stoppage?: number
   type: 'goal' | 'penalty' | 'yellow' | 'red'
   team: 'civ' | 'opponent'
   scorer?: string
@@ -1990,7 +1992,19 @@ export const elephantsFixtures: RealFixture[] = [
       source: 'Résultat réel confirmé par la presse ivoirienne et internationale (Al Jazeera, ESPN, Connectionivoirienne, L’Intelligent d’Abidjan) — victoire 2-0 pour les débuts d’Hervé Renard sur le banc des Éléphants.',
     },
   },
-  { slug: 'elephants-somalie-2026-09-29', opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [{ name: 'VIP', price: 25000, available: 500 }, { name: 'Tribune officielle', price: 15000, available: 3000 }, { name: 'Tribune populaire', price: 5000, available: 15000 }] },
+  {
+    slug: 'elephants-somalie-2026-09-29', opponent: 'Somalie', opponentFlag: '🇸🇴', date: '2026-09-29', time: '19:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true,
+    ticketCategories: [{ name: 'VIP', price: 25000, available: 500 }, { name: 'Tribune officielle', price: 15000, available: 3000 }, { name: 'Tribune populaire', price: 5000, available: 15000 }],
+    result: {
+      civScore: 2,
+      opponentScore: 0,
+      events: [
+        { minute: 88, type: 'goal', team: 'civ', scorer: 'Yann Gboho' },
+        { minute: 90, stoppage: 5, type: 'goal', team: 'civ', scorer: 'Bazoumana Touré' },
+      ],
+      source: 'Résultat réel confirmé par la presse ivoirienne, africaine et internationale (Supersport CI, Abidjan.net, Foot Mercato, Africa Top Sports, AfricaSoccer, ESPN) — victoire 2-0 arrachée en fin de match, 0-0 à la pause ; la Côte d’Ivoire prend la tête du groupe C. Minutes des buts légèrement différentes selon les sources (Gboho entre la 87e et la 89e, Touré à 90+4 ou 90+5).',
+    },
+  },
   { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 20000, available: 600 }, { name: 'Tribune officielle', price: 10000, available: 3500 }, { name: 'Tribune populaire', price: 3000, available: 18000 }] },
 ]
 
