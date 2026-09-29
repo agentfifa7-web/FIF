@@ -6,7 +6,7 @@ import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, PlayerCard } from '@/components/site/cards'
 import { ClubMatchSections } from '@/components/site/ClubMatchSections'
 import { DemoBadge } from '@/components/site/DemoBadge'
-import { formatDateLong } from '@/lib/format'
+import { MatchdayList } from '@/components/site/MatchdayList'
 
 export function generateStaticParams() {
   return clubs.map((c) => ({ slug: c.slug }))
@@ -85,18 +85,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
       {realResults.length > 0 && (
         <section className="page-section tight dark-section">
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
-          <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            {realResults.map((m) => {
-              const opponent = m.homeClub === club.name ? m.awayClub : m.homeClub
-              const isHome = m.homeClub === club.name
-              return (
-                <div key={m.slug} className="info-tile">
-                  <strong>J{m.matchday} · {isHome ? 'Domicile' : 'Extérieur'} vs {opponent}</strong>
-                  <p>{m.homeClub} {m.homeScore} - {m.awayScore} {m.awayClub} · {formatDateLong(m.date)}</p>
-                </div>
-              )
-            })}
-          </div>
+          <div style={{ marginTop: 16 }}><MatchdayList results={realResults} /></div>
           <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultat réel confirmé par la presse ivoirienne (Ligue 1 LONACI 2026-2027).</p>
         </section>
       )}
@@ -105,18 +94,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         <section className="page-section tight">
           <p className="section-tag">Prochains matchs réels (Ligue 1)</p>
           {realUpcoming.length > 0 ? (
-            <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-              {realUpcoming.map((f) => {
-                const opponent = f.homeClub === club.name ? f.awayClub : f.homeClub
-                const isHome = f.homeClub === club.name
-                return (
-                  <div key={f.slug} className="info-tile">
-                    <strong>J{f.matchday} · {isHome ? 'Domicile' : 'Extérieur'} vs {opponent}</strong>
-                    <p>{formatDateLong(f.date)}{f.time ? ` · ${f.time}` : ''}{f.venue ? ` · ${f.venue}` : ''}</p>
-                  </div>
-                )
-              })}
-            </div>
+            <div style={{ marginTop: 16 }}><MatchdayList fixtures={realUpcoming} /></div>
           ) : (
             <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
           )}
