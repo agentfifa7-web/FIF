@@ -207,6 +207,7 @@ const REAL_CLUB_CRESTS: Record<string, string> = {
   'CO Korhogo': '/crests/co-korhogo.png',
   'ES Agboville': '/crests/es-agboville.jpg',
   'FC Mouna': '/crests/fc-mouna.png',
+  'FC San Pedro': '/crests/fc-san-pedro.png',
   'ISCA Inova': '/crests/isca-inova.webp',
   'OFC Adiaké': '/crests/ofc-adiake.png',
   'SC Gagnoa': '/crests/sc-gagnoa.jpg',
