@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Info } from 'lucide-react'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, getClubByName, realLigue1Matches, realLigue1Standings, realLigue1TopScorers } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, getClubByName, realLigue1Matches, realLigue1Standings, realLigue1TopScorers, realLigue1TopAssists, realLigue1UpcomingFixtures } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -35,11 +35,16 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const compMatches = matches.filter((m) => m.competitionId === competition.id)
   const scorers = topScorersFor(competition.id)
   const assisters = topAssistsFor(competition.id)
-  const officiatingReferees = refereesFor(competition.id)
-  const compPlayers = competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
-  const realMatches = competition.id === 'comp-l1' ? realLigue1Matches : []
-  const realStandings = competition.id === 'comp-l1' ? realLigue1Standings() : []
-  const realScorers = competition.id === 'comp-l1' ? realLigue1TopScorers() : []
+  const officiatingReferees = competition.id === 'comp-l1' ? [] : refereesFor(competition.id)
+  const isRealLigue1 = competition.id === 'comp-l1'
+  const compPlayers = isRealLigue1
+    ? competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id && p.realRoster))
+    : competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
+  const realMatches = isRealLigue1 ? realLigue1Matches : []
+  const realStandings = isRealLigue1 ? realLigue1Standings() : []
+  const realScorers = isRealLigue1 ? realLigue1TopScorers() : []
+  const realAssisters = isRealLigue1 ? realLigue1TopAssists() : []
+  const upcomingFixtures = isRealLigue1 ? realLigue1UpcomingFixtures : []
 
   return (
     <main>
@@ -106,8 +111,53 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
                 </div>
               </div>
             )}
+            <div>
+              <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Meilleurs passeurs réels</b>
+              <div className="table-wrap" style={{ marginTop: 10 }}>
+                <table className="data-table">
+                  <thead><tr><th>POS</th><th className="align-left">JOUEUR</th><th className="align-left">CLUB</th><th>PASSES D.</th></tr></thead>
+                  <tbody>
+                    {realAssisters.map((s, i) => (
+                      <tr key={`${s.player}-${s.club}`}>
+                        <td>{i + 1}</td>
+                        <td className="align-left">{s.player}</td>
+                        <td className="align-left">{s.club}</td>
+                        <td>{s.assists}</td>
+                      </tr>
+                    ))}
+                    {!realAssisters.length && <tr><td colSpan={4} style={{ color: '#8fa79a' }}>Aucune passe décisive confirmée pour l’instant.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
           <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées.</p>
+        </section>
+      )}
+
+      {isRealLigue1 && (
+        <section className="page-section tight">
+          <p className="section-tag">Prochains matchs réels</p>
+          {upcomingFixtures.length > 0 ? (
+            <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+              {upcomingFixtures.map((f) => {
+                const home = getClubByName(f.homeClub)
+                const away = getClubByName(f.awayClub)
+                return (
+                  <div key={f.slug} className="next-card">
+                    <div className="next-card-top"><span>J{f.matchday}</span><span>{formatDateLong(f.date).toUpperCase()}</span></div>
+                    <div className="teams">
+                      <div className="team">{home && <ClubCrest club={home} size={32} />}<strong>{f.homeClub}</strong></div>
+                      <div className="versus"><small>{f.time ?? 'À CONFIRMER'}</small><b>VS</b>{f.venue && <span>{f.venue}</span>}</div>
+                      <div className="team">{away && <ClubCrest club={away} size={32} />}<strong>{f.awayClub}</strong></div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
+          )}
         </section>
       )}
 

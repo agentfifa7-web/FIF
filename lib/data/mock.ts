@@ -1143,6 +1143,7 @@ export interface RealLeagueMatchEvent {
   type: 'goal' | 'yellow' | 'red'
   team: 'home' | 'away'
   player?: string
+  assist?: string
 }
 
 export interface RealLeagueMatchSubstitution {
@@ -1333,6 +1334,39 @@ export function realLigue1TopScorers(): { player: string; club: string; goals: n
   }
   return [...tally.values()].sort((a, b) => b.goals - a.goals)
 }
+
+export function realLigue1TopAssists(): { player: string; club: string; assists: number }[] {
+  const tally = new Map<string, { player: string; club: string; assists: number }>()
+  for (const m of realLigue1Matches) {
+    for (const e of m.events) {
+      if (e.type !== 'goal' || !e.assist) continue
+      const club = e.team === 'home' ? m.homeClub : m.awayClub
+      const key = `${e.assist}|${club}`
+      const row = tally.get(key) ?? { player: e.assist, club, assists: 0 }
+      row.assists++
+      tally.set(key, row)
+    }
+  }
+  return [...tally.values()].sort((a, b) => b.assists - a.assists)
+}
+
+// ---------------------------------------------------------------------------
+// Ligue 1 — prochains matchs réels connus. Vide tant qu'aucune journée
+// future n'a été officiellement programmée/annoncée ; à remplir dès que le
+// calendrier d'une prochaine journée est confirmé par la FIF ou la presse.
+// ---------------------------------------------------------------------------
+export interface RealLeagueFixture {
+  slug: string
+  competitionId: string
+  matchday: number
+  date: string
+  time?: string
+  venue?: string
+  homeClub: string
+  awayClub: string
+}
+
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = []
 
 // ---------------------------------------------------------------------------
 // International fixtures (national teams) — upcoming only, no fabricated
