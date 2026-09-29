@@ -107,7 +107,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
               </div>
             )}
           </div>
-          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées. Le reste de cette page (calendrier complet, classement général, statistiques) reste une saison de démonstration générée.</p>
+          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées.</p>
         </section>
       )}
 
@@ -121,6 +121,8 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           officiatingReferees={officiatingReferees}
           compPlayers={compPlayers}
           allMatches={compMatches}
+          hideGeneratedTabs={competition.id === 'comp-l1'}
+          realOverview={competition.id === 'comp-l1' ? { matchesPlayed: realMatches.length, topScorerGoals: realScorers[0]?.goals ?? 0 } : undefined}
         />
       </section>
       <section className="page-section tight"><DemoBadge /></section>

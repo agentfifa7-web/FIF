@@ -10,6 +10,7 @@ import { ClubCard, MatchCard } from './cards'
 import { PersonPortrait } from './PersonPortrait'
 
 const TABS = ['Présentation', 'Classement', 'Calendrier', 'Résultats', 'Buteurs', 'Passeurs', 'Statistiques', 'Clubs', 'Joueurs', 'Arbitres'] as const
+const GENERATED_DATA_TABS = new Set(['Classement', 'Calendrier', 'Résultats', 'Buteurs', 'Passeurs', 'Statistiques'])
 
 // Le calendrier et les résultats sont recalculés ici en direct à partir de
 // l'heure réelle (allMatches contient tous les matchs de la compétition) :
@@ -27,6 +28,8 @@ export function CompetitionTabs({
   officiatingReferees,
   compPlayers,
   allMatches,
+  hideGeneratedTabs,
+  realOverview,
 }: {
   competition: Competition
   standings: StandingRow[]
@@ -36,7 +39,10 @@ export function CompetitionTabs({
   officiatingReferees: { referee: Referee; count: number }[]
   compPlayers: Player[]
   allMatches: Match[]
+  hideGeneratedTabs?: boolean
+  realOverview?: { matchesPlayed: number; topScorerGoals: number }
 }) {
+  const visibleTabs = hideGeneratedTabs ? TABS.filter((t) => !GENERATED_DATA_TABS.has(t)) : TABS
   const [tab, setTab] = useState<(typeof TABS)[number]>('Présentation')
   const clubs = competition.clubIds.map((id) => getClubById(id)).filter(Boolean)
   const liveMap = useLiveMatches(allMatches)
@@ -56,16 +62,25 @@ export function CompetitionTabs({
 
   return (
     <div>
-      <Tabs tabs={[...TABS]} active={tab} onChange={(t) => setTab(t as (typeof TABS)[number])} />
+      <Tabs tabs={[...visibleTabs]} active={tab} onChange={(t) => setTab(t as (typeof TABS)[number])} />
 
       {tab === 'Présentation' && (
         <div>
           <p className="lede">{competition.name} réunit {clubs.length} équipes pour la saison {competition.season}. Format : {competition.format}.{poules ? ` Chaque club affronte les 13 autres clubs de sa poule à domicile et à l’extérieur.` : ''}</p>
-          <div className="card-grid cols-4" style={{ marginTop: 24 }}>
+          <div className={`card-grid ${realOverview ? 'cols-3' : 'cols-4'}`} style={{ marginTop: 24 }}>
             <div className="stat-card"><strong>{clubs.length}</strong><span>Équipes engagées</span></div>
-            <div className="stat-card"><strong>{results.length}</strong><span>Matchs joués</span></div>
-            <div className="stat-card"><strong>{upcoming.length}</strong><span>Matchs à venir</span></div>
-            <div className="stat-card"><strong>{scorers[0]?.goals ?? 0}</strong><span>Meilleur total de buts</span></div>
+            {realOverview ? (
+              <>
+                <div className="stat-card"><strong>{realOverview.matchesPlayed}</strong><span>Matchs réels joués</span></div>
+                <div className="stat-card"><strong>{realOverview.topScorerGoals}</strong><span>Meilleur total de buts (réel)</span></div>
+              </>
+            ) : (
+              <>
+                <div className="stat-card"><strong>{results.length}</strong><span>Matchs joués</span></div>
+                <div className="stat-card"><strong>{upcoming.length}</strong><span>Matchs à venir</span></div>
+                <div className="stat-card"><strong>{scorers[0]?.goals ?? 0}</strong><span>Meilleur total de buts</span></div>
+              </>
+            )}
           </div>
         </div>
       )}
