@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, Info, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor, realLeagueMatchesForClub } from '@/lib/data/mock'
+import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor, realLeagueMatchesForClub, realLigue1Standings, realLigue1UpcomingFixtures } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
-import { ClubCrest, MatchCard, PlayerCard } from '@/components/site/cards'
+import { ClubCrest, PlayerCard } from '@/components/site/cards'
+import { ClubMatchSections } from '@/components/site/ClubMatchSections'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDateLong } from '@/lib/format'
 
@@ -25,20 +26,29 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   const stadium = getStadiumById(club.stadiumId)
   const roster = players.filter((p) => p.clubId === club.id)
   const coach = coaches.find((c) => c.clubId === club.id)
-  const clubMatches = matchesOf(club.id)
-  const upcoming = clubMatches.filter((m) => m.status === 'À venir').slice(0, 4)
-  const results = clubMatches.filter((m) => m.status === 'Terminé').slice(-4).reverse()
+  // La Ligue 1 dispose désormais d'un suivi réel (voir realLigue1Matches) :
+  // les matchs fictifs générés pour comp-l1 sont donc exclus ici pour éviter
+  // toute contradiction avec les résultats réels affichés plus haut.
+  const clubMatches = matchesOf(club.id).filter((m) => m.competitionId !== 'comp-l1')
   const clubCompetitions = club.competitionIds
     .map((id) => competitions.find((c) => c.id === id))
     .filter((c) => c !== undefined)
     .map((comp) => {
-      const standings = comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
-      const position = standings.findIndex((r) => r.clubId === club.id) + 1
-      const row = standings.find((r) => r.clubId === club.id)
+      const standings = comp.id === 'comp-l1'
+        ? realLigue1Standings()
+        : comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
+      const idx = standings.findIndex((r) => r.clubId === club.id)
+      const row = idx >= 0 ? standings[idx] : undefined
+      // Une position n'a de sens que si des matchs ont réellement été joués :
+      // sinon (classement fictif à zéro, ou club pas encore apparu au réel),
+      // on affiche « Classement à venir » plutôt qu'un rang trompeur.
+      const position = row && row.played > 0 ? idx + 1 : null
       const label = comp.id === 'comp-l2' && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
-      return { comp, label, position: position || null, row }
+      return { comp, label, position, row }
     })
   const realResults = realLeagueMatchesForClub(club.name)
+  const realUpcoming = realLigue1UpcomingFixtures.filter((f) => f.homeClub === club.name || f.awayClub === club.name)
+  const isRealLigue1Club = club.competitionIds.includes('comp-l1')
 
   return (
     <main>
@@ -91,6 +101,28 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         </section>
       )}
 
+      {isRealLigue1Club && (
+        <section className="page-section tight">
+          <p className="section-tag">Prochains matchs réels (Ligue 1)</p>
+          {realUpcoming.length > 0 ? (
+            <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+              {realUpcoming.map((f) => {
+                const opponent = f.homeClub === club.name ? f.awayClub : f.homeClub
+                const isHome = f.homeClub === club.name
+                return (
+                  <div key={f.slug} className="info-tile">
+                    <strong>J{f.matchday} · {isHome ? 'Domicile' : 'Extérieur'} vs {opponent}</strong>
+                    <p>{formatDateLong(f.date)}{f.time ? ` · ${f.time}` : ''}{f.venue ? ` · ${f.venue}` : ''}</p>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
+          )}
+        </section>
+      )}
+
       {clubCompetitions.length > 0 && (
         <section className="page-section tight">
           <p className="section-tag">Compétitions engagées & classement</p>
@@ -99,7 +131,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
               <Link href={`/competitions/${comp.slug}`} className="entity-card" key={comp.id}>
                 <div>
                   <strong>{label}</strong>
-                  <span>{position ? `${position}${position === 1 ? 'ère' : 'e'} place` : 'Classement à venir'}{row ? ` · ${row.points} pts · ${row.played} matchs joués` : ''}</span>
+                  <span>{position ? `${position}${position === 1 ? 'ère' : 'e'} place` : 'Classement à venir'}{position && row ? ` · ${row.points} pts · ${row.played} matchs joués` : ''}</span>
                 </div>
               </Link>
             ))}
@@ -115,19 +147,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         {roster.length > 12 && <p className="lede" style={{ marginTop: 16 }}>+ {roster.length - 12} autres joueurs enregistrés.</p>}
       </section>
 
-      <section className="page-section tight">
-        <div className="page-section-head"><h2 style={{ fontSize: 24 }}>Prochains matchs</h2></div>
-        <div className="card-grid cols-4">
-          {upcoming.length ? upcoming.map((m) => <MatchCard key={m.id} match={m} />) : <p className="lede">Aucun match programmé pour le moment.</p>}
-        </div>
-      </section>
-
-      <section className="page-section tight">
-        <div className="page-section-head"><h2 style={{ fontSize: 24 }}>Derniers résultats</h2></div>
-        <div className="card-grid cols-4">
-          {results.length ? results.map((m) => <MatchCard key={m.id} match={m} />) : <p className="lede">Aucun résultat disponible.</p>}
-        </div>
-      </section>
+      <ClubMatchSections matches={clubMatches} />
 
       {club.honours.length > 0 && (
         <section className="page-section tight dark-section">
