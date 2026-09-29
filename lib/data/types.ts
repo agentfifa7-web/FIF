@@ -147,6 +147,10 @@ export interface Player {
   /** Nom, poste et numéro réels (source : numérotation officielle du club) —
    *  le reste du profil (âge, attributs, contrat, statistiques) reste généré. */
   realRoster?: boolean
+  /** Intitulé exact du poste publié par le club (ex. « Latéral gauche »). */
+  positionDetail?: string
+  /** Taille, poids et date de naissance réels (publiés par le club). */
+  realMeasures?: boolean
   licenseStatus: 'Valide' | 'En attente' | 'Expirée'
   stats: { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }
   history: { clubId: string; from: number; to: number | null }[]

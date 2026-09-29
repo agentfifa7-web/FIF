@@ -8,6 +8,13 @@ import { ClubMatchSections } from '@/components/site/ClubMatchSections'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { MatchdayList } from '@/components/site/MatchdayList'
 
+const POSITION_GROUPS = [
+  { position: 'Gardien', label: 'Gardiens' },
+  { position: 'Défenseur', label: 'Défenseurs' },
+  { position: 'Milieu', label: 'Milieux' },
+  { position: 'Attaquant', label: 'Attaquants' },
+] as const
+
 export function generateStaticParams() {
   return clubs.map((c) => ({ slug: c.slug }))
 }
@@ -25,6 +32,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
 
   const stadium = getStadiumById(club.stadiumId)
   const roster = players.filter((p) => p.clubId === club.id)
+  const hasRealRoster = roster.some((p) => p.realRoster)
   const coach = coaches.find((c) => c.clubId === club.id)
   // La Ligue 1 dispose désormais d'un suivi réel (voir realLigue1Matches) :
   // les matchs fictifs générés pour comp-l1 sont donc exclus ici pour éviter
@@ -117,13 +125,31 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         </section>
       )}
 
-      <section className="page-section tight">
-        <p className="section-tag">Effectif — {roster.length} joueurs</p>
-        <div className="card-grid cols-4" style={{ marginTop: 16 }}>
-          {roster.slice(0, 12).map((p) => <PlayerCard key={p.id} player={p} />)}
-        </div>
-        {roster.length > 12 && <p className="lede" style={{ marginTop: 16 }}>+ {roster.length - 12} autres joueurs enregistrés.</p>}
-      </section>
+      {hasRealRoster ? (
+        <section className="page-section tight">
+          <p className="section-tag">Effectif officiel — {roster.length} joueurs</p>
+          {POSITION_GROUPS.map(({ position, label }) => {
+            const group = roster.filter((p) => p.position === position).sort((a, b) => (a.squadNumber ?? 99) - (b.squadNumber ?? 99))
+            if (!group.length) return null
+            return (
+              <div key={position} style={{ marginTop: 20 }}>
+                <b style={{ fontSize: 12, letterSpacing: '.06em', color: 'var(--muted)', textTransform: 'uppercase' }}>{label} ({group.length})</b>
+                <div className="card-grid cols-4" style={{ marginTop: 10 }}>
+                  {group.map((p) => <PlayerCard key={p.id} player={p} />)}
+                </div>
+              </div>
+            )
+          })}
+        </section>
+      ) : (
+        <section className="page-section tight">
+          <p className="section-tag">Effectif — {roster.length} joueurs</p>
+          <div className="card-grid cols-4" style={{ marginTop: 16 }}>
+            {roster.slice(0, 12).map((p) => <PlayerCard key={p.id} player={p} />)}
+          </div>
+          {roster.length > 12 && <p className="lede" style={{ marginTop: 16 }}>+ {roster.length - 12} autres joueurs enregistrés.</p>}
+        </section>
+      )}
 
       <ClubMatchSections matches={clubMatches} />
 

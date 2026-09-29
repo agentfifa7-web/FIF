@@ -391,7 +391,17 @@ const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 // (fiche club transmise par l'utilisateur). Nom, poste et numéro de maillot
 // réels ; âge, attributs, contrat et statistiques restent générés (non
 // communiqués par le club) — voir Player.realRoster.
-const REAL_ASEC_MIMOSAS_ROSTER: { number: number; name: string; position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant' }[] = [
+interface RealRosterEntry {
+  number?: number
+  name: string
+  position: 'Gardien' | 'Défenseur' | 'Milieu' | 'Attaquant'
+  detail?: string
+  height?: number
+  weight?: number
+  birthdate?: string
+}
+
+const REAL_ASEC_MIMOSAS_ROSTER: RealRosterEntry[] = [
   { number: 2, name: 'Mohamed Ali Yabré', position: 'Défenseur' },
   { number: 3, name: 'Gaoussou Samaké', position: 'Défenseur' },
   { number: 4, name: 'Kouassi Mickael Blé', position: 'Défenseur' },
@@ -428,6 +438,107 @@ const REAL_ASEC_MIMOSAS_ROSTER: { number: number; name: string; position: 'Gardi
   { number: 40, name: 'Ousmane Zombra', position: 'Gardien' },
 ]
 
+// Effectif réel de Yakro FC — site officiel du club (yakrofc.ci, page
+// « Ligue 1 professionnelle Hommes »).
+const REAL_YAKRO_FC_ROSTER: RealRosterEntry[] = [
+  { number: 1, name: 'Bouba Konaté', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 16, name: 'Koné Zoumana', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 30, name: 'Dosso Ilan Ismahila', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 2, name: 'Traoré Daouda', position: 'Défenseur', detail: 'Latéral gauche' },
+  { number: 3, name: 'Dia Wah Mickael', position: 'Défenseur', detail: 'Latéral gauche' },
+  { number: 5, name: 'Boubli Ange Messi', position: 'Défenseur', detail: 'Latéral gauche' },
+  { number: 6, name: 'N’Goran Doh Kouassi Dima', position: 'Défenseur', detail: 'Défenseur central' },
+  { number: 12, name: 'Sougué Moustapha', position: 'Défenseur', detail: 'Défenseur central' },
+  { number: 17, name: 'Seoulou Prince Elie', position: 'Défenseur', detail: 'Défenseur central' },
+  { number: 19, name: 'Diomandé Jaurès Kevin', position: 'Défenseur', detail: 'Latéral gauche' },
+  { number: 22, name: 'Koné Issouf Veratti', position: 'Défenseur', detail: 'Latéral droit' },
+  { number: 23, name: 'Doumbia Mory', position: 'Défenseur', detail: 'Latéral gauche' },
+  { number: 4, name: 'Dione Papa Amadou', position: 'Milieu', detail: 'Milieu' },
+  { number: 10, name: 'Afful Seedorf Asanté', position: 'Milieu', detail: 'Milieu' },
+  { number: 13, name: 'Diallo Idrissa', position: 'Milieu', detail: 'Milieu défensif' },
+  { number: 14, name: 'Camara Mamadou', position: 'Milieu', detail: 'Milieu défensif' },
+  { number: 21, name: 'Bastou Djibril', position: 'Milieu', detail: 'Milieu' },
+  { number: 24, name: 'Diarrassouba Cheickh', position: 'Milieu', detail: 'Milieu défensif' },
+  { number: 26, name: 'Gidami Ousman Youssouf', position: 'Milieu', detail: 'Milieu' },
+  { number: 7, name: 'Doumbia Mory Ismael', position: 'Attaquant', detail: 'Ailier' },
+  { number: 15, name: 'Gama Nasset Aurélien', position: 'Attaquant', detail: 'Ailier' },
+  { number: 18, name: 'N’Guessan Blaikatchi Elvis', position: 'Attaquant', detail: 'Ailier' },
+  { number: 9, name: 'Sanogo Hassan Aziz', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 11, name: 'Sangaré Daouda', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 25, name: 'Kamagaté Mory', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 28, name: 'Akala Christian', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 29, name: 'De La Celle Jean David', position: 'Attaquant', detail: 'Attaquant' },
+]
+
+// Effectif réel du FC San Pedro — site officiel du club (fcsanpedro.com,
+// page « Joueurs · Ligue 1 »), avec taille, poids et date de naissance
+// publiés. Valeurs manifestement fictives du site (123 cm, né le 01/01/1970)
+// volontairement omises.
+const REAL_FC_SAN_PEDRO_ROSTER: RealRosterEntry[] = [
+  { number: 1, name: 'Ulrich Landry Kouassi', position: 'Gardien', detail: 'Gardien de but', height: 186, weight: 82, birthdate: '2005-01-21' },
+  { number: 3, name: 'Bamba Goudousse', position: 'Défenseur', detail: 'Latéral droit', height: 177, weight: 72, birthdate: '2005-10-07' },
+  { number: 3, name: 'Yoan Franck Amos', position: 'Défenseur', detail: 'Latéral gauche', height: 180, weight: 70, birthdate: '2003-03-09' },
+  { number: 4, name: 'Touré Ibrahima', position: 'Défenseur', detail: 'Défenseur central', height: 170, weight: 65, birthdate: '2006-11-02' },
+  { number: 21, name: 'Komara Oumar Farouk', position: 'Défenseur', detail: 'Défenseur central', weight: 85 },
+  { number: 21, name: 'Diarrassouba Hamed Tidiane', position: 'Défenseur', detail: 'Latéral gauche', height: 170, weight: 65, birthdate: '2005-11-05' },
+  { number: 26, name: 'Karamoko Mouhamadou', position: 'Défenseur', detail: 'Défenseur central', height: 184, weight: 72, birthdate: '2005-08-27' },
+  { number: 29, name: 'Fofana Bangaly', position: 'Défenseur', detail: 'Latéral droit', height: 175, weight: 70, birthdate: '2005-02-05' },
+  { number: 31, name: 'Traoré Mamadou', position: 'Défenseur', detail: 'Défenseur central', height: 180, weight: 69, birthdate: '2003-06-04' },
+  { number: 5, name: 'Mohammed Saaba Gariba', position: 'Milieu', detail: 'Milieu défensif', height: 180, weight: 70, birthdate: '1990-10-12' },
+  { number: 8, name: 'Sidibé Alpha Stéphane', position: 'Milieu', detail: 'Milieu offensif', height: 180, weight: 79, birthdate: '2004-11-03' },
+  { number: 12, name: 'Koné Moussa', position: 'Milieu', detail: 'Milieu défensif', height: 175, weight: 65, birthdate: '2005-01-01' },
+  { number: 13, name: 'Niambé Abi Kassi Théodor', position: 'Milieu', detail: 'Milieu offensif', height: 165, weight: 60, birthdate: '2005-12-20' },
+  { number: 17, name: 'Wayou Constant', position: 'Milieu', detail: 'Milieu offensif', height: 182, weight: 71, birthdate: '1996-12-20' },
+  { number: 19, name: 'Koffi Yao Wilfried', position: 'Milieu', detail: 'Milieu défensif', height: 178, weight: 67, birthdate: '2007-10-15' },
+  { number: 36, name: 'Yao Amara Romaric', position: 'Milieu', detail: 'Milieu défensif', height: 185, weight: 65, birthdate: '2005-10-20' },
+  { number: 32, name: 'Adjibi Mario', position: 'Milieu', detail: 'Poste non communiqué', height: 185, weight: 78, birthdate: '2004-10-24' },
+  { number: 19, name: 'Hamed Alpha', position: 'Attaquant', detail: 'Ailier', height: 179, weight: 68, birthdate: '2005-01-01' },
+  { number: 20, name: 'Doumbia Alassane', position: 'Attaquant', detail: 'Ailier', height: 170, weight: 85, birthdate: '2004-10-06' },
+  { number: 9, name: 'Kamagaté Dramane', position: 'Attaquant', detail: 'Attaquant', height: 180, weight: 75, birthdate: '2005-05-01' },
+  { number: 11, name: 'Dosso Issouf', position: 'Attaquant', detail: 'Attaquant', height: 183, weight: 73, birthdate: '2003-12-16' },
+  { number: 24, name: 'Koffi Jean Ariel', position: 'Attaquant', detail: 'Attaquant', height: 180, weight: 72, birthdate: '2004-11-06' },
+  { number: 34, name: 'Koné Inza', position: 'Attaquant', detail: 'Attaquant', height: 182, weight: 72, birthdate: '2005-12-30' },
+]
+
+// Effectif réel de l'AFAD Plateau — page « Notre équipe » du site officiel
+// (afad.ci/equipe). Certains noms y sont tronqués à l'impression : complétés
+// via les fiches joueurs afad.ci lorsqu'elles existent, sinon laissés tels
+// que lisibles (sans deviner la fin du nom).
+const REAL_AFAD_PLATEAU_ROSTER: RealRosterEntry[] = [
+  { number: 1, name: 'Okahi Guy Franck', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 30, name: 'Sanguisso Nabi', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 31, name: 'Bamba Hamed', position: 'Gardien', detail: 'Gardien de but' },
+  { number: 2, name: 'Sanogo Ismaila', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 3, name: 'Yoan Franck', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 4, name: 'Brégui Vianey', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 5, name: 'Koicou Jean', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 15, name: 'Banse Mamoudou', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 18, name: 'Bakayoko Yaya', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 25, name: 'Bamba Issiaka', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 27, name: 'Touré Yomi Junior', position: 'Défenseur', detail: 'Défenseur' },
+  { number: 6, name: 'Touré Mohamed', position: 'Milieu', detail: 'Milieu' },
+  { number: 8, name: 'Kacou Luc Stéphane', position: 'Milieu', detail: 'Milieu' },
+  { number: 10, name: 'Coulibaly Sanga Topio', position: 'Milieu', detail: 'Milieu' },
+  { number: 11, name: 'Kouadio Fulgence', position: 'Milieu', detail: 'Milieu' },
+  { number: 16, name: 'Adjavoin Kossi Jude', position: 'Milieu', detail: 'Milieu' },
+  { number: 18, name: 'Kouassi Koffi', position: 'Milieu', detail: 'Milieu' },
+  { number: 20, name: 'Koné Ibrahim Riqui', position: 'Milieu', detail: 'Milieu' },
+  { number: 22, name: 'Lagoue Tiemoko Junior', position: 'Milieu', detail: 'Milieu' },
+  { number: 7, name: 'Fofana Soulaye', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 12, name: 'Agbo-Panzo Sedjro Steve Junior', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 13, name: 'Koné Adam', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 14, name: 'Traoré Sidiki', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 28, name: 'Zehi Emmanuel', position: 'Attaquant', detail: 'Attaquant' },
+  { number: 29, name: 'Jarju Kalilu', position: 'Attaquant', detail: 'Attaquant' },
+]
+
+const REAL_ROSTERS: Record<string, RealRosterEntry[]> = {
+  'ASEC Mimosas': REAL_ASEC_MIMOSAS_ROSTER,
+  'Yakro FC': REAL_YAKRO_FC_ROSTER,
+  'FC San Pedro': REAL_FC_SAN_PEDRO_ROSTER,
+  'AFAD Plateau': REAL_AFAD_PLATEAU_ROSTER,
+}
+
 function makeCareerHistory(club: Club, birthYear: number, joinYear: number) {
   const debutYear = birthYear + 17
   const spanAvailable = joinYear - debutYear
@@ -458,23 +569,28 @@ type BasePlayer = Omit<Player,
   'attributes' | 'traits' | 'scoutReport' | 'seasonStats'>
 
 const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) => {
-  const realRoster = club.name === 'ASEC Mimosas' ? REAL_ASEC_MIMOSAS_ROSTER : null
+  const realRoster = REAL_ROSTERS[club.name] ?? null
   const count = realRoster ? realRoster.length : club.category === 'Futsal' ? 10 : 20
   return Array.from({ length: count }, (_, pi) => {
     const real = realRoster?.[pi]
     const gender = club.gender
     const name = real ? real.name : fullName(gender === 'F' ? 'F' : 'M')
     const id = `player-${ci}-${pi}`
-    const birthYear = rng.int(1994, 2009)
+    const generatedBirthYear = rng.int(1994, 2009)
+    const generatedBirthdate = `${generatedBirthYear}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`
+    const birthdate = real?.birthdate ?? generatedBirthdate
+    const birthYear = Number(birthdate.slice(0, 4))
     return {
       id,
       slug: `${slugify(name)}-${ci}${pi}`,
       name,
       photoSeed: id,
       position: real ? real.position : rng.pick(positions),
+      positionDetail: real?.detail,
+      realMeasures: Boolean(real?.height && real?.weight && real?.birthdate),
       clubId: club.id,
       gender,
-      birthdate: `${birthYear}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`,
+      birthdate,
       nationality: 'Côte d’Ivoire',
       fifId: `FIF-${(10000 + ci * 40 + pi).toString().padStart(6, '0')}`,
       licenseStatus: rng.bool(0.85) ? 'Valide' : rng.bool() ? 'En attente' : 'Expirée',
@@ -705,7 +821,16 @@ function buildScoutingProfile(p: BasePlayer) {
   }
 }
 
-export const players: Player[] = basePlayers.map((p) => ({ ...p, ...buildScoutingProfile(p) }))
+const realMeasuresByPlayerId = new Map<string, RealRosterEntry>()
+clubs.forEach((club, ci) => {
+  REAL_ROSTERS[club.name]?.forEach((entry, pi) => realMeasuresByPlayerId.set(`player-${ci}-${pi}`, entry))
+})
+
+export const players: Player[] = basePlayers.map((p) => {
+  const profile = buildScoutingProfile(p)
+  const real = realMeasuresByPlayerId.get(p.id)
+  return { ...p, ...profile, height: real?.height ?? profile.height, weight: real?.weight ?? profile.weight }
+})
 
 // Étoiles Niveau actuel / Potentiel — calculées par rang au sein de l'effectif du club.
 for (const club of clubs) {
@@ -1193,7 +1318,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     venue: 'Stade Charles Konan Banny, Yamoussoukro',
     homeScore: 1,
     awayScore: 0,
-    events: [{ minute: 33, type: 'goal', team: 'home', player: 'Doumbia Mory' }],
+    events: [{ minute: 33, type: 'goal', team: 'home', player: 'Doumbia Mory Ismael' }],
     source: 'Résultat réel confirmé par la presse ivoirienne (Afrique-sur7, Agence Ivoirienne de Presse) — le promu Yakro FC (Yamoussoukro FC) bat le champion en titre ASEC Mimosas pour la 1ère journée de Ligue 1 LONACI 2026-2027. Doumbia Mory (Mory Ismael Doumbia), ailier gauche international U20 ivoirien recruté à Sirocco FC, inscrit son premier but sous ses nouvelles couleurs.',
   },
   {

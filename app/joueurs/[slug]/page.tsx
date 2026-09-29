@@ -59,7 +59,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               {club && <span className="avatar-crest-badge"><ClubCrest club={club} size={28} /></span>}
             </span>
             <div>
-              <p className="eyebrow"><span /> {player.squadNumber ? `N°${player.squadNumber} · ` : ''}{player.position} · {club?.name}</p>
+              <p className="eyebrow"><span /> {player.squadNumber ? `N°${player.squadNumber} · ` : ''}{player.positionDetail ?? player.position} · {club?.name}</p>
               <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{player.name}</h1>
             </div>
           </div>
@@ -74,7 +74,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
 
       {player.realRoster && (
         <section className="page-section tight" style={{ paddingBottom: 0 }}>
-          <p className="press-source-note"><Info size={13} /> Nom, poste et numéro de maillot réels — numérotation officielle {club?.name}, saison 2026-2027. Âge, attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</p>
+          <p className="press-source-note"><Info size={13} /> {player.realMeasures
+            ? <>Nom, poste, numéro, taille, poids et date de naissance réels — effectif officiel {club?.name}, saison 2026-2027. Attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</>
+            : <>Nom, poste et numéro de maillot réels — effectif officiel {club?.name}, saison 2026-2027. Âge, attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</>}</p>
         </section>
       )}
 

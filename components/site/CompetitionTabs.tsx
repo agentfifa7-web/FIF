@@ -207,7 +207,7 @@ export function CompetitionTabs({
             return (
               <Link href={`/joueurs/${p.slug}`} className="entity-card" key={p.id}>
                 <PersonPortrait seed={p.name} size={44} />
-                <div><strong>{p.name}</strong><span>{p.position} · {club?.name}</span></div>
+                <div><strong>{p.name}</strong><span>{p.positionDetail ?? p.position} · {club?.name}</span></div>
               </Link>
             )
           })}
