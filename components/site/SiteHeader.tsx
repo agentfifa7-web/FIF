@@ -30,6 +30,7 @@ const universe = [
   {
     title: 'Le football',
     items: [
+      { label: 'Mémoire du football ivoirien', href: '/football' },
       { label: 'Ligue 1', href: '/competitions/ligue-1' },
       { label: 'Ligue 2', href: '/competitions/ligue-2' },
       { label: 'Football féminin', href: '/football/feminin' },
@@ -69,7 +70,7 @@ const utilityLinks = [
 const mainNav = [
   { label: 'Équipes nationales', href: '/equipes-nationales' },
   { label: 'Compétitions', href: '/competitions' },
-  { label: 'Football', href: '/football/amateur' },
+  { label: 'Football', href: '/football' },
   { label: 'Clubs', href: '/clubs' },
   { label: 'Joueurs', href: '/joueurs' },
   { label: 'Actualités', href: '/actualites' },
