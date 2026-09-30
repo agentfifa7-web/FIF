@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { ArrowRight, Heart, Info } from 'lucide-react'
-import { memoryCategories, memoryPeopleIn, memoryPeople, memorySources, type MemoryPerson } from '@/lib/data/memoire'
+import { memoryCategories, memoryPeopleIn, memoryPeople, memorySources, memoryPhotoSrc, type MemoryPerson } from '@/lib/data/memoire'
 import { PageHero } from '@/components/site/PageHero'
-import { PersonPortrait } from '@/components/site/PersonPortrait'
+import { MemoryPhoto } from '@/components/site/MemoryPhoto'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Mémoire du football ivoirien — FIF Digital' }
@@ -55,9 +55,7 @@ export default function FootballMemoryPage() {
             <div className="card-grid" style={{ marginTop: 16 }}>
               {list.map((p) => (
                 <Link key={p.slug} href={`/football/memoire/${p.slug}`} className="entity-card memory-card">
-                  {p.photoUrl
-                    ? <img src={p.photoUrl} alt={p.name} width={52} height={62} style={{ borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
-                    : <PersonPortrait seed={p.name} size={52} />}
+                  <MemoryPhoto name={p.name} src={memoryPhotoSrc(p)} width={52} height={62} />
                   <div>
                     <strong>{p.name}</strong>
                     <span>{p.title}</span>

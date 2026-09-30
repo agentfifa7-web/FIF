@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowRight, Award, Camera } from 'lucide-react'
-import { memoryPeople, getMemoryPerson, memoryCategory, memoryPeopleIn } from '@/lib/data/memoire'
+import { ArrowRight, Award, Camera, Info } from 'lucide-react'
+import { memoryPeople, getMemoryPerson, memoryCategory, memoryPeopleIn, memoryPhotoSrc, memoryPhotoSource } from '@/lib/data/memoire'
 import { Breadcrumb } from '@/components/site/PageHero'
-import { PersonPortrait } from '@/components/site/PersonPortrait'
+import { MemoryPhoto } from '@/components/site/MemoryPhoto'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export function generateStaticParams() {
@@ -34,15 +34,19 @@ export default async function MemoryPersonPage({ params }: { params: Promise<{ s
 
       <section className="page-section tight">
         <div style={{ alignItems: 'flex-start', display: 'flex', flexWrap: 'wrap', gap: 28 }}>
-          {person.photoUrl
-            ? <img src={person.photoUrl} alt={person.name} width={180} style={{ borderRadius: 'var(--radius-md)', display: 'block', objectFit: 'cover' }} />
-            : <PersonPortrait seed={person.name} size={150} />}
+          <MemoryPhoto name={person.name} src={memoryPhotoSrc(person)} sourceUrl={memoryPhotoSource(person)} width={200} height={250} radius={12} credit />
           <div style={{ flex: 1, minWidth: 260 }}>
             <p className="section-tag">{category?.label}</p>
             <h1 style={{ fontSize: 'clamp(28px,4vw,44px)', letterSpacing: '-.03em', margin: '6px 0' }}>{person.name}</h1>
             <p style={{ fontWeight: 700, margin: '4px 0 10px' }}>{person.title}</p>
             {(dates || person.deceased) && <span className={person.deceased ? 'status-pill neutral' : 'status-pill ok'}>{person.deceased ? `✝ ${dates ? `${dates} · ` : ''}${person.feminine ? 'Disparue' : 'Disparu'}` : dates}</span>}
             <p className="lede" style={{ marginTop: 16, maxWidth: 720 }}>{person.summary}</p>
+            {(person.birth || person.death) && (
+              <dl className="memory-facts">
+                {person.birth && <div><dt>{person.feminine ? 'Née' : 'Né'} le</dt><dd>{person.birth}</dd></div>}
+                {person.death && <div><dt>{person.feminine ? 'Décédée' : 'Décédé'} le</dt><dd>{person.death}</dd></div>}
+              </dl>
+            )}
             {person.related && (
               <Link href={person.related.href} className="text-link" style={{ display: 'inline-flex', marginTop: 12 }}>{person.related.label} <ArrowRight size={14} /></Link>
             )}
@@ -73,6 +77,14 @@ export default async function MemoryPersonPage({ params }: { params: Promise<{ s
         </div>
       </section>
 
+      {person.sources && person.sources.length > 0 && (
+        <section className="page-section tight">
+          <p className="press-source-note"><Info size={13} /> Sources : {person.sources.map((src, i) => (
+            <span key={src.url}>{i > 0 ? ' · ' : ''}<a href={src.url} target="_blank" rel="noopener noreferrer">{src.label}</a></span>
+          ))}.</p>
+        </section>
+      )}
+
       <section className="page-section tight">
         <div className="dashboard-panel" style={{ margin: 0, maxWidth: 760 }}>
           <h3><Camera size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Enrichir cet hommage</h3>
@@ -87,9 +99,7 @@ export default async function MemoryPersonPage({ params }: { params: Promise<{ s
           <div className="card-grid" style={{ marginTop: 16 }}>
             {others.map((p) => (
               <Link key={p.slug} href={`/football/memoire/${p.slug}`} className="entity-card">
-                {p.photoUrl
-                  ? <img src={p.photoUrl} alt={p.name} width={44} height={52} style={{ borderRadius: 8, objectFit: 'cover' }} />
-                  : <PersonPortrait seed={p.name} size={44} />}
+                <MemoryPhoto name={p.name} src={memoryPhotoSrc(p)} width={44} height={52} />
                 <div><strong>{p.name}</strong><span>{p.title}</span></div>
                 <ArrowRight />
               </Link>
