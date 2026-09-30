@@ -15,6 +15,8 @@ export default function PresidentPage() {
         title={presidentProfile.name}
         subtitle={presidentProfile.role}
         breadcrumb={[{ label: 'Fédération', href: '/federation' }, { label: 'Le Président' }]}
+        images={presidentProfile.heroImages}
+        imageFit="side"
         meta={[
           { value: String(presidentProfile.since), label: 'Président depuis' },
           { value: '2026-2030', label: 'Mandat en cours' },
@@ -26,7 +28,7 @@ export default function PresidentPage() {
         <div className="card-grid cols-2" style={{ alignItems: 'start' }}>
           <div>
             {presidentProfile.photoUrl
-              ? <img src={presidentProfile.photoUrl} alt={presidentProfile.name} width={220} style={{ borderRadius: 'var(--radius-md)', display: 'block', objectFit: 'cover' }} />
+              ? <img src={presidentProfile.photoUrl} alt={presidentProfile.name} width={220} height={223} style={{ borderRadius: 'var(--radius-md)', display: 'block', objectFit: 'cover' }} />
               : <PersonPortrait seed={presidentProfile.photoSeed} size={220} />}
             <p className="lede" style={{ fontSize: 13, marginTop: 12 }}>{presidentProfile.birth}</p>
             <p className="lede" style={{ marginTop: 12 }}>{presidentProfile.summary}</p>

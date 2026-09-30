@@ -34,7 +34,9 @@ function pickPhotos(seed: string, count = 3) {
   return Array.from({ length: count }, (_, i) => HERO_PHOTO_POOL[(start + i) % HERO_PHOTO_POOL.length])
 }
 
-export function HeroCarousel({ seed, images }: { seed: string; images?: string[] }) {
+// imageFit="side" : portraits affichés à droite sur toute la hauteur du
+// héros (sans étirement plein écran), le texte restant lisible à gauche.
+export function HeroCarousel({ seed, images, imageFit = 'cover' }: { seed: string; images?: string[]; imageFit?: 'cover' | 'side' }) {
   const photos = images && images.length ? images : pickPhotos(seed)
   const [index, setIndex] = useState(0)
 
@@ -44,8 +46,9 @@ export function HeroCarousel({ seed, images }: { seed: string; images?: string[]
     return () => clearInterval(id)
   }, [photos.length])
 
+  const side = imageFit === 'side'
   return (
-    <div className="page-hero-media" aria-hidden="true">
+    <div className={side ? 'page-hero-media is-side' : 'page-hero-media'} aria-hidden="true">
       {photos.map((src, i) => (
         <div
           key={src + i}
@@ -66,6 +69,7 @@ export function PageHero({
   meta,
   tone = 'forest',
   images,
+  imageFit,
   noPhotos = false,
 }: {
   eyebrow?: string
@@ -75,11 +79,12 @@ export function PageHero({
   meta?: { label: string; value: string }[]
   tone?: 'forest' | 'cream'
   images?: string[]
+  imageFit?: 'cover' | 'side'
   noPhotos?: boolean
 }) {
   return (
     <section className={`page-hero tone-${tone}`}>
-      {!noPhotos && <HeroCarousel seed={title} images={images} />}
+      {!noPhotos && <HeroCarousel seed={title} images={images} imageFit={imageFit} />}
       <div className="page-hero-content">
         {breadcrumb && <Breadcrumb items={breadcrumb} />}
         {eyebrow && (

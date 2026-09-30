@@ -678,3 +678,7 @@ a.md-row:hover { background:#f7f8f6; }
 .md-date { color:var(--muted); font-size:12px; }
 .md-scores { display:flex; flex-direction:column; font-size:14px; gap:4px; text-align:right; }
 .md-scores.md-time { color:var(--muted); font-size:12px; }
+.page-hero-media.is-side { background:linear-gradient(120deg,#041b12,#0a5c33 70%,#c85a00); }
+.page-hero-media.is-side .page-hero-media-slide { background-position:right clamp(20px,9vw,140px) center; background-repeat:no-repeat; background-size:auto 100%; }
+.page-hero-media.is-side .page-hero-scrim { background:linear-gradient(90deg,rgba(4,27,18,.96) 30%,rgba(4,27,18,.55) 55%,rgba(4,27,18,0) 75%); }
+@media (max-width:700px) { .page-hero-media.is-side .page-hero-media-slide { background-position:right center; opacity:0; } .page-hero-media.is-side .page-hero-media-slide.is-active { opacity:.35; } }

@@ -920,7 +920,12 @@ export const presidentProfile = {
   role: 'Président de la Fédération Ivoirienne de Football',
   since: 2022,
   photoSeed: 'yacine-idriss-diallo',
-  photoUrl: undefined as string | undefined,
+  photoUrl: '/federation/president/yacine-idriss-diallo-portrait.jpg' as string | undefined,
+  heroImages: [
+    '/federation/president/yacine-idriss-diallo-2.jpg',
+    '/federation/president/yacine-idriss-diallo-3.jpg',
+    '/federation/president/yacine-idriss-diallo-4.jpg',
+  ],
   birth: 'Né le 1er octobre 1960 à Daloa (Côte d’Ivoire)',
   summary: 'Chef d’entreprise, ancien dirigeant de l’ASEC Mimosas et cofondateur de l’Académie de Football Amadou Diallo (AFAD), Yacine Idriss Diallo préside la FIF depuis le 23 avril 2022. Il a été réélu le 12 septembre 2026, seul candidat, avec 123 voix sur 149, pour un second mandat de quatre ans (2026-2030).',
   cv: [
