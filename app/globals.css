@@ -385,9 +385,14 @@ button { font:inherit; }
 .product-card { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; gap:8px; padding:16px; }
 .product-image { background:#f2f4f1; display:block; height:180px; }
 .product-image svg { display:block; }
+.product-image { position:relative; }
+.product-image.has-photo { background:#fff; height:220px; }
+.product-image.has-photo img { display:block; height:100%; object-fit:contain; width:100%; }
+.product-badge { background:var(--ink); border-radius:999px; color:#fff; font-size:10px; font-style:normal; font-weight:700; left:8px; letter-spacing:.04em; padding:3px 8px; position:absolute; text-transform:uppercase; top:8px; }
+.product-desc { color:var(--muted); font-size:12px; line-height:1.45; }
 .product-card strong { font-size:13px; }
 .product-card span { color:var(--muted); font-size:12px; }
-.product-card button { margin-top:8px; }
+.product-card button { margin-top:auto; }
 .ticket-card { background:#fff; border:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; padding:22px; }
 .ticket-card small { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
 .ticket-card strong { display:block; font-size:16px; margin:8px 0; }

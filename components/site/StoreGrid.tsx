@@ -24,9 +24,13 @@ export function StoreGrid({ products }: { products: Product[] }) {
       <div className="card-grid cols-4">
         {filtered.map((p) => (
           <div className="product-card" key={p.id}>
-            <div className="product-image"><ProductArt product={p} /></div>
+            <div className={p.photo ? 'product-image has-photo' : 'product-image'}>
+              {p.photo ? <img src={p.photo} alt={p.name} loading="lazy" /> : <ProductArt product={p} />}
+              {p.badge && <em className="product-badge">{p.badge}</em>}
+            </div>
             <strong>{p.name}</strong>
-            <span>{formatMoney(p.price)}{p.customizable ? ' · Personnalisable' : ''}</span>
+            {p.description && <small className="product-desc">{p.description}</small>}
+            <span>{formatMoney(p.price)}{p.customizable ? ' · Personnalisable' : ''}{p.sizes.length ? ` · ${p.sizes[0]}–${p.sizes[p.sizes.length - 1]}` : ''}</span>
             <button type="button" className="button-outline" onClick={() => setCart((c) => ({ ...c, [p.id]: (c[p.id] ?? 0) + 1 }))}>
               Ajouter au panier
             </button>

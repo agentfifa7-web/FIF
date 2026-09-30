@@ -2247,7 +2247,7 @@ const productNamer: Record<string, () => string> = {
   Écharpes: () => `Écharpe Éléphants`,
   Casquettes: () => `Casquette FIF Côte d’Ivoire`,
 }
-export const products: Product[] = Array.from({ length: 24 }, (_, i) => {
+const generatedProducts: Product[] = Array.from({ length: 24 }, (_, i) => {
   const category = productCategories[i % productCategories.length]
   return {
     id: `product-${i}`,
@@ -2260,6 +2260,36 @@ export const products: Product[] = Array.from({ length: 24 }, (_, i) => {
     customizable: category === 'Maillots',
   }
 })
+
+// Articles réels de la boutique (photos fournies). Prix indicatifs, à ajuster.
+const SHOE_SIZES = ['38', '39', '40', '41', '42', '43', '44', '45']
+const SHIRT_SIZES = ['S', 'M', 'L', 'XL', 'XXL']
+const realProducts: Product[] = ([
+  { slug: 'maillot-domicile-2-etoiles', name: 'Maillot Éléphants Domicile — édition 2 étoiles', category: 'Maillots', price: 45000, colors: ['Orange'], badge: 'Puma', description: 'Maillot orange domicile Puma, écusson FIF et deux étoiles (1992, 2015).', customizable: true },
+  { slug: 'maillot-vert-blanc-mandala', name: 'Maillot Éléphants Vert & Blanc à rosaces', category: 'Maillots', price: 45000, colors: ['Vert', 'Blanc'], badge: 'Puma', description: 'Maillot Puma dégradé vert et blanc, motifs rosaces, écusson trois étoiles.', customizable: true },
+  { slug: 'maillot-blanc-floral', name: 'Maillot Éléphants Blanc à motifs soleils', category: 'Maillots', price: 45000, colors: ['Blanc'], badge: 'Puma', description: 'Maillot Puma blanc, motifs soleils et palmiers orange et vert, écusson trois étoiles.', customizable: true },
+  { slug: 'maillot-motifs-vert-orange', name: 'Maillot Éléphants Vert & Orange à motifs', category: 'Maillots', price: 40000, colors: ['Vert', 'Orange'], badge: 'Puma', description: 'Maillot Puma aux motifs graphiques orange et blancs sur fond vert sombre.', customizable: true },
+  { slug: 'maillot-retro-kappa', name: 'Maillot rétro Côte d’Ivoire — Kappa', category: 'Rétro', price: 35000, colors: ['Vert', 'Orange', 'Blanc'], badge: 'Kappa', description: 'Maillot rétro Kappa à bandes verticales orange, blanc et vert, col polo.', customizable: false },
+  { slug: 'maillot-retro-col-polo', name: 'Maillot rétro « Elephants » col polo', category: 'Rétro', price: 20000, colors: ['Vert', 'Orange', 'Blanc'], description: 'Maillot vert col polo blanc, éléphant imprimé et inscription « Elephants ».', customizable: false },
+  { slug: 'maillot-supporter-pinceau', name: 'Maillot supporter Côte d’Ivoire — coups de pinceau', category: 'Supporters', price: 15000, colors: ['Blanc', 'Orange', 'Vert'], description: 'Maillot supporter blanc aux traits orange et vert, drapeau ivoirien.', customizable: true },
+  { slug: 'maillot-dikali-tricolore', name: 'Maillot tricolore Côte d’Ivoire — Dikali', category: 'Supporters', price: 15000, colors: ['Orange', 'Blanc', 'Vert'], badge: 'Dikali', description: 'Maillot blanc à bandes verticales vert et orange, marque Dikali.', customizable: true },
+  { slug: 'tenue-petits-poteaux', name: 'Tenue complète Côte d’Ivoire — Petits Poteaux', category: 'Tenues', price: 25000, colors: ['Orange', 'Blanc'], badge: 'QR Sport', description: 'Maillot, short et chaussettes orange à motif éléphant, floqués « Côte d’Ivoire 10 » — FIFPP (petits poteaux).', customizable: true },
+  { slug: 'ballon-pokou-can-2023', name: 'Ballon officiel CAN 2023 « Pokou »', category: 'Ballons', price: 30000, colors: ['Blanc', 'Vert', 'Orange'], badge: 'Puma', description: 'Ballon officiel Puma de la CAN Côte d’Ivoire 2023, baptisé en hommage à Laurent Pokou.', customizable: false },
+  { slug: 'crampons-predator-orange', name: 'Crampons adidas Predator sans lacets', category: 'Crampons', price: 90000, colors: ['Orange', 'Noir'], badge: 'adidas', description: 'Crampons adidas Predator orange et noir, tige sans lacets.', customizable: false },
+  { slug: 'crampons-noir-jaune', name: 'Crampons montants noir & jaune fluo', category: 'Crampons', price: 35000, colors: ['Noir', 'Jaune'], description: 'Crampons à col montant, noir, jaune fluo et orange.', customizable: false },
+  { slug: 'crampons-orange-jaune', name: 'Crampons orange & jaune', category: 'Crampons', price: 25000, colors: ['Orange', 'Jaune'], description: 'Crampons moulés orange à bandes jaunes.', customizable: false },
+  { slug: 'crampons-rouges', name: 'Crampons rouges', category: 'Crampons', price: 20000, colors: ['Rouge', 'Blanc'], description: 'Crampons moulés rouges à motifs blancs.', customizable: false },
+  { slug: 'crampons-jaune-bleu', name: 'Crampons jaune & bleu', category: 'Crampons', price: 20000, colors: ['Jaune', 'Bleu'], description: 'Crampons moulés jaune fluo et bleu roi.', customizable: false },
+  { slug: 'gourde-quechua', name: 'Gourde Quechua 0,6 L', category: 'Accessoires', price: 7000, colors: ['Vert d’eau'], badge: 'Quechua', description: 'Gourde isotherme 0,6 litre avec bouchon à paille.', customizable: false },
+] as (Omit<Product, 'id' | 'sizes' | 'image' | 'photo'> & { slug: string })[]).map(({ slug, ...p }) => ({
+  ...p,
+  id: `boutique-${slug}`,
+  sizes: p.category === 'Crampons' ? SHOE_SIZES : ['Ballons', 'Accessoires'].includes(p.category) ? [] : SHIRT_SIZES,
+  image: `/boutique/${slug}.jpg`,
+  photo: `/boutique/${slug}.jpg`,
+}))
+
+export const products: Product[] = [...realProducts, ...generatedProducts]
 
 export const ticketEvents: TicketEvent[] = matches
   .filter((m) => m.status === 'À venir')

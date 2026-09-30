@@ -335,6 +335,10 @@ export interface Product {
   sizes: string[]
   image: string
   customizable: boolean
+  /** Photo réelle de l'article (dossier public) ; sinon visuel généré. */
+  photo?: string
+  description?: string
+  badge?: string
 }
 
 export interface TrainingCourse {
