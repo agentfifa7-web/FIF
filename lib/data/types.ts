@@ -216,6 +216,8 @@ export interface ExecutiveMember {
   commissionIds: string[]
   since: number
   bio: string
+  /** Photo déposée dans /public (aucune image n'est inventée). */
+  photoUrl?: string
 }
 
 export interface OfficialDocument {

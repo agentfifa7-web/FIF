@@ -868,50 +868,95 @@ export const federationMilestones: { year: number; event: string }[] = [
   { year: 1960, event: 'Naissance du football fédéral ivoirien avec l’indépendance de la Côte d’Ivoire.' },
   { year: 1965, event: 'Affiliation à la Confédération Africaine de Football (CAF) et à la FIFA.' },
   { year: 1992, event: 'Premier sacre continental des Éléphants, Coupe d’Afrique des Nations.' },
-  { year: 2024, event: 'Deuxième sacre continental des Éléphants, Coupe d’Afrique des Nations disputée à domicile.' },
+  { year: 2015, event: 'Deuxième sacre continental des Éléphants, Coupe d’Afrique des Nations en Guinée équatoriale.' },
+  { year: 2022, event: 'Élection de Yacine Idriss Diallo à la présidence de la FIF (23 avril).' },
+  { year: 2024, event: 'Troisième sacre continental des Éléphants, CAN 2023 disputée et remportée à domicile (février 2024).' },
+  { year: 2026, event: 'Réélection de Yacine Idriss Diallo pour un second mandat (12 septembre, Yamoussoukro — 123 voix sur 149).' },
   { year: 2026, event: 'Lancement de FIF Digital Universe, la plateforme numérique centrale du football ivoirien.' },
 ]
 
-const execRoles = ['1er Vice-Président', '2e Vice-Président', 'Secrétaire Général', 'Trésorier Général', 'Membre chargé des Ligues', 'Membre chargé du Football Amateur', 'Membre chargé du Football Féminin', 'Membre chargé de la Formation', 'Membre chargé du Marketing', 'Membre chargé des Relations Internationales', 'Membre chargé du Numérique']
-export const executiveCommittee: ExecutiveMember[] = execRoles.map((role, i) => {
-  const name = fullName(rng.bool(0.25) ? 'F' : 'M')
-  const memberCommissions = rng.pickN(commissions, rng.int(1, 2))
-  return {
-    id: `exec-${i}`,
-    slug: `${slugify(name)}-${i}`,
-    name,
-    role,
-    commissionIds: memberCommissions.map((c) => c.id),
-    since: rng.int(2017, 2024),
-    bio: `${name} siège au Comité Exécutif de la FIF en tant que ${role.toLowerCase()} depuis ${rng.int(2017, 2024)}, et supervise ${memberCommissions.map((c) => c.name).join(' et ')}.`,
-  }
-})
+// ---------------------------------------------------------------------------
+// Présidence et Comité exécutif réels — mandat 2026-2030, issus de
+// l'Assemblée générale élective du 12 septembre 2026 (Fondation Félix
+// Houphouët-Boigny, Yamoussoukro). Sources : Abidjan.net, APAnews,
+// Connectionivoirienne, Pulse CI, KOACI, L'Intelligent d'Abidjan,
+// Zappingmedias, Jeune Afrique, Wikipédia. Photos : aucune image inventée —
+// ajouter un fichier dans /public/federation/ et renseigner photoUrl.
+// ---------------------------------------------------------------------------
+export const executiveCommitteeSourceNote = 'Liste « Unie pour la FIF » conduite par Yacine Idriss Diallo, élue par l’Assemblée générale élective du 12 septembre 2026 (24 candidatures au Comité exécutif jugées éligibles par la Commission électorale présidée par Me Kouamé Bi Iritie). Seuls les membres dont le nom a été confirmé par la presse figurent ici ; la répartition officielle des postes, hormis la 1re vice-présidence, n’a pas encore été publiée.'
+
+const REAL_EXECUTIVE_COMMITTEE: { name: string; role: string; since: number; bio: string }[] = [
+  { name: 'Malik Adam Francis Tohé', role: '1er Vice-Président', since: 2022, bio: 'Président du Club Omnisports de Korhogo (CO Korhogo). Un temps pressenti comme candidat à la présidence, il s’est retiré après un accord avec le président sortant (Comité exécutif du 30 juillet 2026) et a rejoint la liste « Unie pour la FIF », où il conserve la 1re vice-présidence.' },
+  { name: 'Sié Abou Ouattara', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Colonel Mamadou Koné', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Salif Bictogo', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Yssouf Diabaté', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Abdoulaye Diabaté', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Issa Diabaté', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Anne-Marie Blandine N’Guessan', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduite sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Bamoudien Traoré', role: 'Membre du Comité exécutif', since: 2022, bio: 'Membre du Comité exécutif reconduit sur la liste « Unie pour la FIF » pour le mandat 2026-2030.' },
+  { name: 'Noumandiez Doué', role: 'Membre du Comité exécutif', since: 2026, bio: 'Ancien arbitre international ivoirien, il fait son entrée au Comité exécutif avec la liste « Unie pour la FIF » en 2026.' },
+  { name: 'Issouf Blaise Bamba', role: 'Membre du Comité exécutif', since: 2026, bio: 'Nouveau membre du Comité exécutif, élu sur la liste « Unie pour la FIF » en 2026.' },
+  { name: 'Abdoulaye Diallo', role: 'Membre du Comité exécutif', since: 2026, bio: 'Fils de l’ancien président de la FIF Augustin Sidy Diallo, il fait son entrée au Comité exécutif avec la liste « Unie pour la FIF » en 2026.' },
+  { name: 'Sylvie Touré', role: 'Membre du Comité exécutif', since: 2026, bio: 'Journaliste, directrice de la Communication au Cabinet du Premier ministre ; elle fait son entrée au Comité exécutif avec la liste « Unie pour la FIF » en 2026.' },
+  { name: 'François Youl Sansan', role: 'Membre du Comité exécutif', since: 2026, bio: 'Nouveau membre du Comité exécutif, élu sur la liste « Unie pour la FIF » en 2026.' },
+]
+
+export const executiveCommittee: ExecutiveMember[] = REAL_EXECUTIVE_COMMITTEE.map((m, i) => ({
+  id: `exec-${i}`,
+  slug: slugify(m.name),
+  name: m.name,
+  role: m.role,
+  commissionIds: [],
+  since: m.since,
+  bio: m.bio,
+}))
+
+// Membres du Comité exécutif 2022-2026 non reconduits sur la liste 2026.
+export const executiveCommitteeDepartures = ['Bonaventure Kalou (ancien international)', 'Cyrielle Domoraud (ancienne internationale)', 'Hamed Ouattara', 'Armand Gohourou (directeur exécutif)']
 
 export const presidentProfile = {
-  name: 'Amara N’Dri Koffi',
+  name: 'Yacine Idriss Diallo',
   role: 'Président de la Fédération Ivoirienne de Football',
-  since: 2021,
-  photoSeed: 'president-fif-demo',
+  since: 2022,
+  photoSeed: 'yacine-idriss-diallo',
+  photoUrl: undefined as string | undefined,
+  birth: 'Né le 1er octobre 1960 à Daloa (Côte d’Ivoire)',
+  summary: 'Chef d’entreprise, ancien dirigeant de l’ASEC Mimosas et cofondateur de l’Académie de Football Amadou Diallo (AFAD), Yacine Idriss Diallo préside la FIF depuis le 23 avril 2022. Il a été réélu le 12 septembre 2026, seul candidat, avec 123 voix sur 149, pour un second mandat de quatre ans (2026-2030).',
   cv: [
-    { year: '2021 — aujourd’hui', label: 'Président de la FIF' },
-    { year: '2013 — 2021', label: 'Vice-président de la FIF, chargé des compétitions' },
-    { year: '2005 — 2013', label: 'Président de club, Ligue 1 ivoirienne' },
-    { year: '1998 — 2005', label: 'Dirigeant sportif et arbitre fédéral' },
+    { year: 'Sept. 2026', label: 'Réélu président de la FIF (123 voix sur 149), seul candidat — second mandat 2026-2030' },
+    { year: 'Avril 2022', label: 'Élu président de la FIF au second tour (63 voix contre 61 pour Sory Diabaté ; Didier Drogba éliminé au 1er tour avec 21 voix)' },
+    { year: '1984 — 2002', label: 'Vice-président de l’ASEC Mimosas' },
+    { year: '—', label: 'Cofondateur de l’Académie de Football Amadou Diallo de Djékanou (AFAD)' },
+    { year: '1983 — 1990', label: 'Conseiller technique, sous-directeur administratif et financier dans la fonction publique' },
+    { year: '1980 — 1983', label: 'Président de l’Abidjan Université Club (AUC)' },
+    { year: 'Formation', label: 'Maîtrise en mathématiques appliquées, option recherche opérationnelle' },
   ],
-  word: 'Le football ivoirien porte l’ambition de tout un pays. Notre mandat est de bâtir des fondations solides : des clubs mieux structurés, des compétitions plus professionnelles à tous les niveaux, un football féminin en plein essor, et une gouvernance exemplaire, transparente et redevable devant chaque licencié, chaque supporter et chaque partenaire du football ivoirien.',
+  record: [
+    'Victoire des Éléphants à la CAN 2023, disputée en Côte d’Ivoire et remportée en février 2024.',
+    'Qualification des Éléphants pour la Coupe du monde 2026.',
+    'Chantiers de structuration des clubs, de formation et de développement des infrastructures.',
+  ],
+  programme: {
+    name: 'Transformer pour durer',
+    launched: 'Campagne lancée le 2 septembre 2026 à Abidjan',
+    axes: ['Les clubs', 'Les compétitions', 'La formation et la valorisation des talents', 'Le football féminin', 'La modernisation de la Fédération', 'La recherche de la performance'],
+  },
 }
 
+// Engagements du programme 2026-2030 « Transformer pour durer » — mandat
+// débuté le 12 septembre 2026 : aucun avancement mesuré publié à ce jour.
 export const presidentPromises: PresidentPromise[] = [
-  { id: 'prom-1', title: 'Professionnaliser la Ligue 1', description: 'Cahier des charges renforcé, encadrement financier et infrastructures homologuées pour tous les clubs de Ligue 1.', commissionId: 'com-competitions', progress: 72, status: 'En cours' },
-  { id: 'prom-2', title: 'Doubler le nombre de licenciées féminines', description: 'Programme national de développement du football féminin dans les 14 districts.', commissionId: 'com-feminin', progress: 54, status: 'En cours' },
-  { id: 'prom-3', title: 'Digitaliser les licences fédérales', description: 'Délivrance et renouvellement des licences entièrement dématérialisés via FIF ID.', commissionId: 'com-statuts', progress: 100, status: 'Réalisée' },
-  { id: 'prom-4', title: 'Créer un centre technique national', description: 'Centre de formation et de préparation pour les sélections nationales, toutes catégories.', commissionId: 'com-formation', progress: 38, status: 'En cours' },
-  { id: 'prom-5', title: 'Généraliser la VAR en Ligue 1', description: 'Déploiement de l’assistance vidéo à l’arbitrage sur l’ensemble des rencontres de Ligue 1.', commissionId: 'com-arbitrage', progress: 20, status: 'En cours' },
-  { id: 'prom-6', title: 'Réduire les délais de traitement disciplinaire', description: 'Instruction des dossiers de discipline sous 15 jours ouvrés.', commissionId: 'com-discipline', progress: 100, status: 'Réalisée' },
-  { id: 'prom-7', title: 'Publier un rapport financier annuel public', description: 'Rapport d’activité et exécution budgétaire publiés chaque année dans la Transparence FIF.', commissionId: 'com-statuts', progress: 100, status: 'Réalisée' },
-  { id: 'prom-8', title: 'Structurer 100 nouveaux clubs amateurs', description: 'Accompagnement à l’affiliation de clubs amateurs dans les districts sous-représentés.', commissionId: 'com-jeunes', progress: 61, status: 'En cours' },
-  { id: 'prom-9', title: 'Lancer une académie de formation d’arbitres régionale', description: 'Centre régional de formation continue pour les arbitres fédérale 2 et régionaux.', commissionId: 'com-arbitrage', progress: 0, status: 'Planifiée' },
-  { id: 'prom-10', title: 'Créer un fonds de solidarité pour les anciens internationaux', description: 'Accompagnement social et professionnel des anciens Éléphants et Éléphantes.', commissionId: 'com-marketing', progress: 15, status: 'Planifiée' },
+  { id: 'prom-1', title: 'Autonomie financière des clubs d’ici 2030', description: 'Permettre aux clubs ivoiriens d’atteindre une véritable autonomie financière à l’horizon 2030, afin qu’ils ne dépendent plus uniquement de la Fédération.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-2', title: 'Hausse des subventions aux clubs', description: 'Augmentation des subventions versées par la FIF aux clubs, annoncée pendant la campagne de 2026.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-3', title: 'Professionnaliser les clubs et rendre les compétitions plus attractives', description: 'Poursuite de la professionnalisation des clubs et amélioration de l’attractivité des compétitions nationales.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-4', title: 'Formation et valorisation des jeunes talents', description: 'Mieux accompagner les talents et faciliter leur progression vers les championnats professionnels et les sélections nationales.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-5', title: 'Développement du football féminin', description: 'Le football féminin figure parmi les six priorités du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-6', title: 'Créer FIF TV', description: 'Lancement d’une chaîne de la Fédération, prévu par le projet « Transformer pour durer ».', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-7', title: 'Moderniser la billetterie', description: 'Modernisation de la billetterie des rencontres, prévue par le projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-8', title: 'Renforcer la sécurité dans les stades', description: 'Renforcement de la sécurité dans les stades, prévu par le projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-9', title: 'Moderniser la Fédération', description: 'Modernisation du fonctionnement de la FIF, l’un des six axes du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-10', title: 'Rechercher la performance', description: 'La recherche de la performance des sélections et des clubs, sixième axe du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
 ]
 
 const docTitlesByOrg: Record<'FIF' | 'CAF' | 'FIFA', { title: string; category: string }[]> = {

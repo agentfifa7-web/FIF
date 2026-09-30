@@ -20,31 +20,30 @@ const CATEGORIES: TransparencyRecord['category'][] = ['Budget', 'Rapport', 'Déc
 
 export default function TransparencePage() {
   const done = presidentPromises.filter((p) => p.status === 'Réalisée').length
-  const overall = Math.round(presidentPromises.reduce((sum, p) => sum + p.progress, 0) / presidentPromises.length)
 
   return (
     <main>
       <PageHero
-        eyebrow="Gouvernance ouverte — données de démonstration"
+        eyebrow="Gouvernance ouverte"
         title="Transparence FIF"
-        subtitle="Le programme du Président, son avancement engagement par engagement, ainsi que les budgets, décisions, appels d’offres et statistiques institutionnelles de la Fédération."
+        subtitle="Le programme 2026-2030 du Président, son avancement engagement par engagement, ainsi que les budgets, décisions, appels d’offres et statistiques institutionnelles de la Fédération."
         breadcrumb={[{ label: 'Fédération', href: '/federation' }, { label: 'Transparence' }]}
         meta={[
-          { value: `${overall}%`, label: 'Avancement global du programme' },
-          { value: `${done}/${presidentPromises.length}`, label: 'Promesses tenues' },
-          { value: String(transparencyRecords.length), label: 'Documents publiés' },
+          { value: '12/09/2026', label: 'Début du mandat 2026-2030' },
+          { value: `${done}/${presidentPromises.length}`, label: 'Engagements réalisés' },
+          { value: String(transparencyRecords.length), label: 'Documents (démonstration)' },
         ]}
       />
 
       <section className="page-section tight">
         <div className="page-section-head">
           <div>
-            <p className="section-tag">Le programme du Président</p>
-            <h2 style={{ fontSize: 24 }}>Suivi des engagements de mandat</h2>
+            <p className="section-tag">Programme « Transformer pour durer »</p>
+            <h2 style={{ fontSize: 24 }}>Suivi des engagements du mandat 2026-2030</h2>
           </div>
           <Link href="/federation/president" className="text-link">Voir le profil du Président <ArrowRight size={14} /></Link>
         </div>
-        <p className="lede">Cliquez sur un engagement pour en voir le détail, sa progression et la commission fédérale qui le porte.</p>
+        <p className="lede">Engagements annoncés par Yacine Idriss Diallo pendant la campagne de septembre 2026. Le mandat vient de débuter : l’avancement de chaque engagement sera mis à jour à mesure que la FIF publie des réalisations.</p>
 
         <div className="promise-list">
           {presidentPromises.map((p) => {

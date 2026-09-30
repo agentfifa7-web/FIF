@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { executiveCommittee, getCommission } from '@/lib/data/mock'
+import { Info } from 'lucide-react'
+import { executiveCommittee, executiveCommitteeSourceNote, getCommission } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
@@ -28,24 +29,32 @@ export default async function ExecutiveMemberPage({ params }: { params: Promise<
       </div>
       <section className="page-section tight">
         <div style={{ alignItems: 'center', display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          <PersonPortrait seed={member.name} size={110} />
+          {member.photoUrl
+            ? <img src={member.photoUrl} alt={member.name} width={110} style={{ borderRadius: 'var(--radius-md)', display: 'block', objectFit: 'cover' }} />
+            : <PersonPortrait seed={member.name} size={110} />}
           <div>
-            <p className="section-tag">{member.role}</p>
+            <p className="section-tag">{member.role} · Comité exécutif {member.since === 2026 ? 'depuis 2026' : 'depuis 2022 (reconduit en 2026)'}</p>
             <h1 style={{ fontSize: 'clamp(28px,4vw,42px)', letterSpacing: '-.03em', margin: '6px 0' }}>{member.name}</h1>
             <p className="lede" style={{ maxWidth: 620 }}>{member.bio}</p>
           </div>
         </div>
       </section>
 
+      {memberCommissions.length > 0 && (
+        <section className="page-section tight">
+          <p className="section-tag">Commissions supervisées</p>
+          <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+            {memberCommissions.map((c) => c && (
+              <Link key={c.id} href={`/federation/commissions/${c.slug}`} className="entity-card">
+                <div><strong>{c.name}</strong><span>{c.mission}</span></div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="page-section tight">
-        <p className="section-tag">Commissions supervisées</p>
-        <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-          {memberCommissions.map((c) => c && (
-            <Link key={c.id} href={`/federation/commissions/${c.slug}`} className="entity-card">
-              <div><strong>{c.name}</strong><span>{c.mission}</span></div>
-            </Link>
-          ))}
-        </div>
+        <p className="press-source-note"><Info size={13} /> {executiveCommitteeSourceNote}</p>
       </section>
 
       <section className="page-section tight"><DemoBadge /></section>

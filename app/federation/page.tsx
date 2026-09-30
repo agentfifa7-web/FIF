@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { ArrowRight, Calendar, Landmark, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowRight, Calendar, Info, Landmark, Mail, MapPin, Phone } from 'lucide-react'
 import {
-  presidentProfile, executiveCommittee, commissions, officialDocuments,
+  presidentProfile, executiveCommittee, executiveCommitteeSourceNote, executiveCommitteeDepartures, commissions, officialDocuments,
   federationDirections, federationMilestones,
   clubs, players, referees, stadiums, regions, competitions,
 } from '@/lib/data/mock'
@@ -59,11 +59,13 @@ export default function FederationPage() {
       <section className="page-section tight" id="president">
         <p className="section-tag">Présidence</p>
         <Link href="/federation/president" className="president-preview">
-          <PersonPortrait seed={presidentProfile.photoSeed} size={90} />
+          {presidentProfile.photoUrl
+            ? <img src={presidentProfile.photoUrl} alt={presidentProfile.name} width={90} style={{ borderRadius: 'var(--radius-md)', objectFit: 'cover' }} />
+            : <PersonPortrait seed={presidentProfile.photoSeed} size={90} />}
           <div>
             <strong>{presidentProfile.name}</strong>
-            <span>{presidentProfile.role} · depuis {presidentProfile.since}</span>
-            <p>{presidentProfile.word.slice(0, 140)}…</p>
+            <span>{presidentProfile.role} · depuis {presidentProfile.since} · réélu le 12 septembre 2026</span>
+            <p>Programme 2026-2030 « {presidentProfile.programme.name} » : {presidentProfile.programme.axes.join(', ').toLowerCase()}.</p>
           </div>
           <ArrowRight />
         </Link>
@@ -71,17 +73,28 @@ export default function FederationPage() {
 
       <section className="page-section tight" id="comite">
         <div className="page-section-head">
-          <div><p className="section-tag">Comité exécutif</p><h2 style={{ fontSize: 24 }}>Gouvernance fédérale</h2></div>
+          <div><p className="section-tag">Comité exécutif</p><h2 style={{ fontSize: 24 }}>Mandat 2026-2030</h2></div>
         </div>
         <div className="card-grid" style={{ marginTop: 16 }}>
+          <Link href="/federation/president" className="entity-card">
+            {presidentProfile.photoUrl
+              ? <img src={presidentProfile.photoUrl} alt={presidentProfile.name} width={44} style={{ borderRadius: 8, objectFit: 'cover' }} />
+              : <PersonPortrait seed={presidentProfile.photoSeed} size={44} />}
+            <div><strong>{presidentProfile.name}</strong><span>Président</span></div>
+            <ArrowRight />
+          </Link>
           {executiveCommittee.map((m) => (
             <Link key={m.id} href={`/federation/comite/${m.slug}`} className="entity-card">
-              <PersonPortrait seed={m.name} size={44} />
-              <div><strong>{m.name}</strong><span>{m.role}</span></div>
+              {m.photoUrl
+                ? <img src={m.photoUrl} alt={m.name} width={44} style={{ borderRadius: 8, objectFit: 'cover' }} />
+                : <PersonPortrait seed={m.name} size={44} />}
+              <div><strong>{m.name}</strong><span>{m.role}{m.since === 2026 ? ' · nouveau' : ''}</span></div>
               <ArrowRight />
             </Link>
           ))}
         </div>
+        <p className="press-source-note" style={{ marginTop: 16 }}><Info size={13} /> {executiveCommitteeSourceNote}</p>
+        <p className="lede" style={{ fontSize: 13, marginTop: 8 }}>Ne figurent plus au Comité exécutif depuis 2026 : {executiveCommitteeDepartures.join(', ')}.</p>
       </section>
 
       <section className="page-section tight dark-section" id="commissions">
