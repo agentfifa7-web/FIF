@@ -22,7 +22,7 @@ export default function TalentHubPage() {
 
       <section className="page-section tight">
         <div className="sim-panel" style={{ margin: 0 }}>
-          <p><AlertTriangle size={15} /> Les statistiques affichées sont des données de démonstration. Aucune évaluation sportive présentée ici ne constitue une vérité automatique — les rapports de scouting restent des appréciations subjectives de leurs auteurs.</p>
+          <p><AlertTriangle size={15} /> Seuls les joueurs réels dont la date de naissance est publiée par leur club figurent ici. Les évaluations (étoiles, attributs) sont des estimations indicatives. Aucune évaluation sportive présentée ici ne constitue une vérité automatique — les rapports de scouting restent des appréciations subjectives de leurs auteurs.</p>
         </div>
       </section>
 

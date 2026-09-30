@@ -385,7 +385,6 @@ export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
 // ---------------------------------------------------------------------------
 // Players
 // ---------------------------------------------------------------------------
-const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
 // Effectif réel de l'ASEC Mimosas — numérotation officielle saison 2026-2027
 // (fiche club transmise par l'utilisateur). Nom, poste et numéro de maillot
@@ -539,69 +538,38 @@ const REAL_ROSTERS: Record<string, RealRosterEntry[]> = {
   'AFAD Plateau': REAL_AFAD_PLATEAU_ROSTER,
 }
 
-function makeCareerHistory(club: Club, birthYear: number, joinYear: number) {
-  const debutYear = birthYear + 17
-  const spanAvailable = joinYear - debutYear
-  const history: { clubId: string; from: number; to: number | null }[] = []
-  if (spanAvailable >= 2) {
-    const stintCount = spanAvailable <= 3 ? rng.int(0, 1) : spanAvailable <= 6 ? rng.int(1, 2) : rng.int(1, 3)
-    if (stintCount > 0) {
-      const pool = clubs.filter((c) => c.gender === club.gender && c.category === club.category && c.id !== club.id)
-      const chosen = rng.pickN(pool, Math.min(stintCount, pool.length))
-      const historyStart = Math.max(debutYear, joinYear - rng.int(2, spanAvailable))
-      const span = Math.max(chosen.length, joinYear - historyStart)
-      const step = Math.max(1, Math.round(span / chosen.length))
-      let cursor = historyStart
-      chosen.forEach((c, i) => {
-        const to = i === chosen.length - 1 ? joinYear : Math.min(joinYear - 1, cursor + step)
-        history.push({ clubId: c.id, from: cursor, to })
-        cursor = to
-      })
-    }
-  }
-  history.push({ clubId: club.id, from: joinYear, to: null })
-  return history
-}
-
 type BasePlayer = Omit<Player,
   'height' | 'weight' | 'preferredFoot' | 'contractUntil' | 'preferredPositions' |
   'currentAbilityStars' | 'potentialAbilityStars' | 'personality' | 'statusFlags' |
   'attributes' | 'traits' | 'scoutReport' | 'seasonStats'>
 
+// Seuls les joueurs réels (effectifs officiels publiés par les clubs, voir
+// REAL_ROSTERS) figurent sur la plateforme : un club sans effectif réel
+// connu n'a aucun joueur plutôt que des joueurs inventés. Date de
+// naissance vide tant que le club ne l'a pas publiée. Les statistiques
+// partent de zéro et sont calculées plus bas à partir des matchs réels.
 const basePlayers: BasePlayer[] = clubs.flatMap((club, ci) => {
-  const realRoster = REAL_ROSTERS[club.name] ?? null
-  const count = realRoster ? realRoster.length : club.category === 'Futsal' ? 10 : 20
-  return Array.from({ length: count }, (_, pi) => {
-    const real = realRoster?.[pi]
-    const gender = club.gender
-    const name = real ? real.name : fullName(gender === 'F' ? 'F' : 'M')
-    const id = `player-${ci}-${pi}`
-    const generatedBirthYear = rng.int(1994, 2009)
-    const generatedBirthdate = `${generatedBirthYear}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`
-    const birthdate = real?.birthdate ?? generatedBirthdate
-    const birthYear = Number(birthdate.slice(0, 4))
-    return {
-      id,
-      slug: `${slugify(name)}-${ci}${pi}`,
-      name,
-      photoSeed: id,
-      position: real ? real.position : rng.pick(positions),
-      positionDetail: real?.detail,
-      realMeasures: Boolean(real?.height && real?.weight && real?.birthdate),
-      clubId: club.id,
-      gender,
-      birthdate,
-      nationality: 'Côte d’Ivoire',
-      fifId: `FIF-${(10000 + ci * 40 + pi).toString().padStart(6, '0')}`,
-      licenseStatus: rng.bool(0.85) ? 'Valide' : rng.bool() ? 'En attente' : 'Expirée',
-      squadNumber: real?.number,
-      realRoster: Boolean(real),
-      // Saison à venir non encore débutée : compteurs de la saison en cours à zéro.
-      stats: { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 },
-      history: makeCareerHistory(club, birthYear, rng.int(2019, 2024)),
-      nationalSelections: [],
-    }
-  })
+  const realRoster = REAL_ROSTERS[club.name] ?? []
+  return realRoster.map((real, pi) => ({
+    id: `player-${ci}-${pi}`,
+    slug: `${slugify(real.name)}-${ci}${pi}`,
+    name: real.name,
+    photoSeed: `player-${ci}-${pi}`,
+    position: real.position,
+    positionDetail: real.detail,
+    realMeasures: Boolean(real.height && real.weight && real.birthdate),
+    clubId: club.id,
+    gender: club.gender,
+    birthdate: real.birthdate ?? '',
+    nationality: '',
+    fifId: `FIF-${(10000 + ci * 40 + pi).toString().padStart(6, '0')}`,
+    licenseStatus: 'Valide' as const,
+    squadNumber: real.number,
+    realRoster: true,
+    stats: { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 },
+    history: [{ clubId: club.id, from: 2026, to: null }],
+    nationalSelections: [],
+  }))
 })
 
 // ---------------------------------------------------------------------------
@@ -660,13 +628,6 @@ const TRAITS_POOL: Record<string, string[]> = {
   Attaquant: ['Tente sa chance de loin', 'Vient chercher le ballon', 'Se déplace dans les espaces libres', 'Frappe en premier temps', 'Aime les une-deux', 'Provoque le un contre un'],
 }
 
-const CATEGORY_COMPETITION_LABEL: Record<string, string> = {
-  Professionnel: 'Ligue 1',
-  Amateur: 'Championnat Amateur',
-  Jeunes: 'Championnat Jeunes',
-  Féminin: 'Championnat Féminin',
-  Futsal: 'Futsal Élite',
-}
 
 function clampAttr(v: number) {
   return Math.max(1, Math.min(20, Math.round(v)))
@@ -709,8 +670,7 @@ function starsFromRank(rank: number, count: number) {
 }
 
 function buildScoutingProfile(p: BasePlayer) {
-  const club = getClubById(p.clubId)!
-  const age = ageFromBirthdate(p.birthdate)
+  const age = p.birthdate ? ageFromBirthdate(p.birthdate) : 24
   const keyAttrs = KEY_ATTRS_BY_POSITION[p.position] ?? []
   // Contribution de référence (saisons passées) : p.stats est à zéro (saison à
   // venir non débutée), donc ce niveau est tiré indépendamment plutôt que
@@ -744,21 +704,12 @@ function buildScoutingProfile(p: BasePlayer) {
   contractDate.setDate(rng.int(1, 28))
   if (contractDate.getTime() <= TODAY.getTime()) contractDate.setFullYear(contractDate.getFullYear() + 1)
   const contractUntil = contractDate.toISOString().slice(0, 10)
-  const monthsToContractEnd = (contractDate.getTime() - TODAY.getTime()) / (1000 * 60 * 60 * 24 * 30)
-
-  const abilityFactor = tier / 100
-  const ageFactor = age <= 22 ? 0.55 + (age - 17) * 0.09 : age <= 29 ? 1 : Math.max(0.25, 1 - (age - 29) * 0.09)
 
   const [hMin, hMax] = HEIGHT_RANGE_BY_POSITION[p.position] ?? [170, 190]
   const height = rng.int(hMin, hMax)
   const weight = height - 100 + rng.int(-3, 6)
   const footRoll = rng.float()
   const preferredFoot: Player['preferredFoot'] = footRoll < 0.7 ? 'Droit' : footRoll < 0.94 ? 'Gauche' : 'Ambidextre'
-
-  const statusFlags: string[] = []
-  if (rng.bool(0.07)) statusFlags.push('Blessé')
-  if (rng.bool(0.08)) statusFlags.push('Mécontent')
-  if (monthsToContractEnd <= 9) statusFlags.push('Fin de contrat proche')
 
   const personality = rng.pick(PERSONALITIES)
   const traits = rng.pickN(TRAITS_POOL[p.position] ?? [], rng.int(2, 4))
@@ -773,36 +724,10 @@ function buildScoutingProfile(p: BasePlayer) {
     summary: `Points forts confirmés en ${sortedAttrs[0][0].toLowerCase()} et ${sortedAttrs[1][0].toLowerCase()}. Axe de progression prioritaire : ${sortedAttrs[sortedAttrs.length - 1][0].toLowerCase()}.`,
   }
 
-  const competitionLabel = CATEGORY_COMPETITION_LABEL[club.category] ?? 'Championnat national'
-  const currentYear = TODAY.getFullYear()
-  const priorSeasonsCount = Math.min(3, Math.max(0, age - 18))
-  // Historique de carrière (saisons déjà jouées) : indépendant des compteurs
-  // de la saison à venir, qui restent à zéro tant qu'elle n'a pas débuté.
-  const careerMatches = rng.int(2, 30)
-  const careerGoals = rng.int(0, 18)
-  const careerAssists = rng.int(0, 12)
+  // Aucune saison passée inventée : l'historique statistique ne contient que
+  // les matchs réels, renseigné plus bas (applyRealClubStats).
   const seasonStats: SeasonStat[] = []
-  for (let s = priorSeasonsCount; s >= 1; s--) {
-    const startYear = currentYear - s
-    const decay = 0.4 + s * 0.15
-    seasonStats.push({
-      season: `${startYear}-${startYear + 1}`,
-      competition: competitionLabel,
-      matches: Math.max(0, Math.round(careerMatches * (0.6 + rng.float() * 0.5) * decay)),
-      goals: Math.max(0, Math.round(careerGoals * (0.4 + rng.float() * 0.6) * decay)),
-      assists: Math.max(0, Math.round(careerAssists * (0.4 + rng.float() * 0.6) * decay)),
-      avgRating: Math.round((5.3 + abilityFactor * 2.3 + (rng.float() * 0.6 - 0.3)) * 10) / 10,
-    })
-  }
-  // Saison à venir : pas encore débutée, compteurs à zéro.
-  seasonStats.push({
-    season: `${currentYear}-${currentYear + 1}`,
-    competition: competitionLabel,
-    matches: 0,
-    goals: 0,
-    assists: 0,
-    avgRating: 0,
-  })
+  const statusFlags: string[] = []
 
   return {
     height,
@@ -839,18 +764,13 @@ for (const club of clubs) {
     .map((p) => {
       const values = [...Object.values(p.attributes.technical), ...Object.values(p.attributes.mental), ...Object.values(p.attributes.physical)]
       const overall = values.reduce((a, b) => a + b, 0) / values.length
-      const potential = Math.min(20, overall + growthHeadroom(ageFromBirthdate(p.birthdate)))
+      const potential = Math.min(20, overall + (p.birthdate ? growthHeadroom(ageFromBirthdate(p.birthdate)) : 0))
       return { player: p, overall, potential }
     })
   const byOverall = [...ranked].sort((a, b) => b.overall - a.overall)
   const byPotential = [...ranked].sort((a, b) => b.potential - a.potential)
   byOverall.forEach((r, i) => { r.player.currentAbilityStars = starsFromRank(i, byOverall.length) })
-  byPotential.forEach((r, i) => {
-    r.player.potentialAbilityStars = starsFromRank(i, byPotential.length)
-    const age = ageFromBirthdate(r.player.birthdate)
-    if (r.player.currentAbilityStars >= 5 || (r.player.currentAbilityStars === 4 && rng.bool(0.4))) r.player.statusFlags.push('Joueur clé')
-    if (age <= 21 && r.player.potentialAbilityStars >= 4) r.player.statusFlags.push('Espoir')
-  })
+  byPotential.forEach((r, i) => { r.player.potentialAbilityStars = starsFromRank(i, byPotential.length) })
 }
 
 function playersOf(clubId: string) {
@@ -862,7 +782,7 @@ function playersOf(clubId: string) {
 // ---------------------------------------------------------------------------
 export const agents: Agent[] = Array.from({ length: 20 }, (_, i) => {
   const name = fullName()
-  const represented = rng.pickN(players, rng.int(1, 5))
+  // Agents de démonstration : aucun lien inventé vers un joueur réel.
   return {
     id: `agent-${i}`,
     slug: `${slugify(name)}-${i}`,
@@ -871,9 +791,9 @@ export const agents: Agent[] = Array.from({ length: 20 }, (_, i) => {
     license: `LIC-${rng.int(1000, 9999)}`,
     status: rng.bool(0.9) ? 'Actif' : 'Suspendu',
     validUntil: `${rng.int(2026, 2028)}-${String(rng.int(1, 12)).padStart(2, '0')}-01`,
-    playerIds: represented.map((p) => p.id),
+    playerIds: [],
     birthdate: randomBirthdate(30, 60),
-    bio: `${name} est agent sportif licencié FIF, représentant ${represented.length} joueur${represented.length > 1 ? 's' : ''} évoluant dans le football ivoirien.`,
+    bio: `${name} est agent sportif licencié FIF, intervenant dans le football ivoirien.`,
   }
 })
 
@@ -913,17 +833,10 @@ for (const team of nationalTeams) {
   team.coachId = c.id
 }
 
-// squads: pick 23 fictional players per team from the general pool (flag as selection, not affecting player.clubId)
+// Effectifs des sélections autres que les Éléphants (dont la liste réelle
+// est elephantsCallUp) : vides tant qu'aucune liste officielle n'a été
+// renseignée — aucun joueur inventé ni sélection attribuée au hasard.
 export const nationalSquads: Record<string, { playerId: string; caps: number; goals: number }[]> = {}
-for (const team of nationalTeams) {
-  const pool = players.filter((p) => (team.gender === 'F' ? p.gender === 'F' : p.gender === 'M'))
-  const squad = rng.pickN(pool, 23)
-  nationalSquads[team.id] = squad.map((p) => ({ playerId: p.id, caps: rng.int(1, 62), goals: rng.int(0, 20) }))
-  for (const s of nationalSquads[team.id]) {
-    const player = players.find((p) => p.id === s.playerId)
-    player?.nationalSelections.push({ teamId: team.id, caps: s.caps, goals: s.goals })
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Fédération — gouvernance (démonstration : ne représente aucune personne
@@ -1121,15 +1034,14 @@ function buildMatchEvents(home: string, away: string, homeScore: number, awaySco
     ...Array.from({ length: homeScore }, () => ({ team: 'home' as const })),
     ...Array.from({ length: awayScore }, () => ({ team: 'away' as const })),
   ]
+  // Matchs générés (compétitions sans suivi réel) : buts et cartons ne sont
+  // attribués à aucun joueur, pour ne jamais créditer un joueur réel d'une
+  // action inventée.
   for (const s of rng.shuffle(scorers)) {
-    const teamPlayers = playersOf(s.team === 'home' ? home : away)
-    const scorer = teamPlayers.length ? rng.pick(teamPlayers) : undefined
-    events.push({ minute: rng.int(1, 90), type: 'goal', team: s.team, playerId: scorer?.id })
+    events.push({ minute: rng.int(1, 90), type: 'goal', team: s.team })
   }
   for (let c = 0; c < rng.int(0, 4); c++) {
-    const team = rng.bool() ? 'home' : 'away'
-    const teamPlayers = playersOf(team === 'home' ? home : away)
-    events.push({ minute: rng.int(1, 90), type: 'yellow', team, playerId: teamPlayers.length ? rng.pick(teamPlayers).id : undefined })
+    events.push({ minute: rng.int(1, 90), type: 'yellow', team: rng.bool() ? 'home' : 'away' })
   }
   events.push({ minute: 45, type: 'ht', team: 'home' })
   events.push({ minute: 90, type: 'ft', team: 'home' })
@@ -1475,6 +1387,77 @@ export function realLigue1TopAssists(): { player: string; club: string; assists:
   return [...tally.values()].sort((a, b) => b.assists - a.assists)
 }
 
+function normalizePersonName(name: string) {
+  return name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’']/g, "'").replace(/\s+/g, ' ').trim().toLowerCase()
+}
+
+function findRosterPlayer(clubName: string, name: string) {
+  const club = getClubByName(clubName)
+  if (!club) return undefined
+  const target = normalizePersonName(name)
+  return players.find((p) => p.clubId === club.id && normalizePersonName(p.name) === target)
+}
+
+// Statistiques de club réelles, recalculées à partir des matchs réels de
+// Ligue 1 : un joueur est compté comme ayant joué s'il figure dans la
+// composition de départ, entre en jeu, marque, fait une passe décisive ou
+// reçoit un carton. Minutes calculées seulement quand la composition et les
+// remplacements (avec minute) sont connus.
+function applyRealClubStats() {
+  const perPlayer = new Map<string, { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }>()
+  const row = (id: string) => {
+    let r = perPlayer.get(id)
+    if (!r) { r = { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 }; perPlayer.set(id, r) }
+    return r
+  }
+  for (const m of realLigue1Matches) {
+    for (const side of ['home', 'away'] as const) {
+      const clubName = side === 'home' ? m.homeClub : m.awayClub
+      const appeared = new Map<string, number | null>()
+      const lineup = m.lineups?.[side]
+      const subs = (m.substitutions ?? []).filter((s) => s.team === side)
+      for (const name of lineup?.startingXI ?? []) {
+        const p = findRosterPlayer(clubName, name)
+        if (!p) continue
+        const out = subs.find((s) => s.playerOut && findRosterPlayer(clubName, s.playerOut)?.id === p.id)
+        appeared.set(p.id, lineup ? (out ? (out.minute ?? null) : 90) : null)
+      }
+      for (const s of subs) {
+        const p = findRosterPlayer(clubName, s.playerIn)
+        if (p) appeared.set(p.id, s.minute !== undefined ? 90 - s.minute : null)
+      }
+      for (const e of m.events.filter((ev) => ev.team === side)) {
+        const scorer = e.player ? findRosterPlayer(clubName, e.player) : undefined
+        const assister = e.assist ? findRosterPlayer(clubName, e.assist) : undefined
+        if (scorer) {
+          if (!appeared.has(scorer.id)) appeared.set(scorer.id, null)
+          if (e.type === 'goal') row(scorer.id).goals++
+          if (e.type === 'yellow') row(scorer.id).yellow++
+          if (e.type === 'red') row(scorer.id).red++
+        }
+        if (assister) {
+          if (!appeared.has(assister.id)) appeared.set(assister.id, null)
+          row(assister.id).assists++
+        }
+      }
+      for (const [id, minutes] of appeared) {
+        const r = row(id)
+        r.matches++
+        if (minutes !== null) r.minutes += minutes
+      }
+    }
+  }
+  for (const p of players) {
+    const r = perPlayer.get(p.id)
+    if (r) p.stats = r
+    const club = getClubById(p.clubId)
+    if (club?.competitionIds.includes('comp-l1')) {
+      p.seasonStats = [{ season: '2026-2027', competition: 'Ligue 1 LONACI', matches: p.stats.matches, goals: p.stats.goals, assists: p.stats.assists, avgRating: 0 }]
+    }
+  }
+}
+applyRealClubStats()
+
 // ---------------------------------------------------------------------------
 // Ligue 1 — prochains matchs réels connus. Vide tant qu'aucune journée
 // future n'a été officiellement programmée/annoncée ; à remplir dès que le
@@ -1557,6 +1540,9 @@ export interface RealCallUp {
   preferredPositions: PositionFamiliarity[]
   stats: ElephantsStats
   fmCalibrated: boolean
+  /** Sélections et buts ajoutés depuis la collecte des statistiques, d'après
+   *  les feuilles de match réelles de la fenêtre en cours (elephantsFixtures). */
+  windowStats?: { caps: number; goals: number; opponents: string[] }
 }
 
 interface RealCallUpRaw {
@@ -2002,13 +1988,49 @@ export const elephantsFixtures: RealFixture[] = [
         { minute: 88, type: 'goal', team: 'civ', scorer: 'Yann Gboho' },
         { minute: 90, stoppage: 5, type: 'goal', team: 'civ', scorer: 'Bazoumana Touré' },
       ],
-      source: 'Résultat réel confirmé par la presse ivoirienne, africaine et internationale (Supersport CI, Abidjan.net, Foot Mercato, Africa Top Sports, AfricaSoccer, ESPN) — victoire 2-0 arrachée en fin de match, 0-0 à la pause ; la Côte d’Ivoire prend la tête du groupe C. Minutes des buts légèrement différentes selon les sources (Gboho entre la 87e et la 89e, Touré à 90+4 ou 90+5).',
+      lineups: {
+        civ: {
+          formation: '4-4-2',
+          startingXI: ['Yahia Fofana', 'Luck Zogbé', 'Emmanuel Agbadou', 'Evan Ndicka', 'Ghislain Konan', 'Christ Inao Oulaï', 'Franck Kessié', 'Malick Yalcouyé', 'Yan Diomandé', 'Nicolas Pépé', 'Elye Wahi'],
+        },
+        opponent: {
+          formation: '4-3-3',
+          startingXI: ['Ibrahim Fiki', 'Ali Omar', 'Abel Gigli', 'Faisal Abubakar', 'Mohamed Mohamed', 'Mohamed Omar', 'Abdirahman Sharif', 'Mukhtar Suleiman', 'Sabriye', 'Bilal Njie', 'Sakariya Hassan'],
+        },
+      },
+      substitutions: [
+        { team: 'civ', playerOut: 'Nicolas Pépé', playerIn: 'Bazoumana Touré', minute: 65 },
+        { team: 'civ', playerIn: 'Rayan Fofana', minute: 65 },
+        { team: 'civ', playerIn: 'Patrick Zabi', minute: 65 },
+        { team: 'civ', playerOut: 'Franck Kessié', playerIn: 'Yann Gboho', minute: 82 },
+      ],
+      source: 'Résultat réel confirmé par la presse ivoirienne, africaine et internationale (Supersport CI, Abidjan.net, Foot Mercato, Africa Top Sports, AfricaSoccer, ESPN) — victoire 2-0 arrachée en fin de match, 0-0 à la pause ; la Côte d’Ivoire prend la tête du groupe C. Minutes des buts légèrement différentes selon les sources (Gboho entre la 87e et la 89e, Touré à 90+4 ou 90+5). Compositions : Afrique-sur7 et Africa Top Sports ; triple changement vers la 65e (Wahi, Pépé et Oulaï remplacés par Rayan Fofana, Patrick Zabi et Bazoumana Touré — seul le remplacement de Pépé par Touré est attribué précisément), Gboho entré à la place de Kessié (82e).',
     },
   },
   { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 20000, available: 600 }, { name: 'Tribune officielle', price: 10000, available: 3500 }, { name: 'Tribune populaire', price: 3000, available: 18000 }] },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
+
+// Les statistiques en sélection d'ELEPHANTS_REAL_STATS ont été relevées
+// avant cette fenêtre : chaque match joué depuis (composition de départ +
+// entrées en jeu, buteurs) y est ajouté automatiquement dès que son résultat
+// et sa feuille de match sont renseignés dans elephantsFixtures.
+for (const f of elephantsFixtures) {
+  const r = f.result
+  if (!r?.lineups) continue
+  const played = new Set([...r.lineups.civ.startingXI, ...(r.substitutions ?? []).filter((s) => s.team === 'civ').map((s) => s.playerIn)])
+  for (const p of elephantsCallUp) {
+    const goals = r.events.filter((e) => e.team === 'civ' && (e.type === 'goal' || e.type === 'penalty') && e.scorer === p.name).length
+    if (!played.has(p.name) && !goals) continue
+    p.windowStats ??= { caps: 0, goals: 0, opponents: [] }
+    p.windowStats.caps++
+    p.windowStats.goals += goals
+    p.windowStats.opponents.push(f.opponent)
+    p.stats.national.caps++
+    p.stats.national.goals += goals
+  }
+}
 
 export function getElephantsFixture(slug: string) {
   return elephantsFixtures.find((f) => f.slug === slug)

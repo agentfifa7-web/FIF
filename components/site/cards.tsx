@@ -124,7 +124,7 @@ export function PlayerCard({ player }: { player: Player }) {
       </span>
       <div>
         <strong>{player.squadNumber ? `N°${player.squadNumber} ` : ''}{player.name}</strong>
-        <span>{player.positionDetail ?? player.position} · {age(player.birthdate)} ans · {club?.shortName}</span>
+        <span>{player.positionDetail ?? player.position} · {player.birthdate ? `${age(player.birthdate)} ans · ` : ''}{club?.shortName}</span>
       </div>
       <ArrowRight />
     </Link>

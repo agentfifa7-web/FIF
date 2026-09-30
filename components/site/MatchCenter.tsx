@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import { CalendarDays, MapPin, Radio, Users } from 'lucide-react'
-import type { Match, MatchEvent, Player } from '@/lib/data/types'
+import type { Match, MatchEvent } from '@/lib/data/types'
 import { ClubCrest } from './cards'
 import { getClubById, getPlayerById, getStadiumById, getRefereeById } from '@/lib/data/mock'
 import { useLiveMatch } from '@/lib/liveMatch'
@@ -13,15 +13,7 @@ const eventLabel: Record<MatchEvent['type'], string> = {
   goal: 'BUT', yellow: 'CARTON JAUNE', red: 'CARTON ROUGE', sub: 'REMPLACEMENT', var: 'VAR', ht: 'MI-TEMPS', ft: 'FIN', kickoff: 'COUP D’ENVOI',
 }
 
-export function MatchCenter({
-  match: initialMatch,
-  homeRoster,
-  awayRoster,
-}: {
-  match: Match
-  homeRoster: Player[]
-  awayRoster: Player[]
-}) {
+export function MatchCenter({ match: initialMatch }: { match: Match }) {
   const live = useLiveMatch(initialMatch)
   const match: Match = { ...initialMatch, ...live }
   const home = getClubById(match.homeClubId)!
@@ -31,16 +23,6 @@ export function MatchCenter({
   const hasLiveScript = !!initialMatch.liveScript?.length
 
   const sortedEvents = useMemo(() => [...match.events].sort((a, b) => a.minute - b.minute), [match.events])
-
-  const startingXI = (roster: Player[]) => {
-    const gk = roster.filter((p) => p.position === 'Gardien').slice(0, 1)
-    const def = roster.filter((p) => p.position === 'Défenseur').slice(0, 4)
-    const mid = roster.filter((p) => p.position === 'Milieu').slice(0, 4)
-    const att = roster.filter((p) => p.position === 'Attaquant').slice(0, 2)
-    return { gk, def, mid, att }
-  }
-  const homeXI = startingXI(homeRoster)
-  const awayXI = startingXI(awayRoster)
 
   const statBase = (match.homeScore ?? 0) * 7 + 42
   const homePossession = Math.min(68, Math.max(32, statBase % 68 || 50))
@@ -105,16 +87,7 @@ export function MatchCenter({
         </div>
       </div>
 
-      <div className="match-center-grid" style={{ marginTop: 40 }}>
-        <div>
-          <p className="section-tag">Composition — {home.name}</p>
-          <Lineup xi={homeXI} />
-        </div>
-        <div>
-          <p className="section-tag">Composition — {away.name}</p>
-          <Lineup xi={awayXI} />
-        </div>
-      </div>
+      <p className="lede" style={{ marginTop: 40 }}>Compositions d’équipe non publiées pour ce match.</p>
     </div>
   )
 }
@@ -129,25 +102,5 @@ function StatBar({ label, left, right, leftLabel, rightLabel }: { label: string;
         <div style={{ width: `${(right / total) * 100}%` }} />
       </div>
     </div>
-  )
-}
-
-function Lineup({ xi }: { xi: { gk: Player[]; def: Player[]; mid: Player[]; att: Player[] } }) {
-  return (
-    <div className="lineup">
-      <div className="lineup-row">{xi.att.map((p) => <PlayerDot key={p.id} p={p} />)}</div>
-      <div className="lineup-row">{xi.mid.map((p) => <PlayerDot key={p.id} p={p} />)}</div>
-      <div className="lineup-row">{xi.def.map((p) => <PlayerDot key={p.id} p={p} />)}</div>
-      <div className="lineup-row">{xi.gk.map((p) => <PlayerDot key={p.id} p={p} />)}</div>
-    </div>
-  )
-}
-
-function PlayerDot({ p }: { p: Player }) {
-  return (
-    <Link href={`/joueurs/${p.slug}`} className="lineup-player">
-      <span>{p.name.split(' ').map((n) => n[0]).join('')}</span>
-      {p.name.split(' ').slice(-1)[0]}
-    </Link>
   )
 }

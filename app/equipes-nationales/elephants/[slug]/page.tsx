@@ -107,6 +107,11 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
               <div><strong>{player.stats.national.goals}</strong><span>Buts</span></div>
               <div><strong>{player.stats.national.assists}</strong><span>Passes D.</span></div>
             </div>
+            {player.windowStats && (
+              <span className="stats-highlight-sub" style={{ marginTop: 10 }}>
+                Dont fenêtre sept.-oct. 2026 : {player.windowStats.caps} sél.{player.windowStats.goals ? `, ${player.windowStats.goals} but${player.windowStats.goals > 1 ? 's' : ''}` : ''} ({player.windowStats.opponents.join(', ')})
+              </span>
+            )}
           </div>
         </div>
       </section>

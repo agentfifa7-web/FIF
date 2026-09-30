@@ -119,9 +119,14 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
             </div>
           ))}
         </section>
+      ) : squad.length === 0 ? (
+        <section className="page-section tight">
+          <p className="section-tag">Effectif</p>
+          <p className="lede" style={{ marginTop: 16 }}>La liste officielle des joueurs convoqués n’a pas encore été renseignée pour cette sélection. Elle apparaîtra ici dès qu’elle sera ajoutée — aucun joueur fictif n’est affiché.</p>
+        </section>
       ) : (
         <section className="page-section tight">
-          <p className="section-tag">Effectif — données de démonstration</p>
+          <p className="section-tag">Effectif</p>
           {squadByPosition.map((group) => (
             <div key={group.position} style={{ marginTop: 20 }}>
               <b style={{ fontSize: 12, letterSpacing: '.06em', color: 'var(--muted)', textTransform: 'uppercase' }}>{group.position}s</b>
@@ -137,7 +142,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
                       </span>
                       <div>
                         <strong>{player.name}</strong>
-                        <span>{age(player.birthdate)} ans · {caps} sél. · {goals} buts</span>
+                        <span>{player.birthdate ? `${age(player.birthdate)} ans · ` : ''}{caps} sél. · {goals} buts</span>
                       </div>
                     </Link>
                   )

@@ -7,7 +7,7 @@ import { ClubCrest } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
 import { PlayerRadar } from '@/components/site/PlayerRadar'
-import { radarAxesFor, statusFlagTone } from '@/lib/attributes'
+import { radarAxesFor } from '@/lib/attributes'
 import { age, formatDate } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -20,29 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: player ? `${player.name} — FIF Digital` : 'Joueur' }
 }
 
-const statusTone: Record<string, string> = { Valide: 'ok', 'En attente': 'pending', Expirée: 'error' }
-
-function palmaresFor(player: ReturnType<typeof getPlayer>) {
-  if (!player) return []
-  const rows: { competition: string; year: number; result: string; clubName: string }[] = []
-  for (const h of player.history) {
-    const club = getClubById(h.clubId)
-    if (!club) continue
-    for (const a of club.achievements) {
-      if (a.result !== 'Champion' && a.result !== 'Podium (3e)') continue
-      if (a.year < h.from || (h.to !== null && a.year > h.to)) continue
-      rows.push({ competition: a.competition, year: a.year, result: a.result, clubName: club.name })
-    }
-  }
-  return rows.sort((a, b) => b.year - a.year)
-}
-
 export default async function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const player = getPlayer(slug)
   if (!player) notFound()
   const club = getClubById(player.clubId)
-  const palmares = palmaresFor(player)
   const keyAttrs = KEY_ATTRS_BY_POSITION[player.position] ?? []
   const radarAxes = radarAxesFor(player.attributes)
   const seasonStats = [...player.seasonStats].reverse()
@@ -64,7 +46,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             </div>
           </div>
           <div className="page-hero-meta">
-            <div><strong>{age(player.birthdate)}</strong><span>Âge</span></div>
+            {player.birthdate && <div><strong>{age(player.birthdate)}</strong><span>Âge</span></div>}
             <div><strong>{player.stats.matches}</strong><span>Matchs joués</span></div>
             <div><strong>{player.stats.goals}</strong><span>Buts</span></div>
             <div><strong>{player.stats.assists}</strong><span>Passes décisives</span></div>
@@ -72,38 +54,29 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      {player.realRoster && (
-        <section className="page-section tight" style={{ paddingBottom: 0 }}>
-          <p className="press-source-note"><Info size={13} /> {player.realMeasures
-            ? <>Nom, poste, numéro, taille, poids et date de naissance réels — effectif officiel {club?.name}, saison 2026-2027. Attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</>
-            : <>Nom, poste et numéro de maillot réels — effectif officiel {club?.name}, saison 2026-2027. Âge, attributs, contrat et statistiques ci-dessous sont des estimations générées à titre indicatif, non des données officielles.</>}</p>
-        </section>
-      )}
-
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <div className="player-status-bar">
-          {player.statusFlags.length > 0 ? player.statusFlags.map((f, i) => (
-            <span key={i} className={`status-flag ${statusFlagTone(f)}`}>{f}</span>
-          )) : <span className="status-flag ok">Sans particularité</span>}
-        </div>
+        <p className="press-source-note"><Info size={13} /> {player.realMeasures
+          ? <>Nom, poste, numéro, taille, poids et date de naissance réels — effectif officiel {club?.name}, saison 2026-2027.</>
+          : <>Nom, poste et numéro de maillot réels — effectif officiel {club?.name}, saison 2026-2027.</>}
+          {' '}Statistiques calculées à partir des matchs réels de Ligue 1 (buts, passes décisives, cartons, compositions lorsqu’elles sont publiées). Attributs et profil ci-dessous : estimations indicatives, non officielles.</p>
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Informations générales et statuts</p>
+        <p className="section-tag">Informations générales</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
-            <h3>Identité & contrat</h3>
+            <h3>Identité</h3>
             <div className="dashboard-list">
               {player.squadNumber && <div><small>Numéro de maillot</small><b>N°{player.squadNumber}</b></div>}
-              <div><small>Nationalité</small><b>{player.nationality}</b></div>
-              <div><small>Taille</small><b>{player.height} cm</b></div>
-              <div><small>Poids</small><b>{player.weight} kg</b></div>
-              <div><small>Meilleur pied</small><b>{player.preferredFoot}</b></div>
-              <div><small>Contrat jusqu’au</small><b>{formatDate(player.contractUntil)}</b></div>
+              <div><small>Poste</small><b>{player.positionDetail ?? player.position}</b></div>
+              <div><small>Club</small><b>{club?.name}</b></div>
+              {player.birthdate && <div><small>Date de naissance</small><b>{formatDate(player.birthdate)}</b></div>}
+              {player.realMeasures && <div><small>Taille</small><b>{player.height} cm</b></div>}
+              {player.realMeasures && <div><small>Poids</small><b>{player.weight} kg</b></div>}
             </div>
           </div>
           <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
-            <h3>Évaluation du staff</h3>
+            <h3>Évaluation (estimation)</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <StarRating count={player.currentAbilityStars} label="Niveau actuel" />
               <StarRating count={player.potentialAbilityStars} label="Potentiel" />
@@ -118,7 +91,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Attributs — notés sur 20</p>
+        <p className="section-tag">Attributs — notés sur 20 (estimation)</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           <AttributePanel title="Technique" attrs={player.attributes.technical} keyAttrs={keyAttrs} />
           <AttributePanel title="Mental" attrs={player.attributes.mental} keyAttrs={keyAttrs} />
@@ -127,7 +100,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Profil psychologique & rapports</p>
+        <p className="section-tag" style={{ color: 'var(--orange)' }}>Profil psychologique & rapports (estimation)</p>
         <div className="card-grid cols-3" style={{ marginTop: 16, alignItems: 'start' }}>
           <div className="info-tile"><strong>Personnalité</strong><p>{player.personality}</p></div>
           <div className="info-tile">
@@ -156,7 +129,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           <div className="radar-wrap"><PlayerRadar axes={radarAxes} /></div>
           <div className="table-wrap">
             <table className="data-table">
-              <thead><tr><th className="align-left">SAISON</th><th className="align-left">COMPÉTITION</th><th>MJ</th><th>BUTS</th><th>PD</th><th>NOTE MOY.</th></tr></thead>
+              <thead><tr><th className="align-left">SAISON</th><th className="align-left">COMPÉTITION</th><th>MJ</th><th>BUTS</th><th>PD</th></tr></thead>
               <tbody>
                 {seasonStats.map((s, i) => (
                   <tr key={i}>
@@ -165,9 +138,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                     <td>{s.matches}</td>
                     <td>{s.goals}</td>
                     <td>{s.assists}</td>
-                    <td><b>{s.avgRating.toFixed(1)}</b></td>
                   </tr>
                 ))}
+                {!seasonStats.length && <tr><td colSpan={5}>Aucun match officiel recensé pour l’instant.</td></tr>}
               </tbody>
             </table>
           </div>
@@ -192,7 +165,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <h3>Discipline & temps de jeu</h3>
             <span className="stats-highlight-sub">Saison en cours</span>
             <div className="stats-highlight-numbers">
-              <div><strong>{player.stats.minutes}</strong><span>Minutes</span></div>
+              <div><strong>{player.stats.minutes > 0 ? player.stats.minutes : '—'}</strong><span>Minutes</span></div>
               <div><strong>{player.stats.yellow}</strong><span>Jaunes</span></div>
               <div><strong>{player.stats.red}</strong><span>Rouges</span></div>
             </div>
@@ -216,9 +189,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           <h3>Identité fédérale — FIF ID</h3>
           <div className="dashboard-list">
             <div><small>FIF ID</small><b>{player.fifId}</b></div>
-            <div><small>Statut licence</small><span className={`status-pill ${statusTone[player.licenseStatus]}`}>{player.licenseStatus}</span></div>
-            <div><small>Date de naissance</small><b>{formatDate(player.birthdate)}</b></div>
-            <div><small>Nationalité sportive</small><b>{player.nationality}</b></div>
+            <div><small>Club</small><b>{club?.name}</b></div>
           </div>
           <Link href={`/verifier/${player.fifId}`} className="button-outline" style={{ marginTop: 16 }}><QrCode size={14} /> Vérifier ce FIF ID</Link>
         </div>
@@ -246,41 +217,6 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
-
-      {palmares.length > 0 && (
-        <section className="page-section tight">
-          <p className="section-tag">Palmarès</p>
-          <div className="table-wrap" style={{ marginTop: 16 }}>
-            <table className="data-table">
-              <thead><tr><th className="align-left">COMPÉTITION</th><th className="align-left">CLUB</th><th>ANNÉE</th><th>RÉSULTAT</th></tr></thead>
-              <tbody>
-                {palmares.map((p, i) => (
-                  <tr key={i}>
-                    <td className="align-left">{p.competition}</td>
-                    <td className="align-left">{p.clubName}</td>
-                    <td>{p.year}</td>
-                    <td><span className={`status-pill ${p.result === 'Champion' ? 'ok' : 'neutral'}`}>{p.result}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
-
-      <section className="page-section tight">
-        <p className="section-tag">Historique des clubs</p>
-        <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-          {[...player.history].reverse().map((h, i) => {
-            const c = getClubById(h.clubId)
-            return c ? (
-              <Link key={i} href={`/clubs/${c.slug}`} className="entity-card">
-                <div><strong>{c.name}</strong><span>{h.from} — {h.to ?? 'aujourd’hui'}</span></div>
-              </Link>
-            ) : null
-          })}
-        </div>
-      </section>
 
       <section className="page-section tight"><DemoBadge /></section>
     </main>
