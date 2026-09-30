@@ -939,8 +939,62 @@ export const presidentProfile = {
   ],
   programme: {
     name: 'Transformer pour durer',
-    launched: 'Campagne lancée le 2 septembre 2026 à Abidjan',
-    axes: ['Les clubs', 'Les compétitions', 'La formation et la valorisation des talents', 'Le football féminin', 'La modernisation de la Fédération', 'La recherche de la performance'],
+    launched: 'Projet 2026-2030 présenté le 2 septembre 2026 au Sofitel Hôtel Ivoire d’Abidjan, en ouverture de la campagne',
+    axes: [
+      {
+        title: 'Les clubs',
+        points: [
+          'Accompagner la professionnalisation des clubs : mieux structurés, mieux gérés et capables de générer leurs propres ressources.',
+          'Autonomie financière à l’horizon 2030 : sortir de la dépendance aux seules subventions fédérales et faire émerger des modèles économiques propres.',
+          'Hausse des subventions : Ligue 1 à 140 millions FCFA (au lieu de 100), Ligue 2 à 70 millions (au lieu de 50), Division 3 à 40 millions (au lieu de 30), groupements d’intérêt à 20 millions.',
+          'Augmentation des droits TV reversés aux clubs.',
+          'Inciter les dirigeants à diversifier leurs revenus et à accélérer leur transition numérique.',
+        ],
+      },
+      {
+        title: 'Les compétitions',
+        points: [
+          'Des championnats et des coupes plus attractifs, mieux organisés et davantage professionnalisés.',
+          'Généralisation de la billetterie digitale, notamment pour sécuriser les guichets.',
+          'Renforcement de la sécurité dans les stades et amélioration de l’expérience des supporters.',
+          'Lancement de FIF TV : vitrine numérique du football ivoirien, diffusion des matchs et de contenus exclusifs sur tout le territoire.',
+        ],
+      },
+      {
+        title: 'La formation et la valorisation des talents',
+        points: [
+          'Renforcer le rôle de la Direction technique nationale (DTN) et la déployer dans les régions, sur tout le territoire.',
+          'Développer les compétitions de jeunes.',
+          'Améliorer le suivi médical et social des jeunes joueurs.',
+          'Mieux accompagner les talents vers les championnats professionnels et les sélections nationales.',
+        ],
+      },
+      {
+        title: 'Le football féminin',
+        points: [
+          'Renforcer les compétitions féminines et développer les catégories de jeunes.',
+          'Encourager la création de centres de formation spécialisés pour les filles.',
+          'Créer une Ligue professionnelle féminine avant la fin du mandat.',
+          'Subvention du football féminin portée à 15 millions FCFA (au lieu de 10).',
+        ],
+      },
+      {
+        title: 'La modernisation de la Fédération',
+        points: [
+          'Renforcer les mécanismes de contrôle interne et poursuivre la reddition des comptes.',
+          'Améliorer la gouvernance et la formation des dirigeants.',
+          'Objectif 2030 : une FIF plus moderne, plus transparente et plus efficace.',
+        ],
+      },
+      {
+        title: 'La recherche de la performance',
+        points: [
+          'Des sélections nationales plus performantes et des clubs ivoiriens plus compétitifs sur la scène africaine.',
+          'Conduire les Éléphants vers un nouveau titre continental et de futures qualifications en Coupe du monde.',
+          'Faire de l’excellence une culture et de la victoire une exigence.',
+        ],
+      },
+    ],
   },
 }
 
@@ -948,15 +1002,15 @@ export const presidentProfile = {
 // débuté le 12 septembre 2026 : aucun avancement mesuré publié à ce jour.
 export const presidentPromises: PresidentPromise[] = [
   { id: 'prom-1', title: 'Autonomie financière des clubs d’ici 2030', description: 'Permettre aux clubs ivoiriens d’atteindre une véritable autonomie financière à l’horizon 2030, afin qu’ils ne dépendent plus uniquement de la Fédération.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-2', title: 'Hausse des subventions aux clubs', description: 'Augmentation des subventions versées par la FIF aux clubs, annoncée pendant la campagne de 2026.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-3', title: 'Professionnaliser les clubs et rendre les compétitions plus attractives', description: 'Poursuite de la professionnalisation des clubs et amélioration de l’attractivité des compétitions nationales.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-4', title: 'Formation et valorisation des jeunes talents', description: 'Mieux accompagner les talents et faciliter leur progression vers les championnats professionnels et les sélections nationales.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-5', title: 'Développement du football féminin', description: 'Le football féminin figure parmi les six priorités du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-6', title: 'Créer FIF TV', description: 'Lancement d’une chaîne de la Fédération, prévu par le projet « Transformer pour durer ».', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-7', title: 'Moderniser la billetterie', description: 'Modernisation de la billetterie des rencontres, prévue par le projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-8', title: 'Renforcer la sécurité dans les stades', description: 'Renforcement de la sécurité dans les stades, prévu par le projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-9', title: 'Moderniser la Fédération', description: 'Modernisation du fonctionnement de la FIF, l’un des six axes du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
-  { id: 'prom-10', title: 'Rechercher la performance', description: 'La recherche de la performance des sélections et des clubs, sixième axe du projet 2026-2030.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-2', title: 'Hausse des subventions aux clubs', description: 'Ligue 1 : 140 millions FCFA (au lieu de 100) ; Ligue 2 : 70 millions (au lieu de 50) ; Division 3 : 40 millions (au lieu de 30) ; groupements d’intérêt : 20 millions. Hausse des droits TV reversés aux clubs.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-3', title: 'Des compétitions plus attractives et professionnalisées', description: 'Championnats et coupes mieux organisés, plus attractifs et davantage professionnalisés ; meilleure expérience des supporters.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-4', title: 'Déployer la DTN dans les régions', description: 'Renforcer le rôle de la Direction technique nationale sur tout le territoire, développer les compétitions de jeunes et améliorer le suivi médical et social des jeunes joueurs.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-5', title: 'Créer une Ligue professionnelle féminine', description: 'Création avant la fin du mandat, avec le renforcement des compétitions féminines, des catégories de jeunes et des centres de formation pour les filles ; subvention du football féminin portée de 10 à 15 millions FCFA.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-6', title: 'Lancer FIF TV', description: 'Plateforme de diffusion des matchs et de contenus exclusifs, vitrine numérique du football ivoirien sur tout le territoire.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-7', title: 'Généraliser la billetterie digitale', description: 'Billetterie numérique pour moderniser l’accès aux stades et sécuriser les guichets.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-8', title: 'Renforcer la sécurité dans les stades', description: 'Renforcement de la sécurité dans les stades et amélioration de l’accueil des supporters.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-9', title: 'Une FIF plus moderne et transparente', description: 'Renforcer le contrôle interne, poursuivre la reddition des comptes, améliorer la gouvernance et la formation des dirigeants.', commissionId: '', progress: 0, status: 'Planifiée' },
+  { id: 'prom-10', title: 'Un nouveau titre continental pour les Éléphants', description: 'Sélections plus performantes, clubs plus compétitifs sur la scène africaine, nouveau titre continental et futures qualifications en Coupe du monde.', commissionId: '', progress: 0, status: 'Planifiée' },
 ]
 
 const docTitlesByOrg: Record<'FIF' | 'CAF' | 'FIFA', { title: string; category: string }[]> = {

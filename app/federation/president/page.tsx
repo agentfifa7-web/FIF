@@ -60,9 +60,15 @@ export default function PresidentPage() {
           <Link href="/federation/transparence" className="text-link">Suivre les engagements <span aria-hidden>→</span></Link>
         </div>
         <p className="lede">{presidentProfile.programme.launched}. Le projet repose sur six priorités :</p>
-        <div className="card-grid cols-3" style={{ marginTop: 16 }}>
+        <div className="card-grid cols-3" style={{ marginTop: 16, alignItems: 'start' }}>
           {presidentProfile.programme.axes.map((a, i) => (
-            <div className="info-tile" key={i}><Target /><strong>{a}</strong></div>
+            <div className="info-tile" key={i}>
+              <Target />
+              <strong>{i + 1}. {a.title}</strong>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'disc', marginTop: 10, paddingLeft: 18 }}>
+                {a.points.map((p, j) => <li key={j} style={{ color: 'var(--muted)', fontSize: 13, lineHeight: 1.5 }}>{p}</li>)}
+              </ul>
+            </div>
           ))}
         </div>
         <p className="lede" style={{ marginTop: 20 }}>{presidentPromises.length} engagements concrets annoncés — détail dans la Transparence FIF.</p>

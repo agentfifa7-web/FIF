@@ -65,7 +65,7 @@ export default function FederationPage() {
           <div>
             <strong>{presidentProfile.name}</strong>
             <span>{presidentProfile.role} · depuis {presidentProfile.since} · réélu le 12 septembre 2026</span>
-            <p>Programme 2026-2030 « {presidentProfile.programme.name} » : {presidentProfile.programme.axes.join(', ').toLowerCase()}.</p>
+            <p>Programme 2026-2030 « {presidentProfile.programme.name} » : {presidentProfile.programme.axes.map((a) => a.title).join(', ').toLowerCase()}.</p>
           </div>
           <ArrowRight />
         </Link>
