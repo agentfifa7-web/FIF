@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ChevronDown, Menu, Search, X } from 'lucide-react'
+import { CartLink } from './CartLink'
 
 const universe = [
   {
@@ -134,6 +135,7 @@ export function SiteHeader() {
         </nav>
         <div className="nav-actions">
           <button className="icon-button" aria-label="Rechercher" type="button" onClick={() => setSearchOpen(true)}><Search /></button>
+          <CartLink compact />
           <Link className="login-link" href="/compte">Compte</Link>
           <button className="menu-button" aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'} type="button" onClick={() => setMenuOpen((v) => !v)}>
             {menuOpen ? <X /> : <Menu />}
