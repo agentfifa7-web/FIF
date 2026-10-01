@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { CreditCard, IdCard, LogOut, Package, ShoppingBag, Ticket, UserRound } from 'lucide-react'
+import { CreditCard, GraduationCap, IdCard, LogOut, Package, ShoppingBag, Ticket, UserRound } from 'lucide-react'
 import { accountStatus, identityProgress, maskPhone, signOut, updateAccount, useAccount } from '@/lib/account'
 import { FifIdCardFront } from './FifIdCard'
+import { MyAcademy } from './MyAcademy'
+import { useTickets } from '@/lib/tickets'
 import { formatMoney } from '@/lib/format'
 import type { ShopOrder } from '@/lib/cart'
 
@@ -15,6 +17,8 @@ interface ClubOption { id: string; name: string; slug: string }
 export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption[]; nextMatch: React.ReactNode; news: React.ReactNode }) {
   const { account, ready } = useAccount()
   const [orders, setOrders] = useState<ShopOrder[]>([])
+  const { tickets } = useTickets()
+  const validTickets = tickets.filter((t) => t.status === 'Valide')
 
   useEffect(() => {
     try { setOrders(JSON.parse(window.localStorage.getItem('fif-store-orders') ?? '[]')) } catch { setOrders([]) }
@@ -103,19 +107,17 @@ export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption
 
       <div className="dashboard-panel" style={{ margin: 0 }}>
         <h3><Ticket size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />Mes billets</h3>
-        <p className="lede" style={{ fontSize: 14 }}>Aucun billet actif. <Link href="/billetterie" className="text-link" style={{ display: 'inline' }}>Voir la billetterie →</Link></p>
+        {validTickets.length ? (
+          <div className="dashboard-list">
+            {validTickets.slice(0, 3).map((t) => <div key={t.id}><div><b>{t.eventLabel}</b><small>{t.tierName} · {t.holder}</small></div><span className="status-pill ok">{t.status}</span></div>)}
+          </div>
+        ) : <p className="lede" style={{ fontSize: 14 }}>Aucun billet actif.</p>}
+        <Link href={validTickets.length ? '/billetterie/mes-billets' : '/billetterie'} className="text-link">{validTickets.length ? 'Voir mes billets (QR) →' : 'Voir la billetterie →'}</Link>
       </div>
 
       <div className="dashboard-panel" style={{ margin: 0 }}>
-        <h3>Raccourcis</h3>
-        <div className="chip-row">
-          <Link href="/boutique/panier" className="chip"><ShoppingBag size={13} /> Mon panier</Link>
-          {account.role === 'Supporter' && <Link href="/supporters/fan-id" className="chip"><IdCard size={13} /> Mon Fan ID supporter</Link>}
-          {account.role === 'Dirigeant de club' && <Link href="/portail/clubs" className="chip">Portail Clubs</Link>}
-          {['Entraîneur', 'Arbitre', 'Agent'].includes(account.role) && <Link href="/officiels" className="chip">Portail Officiels</Link>}
-          {account.role === 'Joueur / Joueuse' && <Link href="/licences" className="chip">Ma licence</Link>}
-          <Link href="/formation" className="chip">FIF Academy</Link>
-        </div>
+        <h3><GraduationCap size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />Mes formations</h3>
+        <MyAcademy compact />
       </div>
 
       <div className="dashboard-panel account-wide" style={{ margin: 0 }}>

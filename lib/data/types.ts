@@ -335,20 +335,6 @@ export interface Product {
   badge?: string
 }
 
-export interface TrainingCourse {
-  id: string
-  slug: string
-  title: string
-  audience: string
-  level: string
-  duration: string
-  location: string
-  dates: string
-  price: string
-  seats: number
-  modules: string[]
-}
-
 // ---------------------------------------------------------------------------
 // FIF Fan Universe — programme fan / gamification (données de catalogue ;
 // l'état propre à chaque supporter — XP, badges obtenus, réponses — vit côté

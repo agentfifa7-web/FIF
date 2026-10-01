@@ -1,4 +1,5 @@
 import { makeRng, slugify } from './rng'
+import { academyPrograms } from './academy'
 import type {
   Academy,
   Agent,
@@ -35,7 +36,6 @@ import type {
   SeasonStat,
   Stadium,
   StandingRow,
-  TrainingCourse,
   TransparencyRecord,
   Video,
   XpAction,
@@ -2226,14 +2226,6 @@ export const academies: Academy[] = Array.from({ length: 18 }, (_, i) => {
   }
 })
 
-export const trainingCourses: TrainingCourse[] = [
-  { id: 'tc-1', slug: 'licence-caf-c', title: 'Licence Entraîneur CAF C', audience: 'Entraîneurs', level: 'Initiation', duration: '2 semaines', location: 'Abidjan — Centre Technique FIF', dates: '12 — 24 oct. 2026', price: '75 000 FCFA', seats: 30, modules: ['Fondamentaux techniques', 'Pédagogie', 'Physiologie de base', 'Évaluation pratique'] },
-  { id: 'tc-2', slug: 'licence-caf-b', title: 'Licence Entraîneur CAF B', audience: 'Entraîneurs', level: 'Intermédiaire', duration: '3 semaines', location: 'Yamoussoukro — INJS', dates: '5 — 23 nov. 2026', price: '150 000 FCFA', seats: 24, modules: ['Tactique avancée', 'Préparation physique', 'Analyse vidéo', 'Stage pratique'] },
-  { id: 'tc-3', slug: 'arbitrage-regional', title: 'Formation Arbitre Régional', audience: 'Arbitres', level: 'Régional', duration: '1 semaine', location: 'Bouaké — Ligue Régionale', dates: '20 — 26 oct. 2026', price: '35 000 FCFA', seats: 40, modules: ['Lois du jeu', 'Gestion de match', 'VAR — sensibilisation', 'Examen pratique'] },
-  { id: 'tc-4', slug: 'direction-club', title: 'Formation Dirigeants de Club', audience: 'Dirigeants', level: 'Tous niveaux', duration: '4 jours', location: 'Abidjan — Siège FIF', dates: '3 — 6 nov. 2026', price: '50 000 FCFA', seats: 35, modules: ['Gouvernance associative', 'Gestion financière', 'Projet Club FIF', 'Communication'] },
-  { id: 'tc-5', slug: 'medecine-sportive', title: 'Initiation Médecine du Sport', audience: 'Médecins / Santé', level: 'Initiation', duration: '1 semaine', location: 'Abidjan — CHU', dates: '9 — 14 nov. 2026', price: '60 000 FCFA', seats: 20, modules: ['Premiers secours', 'Prévention des blessures', 'Commotion cérébrale', 'Nutrition sportive'] },
-  { id: 'tc-6', slug: 'educateur-jeunes', title: 'Éducateur Football Jeunes', audience: 'Éducateurs', level: 'Initiation', duration: '2 semaines', location: 'Daloa — Centre régional', dates: '16 — 28 nov. 2026', price: '45 000 FCFA', seats: 28, modules: ['Psychologie de l’enfant', 'Motricité', 'Jeux réduits', 'Sécurité et bien-être'] },
-]
 
 const productCategories = ['Maillots', 'Tenues', 'Enfants', 'Femmes', 'Accessoires', 'Ballons', 'Écharpes', 'Casquettes']
 const productNamer: Record<string, () => string> = {
@@ -2373,8 +2365,8 @@ export function globalSearch(query: string): SearchResult[] {
       results.push({ type: 'stade', title: s.name, subtitle: cityName(s.cityId), href: `/stades/${s.slug}` })
     }
   }
-  for (const tc of trainingCourses) {
-    if (tc.title.toLowerCase().includes(q)) {
+  for (const tc of academyPrograms) {
+    if (`${tc.title} ${tc.short}`.toLowerCase().includes(q)) {
       results.push({ type: 'formation', title: tc.title, subtitle: tc.audience, href: `/formation/${tc.slug}` })
     }
   }

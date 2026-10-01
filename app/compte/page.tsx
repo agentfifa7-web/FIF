@@ -1,13 +1,15 @@
-import { clubs, articles, upcomingMatches } from '@/lib/data/mock'
+import { clubs, articles } from '@/lib/data/mock'
+import { ticketEvents } from '@/lib/data/tickets'
+import { TicketEventCard } from '@/components/site/TicketEventCard'
 import { PageHero } from '@/components/site/PageHero'
-import { NewsCard, MatchCard } from '@/components/site/cards'
+import { NewsCard } from '@/components/site/cards'
 import { AccountDashboard } from '@/components/site/AccountDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Mon compte — FIF Digital' }
 
 export default function AccountPage() {
-  const nextMatch = upcomingMatches(200).find((m) => +new Date(m.date) > Date.now())
+  const nextEvent = ticketEvents.find((e) => e.status === 'En vente') ?? ticketEvents[0]
   const clubOptions = [...clubs].sort((a, b) => a.name.localeCompare(b.name, 'fr')).map((c) => ({ id: c.id, name: c.name, slug: c.slug }))
 
   return (
@@ -21,7 +23,7 @@ export default function AccountPage() {
       <section className="page-section tight">
         <AccountDashboard
           clubs={clubOptions}
-          nextMatch={nextMatch ? <div className="card-grid cols-2"><MatchCard match={nextMatch} /></div> : <p className="lede">Aucun match programmé.</p>}
+          nextMatch={nextEvent ? <div className="card-grid cols-2"><TicketEventCard ev={nextEvent} /></div> : <p className="lede">Aucun match programmé.</p>}
           news={<div className="news-grid">{articles.slice(0, 3).map((a) => <NewsCard key={a.id} article={a} />)}</div>}
         />
       </section>
