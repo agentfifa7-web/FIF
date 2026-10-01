@@ -758,3 +758,4 @@ a.cart-pill { align-items:center; border-radius:999px; display:inline-flex; gap:
 .account-id-card { margin:0; max-width:none; }
 .account-grid .chip-row .chip { align-items:center; display:inline-flex; gap:6px; }
 @media (max-width:980px) { .account-grid { grid-template-columns:minmax(0,1fr); } }
+.field-hint { color:var(--muted); font-size:12px; line-height:1.45; }

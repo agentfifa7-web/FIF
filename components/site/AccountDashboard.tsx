@@ -61,10 +61,11 @@ export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption
         <div className="dashboard-list">
           <div><small>Téléphone</small><b>{maskPhone(account.phone)}</b></div>
           <div><small>Profil</small><b>{account.role}</b></div>
+          {account.matricule && <div><small>Matricule</small><b>{account.matricule}</b></div>}
           <div><small>FIF ID créé le</small><b>{created}</b></div>
         </div>
         {status.tone !== 'ok' && (
-          <p className="lede" style={{ fontSize: 13, marginTop: 12 }}>Votre profil {account.role.toLowerCase()} sera activé après vérification par la FIF (pièce d’identité, licence ou affiliation à un club).</p>
+          <p className="lede" style={{ fontSize: 13, marginTop: 12 }}>Votre profil {account.role.toLowerCase()} sera activé après vérification de votre matricule par la FIF.</p>
         )}
         <button type="button" className="button-outline" style={{ marginTop: 16 }} onClick={signOut}><LogOut size={14} /> Se déconnecter</button>
       </div>

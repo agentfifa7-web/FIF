@@ -42,6 +42,77 @@ export interface FifAccount {
   role: AccountRole
   createdAt: string
   favoriteClubId?: string
+  /** Numéro de matricule de la corporation (tous les rôles sauf supporter). */
+  matricule?: string
+}
+
+// ---------------------------------------------------------------------------
+// Numéros de matricule par corporation. Seul le supporter en est dispensé.
+// Chaque corporation a son propre modèle ; les modèles encore inconnus sont
+// marqués `pending` et ne font l'objet que d'un contrôle minimal en attendant.
+// ---------------------------------------------------------------------------
+
+interface MatriculeRule {
+  /** Libellé du champ. */
+  label: string
+  example?: string
+  /** Explication du modèle affichée sous le champ. */
+  hint: string
+  /** Modèle officiel pas encore communiqué. */
+  pending?: boolean
+  /** Renvoie un message d'erreur, ou null si le matricule est valide. */
+  validate: (value: string) => string | null
+}
+
+/** Agents : AAAAMM-NNNN — année et mois d'obtention de la licence, puis
+ *  nombre d'agents au moment de la délivrance. Ex. 202307-3048. */
+function validateAgentMatricule(value: string): string | null {
+  const m = value.match(/^(\d{4})(\d{2})-(\d{4})$/)
+  if (!m) return 'Matricule d’agent invalide : format attendu AAAAMM-NNNN, par exemple 202307-3048.'
+  const year = Number(m[1])
+  const month = Number(m[2])
+  const now = new Date()
+  if (month < 1 || month > 12) return 'Matricule d’agent invalide : le mois (5e et 6e chiffres) doit être compris entre 01 et 12.'
+  if (year < 1990 || year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth() + 1)) {
+    return 'Matricule d’agent invalide : la date d’obtention de la licence ne peut pas être dans le futur.'
+  }
+  if (Number(m[3]) === 0) return 'Matricule d’agent invalide : le numéro d’ordre (4 derniers chiffres) ne peut pas être 0000.'
+  return null
+}
+
+function provisionalRule(corporation: string): MatriculeRule {
+  return {
+    label: `Numéro de matricule (${corporation})`,
+    hint: `Saisissez le matricule qui figure sur votre licence ou carte de ${corporation}. Il sera vérifié par la FIF.`,
+    pending: true,
+    validate: (v) => (/^[A-Za-z0-9][A-Za-z0-9/-]{3,23}$/.test(v) ? null : 'Matricule invalide : 4 caractères minimum (lettres, chiffres, « - » ou « / »).'),
+  }
+}
+
+export const MATRICULE_RULES: Partial<Record<AccountRole, MatriculeRule>> = {
+  'Agent': {
+    label: 'Numéro de matricule d’agent',
+    example: '202307-3048',
+    hint: 'Format AAAAMM-NNNN : année et mois d’obtention de la licence, puis nombre d’agents au moment de la délivrance. Ex. 202307-3048.',
+    validate: validateAgentMatricule,
+  },
+  'Joueur / Joueuse': provisionalRule('joueur'),
+  'Dirigeant de club': provisionalRule('dirigeant'),
+  'Entraîneur': provisionalRule('entraîneur'),
+  'Arbitre': provisionalRule('arbitre'),
+  'Journaliste': provisionalRule('journaliste'),
+}
+
+/** Vérifie le matricule pour un rôle ; null si valide (ou non requis). */
+export function checkMatricule(role: AccountRole, raw: string): string | null {
+  const rule = MATRICULE_RULES[role]
+  if (!rule) return null
+  const value = raw.trim().toUpperCase()
+  if (!value) return 'Le numéro de matricule est obligatoire pour ce profil.'
+  const error = rule.validate(value)
+  if (error) return error
+  if (readAccounts().some((a) => a.role === role && a.matricule === value)) return 'Ce numéro de matricule est déjà associé à un autre FIF ID.'
+  return null
 }
 
 const ACCOUNTS_KEY = 'fif-accounts-v1'
@@ -102,11 +173,12 @@ export function currentAccount(): FifAccount | null {
   }
 }
 
-export function createAccount(input: { phone: string; fullName: string; role: AccountRole }): FifAccount {
+export function createAccount(input: { phone: string; fullName: string; role: AccountRole; matricule?: string }): FifAccount {
   const existing = findAccount(input.phone)
   if (existing) { setSession(existing.phone); return existing }
   const account: FifAccount = {
     ...input,
+    matricule: MATRICULE_RULES[input.role] ? input.matricule?.trim().toUpperCase() : undefined,
     fifId: `FIF-${ROLE_PREFIX[input.role]}-${String(Math.floor(100000 + Math.random() * 900000))}`,
     createdAt: new Date().toISOString(),
   }

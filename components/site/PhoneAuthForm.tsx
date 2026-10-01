@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { MessageSquareText, Smartphone } from 'lucide-react'
-import { ACCOUNT_ROLES, createAccount, DIAL_CODES, findAccount, formatPhone, generateOtp, normalizePhone, signIn, type AccountRole } from '@/lib/account'
+import { ACCOUNT_ROLES, checkMatricule, createAccount, MATRICULE_RULES, DIAL_CODES, findAccount, formatPhone, generateOtp, normalizePhone, signIn, type AccountRole } from '@/lib/account'
 
 // Création ou connexion à un FIF ID avec le seul numéro de téléphone :
 // 1) saisie du numéro (et du nom pour une création), 2) code reçu par SMS.
@@ -14,6 +14,8 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const [local, setLocal] = useState('')
   const [fullName, setFullName] = useState('')
   const [role, setRole] = useState<AccountRole>('Supporter')
+  const [matricule, setMatricule] = useState('')
+  const rule = mode === 'signup' ? MATRICULE_RULES[role] : undefined
   const [step, setStep] = useState<'phone' | 'code'>('phone')
   const [phone, setPhone] = useState('')
   const [sentCode, setSentCode] = useState('')
@@ -29,6 +31,14 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
       return setError(dial === '+225' ? 'Numéro invalide : 10 chiffres attendus, par exemple 07 08 09 10 11.' : 'Numéro invalide.')
     }
     if (mode === 'signup' && fullName.trim().length < 3) return setError('Indiquez votre nom complet.')
+    if (mode === 'signup') {
+      const matriculeError = checkMatricule(role, matricule)
+      if (matriculeError) return setError(matriculeError)
+      if (findAccount(normalized)) {
+        setNotFound(false)
+        return setError('Ce numéro de téléphone a déjà un FIF ID. Connectez-vous plutôt.')
+      }
+    }
     if (mode === 'login' && !findAccount(normalized)) {
       setNotFound(true)
       return setError('Aucun FIF ID n’est associé à ce numéro.')
@@ -43,7 +53,7 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
   function verify(e: React.FormEvent) {
     e.preventDefault()
     if (code.trim() !== sentCode) return setError('Code incorrect. Vérifiez le SMS reçu.')
-    if (mode === 'signup') createAccount({ phone, fullName: fullName.trim(), role })
+    if (mode === 'signup') createAccount({ phone, fullName: fullName.trim(), role, matricule })
     else signIn(phone)
     router.push('/compte')
   }
@@ -79,6 +89,22 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
           <input id="name" type="text" required autoComplete="name" placeholder="Prénom et nom" value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </div>
       )}
+      {mode === 'signup' && (
+        <div className="text-field">
+          <label htmlFor="role">Je suis…</label>
+          <select id="role" value={role} onChange={(e) => { setRole(e.target.value as AccountRole); setError('') }}>
+            {ACCOUNT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </div>
+      )}
+      {rule && (
+        <div className="text-field">
+          <label htmlFor="matricule">{rule.label}</label>
+          <input id="matricule" type="text" required autoComplete="off" spellCheck={false} placeholder={rule.example ?? 'Votre matricule'}
+            value={matricule} onChange={(e) => setMatricule(e.target.value.toUpperCase())} style={{ letterSpacing: '.06em' }} />
+          <small className="field-hint">{rule.hint}</small>
+        </div>
+      )}
       <div className="text-field">
         <label htmlFor="phone">Numéro de téléphone</label>
         <div className="phone-input">
@@ -88,14 +114,6 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
           <input id="phone" type="tel" inputMode="tel" autoComplete="tel-national" required placeholder={dial === '+225' ? '07 08 09 10 11' : 'Numéro'} value={local} onChange={(e) => setLocal(e.target.value)} />
         </div>
       </div>
-      {mode === 'signup' && (
-        <div className="text-field">
-          <label htmlFor="role">Je suis…</label>
-          <select id="role" value={role} onChange={(e) => setRole(e.target.value as AccountRole)}>
-            {ACCOUNT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-          </select>
-        </div>
-      )}
       {error && (
         <p className="form-error" style={{ marginBottom: 12 }}>
           {error}{notFound && <> <Link href="/inscription" className="text-link" style={{ display: 'inline' }}>Créer un FIF ID</Link></>}
