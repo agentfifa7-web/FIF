@@ -24,6 +24,9 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
   const p = getProgram(slug)
   if (!p) notFound()
   const track = ACADEMY_TRACKS.find((t) => t.id === p.track)
+  const content = programContent[p.slug]
+  const online = content ? content.flat().filter((c) => !c.inPerson) : []
+  const onsite = content ? content.flat().filter((c) => c.inPerson) : []
   const related = academyPrograms.filter((x) => x.track === p.track && x.slug !== p.slug).slice(0, 3)
 
   return (
@@ -54,32 +57,36 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
               <ul className="check-list">{p.objectives.map((o) => <li key={o}>{o}</li>)}</ul>
             </div>
 
-            <div className="prog-section">
-              <h2><BookOpen size={18} /> Programme</h2>
+            <div className="prog-section" id="contenu">
+              <h2><BookOpen size={18} /> Programme et contenu des cours</h2>
+              {content && (
+                <p className="lede" style={{ fontSize: 14, marginTop: 0 }}>
+                  {online.length} leçons en ligne{onsite.length > 0 ? ` et ${onsite.length} séances en présentiel` : ''}. <b>Touchez une leçon pour lire son contenu</b> : points clés, exercice de mise en pratique et message à retenir.
+                </p>
+              )}
               <div className="learn-modules">
                 {p.modules.map((m, i) => (
                   <details key={m.title} open={i === 0}>
-                    <summary><span>Module {i + 1} — {m.title}</span>{m.hours > 0 && <small>{m.hours} h</small>}</summary>
-                    <ul className="module-lessons">{m.lessons.map((l, li) => {
+                    <summary><span>Module {i + 1} — {m.title}</span><small>{m.lessons.length} leçons{m.hours > 0 ? ` · ${m.hours} h` : ''}</small></summary>
+                    <div className="course-lessons">{m.lessons.map((l, li) => {
                       const c = lessonContent(p.slug, i, li)
-                      return <li key={l}>{l}{c && <small className={c.inPerson ? 'lesson-mini is-onsite' : 'lesson-mini'}>{c.inPerson ? 'présentiel' : `en ligne · ${readingMinutes(c)} min`}</small>}</li>
-                    })}</ul>
+                      if (!c) return <div key={l} className="course-lesson is-empty"><span>{i + 1}.{li + 1}</span>{l}</div>
+                      return (
+                        <details key={l} className="course-lesson">
+                          <summary>
+                            <span className="course-lesson-num">{i + 1}.{li + 1}</span>
+                            <span className="course-lesson-title">{l}</span>
+                            <small className={c.inPerson ? 'lesson-mini is-onsite' : 'lesson-mini'}>{c.inPerson ? 'présentiel' : `${readingMinutes(c)} min`}</small>
+                          </summary>
+                          <div className="course-lesson-body"><LessonBody content={c} title={l} bare /></div>
+                        </details>
+                      )
+                    })}</div>
                   </details>
                 ))}
               </div>
+              {content && <p className="course-note"><Info size={14} /> Le contenu des cours est consultable librement. L’inscription donne accès à l’espace de formation : suivi de progression, validation pratique, examen final et diplôme.</p>}
             </div>
-
-            {programContent[p.slug] && (() => {
-              const first = lessonContent(p.slug, 0, 0)!
-              const total = programContent[p.slug].flat()
-              return (
-                <div className="prog-section">
-                  <h2><BookOpen size={18} /> Aperçu gratuit — leçon 1</h2>
-                  <p className="lede" style={{ fontSize: 14, marginTop: 0 }}>{total.filter((c) => !c.inPerson).length} leçons en ligne{total.some((c) => c.inPerson) ? ` et ${total.filter((c) => c.inPerson).length} temps en présentiel` : ''}, avec points clés, exercice de mise en pratique et message à retenir.</p>
-                  <div className="lesson-preview"><LessonBody content={first} title={p.modules[0].lessons[0]} kicker={`Module 1 — ${p.modules[0].title}`} /></div>
-                </div>
-              )
-            })()}
 
             <div className="prog-two">
               <div className="prog-section">

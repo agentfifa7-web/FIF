@@ -2,10 +2,11 @@ import { Lightbulb, ListChecks, MapPin, Monitor, Target } from 'lucide-react'
 import { readingMinutes, type LessonContent } from '@/lib/data/academy-content'
 
 /** Affichage du contenu d'une leçon (utilisable côté serveur ou client). */
-export function LessonBody({ content, title, kicker }: { content: LessonContent; title: string; kicker?: string }) {
+/** `bare` masque l'en-tête quand le titre est déjà affiché (ex. accordéon du programme). */
+export function LessonBody({ content, title, kicker, bare }: { content: LessonContent; title: string; kicker?: string; bare?: boolean }) {
   return (
     <article className="lesson-body">
-      <header>
+      {!bare && <header>
         {kicker && <span className="lesson-kicker">{kicker}</span>}
         <h2>{title}</h2>
         <div className="lesson-tags">
@@ -13,7 +14,7 @@ export function LessonBody({ content, title, kicker }: { content: LessonContent;
             ? <span className="lesson-tag is-onsite"><MapPin size={12} /> En présentiel</span>
             : <span className="lesson-tag"><Monitor size={12} /> En ligne · {readingMinutes(content)} min</span>}
         </div>
-      </header>
+      </header>}
       <p className="lesson-intro">{content.intro}</p>
       <section>
         <h3><ListChecks size={16} /> {content.inPerson ? 'Déroulement' : 'Points clés'}</h3>
