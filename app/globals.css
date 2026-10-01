@@ -759,3 +759,86 @@ a.cart-pill { align-items:center; border-radius:999px; display:inline-flex; gap:
 .account-grid .chip-row .chip { align-items:center; display:inline-flex; gap:6px; }
 @media (max-width:980px) { .account-grid { grid-template-columns:minmax(0,1fr); } }
 .field-hint { color:var(--muted); font-size:12px; line-height:1.45; }
+
+/* --- Carte FIF ID (format carte bancaire ISO/CR80 : 85,6 × 54 mm) -------- */
+.fid-flip-wrap { container-type:inline-size; max-width:560px; width:100%; }
+.fid-flip { appearance:none; background:none; border:0; cursor:pointer; display:block; padding:0; perspective:1600px; width:100%; }
+.fid-flip-inner { aspect-ratio:85.6/54; position:relative; transform-style:preserve-3d; transition:transform .7s cubic-bezier(.2,.7,.2,1); width:100%; }
+.fid-flip.is-back .fid-flip-inner { transform:rotateY(180deg); }
+.fid-face { backface-visibility:hidden; -webkit-backface-visibility:hidden; inset:0; position:absolute; }
+.fid-face-back { transform:rotateY(180deg); }
+.fid-flip-hint { color:var(--muted); font-size:12px; margin:10px 0 0; text-align:center; }
+.fid-sizer { container-type:inline-size; max-width:560px; width:100%; }
+.fid-sizer .fid-card { aspect-ratio:85.6/54; }
+
+.fid-card { background:radial-gradient(120% 140% at 100% 0%, #0f7a45 0%, #064428 45%, #031d11 100%); border-radius:4.2cqw; box-shadow:0 18px 40px -18px rgba(3,29,17,.55); box-sizing:border-box; color:#fff; display:flex; flex-direction:column; font-size:2.3cqw; height:100%; overflow:hidden; padding:4cqw 4.4cqw 3.4cqw; position:relative; text-align:left; width:100%; }
+.fid-card::before { background:url('/fif-logo.png') no-repeat center/contain; content:''; height:62cqw; opacity:.05; position:absolute; right:-14cqw; top:-6cqw; width:62cqw; }
+.fid-flag { display:flex; height:1.1cqw; left:0; position:absolute; right:0; top:0; }
+.fid-flag i { flex:1; } .fid-flag i:nth-child(1) { background:#ff7a00; } .fid-flag i:nth-child(2) { background:#fff; } .fid-flag i:nth-child(3) { background:#0b9b52; }
+.fid-head { align-items:center; display:flex; gap:2.4cqw; position:relative; }
+.fid-head img { height:7.6cqw; width:auto; }
+.fid-head b { display:block; font-size:2.6cqw; letter-spacing:.02em; text-transform:uppercase; }
+.fid-head span { color:#ffb466; display:block; font-size:1.9cqw; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.fid-nfc { height:5cqw; margin-left:auto; opacity:.8; width:5cqw; }
+.fid-main { display:grid; flex:1; gap:3cqw; grid-template-columns:19cqw minmax(0,1fr) 15cqw; margin-top:3cqw; position:relative; }
+.fid-photo-col { display:flex; flex-direction:column; gap:2.4cqw; }
+.fid-photo { align-items:center; aspect-ratio:4/5; background:#e8efe9; border:.5cqw solid rgba(255,255,255,.85); border-radius:1.6cqw; color:#064428; display:flex; font-size:6cqw; font-weight:800; justify-content:center; overflow:hidden; }
+.fid-photo img { display:block; height:100%; object-fit:cover; width:100%; }
+.fid-chip { aspect-ratio:1.3; background:linear-gradient(135deg,#f6e3a1,#c9a54b 45%,#f3dc8e 70%,#b98f36); border-radius:1.2cqw; box-shadow:inset 0 0 0 .3cqw rgba(0,0,0,.18); position:relative; width:10cqw; }
+.fid-chip::after { border:.3cqw solid rgba(0,0,0,.22); border-radius:.6cqw; content:''; inset:22% 30%; position:absolute; }
+.fid-fields { align-content:start; display:grid; gap:1.5cqw 2.4cqw; grid-template-columns:1fr 1fr; }
+.fid-field { min-width:0; }
+.fid-field.is-wide { grid-column:1 / -1; }
+.fid-field span { color:#9fd9b8; display:block; font-size:1.55cqw; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+.fid-field b { display:block; font-size:2.5cqw; font-weight:700; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fid-qr { align-self:start; background:#fff; border-radius:1.4cqw; padding:1cqw; }
+.fid-qr img { display:block; width:100%; }
+.fid-qr span { aspect-ratio:1; display:block; }
+.fid-foot { align-items:end; border-top:.2cqw solid rgba(255,255,255,.22); display:flex; gap:4cqw; margin-top:2.4cqw; padding-top:2cqw; position:relative; }
+.fid-foot span { color:#9fd9b8; display:block; font-size:1.5cqw; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+.fid-foot b { font-size:2.3cqw; }
+.fid-foot div:first-child { margin-right:auto; }
+.fid-number { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:3.3cqw !important; letter-spacing:.08em; }
+.fid-watermark { background:rgba(255,122,0,.92); border-radius:999px; color:#fff; font-size:1.9cqw; font-weight:800; left:50%; letter-spacing:.12em; padding:1cqw 3cqw; position:absolute; text-transform:uppercase; top:50%; transform:translate(-50%,-50%) rotate(-12deg); white-space:nowrap; }
+
+.fid-back { padding:0; }
+.fid-stripe { background:#111; height:10cqw; margin-top:5cqw; }
+.fid-back-body { display:grid; gap:3cqw; grid-template-columns:22cqw minmax(0,1fr); padding:3.4cqw 4.4cqw 0; }
+.fid-back-qr { text-align:center; }
+.fid-back-qr img { background:#fff; border-radius:1.4cqw; display:block; padding:1cqw; width:100%; }
+.fid-back-qr span { color:#9fd9b8; display:block; font-size:1.6cqw; font-weight:700; margin-top:1cqw; text-transform:uppercase; }
+.fid-back-info { align-content:start; display:grid; gap:1.5cqw 2.4cqw; grid-template-columns:1fr 1fr; }
+.fid-signature { background:repeating-linear-gradient(-45deg,#fff,#fff 1.2cqw,#f1ede4 1.2cqw,#f1ede4 2.4cqw); border-radius:.8cqw; grid-column:1 / -1; height:6cqw; padding:.6cqw 1.2cqw; }
+.fid-signature span { color:#6b6b6b; font-size:1.4cqw; font-weight:700; text-transform:uppercase; }
+.fid-legal { color:#cfe0d6; font-size:1.55cqw; line-height:1.35; margin:2cqw 4.4cqw 0; }
+.fid-mrz { background:rgba(255,255,255,.94); border-radius:1cqw; color:#041b12; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:2.25cqw; letter-spacing:.16em; line-height:1.3; margin:auto 3cqw 3cqw; padding:1.2cqw 2cqw; white-space:pre; }
+
+/* Centre de la carte */
+.card-center { align-items:start; display:grid; gap:32px; grid-template-columns:minmax(0,560px) minmax(0,1fr); }
+.card-faces { display:flex; flex-direction:column; gap:18px; }
+.progress-track { background:#e6ebe7; border-radius:999px; height:8px; overflow:hidden; }
+.progress-fill { background:linear-gradient(90deg,var(--green),#0b9b52); border-radius:999px; height:100%; }
+.card-steps { display:flex; flex-direction:column; gap:10px; list-style:none; margin:12px 0 0; padding:0; }
+.card-steps li { align-items:center; display:flex; font-size:13px; gap:10px; }
+.card-steps li b { align-items:center; background:#e6ebe7; border-radius:50%; color:var(--muted); display:inline-flex; font-size:11px; height:22px; justify-content:center; width:22px; }
+.card-steps li.is-done b { background:var(--green); color:#fff; }
+.card-steps li.is-current b { background:var(--orange); color:#fff; }
+.photo-picker { align-items:center; display:flex; gap:16px; }
+.photo-picker .fid-photo { border-color:var(--line); width:96px; }
+.identity-grid { display:grid; gap:0 16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.identity-grid .is-wide { grid-column:1 / -1; }
+.fid-print { display:none; }
+@media (max-width:900px) { .card-center { grid-template-columns:minmax(0,1fr); } }
+@media (max-width:560px) { .identity-grid { grid-template-columns:minmax(0,1fr); } }
+@media print {
+  @page { margin:12mm; }
+  body * { visibility:hidden !important; }
+  .fid-print, .fid-print * { visibility:visible !important; }
+  .fid-print { display:flex !important; flex-direction:column; gap:8mm; left:0; position:fixed; top:0; z-index:9999; }
+  .fid-print .fid-sizer { width:85.6mm; }
+  .fid-print .fid-card { box-shadow:none; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+.account-card-col { display:flex; flex-direction:column; gap:14px; }
+.account-card-col > a.fid-sizer { display:block; text-decoration:none; }
+.account-complete { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); display:flex; flex-direction:column; gap:10px; padding:14px; }
+.account-complete p { color:var(--muted); font-size:13px; margin:0; }

@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { IdCard, LogOut, Package, QrCode, ShoppingBag, Ticket, UserRound } from 'lucide-react'
-import { accountStatus, maskPhone, signOut, updateAccount, useAccount } from '@/lib/account'
+import { CreditCard, IdCard, LogOut, Package, ShoppingBag, Ticket, UserRound } from 'lucide-react'
+import { accountStatus, identityProgress, maskPhone, signOut, updateAccount, useAccount } from '@/lib/account'
+import { FifIdCardFront } from './FifIdCard'
 import { formatMoney } from '@/lib/format'
 import type { ShopOrder } from '@/lib/cart'
 
@@ -39,21 +40,23 @@ export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption
   }
 
   const status = accountStatus(account)
+  const progress = identityProgress(account)
   const favorite = clubs.find((c) => c.id === account.favoriteClubId)
   const created = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(account.createdAt))
 
   return (
     <div className="account-grid">
-      <div className="fif-id-card account-id-card">
-        <div className="fif-id-card-top"><span>FIF ID</span><QrCode /></div>
-        <div className="fif-id-card-body">
-          <span className="avatar" style={{ background: '#087443' }}>{account.fullName.split(/\s+/).map((n) => n[0]).join('').slice(0, 3).toUpperCase()}</span>
-          <div>
-            <strong>{account.fullName}</strong>
-            <span>{account.fifId}</span>
+      <div className="account-card-col">
+        <Link href="/compte/carte" className="fid-sizer" aria-label="Ouvrir ma carte FIF ID"><FifIdCardFront account={account} /></Link>
+        {!progress.complete ? (
+          <div className="account-complete">
+            <div className="progress-track"><div className="progress-fill" style={{ width: `${(progress.done / progress.total) * 100}%` }} /></div>
+            <p>Identité complétée à {Math.round((progress.done / progress.total) * 100)} % — complétez-la pour obtenir votre carte.</p>
+            <Link href="/compte/identite" className="button button-primary">Compléter mon identité</Link>
           </div>
-        </div>
-        <div className="fif-id-card-foot"><span>Type : {account.role}</span><span className={`status-pill ${status.tone}`}>{status.label}</span></div>
+        ) : (
+          <Link href="/compte/carte" className="button-outline" style={{ alignSelf: 'flex-start' }}><CreditCard size={14} /> Ma carte : recto, verso, carte physique</Link>
+        )}
       </div>
 
       <div className="dashboard-panel" style={{ margin: 0 }}>

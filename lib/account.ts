@@ -44,6 +44,90 @@ export interface FifAccount {
   favoriteClubId?: string
   /** Numéro de matricule de la corporation (tous les rôles sauf supporter). */
   matricule?: string
+  /** Identité complète, saisie après la création du compte. */
+  identity?: FifIdentity
+  /** Date d'émission de la carte FIF ID (quand l'identité est complète). */
+  cardIssuedAt?: string
+  physicalCard?: PhysicalCardRequest
+  /** Souhaite être averti du lancement du paiement avec le partenaire bancaire. */
+  paymentInterest?: boolean
+}
+
+export interface FifIdentity {
+  lastName: string
+  firstNames: string
+  sex: 'M' | 'F' | ''
+  birthDate: string
+  birthPlace: string
+  nationality: string
+  idType: string
+  idNumber: string
+  city: string
+  address: string
+  emergencyContact: string
+  /** Photo d'identité (data URL JPEG redimensionnée). */
+  photo: string
+}
+
+export interface PhysicalCardRequest {
+  requestedAt: string
+  delivery: string
+  status: 'Demande reçue' | 'En fabrication' | 'Disponible'
+}
+
+export const ID_TYPES = ['Carte nationale d’identité (CNI)', 'Passeport', 'Attestation d’identité', 'Carte consulaire', 'Carte de résident']
+
+export const EMPTY_IDENTITY: FifIdentity = {
+  lastName: '', firstNames: '', sex: '', birthDate: '', birthPlace: '', nationality: 'Ivoirienne',
+  idType: ID_TYPES[0], idNumber: '', city: '', address: '', emergencyContact: '', photo: '',
+}
+
+/** Champs nécessaires à une identification complète. */
+const REQUIRED_IDENTITY: { key: keyof FifIdentity; label: string }[] = [
+  { key: 'photo', label: 'Photo d’identité' },
+  { key: 'lastName', label: 'Nom' },
+  { key: 'firstNames', label: 'Prénoms' },
+  { key: 'sex', label: 'Sexe' },
+  { key: 'birthDate', label: 'Date de naissance' },
+  { key: 'birthPlace', label: 'Lieu de naissance' },
+  { key: 'nationality', label: 'Nationalité' },
+  { key: 'idNumber', label: 'Numéro de pièce d’identité' },
+  { key: 'city', label: 'Ville de résidence' },
+]
+
+export function identityProgress(a: FifAccount) {
+  const id = a.identity ?? EMPTY_IDENTITY
+  const missing = REQUIRED_IDENTITY.filter((f) => !String(id[f.key] ?? '').trim()).map((f) => f.label)
+  return { done: REQUIRED_IDENTITY.length - missing.length, total: REQUIRED_IDENTITY.length, missing, complete: missing.length === 0 }
+}
+
+/** Durée de validité de la carte (paramètre à confirmer par la FIF). */
+export const CARD_VALIDITY_YEARS = 5
+
+export function cardExpiry(a: FifAccount) {
+  if (!a.cardIssuedAt) return null
+  const d = new Date(a.cardIssuedAt)
+  d.setFullYear(d.getFullYear() + CARD_VALIDITY_YEARS)
+  return d.toISOString()
+}
+
+const NATIONALITY_ISO: Record<string, string> = {
+  'Ivoirienne': 'CIV', 'Burkinabè': 'BFA', 'Malienne': 'MLI', 'Guinéenne': 'GIN', 'Sénégalaise': 'SEN', 'Ghanéenne': 'GHA',
+  'Nigériane': 'NGA', 'Libérienne': 'LBR', 'Béninoise': 'BEN', 'Togolaise': 'TGO', 'Nigérienne': 'NER', 'Camerounaise': 'CMR', 'Française': 'FRA',
+}
+
+/** Ligne lisible par machine du verso (inspirée des documents de voyage). */
+export function machineReadableLines(a: FifAccount) {
+  const id = a.identity ?? EMPTY_IDENTITY
+  const clean = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]+/g, '<')
+  const pad = (v: string, n: number) => (v + '<'.repeat(n)).slice(0, n)
+  const birth = id.birthDate ? id.birthDate.slice(2).replace(/-/g, '') : '<<<<<<'
+  const exp = cardExpiry(a)?.slice(2, 10).replace(/-/g, '') ?? '<<<<<<'
+  return [
+    pad(`FI CIV${clean(a.fifId)}`, 30),
+    pad(`${birth}${id.sex || '<'}${exp}${NATIONALITY_ISO[id.nationality] ?? 'XXX'}`, 30),
+    pad(`${clean(id.lastName)}<<${clean(id.firstNames)}`, 30),
+  ]
 }
 
 // ---------------------------------------------------------------------------
@@ -197,11 +281,27 @@ export function signOut() {
   setSession(null)
 }
 
-export function updateAccount(patch: Partial<Pick<FifAccount, 'fullName' | 'favoriteClubId'>>) {
+export function updateAccount(patch: Partial<Pick<FifAccount, 'fullName' | 'favoriteClubId' | 'physicalCard' | 'paymentInterest'>>) {
   const me = currentAccount()
   if (!me) return
   writeAccounts(readAccounts().map((a) => (a.phone === me.phone ? { ...a, ...patch } : a)))
   window.dispatchEvent(new Event(EVENT))
+}
+
+/** Enregistre l'identité ; la carte est émise dès que l'identité est complète. */
+export function saveIdentity(identity: FifIdentity) {
+  const me = currentAccount()
+  if (!me) return
+  const clean: FifIdentity = { ...identity, lastName: identity.lastName.trim().toUpperCase(), firstNames: identity.firstNames.trim(), idNumber: identity.idNumber.trim().toUpperCase() }
+  const next: FifAccount = { ...me, identity: clean, fullName: `${clean.firstNames} ${clean.lastName}`.trim() || me.fullName }
+  if (identityProgress(next).complete && !next.cardIssuedAt) next.cardIssuedAt = new Date().toISOString()
+  writeAccounts(readAccounts().map((a) => (a.phone === me.phone ? next : a)))
+  window.dispatchEvent(new Event(EVENT))
+}
+
+/** Recherche d'un FIF ID créé sur cet appareil (prototype de vérification). */
+export function findAccountByFifId(fifId: string) {
+  return readAccounts().find((a) => a.fifId.toUpperCase() === fifId.toUpperCase()) ?? null
 }
 
 /** Les rôles autres que supporter doivent être validés par la FIF. */
