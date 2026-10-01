@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ChevronDown, Menu, Search, X } from 'lucide-react'
 import { CartLink } from './CartLink'
+import { useAccount } from '@/lib/account'
 
 const universe = [
   {
@@ -85,6 +86,7 @@ export function SiteHeader() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const router = useRouter()
+  const { account } = useAccount()
 
   function submitSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -103,7 +105,9 @@ export function SiteHeader() {
             {utilityLinks.map((l) => (
               <Link key={l.href} href={l.href}>{l.label}</Link>
             ))}
-            <Link href="/connexion">Se connecter</Link>
+            {account
+              ? <Link href="/compte">Bonjour, {account.fullName.split(/\s+/)[0]}</Link>
+              : <Link href="/connexion">Se connecter</Link>}
           </div>
         </div>
       </div>
@@ -136,7 +140,7 @@ export function SiteHeader() {
         <div className="nav-actions">
           <button className="icon-button" aria-label="Rechercher" type="button" onClick={() => setSearchOpen(true)}><Search /></button>
           <CartLink compact />
-          <Link className="login-link" href="/compte">Compte</Link>
+          <Link className="login-link" href="/compte">Mon compte</Link>
           <button className="menu-button" aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'} type="button" onClick={() => setMenuOpen((v) => !v)}>
             {menuOpen ? <X /> : <Menu />}
           </button>
