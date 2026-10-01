@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { MessageSquareText, Smartphone } from 'lucide-react'
+import { SupportPicker, type SupportMode } from './SupportPicker'
 import { ACCOUNT_ROLES, checkMatricule, createAccount, MATRICULE_RULES, DIAL_CODES, findAccount, formatPhone, generateOtp, normalizePhone, signIn, type AccountRole } from '@/lib/account'
 
 // Création ou connexion à un FIF ID avec le seul numéro de téléphone :
@@ -15,6 +16,7 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const [fullName, setFullName] = useState('')
   const [role, setRole] = useState<AccountRole>('Supporter')
   const [matricule, setMatricule] = useState('')
+  const [support, setSupport] = useState<{ mode: SupportMode; nationalTeamId: string; clubId: string }>({ mode: 'nation', nationalTeamId: 'nt-elephants', clubId: '' })
   const rule = mode === 'signup' ? MATRICULE_RULES[role] : undefined
   const [step, setStep] = useState<'phone' | 'code'>('phone')
   const [phone, setPhone] = useState('')
@@ -34,6 +36,8 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
     if (mode === 'signup') {
       const matriculeError = checkMatricule(role, matricule)
       if (matriculeError) return setError(matriculeError)
+      if (support.mode !== 'club' && !support.nationalTeamId) return setError('Choisissez l’équipe nationale que vous supportez.')
+      if (support.mode !== 'nation' && !support.clubId) return setError('Choisissez le club que vous supportez.')
       if (findAccount(normalized)) {
         setNotFound(false)
         return setError('Ce numéro de téléphone a déjà un FIF ID. Connectez-vous plutôt.')
@@ -53,7 +57,7 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
   function verify(e: React.FormEvent) {
     e.preventDefault()
     if (code.trim() !== sentCode) return setError('Code incorrect. Vérifiez le SMS reçu.')
-    if (mode === 'signup') createAccount({ phone, fullName: fullName.trim(), role, matricule })
+    if (mode === 'signup') createAccount({ phone, fullName: fullName.trim(), role, matricule, favoriteNationalTeamId: support.mode !== 'club' ? support.nationalTeamId : undefined, favoriteClubId: support.mode !== 'nation' ? support.clubId : undefined })
     else signIn(phone)
     // Retour vers la page d'origine (ex. billetterie) si elle est indiquée.
     const next = new URLSearchParams(window.location.search).get('next')
@@ -116,6 +120,13 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
           <input id="phone" type="tel" inputMode="tel" autoComplete="tel-national" required placeholder={dial === '+225' ? '07 08 09 10 11' : 'Numéro'} value={local} onChange={(e) => setLocal(e.target.value)} />
         </div>
       </div>
+      {mode === 'signup' && (
+        <div className="text-field">
+          <span className="support-legend">Je supporte</span>
+          <SupportPicker mode={support.mode} nationalTeamId={support.nationalTeamId} clubId={support.clubId} onChange={setSupport} />
+          <small className="field-hint">Votre FIF ID vous donne accès à tout l’espace Supporters : Fan ID, quiz, pronostics, badges, Fan Zone, Club des Supporters.</small>
+        </div>
+      )}
       {error && (
         <p className="form-error" style={{ marginBottom: 12 }}>
           {error}{notFound && <> <Link href="/inscription" className="text-link" style={{ display: 'inline' }}>Créer un FIF ID</Link></>}

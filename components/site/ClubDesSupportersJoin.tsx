@@ -99,7 +99,7 @@ export function ClubDesSupportersJoin({ tiers }: { tiers: MembershipTier[] }) {
       </div>
 
       <div style={{ marginTop: 28 }}>
-        <FanIdGate title="Créez votre Fan ID pour vous abonner" hint="Le Club des Supporters s’appuie sur votre Fan ID — identité numérique gratuite, créée en quelques secondes.">
+        <FanIdGate title="Connectez-vous avec votre FIF ID pour vous abonner" hint="Le Club des Supporters s’appuie sur votre FIF ID, qui inclut votre Fan ID — un seul compte, créé en une minute avec votre numéro de téléphone.">
           {(profile) => <JoinForm tier={tiers[selected]} profile={profile} />}
         </FanIdGate>
       </div>

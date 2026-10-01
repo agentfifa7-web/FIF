@@ -2,22 +2,26 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { CreditCard, GraduationCap, IdCard, LogOut, Package, ShoppingBag, Ticket, UserRound } from 'lucide-react'
+import { CreditCard, GraduationCap, Heart, IdCard, LogOut, Package, ShoppingBag, Ticket, UserRound } from 'lucide-react'
 import { accountStatus, identityProgress, maskPhone, signOut, updateAccount, useAccount } from '@/lib/account'
 import { FifIdCardFront } from './FifIdCard'
 import { MyAcademy } from './MyAcademy'
+import { SupportPicker, supportModeOf, type SupportMode } from './SupportPicker'
+import { supportClub, supportNationalTeams } from '@/lib/data/supporters'
+import { fanLevelProgress, useFanProfile } from '@/lib/fan'
 import { useTickets } from '@/lib/tickets'
 import { formatMoney } from '@/lib/format'
 import type { ShopOrder } from '@/lib/cart'
 
-interface ClubOption { id: string; name: string; slug: string }
-
 // Espace personnel du titulaire d'un FIF ID connecté (supporter, joueur,
 // dirigeant, entraîneur, arbitre, agent, journaliste).
-export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption[]; nextMatch: React.ReactNode; news: React.ReactNode }) {
+export function AccountDashboard({ nextMatch, news }: { nextMatch: React.ReactNode; news: React.ReactNode }) {
   const { account, ready } = useAccount()
   const [orders, setOrders] = useState<ShopOrder[]>([])
   const { tickets } = useTickets()
+  const { profile: fan } = useFanProfile()
+  const [editing, setEditing] = useState(false)
+  const [support, setSupport] = useState<{ mode: SupportMode; nationalTeamId: string; clubId: string }>({ mode: 'nation', nationalTeamId: '', clubId: '' })
   const validTickets = tickets.filter((t) => t.status === 'Valide')
 
   useEffect(() => {
@@ -45,7 +49,15 @@ export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption
 
   const status = accountStatus(account)
   const progress = identityProgress(account)
-  const favorite = clubs.find((c) => c.id === account.favoriteClubId)
+  const team = supportNationalTeams.find((t) => t.id === account.favoriteNationalTeamId)
+  const club = supportClub(account.favoriteClubId)
+
+  function saveSupport() {
+    if (support.mode !== 'club' && !support.nationalTeamId) return
+    if (support.mode !== 'nation' && !support.clubId) return
+    updateAccount({ favoriteNationalTeamId: support.mode !== 'club' ? support.nationalTeamId : undefined, favoriteClubId: support.mode !== 'nation' ? support.clubId : undefined })
+    setEditing(false)
+  }
   const created = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(account.createdAt))
 
   return (
@@ -78,15 +90,29 @@ export function AccountDashboard({ clubs, nextMatch, news }: { clubs: ClubOption
       </div>
 
       <div className="dashboard-panel" style={{ margin: 0 }}>
-        <h3>Mon club favori</h3>
-        <div className="text-field" style={{ marginBottom: 8 }}>
-          <label htmlFor="fav-club">Choisir un club</label>
-          <select id="fav-club" value={account.favoriteClubId ?? ''} onChange={(e) => updateAccount({ favoriteClubId: e.target.value || undefined })}>
-            <option value="">— Aucun —</option>
-            {clubs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        {favorite && <Link href={`/clubs/${favorite.slug}`} className="text-link">Voir la fiche de {favorite.name} →</Link>}
+        <h3><Heart size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Je supporte</h3>
+        {editing ? (
+          <>
+            <SupportPicker mode={support.mode} nationalTeamId={support.nationalTeamId} clubId={support.clubId} onChange={setSupport} idPrefix="acc" />
+            <div className="button-group">
+              <button type="button" className="button button-primary" onClick={saveSupport}>Enregistrer</button>
+              <button type="button" className="button-outline" onClick={() => setEditing(false)}>Annuler</button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="supporter-teams">
+              {team && <Link href={team.href} className="supporter-team"><i>🇨🇮</i>{team.name}</Link>}
+              {club && <Link href={club.href} className="supporter-team">{club.crestUrl ? <img src={club.crestUrl} alt="" /> : <i>⚽</i>}{club.name}</Link>}
+              {!team && !club && <span className="lede" style={{ fontSize: 14 }}>Aucune équipe choisie.</span>}
+            </div>
+            {fan && <p className="lede" style={{ fontSize: 13, margin: '12px 0 0' }}>{fanLevelProgress(fan.xp).level.icon} {fanLevelProgress(fan.xp).level.name} · {fan.xp.toLocaleString('fr-FR')} XP · {fan.badges.length} badge{fan.badges.length > 1 ? 's' : ''}</p>}
+            <div className="button-group" style={{ marginTop: 12 }}>
+              <Link href="/supporters" className="button button-primary">Mon espace supporter</Link>
+              <button type="button" className="button-outline" onClick={() => { setSupport({ mode: supportModeOf(account.favoriteNationalTeamId, account.favoriteClubId), nationalTeamId: account.favoriteNationalTeamId ?? '', clubId: account.favoriteClubId ?? '' }); setEditing(true) }}>Modifier</button>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="dashboard-panel" style={{ margin: 0 }}>

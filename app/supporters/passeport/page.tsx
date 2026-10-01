@@ -38,7 +38,7 @@ export default function PasseportPage() {
       <section className="page-section tight">
         <p className="section-tag">Football Tour de Côte d’Ivoire</p>
         <p className="lede" style={{ marginBottom: 16 }}>Objectif : visiter le football ivoirien. Chaque check-in débloque +40 XP et rapproche des badges « Premier Stade » et « Route des Éléphants ».</p>
-        <FanIdGate title="Créez votre Fan ID pour faire un check-in" hint="La carte reste consultable librement ; le check-in nécessite un Fan ID.">
+        <FanIdGate title="Connectez-vous avec votre FIF ID pour faire un check-in" hint="La carte reste consultable librement ; le check-in nécessite votre FIF ID (Fan ID inclus).">
           {(profile) => (
             <>
               <IvoryCoastMap zones={zones} checkedInCityIds={profile.stadiumCheckIns} onCheckIn={checkInStadium} />

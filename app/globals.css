@@ -1105,3 +1105,18 @@ button.chip { appearance:none; cursor:pointer; font:inherit; }
   .print-area .diploma-wrap { max-width:none; width:100%; }
   .diploma { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }
+
+/* --- Je supporte ---------------------------------------------------------- */
+.support-picker { display:flex; flex-direction:column; gap:4px; }
+.support-modes { display:grid; gap:6px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-bottom:12px; }
+.support-mode { align-items:center; appearance:none; background:#fff; border:1.5px solid var(--line); border-radius:12px; color:var(--ink); cursor:pointer; display:flex; flex-direction:column; font:inherit; font-size:12px; font-weight:700; gap:6px; justify-content:center; padding:10px 6px; text-align:center; }
+.support-mode svg { color:var(--orange); }
+.support-mode.is-active { background:var(--forest); border-color:var(--forest); color:#fff; }
+.support-mode.is-active svg { color:#ffb466; }
+.support-legend { color:var(--ink); display:block; font-size:11px; font-weight:700; letter-spacing:.04em; margin-bottom:8px; }
+.supporter-teams { display:flex; flex-wrap:wrap; gap:8px; }
+.supporter-team { align-items:center; background:#f6f8f6; border-radius:999px; color:var(--ink); display:inline-flex; font-size:13px; font-weight:700; gap:8px; padding:6px 12px 6px 6px; text-decoration:none; }
+.supporter-team img, .supporter-team i { align-items:center; background:#fff; border-radius:50%; display:inline-flex; font-style:normal; height:26px; justify-content:center; object-fit:contain; width:26px; }
+.fan-id-teams { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
+.fan-id-teams span { align-items:center; background:rgba(255,255,255,.14); border-radius:999px; display:inline-flex; font-size:12px; font-weight:700; gap:6px; padding:5px 10px; }
+.fan-id-teams img { background:#fff; border-radius:50%; height:18px; object-fit:contain; width:18px; }

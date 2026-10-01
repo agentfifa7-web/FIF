@@ -41,6 +41,8 @@ export interface FifAccount {
   fullName: string
   role: AccountRole
   createdAt: string
+  /** Équipes supportées : une sélection nationale, un club, ou les deux. */
+  favoriteNationalTeamId?: string
   favoriteClubId?: string
   /** Numéro de matricule de la corporation (tous les rôles sauf supporter). */
   matricule?: string
@@ -202,6 +204,7 @@ export function checkMatricule(role: AccountRole, raw: string): string | null {
 const ACCOUNTS_KEY = 'fif-accounts-v1'
 const SESSION_KEY = 'fif-session-v1'
 const EVENT = 'fif-account-change'
+export const ACCOUNT_EVENT = EVENT
 
 /** Normalise un numéro ; renvoie null s'il est invalide. */
 export function normalizePhone(dial: string, local: string): string | null {
@@ -257,7 +260,7 @@ export function currentAccount(): FifAccount | null {
   }
 }
 
-export function createAccount(input: { phone: string; fullName: string; role: AccountRole; matricule?: string }): FifAccount {
+export function createAccount(input: { phone: string; fullName: string; role: AccountRole; matricule?: string; favoriteNationalTeamId?: string; favoriteClubId?: string }): FifAccount {
   const existing = findAccount(input.phone)
   if (existing) { setSession(existing.phone); return existing }
   const account: FifAccount = {
@@ -281,7 +284,7 @@ export function signOut() {
   setSession(null)
 }
 
-export function updateAccount(patch: Partial<Pick<FifAccount, 'fullName' | 'favoriteClubId' | 'physicalCard' | 'paymentInterest'>>) {
+export function updateAccount(patch: Partial<Pick<FifAccount, 'fullName' | 'favoriteClubId' | 'favoriteNationalTeamId' | 'physicalCard' | 'paymentInterest'>>) {
   const me = currentAccount()
   if (!me) return
   writeAccounts(readAccounts().map((a) => (a.phone === me.phone ? { ...a, ...patch } : a)))

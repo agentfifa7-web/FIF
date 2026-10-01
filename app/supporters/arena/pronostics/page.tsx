@@ -74,7 +74,7 @@ export default function PronosticsPage() {
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Arena', href: '/supporters/arena' }, { label: 'Pronostics' }]}
       />
       <section className="page-section tight">
-        <FanIdGate title="Créez votre Fan ID pour pronostiquer" hint="Vos pronostics comptent pour votre XP et le classement des pronostiqueurs.">
+        <FanIdGate title="Connectez-vous avec votre FIF ID pour pronostiquer" hint="Vos pronostics comptent pour votre XP et le classement des pronostiqueurs.">
           {(profile) => {
             const targets = buildTargets()
             return (

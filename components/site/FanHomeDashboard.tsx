@@ -40,9 +40,12 @@ export function FanHomeDashboard({ nextFixture, dailyQuestion, recentPosts }: { 
         ) : (
           <div className="fan-gate">
             <IdCard size={28} />
-            <strong>Créez votre FIF Fan ID</strong>
-            <p>Identité numérique, XP, badges, quiz, pronostics et avantages — gratuit, sans donnée bancaire, en quelques secondes.</p>
-            <Link href="/supporters/fan-id" className="button button-primary">Créer mon Fan ID</Link>
+            <strong>Votre Fan ID est inclus dans votre FIF ID</strong>
+            <p>Un seul compte pour tout : créez votre FIF ID avec votre numéro de téléphone, choisissez votre équipe nationale, votre club ou les deux, et profitez de toutes les fonctionnalités supporters — XP, badges, quiz, pronostics, Fan Zone.</p>
+            <div className="button-group" style={{ justifyContent: 'center' }}>
+              <Link href="/inscription?next=/supporters" className="button button-primary">Créer mon FIF ID</Link>
+              <Link href="/connexion?next=/supporters" className="button-outline">Se connecter</Link>
+            </div>
           </div>
         )}
       </section>

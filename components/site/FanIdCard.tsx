@@ -1,34 +1,34 @@
 'use client'
 
-import { cityName, nationalTeams } from '@/lib/data/mock'
+import { cityName } from '@/lib/data/mock'
+import { supportClub, supportTeamName } from '@/lib/data/supporters'
 import { fanLevelProgress, type FanProfile } from '@/lib/fan'
 import { PersonPortrait } from './PersonPortrait'
 
-function fanIdNumber(pseudo: string, createdAt: string) {
-  let h = 0
-  const s = pseudo + createdAt
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return `CI-${String(h % 100000000).padStart(8, '0')}`
-}
-
 export function FanIdCard({ profile, compact = false }: { profile: FanProfile; compact?: boolean }) {
   const { level, next, progressPct, xpToNext } = fanLevelProgress(profile.xp)
-  const team = nationalTeams.find((t) => t.id === profile.favoriteTeamId)
+  const team = supportTeamName(profile.favoriteTeamId)
+  const club = supportClub(profile.favoriteClubId)
   const since = new Date(profile.createdAt).getFullYear()
 
   return (
     <div className={`fan-id-card${compact ? ' compact' : ''}`}>
       <div className="fan-id-card-top">
         <span>FIF FAN ID</span>
-        <span>{fanIdNumber(profile.pseudo, profile.createdAt)}</span>
+        <span>{profile.fifId}</span>
       </div>
       <div className="fan-id-card-body">
         <PersonPortrait seed={profile.photoSeed} size={compact ? 56 : 84} />
         <div>
           <strong>{profile.pseudo}</strong>
-          <span>{cityName(profile.cityId)} · {team?.name ?? 'Éléphants'}</span>
+          {profile.cityId && <span>{cityName(profile.cityId)}</span>}
           <span className="fan-id-level">{level.icon} {level.name}</span>
         </div>
+      </div>
+      <div className="fan-id-teams">
+        {team && <span>🇨🇮 {team}</span>}
+        {club && <span>{club.crestUrl ? <img src={club.crestUrl} alt="" /> : '⚽'} {club.name}</span>}
+        {!team && !club && <span>Équipe à choisir</span>}
       </div>
       <div className="fan-id-card-progress">
         <div className="gauge-track"><div className="gauge-fill" style={{ width: `${progressPct}%` }} /></div>

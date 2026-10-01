@@ -97,7 +97,7 @@ export default function QuizPage() {
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Arena', href: '/supporters/arena' }, { label: 'Quiz' }]}
       />
       <section className="page-section tight">
-        <FanIdGate title="Créez votre Fan ID pour jouer" hint="Le quiz fait gagner de l’XP et débloque des badges — il faut un Fan ID pour suivre votre progression.">
+        <FanIdGate title="Connectez-vous avec votre FIF ID pour jouer" hint="Le quiz fait gagner de l’XP et débloque des badges — il faut votre FIF ID pour suivre votre progression.">
           {() => <QuizRunner />}
         </FanIdGate>
       </section>

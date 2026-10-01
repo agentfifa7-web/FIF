@@ -73,7 +73,7 @@ export default function FanZonePage() {
       />
 
       <section className="page-section tight">
-        <FanIdGate title="Créez votre Fan ID pour publier" hint="La lecture du fil est libre ; publier nécessite un Fan ID.">
+        <FanIdGate title="Connectez-vous avec votre FIF ID pour publier" hint="La lecture du fil est libre ; publier nécessite votre FIF ID (Fan ID inclus).">
           {(profile) => <PublishForm profile={profile} />}
         </FanIdGate>
       </section>
