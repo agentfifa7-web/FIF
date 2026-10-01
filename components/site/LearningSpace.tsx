@@ -1,14 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
-import { Award, CheckCircle2, Circle, ClipboardCheck, Lock, Printer, ShieldCheck } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, Award, BookOpen, CheckCircle2, Circle, ClipboardCheck, Lock, MapPin, Printer, ShieldCheck, X } from 'lucide-react'
 import { EXAM_PASS, quizBanks, type AcademyProgram } from '@/lib/data/academy'
 import { useAccount } from '@/lib/account'
 import { lessonId, payBalance, submitExam, toggleLesson, totalLessons, useAcademy, validatePractical } from '@/lib/academy'
 import { formatMoney } from '@/lib/format'
 import { PaymentPanel } from './PaymentPanel'
 import { Diploma } from './Diploma'
+import { LessonBody } from './LessonBody'
+import { lessonContent, readingMinutes } from '@/lib/data/academy-content'
 
 export function LearningSpace({ program }: { program: AcademyProgram }) {
   const { account, ready } = useAccount()
@@ -18,6 +20,9 @@ export function LearningSpace({ program }: { program: AcademyProgram }) {
   const [answers, setAnswers] = useState<(number | null)[]>(() => questions.map(() => null))
   const [result, setResult] = useState<number | null>(null)
   const [payingBalance, setPayingBalance] = useState(false)
+  const [open, setOpen] = useState<{ mi: number; li: number } | null>(null)
+  const readerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => { if (open) readerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, [open])
 
   if (!ready || !loaded) return null
   if (!account || !e) {
@@ -81,6 +86,35 @@ export function LearningSpace({ program }: { program: AcademyProgram }) {
         </section>
       )}
 
+      {open && (() => {
+        const flat = program.modules.flatMap((m, mi) => m.lessons.map((title, li) => ({ mi, li, title })))
+        const idx = flat.findIndex((x) => x.mi === open.mi && x.li === open.li)
+        const cur = flat[idx]
+        const content = lessonContent(program.slug, cur.mi, cur.li)
+        const id = lessonId(cur.mi, cur.li)
+        const done = e.completedLessons.includes(id)
+        const next = flat[idx + 1]
+        return (
+          <section className="learn-block lesson-reader" ref={readerRef}>
+            <button type="button" className="lesson-close" aria-label="Fermer la leçon" onClick={() => setOpen(null)}><X size={18} /></button>
+            {content ? (
+              <LessonBody content={content} title={cur.title} kicker={`Module ${cur.mi + 1} — ${program.modules[cur.mi].title} · Leçon ${idx + 1}/${flat.length}`} />
+            ) : (
+              <article className="lesson-body">
+                <header><span className="lesson-kicker">Module {cur.mi + 1} · Leçon {idx + 1}/{flat.length}</span><h2>{cur.title}</h2></header>
+                <p className="lesson-intro"><MapPin size={14} style={{ verticalAlign: 'middle' }} /> Cette formation se déroule en présentiel : le support de cours de cette leçon est remis par l’instructeur lors de la session.</p>
+              </article>
+            )}
+            <div className="lesson-nav">
+              <button type="button" className="button-outline" disabled={idx === 0} onClick={() => setOpen(flat[idx - 1])}><ArrowLeft size={15} /> Précédente</button>
+              <button type="button" className="button button-primary" onClick={() => { if (!done) toggleLesson(program.slug, account.phone, id); setOpen(next ? { mi: next.mi, li: next.li } : null) }}>
+                {done ? (next ? <>Leçon suivante <ArrowRight size={15} /></> : 'Terminer') : (next ? <>Marquer comme terminée et continuer <ArrowRight size={15} /></> : <>Marquer comme terminée <CheckCircle2 size={15} /></>)}
+              </button>
+            </div>
+          </section>
+        )
+      })()}
+
       <section className="learn-block">
         <h3>Programme</h3>
         <div className="learn-modules">
@@ -92,9 +126,14 @@ export function LearningSpace({ program }: { program: AcademyProgram }) {
                   const id = lessonId(mi, li)
                   const ok = e.completedLessons.includes(id)
                   return (
-                    <li key={id}>
-                      <button type="button" className={ok ? 'lesson is-done' : 'lesson'} onClick={() => toggleLesson(program.slug, account.phone, id)}>
-                        {ok ? <CheckCircle2 size={18} /> : <Circle size={18} />}<span>{l}</span><small>{ok ? 'Terminé' : 'Marquer comme suivi'}</small>
+                    <li key={id} className={ok ? 'lesson-row is-done' : 'lesson-row'}>
+                      <button type="button" className="lesson-check" aria-label={ok ? `Marquer « ${l} » comme non terminée` : `Marquer « ${l} » comme terminée`} onClick={() => toggleLesson(program.slug, account.phone, id)}>
+                        {ok ? <CheckCircle2 size={18} /> : <Circle size={18} />}
+                      </button>
+                      <button type="button" className={ok ? 'lesson is-done' : 'lesson'} onClick={() => setOpen({ mi, li })}>
+                        <span>{l}</span>
+                        <small>{(() => { const c = lessonContent(program.slug, mi, li); return c ? (c.inPerson ? 'Présentiel' : `${readingMinutes(c)} min`) : 'Présentiel' })()}</small>
+                        <b><BookOpen size={14} /> {ok ? 'Relire' : 'Lire'}</b>
                       </button>
                     </li>
                   )

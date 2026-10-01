@@ -6,6 +6,8 @@ import { Breadcrumb } from '@/components/site/PageHero'
 import { AccreditationBadge, ProgramCard } from '@/components/site/AcademyCatalog'
 import { ProgramEnroll } from '@/components/site/ProgramEnroll'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { LessonBody } from '@/components/site/LessonBody'
+import { lessonContent, programContent, readingMinutes } from '@/lib/data/academy-content'
 
 export function generateStaticParams() {
   return academyPrograms.map((p) => ({ slug: p.slug }))
@@ -58,11 +60,26 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
                 {p.modules.map((m, i) => (
                   <details key={m.title} open={i === 0}>
                     <summary><span>Module {i + 1} — {m.title}</span>{m.hours > 0 && <small>{m.hours} h</small>}</summary>
-                    <ul className="module-lessons">{m.lessons.map((l) => <li key={l}>{l}</li>)}</ul>
+                    <ul className="module-lessons">{m.lessons.map((l, li) => {
+                      const c = lessonContent(p.slug, i, li)
+                      return <li key={l}>{l}{c && <small className={c.inPerson ? 'lesson-mini is-onsite' : 'lesson-mini'}>{c.inPerson ? 'présentiel' : `en ligne · ${readingMinutes(c)} min`}</small>}</li>
+                    })}</ul>
                   </details>
                 ))}
               </div>
             </div>
+
+            {programContent[p.slug] && (() => {
+              const first = lessonContent(p.slug, 0, 0)!
+              const total = programContent[p.slug].flat()
+              return (
+                <div className="prog-section">
+                  <h2><BookOpen size={18} /> Aperçu gratuit — leçon 1</h2>
+                  <p className="lede" style={{ fontSize: 14, marginTop: 0 }}>{total.filter((c) => !c.inPerson).length} leçons en ligne{total.some((c) => c.inPerson) ? ` et ${total.filter((c) => c.inPerson).length} temps en présentiel` : ''}, avec points clés, exercice de mise en pratique et message à retenir.</p>
+                  <div className="lesson-preview"><LessonBody content={first} title={p.modules[0].lessons[0]} kicker={`Module 1 — ${p.modules[0].title}`} /></div>
+                </div>
+              )
+            })()}
 
             <div className="prog-two">
               <div className="prog-section">

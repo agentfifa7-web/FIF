@@ -1120,3 +1120,37 @@ button.chip { appearance:none; cursor:pointer; font:inherit; }
 .fan-id-teams { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
 .fan-id-teams span { align-items:center; background:rgba(255,255,255,.14); border-radius:999px; display:inline-flex; font-size:12px; font-weight:700; gap:6px; padding:5px 10px; }
 .fan-id-teams img { background:#fff; border-radius:50%; height:18px; object-fit:contain; width:18px; }
+
+/* --- Contenus des leçons -------------------------------------------------- */
+.lesson-body { display:flex; flex-direction:column; gap:16px; }
+.lesson-body header { display:flex; flex-direction:column; gap:6px; }
+.lesson-kicker { color:var(--orange); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.lesson-body h2 { font-size:clamp(22px,3vw,30px); letter-spacing:-.02em; margin:0; }
+.lesson-body h3 { align-items:center; display:flex; font-size:15px; gap:8px; margin:0 0 8px; }
+.lesson-body h3 svg { color:var(--green); }
+.lesson-tags { display:flex; gap:8px; }
+.lesson-tag { align-items:center; background:#eaf6ee; border-radius:999px; color:var(--green); display:inline-flex; font-size:11px; font-weight:700; gap:5px; padding:4px 10px; }
+.lesson-tag.is-onsite { background:#fff1e3; color:#a64b00; }
+.lesson-intro { font-size:16px; line-height:1.65; margin:0; }
+.lesson-points { counter-reset:pt; display:flex; flex-direction:column; gap:10px; list-style:none; margin:0; padding:0; }
+.lesson-points li { background:#f6f8f6; border-radius:10px; counter-increment:pt; font-size:15px; line-height:1.55; padding:12px 14px 12px 46px; position:relative; }
+.lesson-points li::before { align-items:center; background:var(--forest); border-radius:50%; color:#fff; content:counter(pt); display:flex; font-size:12px; font-weight:800; height:24px; justify-content:center; left:12px; position:absolute; top:12px; width:24px; }
+.lesson-practice { background:#fff7ee; border-left:4px solid var(--orange); border-radius:0 10px 10px 0; padding:14px 16px; }
+.lesson-practice h3 svg { color:var(--orange); }
+.lesson-practice p, .lesson-takeaway p { font-size:15px; line-height:1.55; margin:0; }
+.lesson-takeaway { background:var(--forest); border-radius:10px; color:#fff; padding:14px 16px; }
+.lesson-takeaway h3, .lesson-takeaway h3 svg { color:#ffb466; }
+.lesson-takeaway p { font-weight:700; }
+.lesson-reader { border:2px solid var(--green) !important; position:relative; scroll-margin-top:90px; }
+.lesson-close { appearance:none; background:#f6f8f6; border:0; border-radius:50%; cursor:pointer; height:34px; position:absolute; right:14px; top:14px; width:34px; }
+.lesson-nav { border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; margin-top:20px; padding-top:16px; }
+.lesson-row { align-items:center; display:grid; gap:6px; grid-template-columns:auto minmax(0,1fr); }
+.lesson-check { appearance:none; background:none; border:0; color:var(--muted); cursor:pointer; display:flex; padding:6px; }
+.lesson-row.is-done .lesson-check { color:var(--green); }
+.lesson { grid-template-columns:minmax(0,1fr) auto auto !important; }
+.lesson b { align-items:center; color:var(--green); display:inline-flex; font-size:12px; gap:5px; white-space:nowrap; }
+.lesson-mini { background:#eaf6ee; border-radius:999px; color:var(--green); font-size:10px; font-weight:700; margin-left:8px; padding:2px 8px; white-space:nowrap; }
+.lesson-mini.is-onsite { background:#fff1e3; color:#a64b00; }
+.lesson-preview { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); padding:22px; }
+@media (max-width:560px) { .lesson { grid-template-columns:minmax(0,1fr) auto !important; } .lesson small { display:none; } .lesson-points li { font-size:14px; } }
+.lesson-reader .lesson-body header { padding-right:44px; }
