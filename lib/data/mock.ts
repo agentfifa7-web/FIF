@@ -35,7 +35,6 @@ import type {
   SeasonStat,
   Stadium,
   StandingRow,
-  TicketEvent,
   TrainingCourse,
   TransparencyRecord,
   Video,
@@ -2111,7 +2110,7 @@ export const elephantsFixtures: RealFixture[] = [
       source: 'Résultat réel confirmé par la presse ivoirienne, africaine et internationale (Supersport CI, Abidjan.net, Foot Mercato, Africa Top Sports, AfricaSoccer, ESPN) — victoire 2-0 arrachée en fin de match, 0-0 à la pause ; la Côte d’Ivoire prend la tête du groupe C. Minutes des buts légèrement différentes selon les sources (Gboho entre la 87e et la 89e, Touré à 90+4 ou 90+5). Compositions : Afrique-sur7 et Africa Top Sports ; triple changement vers la 65e (Wahi, Pépé et Oulaï remplacés par Rayan Fofana, Patrick Zabi et Bazoumana Touré — seul le remplacement de Pépé par Touré est attribué précisément), Gboho entré à la place de Kessié (82e).',
     },
   },
-  { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 20000, available: 600 }, { name: 'Tribune officielle', price: 10000, available: 3500 }, { name: 'Tribune populaire', price: 3000, available: 18000 }] },
+  { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 50000, available: 600 }, { name: 'Tribune centrale', price: 10000, available: 6000 }, { name: 'Tribune latérale', price: 5000, available: 18000 }, { name: 'Virages (populaire)', price: 2000, available: 30000 }] },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
@@ -2290,21 +2289,6 @@ const realProducts: Product[] = ([
 }))
 
 export const products: Product[] = [...realProducts, ...generatedProducts]
-
-export const ticketEvents: TicketEvent[] = matches
-  .filter((m) => m.status === 'À venir')
-  .slice(0, 12)
-  .map((m) => ({
-    id: `ticket-${m.id}`,
-    matchId: m.id,
-    categories: [
-      { name: 'Populaire', price: 1500, available: rng.int(1000, 6000) },
-      { name: 'Tribune Latérale', price: 3000, available: rng.int(500, 3000) },
-      { name: 'Tribune Centrale', price: 5000, available: rng.int(300, 1500) },
-      { name: 'Catégorie 1', price: 8000, available: rng.int(100, 600) },
-      { name: 'Carré VIP', price: 15000, available: rng.int(20, 200) },
-    ],
-  }))
 
 // ---------------------------------------------------------------------------
 // Lookups

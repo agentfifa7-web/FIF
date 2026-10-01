@@ -842,3 +842,144 @@ a.cart-pill { align-items:center; border-radius:999px; display:inline-flex; gap:
 .account-card-col > a.fid-sizer { display:block; text-decoration:none; }
 .account-complete { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); display:flex; flex-direction:column; gap:10px; padding:14px; }
 .account-complete p { color:var(--muted); font-size:13px; margin:0; }
+
+/* --- FIF Tickets ---------------------------------------------------------- */
+.ev-competition { color:var(--orange); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.ev-side { align-items:center; display:flex; flex-direction:column; gap:8px; min-width:0; text-align:center; }
+.ev-side strong { font-size:15px; line-height:1.2; }
+.ev-crest { align-items:center; background:#fff; border-radius:50%; box-shadow:0 6px 18px -8px rgba(0,0,0,.35); display:flex; justify-content:center; overflow:hidden; padding:6px; }
+.ev-crest img { height:100%; object-fit:contain; width:100%; }
+.ev-crest b { color:var(--forest); font-size:14px; }
+.ev-vs { color:var(--orange); font-size:22px; font-weight:900; letter-spacing:.06em; }
+.ev-meta { align-items:center; color:var(--muted); display:flex; font-size:13px; gap:8px; margin:6px 0 0; }
+.ev-hero { background:radial-gradient(120% 160% at 0% 0%, #0f7a45, #041b12 70%); border-radius:var(--radius-lg); color:#fff; display:grid; gap:28px; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); overflow:hidden; padding:34px; position:relative; }
+.ev-hero::after { background:url('/fif-logo.png') no-repeat center/contain; content:''; height:340px; opacity:.06; position:absolute; right:-60px; top:-40px; width:340px; }
+.ev-hero .ev-meta { color:#cfe0d6; }
+.ev-hero-teams { align-items:center; display:flex; gap:28px; margin:22px 0 14px; }
+.ev-hero .ev-side strong { color:#fff; font-size:18px; }
+.ev-hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:var(--radius-md); display:flex; flex-direction:column; gap:14px; padding:22px; position:relative; z-index:1; }
+.ev-prices { list-style:none; margin:0; padding:0; }
+.ev-prices li { border-bottom:1px solid rgba(255,255,255,.14); display:flex; justify-content:space-between; padding:9px 0; }
+.ev-prices li b { color:#ffb466; }
+.ev-source { color:#cfe0d6; font-size:11px; margin:0; }
+.ev-source a { color:#cfe0d6; }
+.ev-countdown { display:flex; gap:10px; margin-top:18px; }
+.ev-countdown div { align-items:center; background:rgba(255,255,255,.12); color:#fff; border-radius:12px; display:flex; flex-direction:column; min-width:62px; padding:10px 8px; }
+.ev-countdown b { color:inherit; font-size:24px; font-variant-numeric:tabular-nums; }
+.ev-countdown span { font-size:10px; letter-spacing:.08em; opacity:.75; text-transform:uppercase; }
+.ev-header .ev-countdown div { background:var(--forest); color:#fff; }
+.ev-card { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); color:inherit; display:flex; flex-direction:column; gap:6px; padding:18px; text-decoration:none; transition:transform .2s, box-shadow .2s; }
+.ev-card:hover { box-shadow:0 14px 30px -18px rgba(0,0,0,.35); transform:translateY(-2px); }
+.ev-card-top { align-items:center; display:flex; gap:8px; justify-content:space-between; }
+.ev-card-top .ev-competition { font-size:9px; }
+.ev-card-teams { align-items:center; display:grid; gap:8px; grid-template-columns:1fr auto 1fr; margin:12px 0 8px; }
+.ev-card-teams .ev-side strong { font-size:13px; }
+.ev-card-teams .ev-vs { font-size:15px; }
+.ev-card-foot { align-items:center; border-top:1px solid var(--line); display:flex; justify-content:space-between; margin-top:10px; padding-top:12px; }
+.ev-card-foot .button { font-size:11px; padding:8px 14px; }
+.ev-mytickets { align-items:center; background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); display:flex; flex-wrap:wrap; gap:16px; padding:18px 22px; }
+.ev-mytickets > svg { color:var(--orange); }
+.ev-mytickets div { display:flex; flex:1; flex-direction:column; min-width:200px; }
+.ev-mytickets span { color:var(--muted); font-size:13px; }
+.ev-header { align-items:center; background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); display:flex; flex-direction:column; gap:6px; padding:26px; text-align:center; }
+.ev-header-meta { color:var(--muted); display:flex; flex-wrap:wrap; font-size:13px; gap:8px 18px; justify-content:center; }
+.ev-header-meta span { align-items:center; display:inline-flex; gap:6px; }
+
+.checkout-steps { counter-reset:none; display:flex; gap:8px; list-style:none; margin:0 0 22px; overflow-x:auto; padding:0; }
+.checkout-steps li { align-items:center; background:#fff; border:1px solid var(--line); border-radius:999px; color:var(--muted); display:flex; font-size:13px; font-weight:700; gap:8px; padding:8px 14px 8px 8px; white-space:nowrap; }
+.checkout-steps li b { align-items:center; background:#e6ebe7; border-radius:50%; display:inline-flex; font-size:11px; height:24px; justify-content:center; width:24px; }
+.checkout-steps li.is-current { border-color:var(--orange); color:var(--ink); }
+.checkout-steps li.is-current b { background:var(--orange); color:#fff; }
+.checkout-steps li.is-done b { background:var(--green); color:#fff; }
+.checkout-grid { align-items:start; display:grid; gap:24px; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); }
+.checkout-summary { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; position:sticky; top:100px; }
+.checkout-note { color:var(--muted); font-size:12px; margin:0; }
+.tier-dot { border-radius:50%; display:inline-block; flex-shrink:0; height:12px; margin-right:8px; width:12px; }
+.stadium-map { display:block; margin:0 auto 16px; max-width:560px; width:100%; }
+.stadium-zone { cursor:pointer; outline:none; }
+.stadium-zone path { stroke:#fff; stroke-width:2; transition:opacity .2s; }
+.stadium-zone.is-active path { stroke:var(--ink); stroke-width:3; }
+.stadium-zone text { fill:#fff; font-size:11px; font-weight:800; pointer-events:none; }
+.stadium-zone .stadium-price { font-size:9px; font-weight:600; }
+.stadium-pitch-label { fill:#fff; font-size:10px; font-weight:800; letter-spacing:.2em; opacity:.6; }
+.tier-list { display:flex; flex-direction:column; gap:10px; }
+.tier-row { align-items:center; background:#fff; border:1.5px solid var(--line); border-radius:var(--radius-md); cursor:pointer; display:grid; gap:12px; grid-template-columns:auto minmax(0,1fr) auto auto; padding:14px 16px; }
+.tier-row.is-focus { border-color:var(--orange); }
+.tier-info { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.tier-info span { color:var(--muted); font-size:12px; }
+.tier-info small { font-size:11px; font-weight:700; }
+.avail-ok { color:var(--green); } .avail-low { color:#b45300; }
+.tier-price { font-size:15px; white-space:nowrap; }
+.checkout-success { border-color:var(--green) !important; }
+
+.pay-box { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); display:flex; flex-direction:column; gap:14px; padding:22px; }
+.pay-summary { align-items:center; background:#f6f8f6; border-radius:var(--radius-sm); display:flex; gap:12px; justify-content:space-between; padding:12px 14px; }
+.pay-summary span { color:var(--muted); font-size:13px; }
+.pay-summary b { font-size:18px; white-space:nowrap; }
+.pay-methods { display:grid; gap:8px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.pay-method { align-items:center; appearance:none; background:#fff; border:1.5px solid var(--line); border-radius:12px; color:var(--ink); cursor:pointer; display:flex; font:inherit; font-size:13px; font-weight:600; gap:10px; padding:12px; text-align:left; }
+.pay-method i { align-items:center; border-radius:8px; color:#fff; display:inline-flex; flex-shrink:0; font-size:13px; font-style:normal; font-weight:900; height:28px; justify-content:center; width:28px; }
+.pay-method.is-active { border-color:var(--forest); box-shadow:0 0 0 2px rgba(8,116,67,.15); }
+.pay-method:disabled { cursor:not-allowed; opacity:.5; }
+.pay-method small { color:var(--muted); font-weight:500; }
+.pay-instruction { align-items:flex-start; display:flex; font-size:14px; gap:8px; line-height:1.5; margin:0; }
+.pay-secure { align-items:center; color:var(--muted); display:flex; font-size:12px; gap:6px; justify-content:center; margin:0; }
+.pay-processing { align-items:center; text-align:center; }
+.pay-processing span { color:var(--muted); font-size:13px; }
+.spin { animation:fif-spin 1s linear infinite; color:var(--green); }
+@keyframes fif-spin { to { transform:rotate(360deg); } }
+
+.e-ticket-list { display:grid; gap:18px; grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr)); }
+.e-ticket { background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); box-shadow:0 14px 32px -22px rgba(0,0,0,.4); break-inside:avoid; overflow:hidden; position:relative; }
+.e-ticket::before { background:var(--tier, var(--green)); content:''; height:6px; left:0; position:absolute; right:0; top:0; }
+.e-ticket.tier-vip { --tier:#c9a54b; } .e-ticket.tier-centrale { --tier:#087443; } .e-ticket.tier-laterale { --tier:#ff7a00; } .e-ticket.tier-virage { --tier:#3b6fd8; }
+.e-ticket.is-used { opacity:.6; }
+.e-ticket-head { align-items:center; background:linear-gradient(120deg,#064428,#041b12); color:#fff; display:flex; gap:12px; padding:18px 18px 14px; }
+.e-ticket-head img { height:40px; }
+.e-ticket-head div { display:flex; flex:1; flex-direction:column; min-width:0; }
+.e-ticket-head span { color:#ffb466; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+.e-ticket-head strong { font-size:17px; }
+.e-ticket-head small { color:#cfe0d6; font-size:11px; }
+.e-ticket-tier { background:var(--tier); border-radius:999px; font-size:11px; padding:6px 10px; text-transform:uppercase; white-space:nowrap; }
+.e-ticket-body { display:grid; gap:16px; grid-template-columns:minmax(0,1fr) 150px; padding:16px 18px; position:relative; }
+.e-ticket-body::before, .e-ticket-body::after { background:var(--paper, #f3efe6); border-radius:50%; content:''; height:22px; position:absolute; right:168px; width:22px; }
+.e-ticket-body::before { top:-11px; } .e-ticket-body::after { bottom:-11px; }
+.e-ticket-info p { align-items:center; color:var(--muted); display:flex; font-size:13px; gap:8px; margin:0 0 6px; }
+.e-ticket-seat { display:grid; gap:6px; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:12px; }
+.e-ticket-seat div, .e-ticket-holder { background:#f6f8f6; border-radius:8px; padding:8px; }
+.e-ticket-seat span, .e-ticket-holder span { color:var(--muted); display:block; font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.e-ticket-seat b { font-size:17px; }
+.e-ticket-holder { margin-top:6px; }
+.e-ticket-qr { align-items:center; border-left:2px dashed var(--line); display:flex; flex-direction:column; gap:6px; justify-content:center; padding-left:16px; }
+.e-ticket-qr img { display:block; width:100%; }
+.e-ticket-qr code { font-size:10px; letter-spacing:.04em; }
+.e-ticket-foot { align-items:center; border-top:1px solid var(--line); color:var(--muted); display:flex; flex-wrap:wrap; font-size:11px; gap:6px 14px; justify-content:space-between; padding:10px 18px; }
+.e-ticket-foot span:first-child { align-items:center; display:inline-flex; gap:5px; }
+.e-ticket-legal { color:var(--muted); font-size:10px; line-height:1.4; margin:0; padding:0 18px 12px; }
+.order-block { display:flex; flex-direction:column; gap:14px; }
+.order-head { align-items:center; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; }
+.order-head div { display:flex; flex-direction:column; }
+.order-head span { color:var(--muted); font-size:13px; }
+@media (max-width:900px) {
+  .ev-hero, .checkout-grid { grid-template-columns:minmax(0,1fr); }
+  .checkout-summary { position:static; }
+  .ev-hero { padding:24px; }
+  .ev-hero-teams { gap:14px; justify-content:center; }
+}
+@media (max-width:560px) {
+  .pay-methods { grid-template-columns:minmax(0,1fr); }
+  .tier-row { grid-template-columns:auto minmax(0,1fr) auto; }
+  .tier-row .cart-line-qty { grid-column:2 / -1; justify-content:flex-end; }
+  .e-ticket-body { grid-template-columns:minmax(0,1fr); }
+  .e-ticket-body::before, .e-ticket-body::after { display:none; }
+  .e-ticket-qr { border-left:0; border-top:2px dashed var(--line); padding:14px 0 0; }
+  .e-ticket-qr img { max-width:200px; }
+  .ev-countdown div { min-width:54px; }
+}
+@media print {
+  .print-area, .print-area * { visibility:visible !important; }
+  .print-area { left:0; position:absolute; top:0; width:100%; }
+  .print-area .e-ticket-list { grid-template-columns:1fr; }
+  .print-area .order-head button { display:none; }
+  .e-ticket { box-shadow:none; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}

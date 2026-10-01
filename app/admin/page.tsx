@@ -1,10 +1,11 @@
+import { ticketEvents } from '@/lib/data/tickets'
 import Link from 'next/link'
 import {
   BarChart3, ClipboardList, FileText, Film, Gavel, Newspaper, Settings, Shield, ShoppingBag,
   Ticket, Trophy, Users, Wallet,
 } from 'lucide-react'
 import {
-  clubs, players, competitions, matches, referees, articles, videos, ticketEvents, products,
+  clubs, players, competitions, matches, referees, articles, videos, products,
 } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'

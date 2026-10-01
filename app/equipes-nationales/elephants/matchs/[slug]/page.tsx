@@ -6,7 +6,8 @@ import { elephantsFixtures, getElephantsFixture, elephantsFlag, elephantsCallUp 
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
-import { TicketPurchase, LivePreview } from '@/components/site/ElephantsMatchTools'
+import { LivePreview } from '@/components/site/ElephantsMatchTools'
+import { ticketEvents } from '@/lib/data/tickets'
 import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
 import { formatDate, formatDateLong } from '@/lib/format'
 
@@ -155,8 +156,18 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
           <section className="page-section tight">
             <p className="section-tag">Billetterie</p>
             <div className="dashboard-panel" style={{ maxWidth: 560 }}>
-              <h3>Réserver des billets</h3>
-              <TicketPurchase categories={fixture.ticketCategories} matchLabel={matchLabel} />
+              <h3>Acheter des billets</h3>
+              {(() => {
+                const ev = ticketEvents.find((e) => e.matchHref?.endsWith(`/${fixture.slug}`))
+                if (!ev) return <p className="lede" style={{ fontSize: 14 }}>La billetterie de ce match n’est pas encore ouverte.</p>
+                const min = Math.min(...ev.tiers.map((t) => t.price))
+                return (
+                  <>
+                    <p className="lede" style={{ fontSize: 14 }}>Billets officiels dès {min.toLocaleString('fr-FR')} FCFA : plan du stade, paiement Mobile Money ou carte, billet électronique avec QR code.</p>
+                    <Link href={`/billetterie/${ev.slug}`} className="button button-primary">Choisir mes places — {matchLabel}</Link>
+                  </>
+                )
+              })()}
             </div>
           </section>
 

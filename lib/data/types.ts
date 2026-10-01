@@ -320,12 +320,6 @@ export interface Video {
   image: string
 }
 
-export interface TicketEvent {
-  id: string
-  matchId: string
-  categories: { name: string; price: number; available: number }[]
-}
-
 export interface Product {
   id: string
   name: string

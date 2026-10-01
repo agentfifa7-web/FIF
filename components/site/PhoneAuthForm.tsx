@@ -55,7 +55,9 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
     if (code.trim() !== sentCode) return setError('Code incorrect. Vérifiez le SMS reçu.')
     if (mode === 'signup') createAccount({ phone, fullName: fullName.trim(), role, matricule })
     else signIn(phone)
-    router.push('/compte')
+    // Retour vers la page d'origine (ex. billetterie) si elle est indiquée.
+    const next = new URLSearchParams(window.location.search).get('next')
+    router.push(next && next.startsWith('/') && !next.startsWith('//') ? next : '/compte')
   }
 
   if (step === 'code') {
