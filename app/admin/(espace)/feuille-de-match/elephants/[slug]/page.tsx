@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { elephantsFixtures, getElephantsFixture, elephantsCallUp, elephantsFlag } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { MatchSheetForm } from '@/components/site/MatchSheetForm'
 import { formatDate } from '@/lib/format'
 
@@ -22,7 +21,7 @@ export default async function ElephantsMatchSheetPage({ params }: { params: Prom
 
   const elephantsRef = { id: 'elephants', name: 'Côte d’Ivoire' }
   const opponentRef = { id: 'opponent', name: fixture.opponent }
-  const elephantsPlayers = elephantsCallUp.map((p) => ({ id: p.slug, name: p.name }))
+  const elephantsPlayers = elephantsCallUp.map((p) => ({ id: p.slug, name: p.name, position: p.position }))
 
   return (
     <main>
@@ -37,10 +36,9 @@ export default async function ElephantsMatchSheetPage({ params }: { params: Prom
           awayClub={fixture.home ? opponentRef : elephantsRef}
           homePlayers={fixture.home ? elephantsPlayers : []}
           awayPlayers={fixture.home ? [] : elephantsPlayers}
-          note="Effectif adverse non suivi dans cette base : seuls les buteurs et cartons des Éléphants peuvent être saisis."
+          note={`Liste des Éléphants pré-remplie avec la sélection officielle. Les joueurs de ${fixture.opponent} s’ajoutent à la main dans leur liste.`}
         />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

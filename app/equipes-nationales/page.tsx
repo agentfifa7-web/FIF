@@ -3,7 +3,6 @@ import { ArrowRight, Shield } from 'lucide-react'
 import { nationalTeams, nextFixtureFor, nextElephantsFixture } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Équipes nationales — FIF Digital' }
 
@@ -49,7 +48,6 @@ export default function NationalTeamsPage() {
           </div>
         </section>
       ))}
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

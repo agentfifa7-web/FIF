@@ -4,7 +4,6 @@ import { MapPin } from 'lucide-react'
 import type { RealFixtureEvent, RealFixtureSubstitution } from '@/lib/data/mock'
 import { elephantsFixtures, getElephantsFixture, elephantsFlag, elephantsCallUp } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { LivePreview } from '@/components/site/ElephantsMatchTools'
 import { ticketEvents } from '@/lib/data/tickets'
@@ -206,8 +205,6 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
           ))}
         </div>
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

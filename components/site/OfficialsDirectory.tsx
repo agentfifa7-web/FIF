@@ -41,7 +41,7 @@ export function OfficialsDirectory({
   return (
     <div>
       <Tabs tabs={[...ROLES]} active={role} onChange={(t) => setRole(t as (typeof ROLES)[number])} />
-      {!list.length && <EmptyState title="Aucune fiche disponible" />}
+      {!list.length && <EmptyState title={`Aucun ${role === 'Entraîneurs' ? 'entraîneur' : role === 'Arbitres' ? 'arbitre' : role === 'Dirigeants' ? 'dirigeant' : 'agent'} enregistré pour le moment`} hint="Les fiches sont créées à partir des listes officielles (clubs, Commission Centrale d’Arbitrage, FIF). Aucune personne fictive n’est affichée." />}
       <div className="card-grid">
         {role === 'Entraîneurs' && coaches.map((c) => {
           const club = c.clubId ? getClubById(c.clubId) : null

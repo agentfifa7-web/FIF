@@ -100,7 +100,7 @@ export function IvoryCoastMap({ zones, checkedInCityIds, onCheckIn }: { zones: M
                 {active.stadiums.map((s) => (
                   <Link href={`/stades/${s.slug}`} key={s.id} className="entity-card">
                     <Trophy size={16} color="var(--orange)" />
-                    <div><strong>{s.name}</strong><span>{s.capacity.toLocaleString('fr-FR')} places</span></div>
+                    <div><strong>{s.name}</strong><span>{s.capacity ? `${s.capacity.toLocaleString('fr-FR')} places` : 'Capacité non communiquée'}</span></div>
                   </Link>
                 ))}
               </div>

@@ -1,11 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, Info, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, matchesOf, getCoachById, coaches, competitions, standingsFor, realLeagueMatchesForClub, realLigue1Standings, realLigue1UpcomingFixtures } from '@/lib/data/mock'
+import { clubs, getClub, getStadiumById, cityName, players, coaches, competitions, standingsFor, realLeagueMatchesForClub, realLigue1Standings, realLigue1UpcomingFixtures } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, PlayerCard } from '@/components/site/cards'
-import { ClubMatchSections } from '@/components/site/ClubMatchSections'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { MatchdayList } from '@/components/site/MatchdayList'
 
 const POSITION_GROUPS = [
@@ -30,14 +28,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   const club = getClub(slug)
   if (!club) notFound()
 
-  const stadium = getStadiumById(club.stadiumId)
+  const stadium = club.stadiumId ? getStadiumById(club.stadiumId) : undefined
   const roster = players.filter((p) => p.clubId === club.id)
   const hasRealRoster = roster.some((p) => p.realRoster)
   const coach = coaches.find((c) => c.clubId === club.id)
-  // La Ligue 1 dispose désormais d'un suivi réel (voir realLigue1Matches) :
-  // les matchs fictifs générés pour comp-l1 sont donc exclus ici pour éviter
-  // toute contradiction avec les résultats réels affichés plus haut.
-  const clubMatches = matchesOf(club.id).filter((m) => m.competitionId !== 'comp-l1')
   const clubCompetitions = club.competitionIds
     .map((id) => competitions.find((c) => c.id === id))
     .filter((c) => c !== undefined)
@@ -67,14 +61,14 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
             <ClubCrest club={club} size={80} />
             <div>
-              <p className="eyebrow"><span /> {club.category} · {cityName(club.cityId)}</p>
+              <p className="eyebrow"><span /> {[club.group ? `Ligue 2 · Poule ${club.group}` : 'Ligue 1', cityName(club.cityId)].filter(Boolean).join(' · ')}</p>
               <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{club.name}</h1>
             </div>
           </div>
           <div className="page-hero-meta">
-            <div><strong>{club.founded}</strong><span>Fondation</span></div>
-            <div><strong>{roster.length}</strong><span>Licenciés</span></div>
-            <div><strong>{club.honours.reduce((a, h) => a + h.count, 0)}</strong><span>Titres</span></div>
+            {club.founded && <div><strong>{club.founded}</strong><span>Fondation</span></div>}
+            <div><strong>{roster.length}</strong><span>Joueurs enregistrés</span></div>
+            {club.honours.length > 0 && <div><strong>{club.honours.reduce((a, h) => a + h.count, 0)}</strong><span>Titres</span></div>}
           </div>
         </div>
       </section>
@@ -84,9 +78,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           {stadium ? (
             <Link href={`/stades/${stadium.slug}`} className="chip"><MapPin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{stadium.name}</Link>
           ) : null}
-          <span className="chip"><User size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Président : {club.president}</span>
+          {club.president && <span className="chip"><User size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Président : {club.president}</span>}
           {coach && <span className="chip"><Shield size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Entraîneur : {coach.name}</span>}
-          <a href={`https://${club.website}`} target="_blank" rel="noopener noreferrer" className="chip"><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{club.website}</a>
+          {club.website && <a href={club.website} target="_blank" rel="noopener noreferrer" className="chip"><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{club.website.replace(/^https?:\/\//, '')}</a>}
+          {!stadium && !club.president && !coach && <span className="chip">Stade, président et staff : informations officielles à venir</span>}
         </div>
       </section>
 
@@ -143,15 +138,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         </section>
       ) : (
         <section className="page-section tight">
-          <p className="section-tag">Effectif — {roster.length} joueurs</p>
-          <div className="card-grid cols-4" style={{ marginTop: 16 }}>
-            {roster.slice(0, 12).map((p) => <PlayerCard key={p.id} player={p} />)}
-          </div>
-          {roster.length > 12 && <p className="lede" style={{ marginTop: 16 }}>+ {roster.length - 12} autres joueurs enregistrés.</p>}
+          <p className="section-tag">Effectif</p>
+          <p className="lede" style={{ marginTop: 12 }}>L’effectif officiel de {club.name} n’a pas encore été transmis à la FIF. Il apparaîtra ici dès sa publication.</p>
         </section>
       )}
-
-      <ClubMatchSections matches={clubMatches} />
 
       {club.honours.length > 0 && (
         <section className="page-section tight dark-section">
@@ -164,7 +154,6 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         </section>
       )}
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

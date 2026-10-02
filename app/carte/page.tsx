@@ -3,7 +3,6 @@ import { buildFootballMapZones } from '@/lib/data/ci-geo'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubExplorer } from '@/components/site/ClubExplorer'
 import { IvoryCoastMap } from '@/components/site/IvoryCoastMap'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Carte du football ivoirien — FIF Digital' }
 
@@ -32,8 +31,6 @@ export default function MapPage() {
         <p className="section-tag">Explorateur de clubs</p>
         <ClubExplorer clubs={clubs} />
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

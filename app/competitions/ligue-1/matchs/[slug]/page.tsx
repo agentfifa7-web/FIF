@@ -5,7 +5,6 @@ import type { RealLeagueMatchEvent, RealLeagueMatchSubstitution } from '@/lib/da
 import { realLigue1Matches, getRealLeagueMatch, getClubByName } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDateLong } from '@/lib/format'
 
 export function generateStaticParams() {
@@ -141,8 +140,6 @@ export default async function LigueUnMatchPage({ params }: { params: Promise<{ s
       <section className="page-section tight">
         <Link href="/competitions/ligue-1" className="button-outline">Retour à la Ligue 1</Link>
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

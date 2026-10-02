@@ -7,7 +7,6 @@ import {
 } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { formatDate, formatDateLong, formatTime, age } from '@/lib/format'
 
@@ -167,8 +166,6 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
           </div>
         </section>
       )}
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

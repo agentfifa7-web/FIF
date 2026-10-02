@@ -40,7 +40,9 @@ export function MatchExplorer({ matches, mode }: { matches: Match[]; mode: 'cale
   const grouped = useMemo(() => {
     const map = new Map<string, Match[]>()
     for (const m of filtered) {
-      const key = formatDate(m.date, { weekday: 'long', day: 'numeric', month: 'long' })
+      const key = m.dateConfirmed === false
+        ? `${competitions.find((c) => c.id === m.competitionId)?.name ?? ''} — journée ${m.matchday} · date à confirmer`
+        : formatDate(m.date, { weekday: 'long', day: 'numeric', month: 'long' })
       map.set(key, [...(map.get(key) ?? []), m])
     }
     return [...map.entries()]
@@ -52,10 +54,10 @@ export function MatchExplorer({ matches, mode }: { matches: Match[]; mode: 'cale
         <FilterSelect label="Catégorie" value={category} options={categories} onChange={(v) => { setCategory(v); setCompetition('Toutes') }} />
         <FilterSelect label="Compétition" value={competition} options={competitionOptions} onChange={setCompetition} />
       </div>
-      {grouped.length === 0 && <EmptyState title={mode === 'calendrier' ? 'Aucun match à venir' : 'Aucun résultat'} hint="Essayez un autre filtre de compétition." />}
+      {grouped.length === 0 && <EmptyState title={mode === 'calendrier' ? 'Aucun match à venir' : 'Aucun résultat'} hint="Seuls les matchs officiels confirmés sont affichés. Essayez un autre filtre de compétition." />}
       {grouped.map(([day, list]) => (
         <div key={day} style={{ marginBottom: 32 }}>
-          <p className="section-tag" style={{ textTransform: 'capitalize', marginBottom: 14 }}>{day}</p>
+          <p className="section-tag" style={{ marginBottom: 14 }}>{day.charAt(0).toUpperCase() + day.slice(1)}</p>
           <div className="card-grid cols-4">
             {list.map((m) => <MatchCard key={m.id} match={m} />)}
           </div>

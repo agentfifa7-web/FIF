@@ -3,7 +3,6 @@ import { Info } from 'lucide-react'
 import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, realLigue1TopScorers, realLigue1TopAssists, realLigue1UpcomingFixtures } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { RankingTable } from '@/components/site/widgets'
 import { MatchdayList } from '@/components/site/MatchdayList'
 
@@ -49,11 +48,11 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
       <PageHero
         eyebrow={competition.practice ? `${competition.category} · Football ${competition.practice.toLowerCase()}` : competition.category}
         title={competition.name}
-        subtitle={`Saison ${competition.season} · ${competition.format} · ${competition.clubIds.length} équipes engagées.`}
+        subtitle={`Saison ${competition.season} · ${competition.format} · ${competition.clubIds.length ? `${competition.clubIds.length} équipes engagées.` : 'Clubs engagés et calendrier à publier par la FIF.'}`}
         breadcrumb={[{ label: 'Compétitions', href: '/competitions' }, { label: competition.name }]}
         meta={[
           { value: String(competition.clubIds.length), label: 'Équipes' },
-          { value: String(compMatches.length), label: 'Matchs cette saison' },
+          { value: String(compMatches.length), label: 'Matchs officiels' },
         ]}
       />
 
@@ -137,7 +136,6 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           realOverview={competition.id === 'comp-l1' ? { matchesPlayed: realMatches.length, topScorerGoals: realScorers[0]?.goals ?? 0 } : undefined}
         />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

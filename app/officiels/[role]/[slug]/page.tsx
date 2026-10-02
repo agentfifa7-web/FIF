@@ -7,7 +7,6 @@ import {
 } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate, age } from '@/lib/format'
 
 const ROLE_CONFIG = {
@@ -64,8 +63,6 @@ export default async function OfficialProfilePage({ params }: { params: Promise<
       {role === 'arbitres' && <RefereeDetails referee={person as (typeof referees)[number]} />}
       {role === 'dirigeants' && <OfficialDetails official={person as (typeof officials)[number]} />}
       {role === 'agents' && <AgentDetails agent={person as (typeof agents)[number]} />}
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

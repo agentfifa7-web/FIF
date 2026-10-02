@@ -4,7 +4,6 @@ import { Award, Flag, Info, QrCode, Trophy } from 'lucide-react'
 import { players, getPlayer, getClubById, nationalTeams, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb, HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
 import { PlayerRadar } from '@/components/site/PlayerRadar'
 import { radarAxesFor } from '@/lib/attributes'
@@ -217,8 +216,6 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

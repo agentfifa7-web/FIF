@@ -83,80 +83,22 @@ export const cities: City[] = [
 ]
 
 function cityName(id: string) {
-  return cities.find((c) => c.id === id)?.name ?? id
+  return cities.find((c) => c.id === id)?.name ?? ''
 }
 
 // ---------------------------------------------------------------------------
 // Stadiums
 // ---------------------------------------------------------------------------
-const stadiumRoots = [
-  'Stade Municipal', 'Stade Olympique', 'Arena de la Paix', 'Stade de la Renaissance',
-  'Complexe Sportif', 'Stade des Lagunes', 'Stade du Cinquantenaire', 'Stade de l’Amitié',
-  'Arena du Bandama', 'Stade de la Liberté', 'Stade des Éléphants', 'Stade Houphouët-Boigny',
+// Stades réels uniquement. Les caractéristiques non confirmées (pelouse,
+// vestiaires, éclairage, capacité…) restent vides plutôt qu'inventées.
+export const stadiums: Stadium[] = [
+  { id: 'st-ebimpe', slug: 'stade-olympique-alassane-ouattara', name: 'Stade Olympique Alassane Ouattara (Ebimpé)', cityId: 'c-abidjan', capacity: 60000, built: 2020, note: 'Plus grand stade du pays, stade de la finale de la CAN 2023.' },
+  { id: 'st-fhb', slug: 'stade-felix-houphouet-boigny', name: 'Stade Félix Houphouët-Boigny', cityId: 'c-abidjan', note: 'Stade historique du Plateau, rénové pour la CAN 2023.' },
+  { id: 'st-paix-bouake', slug: 'stade-de-la-paix-bouake', name: 'Stade de la Paix', cityId: 'c-bouake', capacity: 40000, built: 1984, note: 'Construit pour la CAN 1984, rénové pour la CAN 2023.' },
+  { id: 'st-ckb', slug: 'stade-charles-konan-banny', name: 'Stade Charles Konan Banny', cityId: 'c-yamoussoukro', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
+  { id: 'st-agc', slug: 'stade-amadou-gon-coulibaly', name: 'Stade Amadou Gon Coulibaly', cityId: 'c-korhogo', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
+  { id: 'st-pokou', slug: 'stade-laurent-pokou', name: 'Stade Laurent Pokou', cityId: 'c-san-pedro', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
 ]
-
-export const stadiums: Stadium[] = cities.flatMap((city, ci) =>
-  Array.from({ length: 4 }, (_, i) => {
-    const name = `${rng.pick(stadiumRoots)} de ${city.name}${i > 0 ? ` ${i + 1}` : ''}`
-    const id = `st-${ci}-${i}`
-    return {
-      id,
-      slug: slugify(name) + `-${ci}${i}`,
-      name,
-      cityId: city.id,
-      capacity: rng.int(3, 60) * 1000,
-      surface: rng.pick(['Pelouse naturelle', 'Pelouse hybride', 'Synthétique'] as const),
-      lighting: rng.bool(0.7),
-      changingRooms: rng.int(2, 6),
-      image: `https://picsum.photos/seed/${id}/900/560`,
-      built: rng.int(1965, 2023),
-      video360Url: rng.bool(0.45) ? `demo-360-${id}` : '',
-    }
-  }),
-)
-
-// ---------------------------------------------------------------------------
-// Names
-// ---------------------------------------------------------------------------
-const firstNamesM = [
-  'Yao', 'Kouassi', 'Adama', 'Ibrahim', 'Franck', 'Serge', 'Wilfried', 'Emmanuel', 'Christian', 'Lassina',
-  'Mamadou', 'Siaka', 'Souleymane', 'Aboubakar', 'Jean-Marc', 'Didier', 'Gervais', 'Cyrille', 'Bakary', 'Moussa',
-  'Fousseni', 'Armand', 'Régis', 'Prosper', 'Ismaël', 'Ousmane', 'Konan', 'Brice', 'Landry', 'Eric',
-]
-const firstNamesF = [
-  'Aminata', 'Fatoumata', 'Awa', 'Mariam', 'Ange', 'Christelle', 'Estelle', 'Sandrine', 'Clarisse', 'Nadège',
-  'Josiane', 'Aya', 'Affoué', 'Akissi', 'Adjoua', 'Rokia', 'Nafissatou', 'Léa', 'Grace', 'Solange',
-]
-const lastNames = [
-  'Kouassi', 'Koné', 'Traoré', 'Diabaté', 'Bamba', 'Ouattara', 'Yao', 'Kouadio', 'N’Guessan', 'Aka',
-  'Diarrassouba', 'Coulibaly', 'Touré', 'Doumbia', 'Bakayoko', 'Zadi', 'Gnahoré', 'Kra', 'Assamoi', 'Brou',
-  'Kablan', 'Angoua', 'Silué', 'Sangaré', 'Fofana', 'Djédjé', 'Yéo', 'Ballo', 'Soro', 'Tanoh',
-]
-
-function fullName(gender: 'M' | 'F' = 'M') {
-  const first = rng.pick(gender === 'F' ? firstNamesF : firstNamesM)
-  const last = rng.pick(lastNames)
-  return `${first} ${last}`
-}
-
-// ---------------------------------------------------------------------------
-// Clubs
-// ---------------------------------------------------------------------------
-const clubPrefixes = ['AS', 'FC', 'ASC', 'Racing Club', 'Étoile', 'Renaissance', 'Sporting', 'USC', 'Jeunesse', 'Avenir', 'Éclair', 'Union']
-const clubSuffixes = ['Lagunes', 'Comoé', 'Bandama', 'Baoulé', 'Cavally', 'Denguélé', 'Marahoué', 'Agnéby', 'Nzi', 'Sassandra', 'Gôh', 'Zanzan']
-
-function makeClubName(city: string, used: Set<string>) {
-  let name = ''
-  do {
-    name = rng.bool(0.5)
-      ? `${rng.pick(clubPrefixes)} ${city}`
-      : `${rng.pick(clubPrefixes)} ${rng.pick(clubSuffixes)}`
-  } while (used.has(name))
-  used.add(name)
-  return name
-}
-
-const usedClubNames = new Set<string>()
 
 // Clubs réels de Ligue 1 (16, saison 2026-2027) et Ligue 2 (28, poules A/B,
 // saison 2026-2027), communiqués par la presse ivoirienne (flashscore.fr,
@@ -183,6 +125,7 @@ const REAL_CLUB_CITY: Record<string, string> = {
   'Yakro FC': 'c-yamoussoukro',
   'FC San Pedro': 'c-san-pedro',
   'Stella Club': 'c-abidjan',
+  'SOA': 'c-yamoussoukro',
   'Bouaké FC': 'c-bouake',
   'AFAD Plateau': 'c-abidjan',
   'CO Korhogo': 'c-korhogo',
@@ -237,49 +180,34 @@ const clubColorPairs: [string, string][] = [
   ['#1b4fd6', '#ffffff'], ['#7a1fa8', '#f5f3ee'],
 ]
 
-function makeAchievements(competitionLabel: string, championCount: number, yearFrom = 1992, yearTo = 2026): HonourRecord[] {
-  const used = new Set<number>()
-  function pickYear() {
-    let y: number
-    do { y = rng.int(yearFrom, yearTo) } while (used.has(y))
-    used.add(y)
-    return y
-  }
-  const records: HonourRecord[] = []
-  for (let i = 0; i < championCount; i++) records.push({ competition: competitionLabel, year: pickYear(), result: 'Champion' })
-  const extra = rng.int(0, 3)
-  for (let i = 0; i < extra; i++) {
-    const result = rng.pick(['Finaliste', 'Demi-finaliste', 'Podium (3e)', 'Qualifié'] as const)
-    records.push({ competition: competitionLabel, year: pickYear(), result })
-  }
-  return records.sort((a, b) => b.year - a.year)
-}
-
 const PRO_CLUB_COUNT = REAL_PRO_CLUBS.length
 const L2_POULE_A_START = REAL_LIGUE1_CLUBS.length
 const L2_POULE_B_START = L2_POULE_A_START + REAL_LIGUE2_POULE_A.length
 
-export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) => {
-  const isRealPro = i < PRO_CLUB_COUNT
-  const city = isRealPro
-    ? cities.find((c) => c.id === REAL_CLUB_CITY[REAL_PRO_CLUBS[i]]) ?? rng.pick(cities)
-    : rng.pick(cities)
-  const name = isRealPro ? REAL_PRO_CLUBS[i] : makeClubName(city.name, usedClubNames)
-  const category = i < PRO_CLUB_COUNT ? 'Professionnel' : i < PRO_CLUB_COUNT + 6 ? 'Féminin' : i < PRO_CLUB_COUNT + 12 ? 'Jeunes' : 'Futsal'
+// Stade de résidence, seulement lorsqu'il est confirmé (matchs à domicile relayés par la presse).
+const REAL_CLUB_STADIUM: Record<string, string> = {
+  'Yakro FC': 'st-ckb',
+  'FC San Pedro': 'st-pokou',
+  'Bouaké FC': 'st-paix-bouake',
+}
+
+// Clubs réels uniquement (Ligue 1 et Ligue 2). Président, année de fondation,
+// site web et palmarès ne sont affichés que lorsqu'ils sont renseignés depuis
+// une source officielle — rien n'est inventé.
+export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT }, (_, i) => {
+  const name = REAL_PRO_CLUBS[i]
+  // Ville vide tant qu'elle n'est pas confirmée.
+  const cityId = REAL_CLUB_CITY[name] ?? ''
+  const category = 'Professionnel'
   const group: Club['group'] = i >= L2_POULE_A_START && i < L2_POULE_B_START ? 'A' : i >= L2_POULE_B_START && i < PRO_CLUB_COUNT ? 'B' : null
-  const clubStadiums = stadiums.filter((s) => s.cityId === city.id)
   const slug = slugify(name)
-  const championCount = rng.bool(0.4) ? rng.int(1, 5) : 0
-  const label = category === 'Féminin' ? 'Championnat National Féminin' : category === 'Futsal' ? 'Futsal Élite' : 'Championnat National'
   return {
     id: `club-${i}`,
     slug,
     name,
     shortName: name.split(' ').length > 1 ? `${name.split(' ')[0]} ${name.split(' ').slice(-1)[0]}` : name,
-    cityId: city.id,
-    stadiumId: rng.pick(clubStadiums.length ? clubStadiums : stadiums).id,
-    founded: rng.int(1948, 2015),
-    president: fullName(),
+    cityId,
+    stadiumId: REAL_CLUB_STADIUM[name] ?? null,
     colors: rng.pick(clubColorPairs),
     crestInitials: name
       .split(' ')
@@ -288,13 +216,12 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT + 16 }, (_, i) 
       .join('')
       .toUpperCase(),
     crestUrl: REAL_CLUB_CRESTS[name],
-    gender: category === 'Féminin' ? 'F' : 'M',
-    category: category as Club['category'],
+    gender: 'M',
+    category,
     group,
     competitionIds: [],
-    website: `https://${slug}.fif.ci`,
-    honours: championCount > 0 ? [{ title: 'Champion national', count: championCount }] : [],
-    achievements: makeAchievements(label, championCount),
+    honours: [],
+    achievements: [],
   }
 })
 
@@ -302,84 +229,23 @@ function clubBySlug(slug: string) {
   return clubs.find((c) => c.slug === slug)
 }
 
-function randomBirthdate(minAge: number, maxAge: number) {
-  const age = rng.int(minAge, maxAge)
-  const year = 2026 - age
-  return `${year}-${String(rng.int(1, 12)).padStart(2, '0')}-${String(rng.int(1, 28)).padStart(2, '0')}`
-}
 
 // ---------------------------------------------------------------------------
 // Coaches
 // ---------------------------------------------------------------------------
-export const coaches: Coach[] = clubs.map((club, i) => {
-  const name = fullName(club.gender === 'F' ? 'F' : 'M')
-  const license = rng.pick(['CAF Pro', 'CAF A', 'CAF B', 'CAF C'] as const)
-  const since = rng.int(2018, 2025)
-  const previousClub = rng.pick(clubs.filter((c) => c.id !== club.id))
-  const previousTo = since - rng.int(1, 2)
-  const previousFrom = previousTo - rng.int(1, 3)
-  return {
-    id: `coach-${i}`,
-    slug: `coach-${slugify(club.name)}`,
-    name,
-    clubId: club.id,
-    nationalTeamId: null,
-    license,
-    since,
-    fifId: `FIF-CO-${(2000 + i).toString().padStart(5, '0')}`,
-    birthdate: randomBirthdate(32, 62),
-    bio: `Titulaire de la licence ${license}, ${name} dirige l’équipe première de ${club.name} depuis ${since}, après plusieurs saisons comme adjoint dans le football régional.`,
-    history: [
-      { clubId: previousClub.id, from: previousFrom, to: previousTo },
-      { clubId: club.id, from: since, to: null },
-    ],
-  }
-})
+// Entraîneurs : aucun nom inventé. La liste se remplit à partir des
+// staffs officiels communiqués par les clubs et la FIF.
+export const coaches: Coach[] = []
 
 // ---------------------------------------------------------------------------
 // Referees / Officials / Agents
 // ---------------------------------------------------------------------------
-const refereeTrainingModules = ['Lois du jeu', 'Gestion de match', 'VAR — sensibilisation', 'Examen pratique']
+// Arbitres, délégués, commissaires et dirigeants : aucune personne inventée.
+// Ces annuaires se remplissent à partir des désignations et listes officielles
+// (Commission Centrale d'Arbitrage, clubs, FIF).
+export const referees: Referee[] = []
 
-export const referees: Referee[] = Array.from({ length: 42 }, (_, i) => {
-  const gender = rng.bool(0.85) ? 'M' : 'F'
-  const name = fullName(gender)
-  const category = rng.pick(['FIFA', 'Fédérale 1', 'Fédérale 2', 'Régionale'] as const)
-  const completedModules = rng.int(0, refereeTrainingModules.length)
-  return {
-    id: `ref-${i}`,
-    slug: `${slugify(name)}-${i}`,
-    name,
-    category,
-    regionId: rng.pick(regions).id,
-    gender,
-    status: rng.bool(0.92) ? 'Actif' : rng.bool() ? 'Suspendu' : 'Retraité',
-    matchesOfficiated: rng.int(4, 210),
-    fifId: `FIF-AR-${(3000 + i).toString().padStart(5, '0')}`,
-    birthdate: randomBirthdate(24, 55),
-    bio: `Arbitre de catégorie ${category}, ${name} officie sur les rencontres du football ivoirien depuis ${rng.int(2010, 2022)} et a dirigé ${rng.int(4, 210)} matchs à ce jour.`,
-    trainings: refereeTrainingModules.slice(0, completedModules).map((title, mi) => ({
-      title,
-      date: addDays(TODAY, -rng.int(30, 900) - mi * 10).toISOString(),
-    })),
-  }
-})
-
-export const officials: Official[] = Array.from({ length: 30 }, (_, i) => {
-  const role = rng.pick(['Président de club', 'Secrétaire général', 'Délégué de match', 'Commissaire au match'] as const)
-  const club = role === 'Délégué de match' || role === 'Commissaire au match' ? null : rng.pick(clubs)
-  const name = fullName()
-  return {
-    id: `off-${i}`,
-    slug: `${slugify(name)}-${i}`,
-    name,
-    role,
-    clubId: club?.id ?? null,
-    fifId: `FIF-OF-${(5000 + i).toString().padStart(5, '0')}`,
-    birthdate: randomBirthdate(30, 65),
-    bio: `${name} exerce la fonction de ${role.toLowerCase()}${club ? ` au sein de ${club.name}` : ' pour le compte de la Fédération'}, au service de l’organisation du football ivoirien.`,
-  }
-})
+export const officials: Official[] = []
 
 // ---------------------------------------------------------------------------
 // Players
@@ -779,57 +645,26 @@ function playersOf(clubId: string) {
 // ---------------------------------------------------------------------------
 // Agents
 // ---------------------------------------------------------------------------
-export const agents: Agent[] = Array.from({ length: 20 }, (_, i) => {
-  const name = fullName()
-  // Agents de démonstration : aucun lien inventé vers un joueur réel.
-  return {
-    id: `agent-${i}`,
-    slug: `${slugify(name)}-${i}`,
-    name,
-    fifId: `FIF-AG-${(4000 + i).toString().padStart(5, '0')}`,
-    license: `LIC-${rng.int(1000, 9999)}`,
-    status: rng.bool(0.9) ? 'Actif' : 'Suspendu',
-    validUntil: `${rng.int(2026, 2028)}-${String(rng.int(1, 12)).padStart(2, '0')}-01`,
-    playerIds: [],
-    birthdate: randomBirthdate(30, 60),
-    bio: `${name} est agent sportif licencié FIF, intervenant dans le football ivoirien.`,
-  }
-})
+// Agents : uniquement les agents licenciés réels, à renseigner depuis la liste
+// officielle de la FIF.
+export const agents: Agent[] = []
 
 // ---------------------------------------------------------------------------
 // National teams
 // ---------------------------------------------------------------------------
-function teamAchievements(competitionLabel: string, honours: { title: string; year: number }[]): HonourRecord[] {
-  const champions: HonourRecord[] = honours.map((h) => ({ competition: h.title, year: h.year, result: 'Champion' }))
-  const usedYears = new Set(champions.map((c) => c.year))
-  const extra = rng.int(1, 3)
-  const records = [...champions]
-  for (let i = 0; i < extra; i++) {
-    let year: number
-    do { year = rng.int(1998, 2026) } while (usedYears.has(year))
-    usedYears.add(year)
-    records.push({ competition: competitionLabel, year, result: rng.pick(['Demi-finaliste', 'Qualifié', 'Podium (3e)'] as const) })
-  }
-  return records.sort((a, b) => b.year - a.year)
-}
-
 export const nationalTeams: NationalTeam[] = [
   { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 2015 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
   { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 78, honours: [], achievements: [] },
   { id: 'nt-u23', slug: 'u23', name: 'Éléphants U23', gender: 'M', category: 'U23', coachId: null, honours: [], achievements: [] },
-  { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [{ title: 'Coupe UFOA U20', year: 2023 }], achievements: [] },
+  { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [], achievements: [] },
   { id: 'nt-u17', slug: 'u17', name: 'Éléphants U17', gender: 'M', category: 'U17', coachId: null, honours: [], achievements: [] },
   { id: 'nt-futsal', slug: 'futsal', name: 'Éléphants Futsal', gender: 'M', category: 'Futsal', coachId: null, honours: [], achievements: [] },
-  { id: 'nt-beach', slug: 'beach-soccer', name: 'Éléphants Beach Soccer', gender: 'M', category: 'Beach Soccer', coachId: null, honours: [{ title: 'Coupe d’Afrique Beach Soccer', year: 2022 }], achievements: [] },
+  { id: 'nt-beach', slug: 'beach-soccer', name: 'Éléphants Beach Soccer', gender: 'M', category: 'Beach Soccer', coachId: null, honours: [], achievements: [] },
 ]
 
+// Palmarès : uniquement les titres réels listés ci-dessus.
 for (const team of nationalTeams) {
-  team.achievements = teamAchievements('Coupe d’Afrique des Nations', team.honours)
-}
-
-for (const team of nationalTeams) {
-  const c = coaches[rng.int(0, coaches.length - 1)]
-  team.coachId = c.id
+  team.achievements = team.honours.map((h) => ({ competition: h.title, year: h.year, result: 'Champion' as const })).sort((a, b) => b.year - a.year)
 }
 
 // Effectifs des sélections autres que les Éléphants (dont la liste réelle
@@ -1084,24 +919,24 @@ export function getTransparencyRecord(slug: string) { return transparencyRecords
 // Competitions
 // ---------------------------------------------------------------------------
 const proClubs = clubs.filter((c) => c.category === 'Professionnel')
-const femClubs = clubs.filter((c) => c.category === 'Féminin')
-const youthClubs = clubs.filter((c) => c.category === 'Jeunes')
-const futsalClubs = clubs.filter((c) => c.category === 'Futsal')
 
+// Participants : seuls la Ligue 1 et la Ligue 2 ont une liste officielle de
+// clubs pour 2026-2027 ; les autres compétitions restent sans participants
+// tant que la FIF ne les a pas publiés.
 export const competitions: Competition[] = [
   { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.slice(0, 16).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
   { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.slice(16, 44).map((c) => c.id), format: '2 poules de 14 clubs, matchs aller-retour au sein de la poule', logoInitials: 'L2' },
-  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CN' },
-  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.slice(0, 2).map((c) => c.id), format: 'Match unique', logoInitials: 'SC' },
-  { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: youthClubs.map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },
-  { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: rng.shuffle(youthClubs).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'R1' },
-  { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: youthClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CD' },
-  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: femClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'CF' },
-  { id: 'comp-coupe-fem', slug: 'coupe-feminine', name: 'Coupe Nationale Féminine', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: femClubs.map((c) => c.id), format: 'Élimination directe', logoInitials: 'CF' },
-  { id: 'comp-u20', slug: 'championnat-u20', name: 'Championnat National U20', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U20' },
-  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: youthClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'U17' },
-  { id: 'comp-futsal', slug: 'futsal-elite', name: 'Futsal Élite', category: 'Futsal', practice: null, gender: 'M', season: '2026-2027', clubIds: futsalClubs.map((c) => c.id), format: 'Championnat', logoInitials: 'FE' },
-  { id: 'comp-beach', slug: 'beach-soccer-national', name: 'Beach Soccer National', category: 'Beach Soccer', practice: null, gender: 'M', season: '2026-2027', clubIds: rng.pickN(proClubs, 8).map((c) => c.id), format: 'Tournoi', logoInitials: 'BS' },
+  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CN' },
+  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Match unique', logoInitials: 'SC' },
+  { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },
+  { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour', logoInitials: 'R1' },
+  { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CD' },
+  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'CF' },
+  { id: 'comp-coupe-fem', slug: 'coupe-feminine', name: 'Coupe Nationale Féminine', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CF' },
+  { id: 'comp-u20', slug: 'championnat-u20', name: 'Championnat National U20', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'U20' },
+  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'U17' },
+  { id: 'comp-futsal', slug: 'futsal-elite', name: 'Futsal Élite', category: 'Futsal', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'FE' },
+  { id: 'comp-beach', slug: 'beach-soccer-national', name: 'Beach Soccer National', category: 'Beach Soccer', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Tournoi', logoInitials: 'BS' },
 ]
 
 for (const club of clubs) {
@@ -1116,101 +951,10 @@ function competitionBySlug(slug: string) {
 // Matches (past = results, future = calendar) + standings
 // ---------------------------------------------------------------------------
 
-function roundRobinPairs(ids: string[]) {
-  const pairs: [string, string][] = []
-  for (let i = 0; i < ids.length; i++) {
-    for (let j = 0; j < ids.length; j++) {
-      if (i !== j) pairs.push([ids[i], ids[j]])
-    }
-  }
-  return pairs
-}
-
+// Uniquement des matchs réels : résultats confirmés et affiches officielles
+// (voir realLigue1Matches et realLigue1UpcomingFixtures plus bas). Aucun
+// calendrier, score ou événement n'est généré.
 export const matches: Match[] = []
-let matchCounter = 0
-const matchDelegates = officials.filter((o) => o.role === 'Délégué de match' || o.role === 'Commissaire au match')
-
-function buildMatchEvents(home: string, away: string, homeScore: number, awayScore: number): MatchEvent[] {
-  const events: MatchEvent[] = []
-  events.push({ minute: 0, type: 'kickoff', team: 'home' })
-  const scorers = [
-    ...Array.from({ length: homeScore }, () => ({ team: 'home' as const })),
-    ...Array.from({ length: awayScore }, () => ({ team: 'away' as const })),
-  ]
-  // Matchs générés (compétitions sans suivi réel) : buts et cartons ne sont
-  // attribués à aucun joueur, pour ne jamais créditer un joueur réel d'une
-  // action inventée.
-  for (const s of rng.shuffle(scorers)) {
-    events.push({ minute: rng.int(1, 90), type: 'goal', team: s.team })
-  }
-  for (let c = 0; c < rng.int(0, 4); c++) {
-    events.push({ minute: rng.int(1, 90), type: 'yellow', team: rng.bool() ? 'home' : 'away' })
-  }
-  events.push({ minute: 45, type: 'ht', team: 'home' })
-  events.push({ minute: 90, type: 'ft', team: 'home' })
-  events.sort((a, b) => a.minute - b.minute)
-  return events
-}
-
-function generateMatchesForPairs(comp: Competition, pairs: [string, string][], matchdayChunk: number) {
-  pairs.forEach(([home, away], idx) => {
-    // Les compétitions démarrent très prochainement : aucun match n'a encore
-    // été officiellement joué, tous les calendriers restent entièrement à
-    // venir au moment de la génération statique.
-    const dayOffset = 4 + idx * 3 + rng.int(-1, 1)
-    const date = addDays(TODAY, dayOffset)
-    const isPast = date.getTime() < TODAY.getTime() - 1000 * 60 * 60 * 2
-    const homeClub = clubs.find((c) => c.id === home)!
-    const stadiumId = homeClub.stadiumId
-    const matchId = `match-${matchCounter++}`
-    const homeScore = isPast ? rng.int(0, 4) : null
-    const awayScore = isPast ? rng.int(0, 4) : null
-    const events: MatchEvent[] = isPast && homeScore !== null && awayScore !== null
-      ? buildMatchEvents(home, away, homeScore, awayScore)
-      : []
-
-    // Scénario « live » déterministe : dérivé côté client, une fois l'heure
-    // réelle du coup d'envoi (date) effectivement atteinte — voir lib/liveMatch.ts.
-    const liveScript = buildMatchEvents(home, away, rng.int(0, 4), rng.int(0, 4))
-
-    matches.push({
-      id: matchId,
-      competitionId: comp.id,
-      matchday: Math.floor(idx / Math.max(1, matchdayChunk)) + 1,
-      homeClubId: home,
-      awayClubId: away,
-      stadiumId,
-      date: date.toISOString(),
-      status: isPast ? 'Terminé' : dayOffset === 0 ? 'Live' : 'À venir',
-      minute: dayOffset === 0 ? rng.int(1, 90) : undefined,
-      homeScore,
-      awayScore,
-      events,
-      liveScript,
-      refereeId: rng.pick(referees).id,
-      delegateId: matchDelegates.length ? rng.pick(matchDelegates).id : null,
-      attendance: isPast ? rng.int(800, 42000) : undefined,
-    })
-  })
-}
-
-for (const comp of competitions) {
-  if (comp.clubIds.length < 2) continue
-  if (comp.id === 'comp-l2') {
-    // Ligue 2 : 2 poules de 14 clubs, chaque club affronte les 13 autres de sa
-    // poule en aller-retour (round-robin complet, sans troncature).
-    const groupAIds = comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === 'A')
-    const groupBIds = comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === 'B')
-    const chunk = Math.max(1, Math.floor(groupAIds.length / 2))
-    generateMatchesForPairs(comp, roundRobinPairs(groupAIds), chunk)
-    generateMatchesForPairs(comp, roundRobinPairs(groupBIds), chunk)
-    continue
-  }
-  const pairs = comp.format === 'Élimination directe' || comp.format === 'Match unique' || comp.format === 'Tournoi'
-    ? rng.shuffle(roundRobinPairs(comp.clubIds)).slice(0, Math.max(4, Math.floor(comp.clubIds.length / 2)))
-    : roundRobinPairs(comp.clubIds).slice(0, comp.clubIds.length * 3)
-  generateMatchesForPairs(comp, pairs, Math.max(1, Math.floor(comp.clubIds.length / 2)))
-}
 
 export function standingsFor(competitionId: string, group?: 'A' | 'B'): StandingRow[] {
   const comp = competitions.find((c) => c.id === competitionId)
@@ -1264,7 +1008,7 @@ export function topAssistsFor(competitionId: string) {
 export function refereesFor(competitionId: string) {
   const compMatches = matches.filter((m) => m.competitionId === competitionId)
   const tally = new Map<string, number>()
-  for (const m of compMatches) tally.set(m.refereeId, (tally.get(m.refereeId) ?? 0) + 1)
+  for (const m of compMatches) if (m.refereeId) tally.set(m.refereeId, (tally.get(m.refereeId) ?? 0) + 1)
   return [...tally.entries()]
     .map(([refereeId, count]) => ({ referee: referees.find((r) => r.id === refereeId)!, count }))
     .filter((r) => r.referee)
@@ -1562,22 +1306,107 @@ function applyRealClubStats() {
 applyRealClubStats()
 
 // ---------------------------------------------------------------------------
-// Ligue 1 — prochains matchs réels connus. Vide tant qu'aucune journée
-// future n'a été officiellement programmée/annoncée ; à remplir dès que le
-// calendrier d'une prochaine journée est confirmé par la FIF ou la presse.
+// Ligue 1 — prochains matchs réels : affiches officielles publiées par la FIF.
+// Date, heure et stade restent « à confirmer » tant qu'ils ne sont pas
+// officiellement communiqués.
 // ---------------------------------------------------------------------------
 export interface RealLeagueFixture {
   slug: string
   competitionId: string
   matchday: number
-  date: string
+  /** AAAA-MM-JJ ; absent tant que la date n'est pas officielle. */
+  date?: string
   time?: string
   venue?: string
   homeClub: string
   awayClub: string
 }
 
-export const realLigue1UpcomingFixtures: RealLeagueFixture[] = []
+const LIGUE1_J2_PAIRINGS: [string, string][] = [
+  ['FC Mouna', 'Yakro FC'],
+  ['ASEC Mimosas', 'Stella Club'],
+  ['SOL FC', 'Stade d’Abidjan'],
+  ['AFAD Plateau', 'SOA'],
+  ['ES Agboville', 'OFC Adiaké'],
+  ['ISCA Inova', 'Bouaké FC'],
+  ['Zoman FC', 'CO Korhogo'],
+  ['US Tchologo', 'FC San Pedro'],
+]
+
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(([homeClub, awayClub]) => ({
+  slug: `l1-j2-${slugify(homeClub)}-${slugify(awayClub)}`,
+  competitionId: 'comp-l1',
+  matchday: 2,
+  homeClub,
+  awayClub,
+}))
+
+// Conversion des matchs réels au format commun du site (calendrier, résultats,
+// classements, Match Center, feuilles de match).
+const STADIUM_BY_VENUE: [RegExp, string][] = [
+  [/Konan Banny/i, 'st-ckb'], [/Ebimp/i, 'st-ebimpe'], [/Houphou/i, 'st-fhb'],
+  [/la Paix/i, 'st-paix-bouake'], [/Gon Coulibaly/i, 'st-agc'], [/Pokou/i, 'st-pokou'],
+]
+function stadiumFromVenue(venue?: string) {
+  return venue ? STADIUM_BY_VENUE.find(([re]) => re.test(venue))?.[1] ?? null : null
+}
+
+for (const m of realLigue1Matches) {
+  const home = getClubByName(m.homeClub)
+  const away = getClubByName(m.awayClub)
+  if (!home || !away) continue
+  matches.push({
+    id: m.slug,
+    competitionId: m.competitionId,
+    matchday: m.matchday,
+    homeClubId: home.id,
+    awayClubId: away.id,
+    stadiumId: stadiumFromVenue(m.venue),
+    venue: m.venue,
+    date: `${m.date}T12:00:00Z`,
+    timeConfirmed: false,
+    status: 'Terminé',
+    homeScore: m.homeScore,
+    awayScore: m.awayScore,
+    events: m.events.map((e) => {
+      const player = e.player ? findRosterPlayer(e.team === 'home' ? m.homeClub : m.awayClub, e.player) : undefined
+      return { minute: e.minute, type: e.type, team: e.team, playerId: player?.id, detail: player ? undefined : e.player }
+    }),
+    refereeId: null,
+    refereeName: m.referee?.name,
+    delegateId: null,
+    attendance: m.attendance,
+    detailHref: `/competitions/ligue-1/matchs/${m.slug}`,
+    source: m.source,
+  })
+}
+
+const lastPlayedDate = realLigue1Matches.reduce((max, m) => (m.date > max ? m.date : max), '2026-01-01')
+for (const f of realLigue1UpcomingFixtures) {
+  const home = getClubByName(f.homeClub)
+  const away = getClubByName(f.awayClub)
+  if (!home || !away) continue
+  matches.push({
+    id: f.slug,
+    competitionId: f.competitionId,
+    matchday: f.matchday,
+    homeClubId: home.id,
+    awayClubId: away.id,
+    stadiumId: stadiumFromVenue(f.venue),
+    venue: f.venue,
+    // Date inconnue : valeur de tri seulement (après la dernière journée jouée), jamais affichée.
+    date: f.date ? `${f.date}T12:00:00Z` : `${lastPlayedDate}T23:59:00Z`,
+    dateConfirmed: Boolean(f.date),
+    timeConfirmed: Boolean(f.time),
+    status: 'À venir',
+    homeScore: null,
+    awayScore: null,
+    events: [],
+    refereeId: null,
+    delegateId: null,
+    source: 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF).',
+  })
+}
 
 // ---------------------------------------------------------------------------
 // International fixtures (national teams) — upcoming only, no fabricated
@@ -1593,16 +1422,9 @@ export interface InternationalFixture {
   home: boolean
 }
 
-const opponents = ['Gabon', 'Zambie', 'Sierra Leone', 'Gambie', 'Guinée équatoriale', 'Mozambique']
-export const internationalFixtures: InternationalFixture[] = nationalTeams.map((team, i) => ({
-  id: `fixture-${team.id}`,
-  teamId: team.id,
-  opponent: opponents[i % opponents.length],
-  competition: team.category === 'A' ? 'Qualifications CAN 2027' : 'Tournoi amical UFOA',
-  date: addDays(TODAY, 3 + i * 11).toISOString(),
-  stadiumId: rng.pick(stadiums).id,
-  home: rng.bool(0.6),
-}))
+// Seul le calendrier réel des Éléphants est suivi (voir elephantsFixtures) ;
+// les autres sélections n'ont pas encore de match officiel renseigné.
+export const internationalFixtures: InternationalFixture[] = []
 
 // ---------------------------------------------------------------------------
 // Éléphants (équipe A masculine) — sélection et calendrier réels, non générés.
@@ -2187,7 +2009,7 @@ export const articles: Article[] = Array.from({ length: 64 }, (_, i) => {
       `Sur le terrain comme en dehors, l’objectif reste le même : structurer et faire grandir le football ivoirien à tous les niveaux, des catégories jeunes jusqu’à l’équipe fanion.`,
       `D’autres annonces sont attendues dans les prochains jours. Retrouvez toute l’actualité fédérale sur FIF Digital.`,
     ],
-    author: fullName(),
+    author: 'Rédaction FIF Digital',
     date: date.toISOString(),
     image: `https://picsum.photos/seed/article-${i}/1200/800`,
     tags: [category, 'FIF', subject.replace('Les ', '').replace('La ', '')],
@@ -2479,11 +2301,10 @@ export const fanBadges: FanBadge[] = [
 ]
 
 function quizFromStadiums(): QuizQuestion[] {
-  const allCapacities = [...new Set(stadiums.map((s) => s.capacity))]
-  return rng.pickN(stadiums, 8).map((s, i) => {
-    const pool = allCapacities.filter((c) => c !== s.capacity)
-    const distractors = rng.pickN(pool, 3)
-    const values = rng.shuffle([s.capacity, ...distractors])
+  const known = stadiums.filter((s): s is typeof s & { capacity: number } => typeof s.capacity === 'number')
+  return known.map((s, i) => {
+    const distractors = [15000, 25000, 30000, 33000, 45000, 50000, 60000, 20000, 40000].filter((c) => c !== s.capacity)
+    const values = rng.shuffle([s.capacity, ...rng.pickN(distractors, 3)])
     return {
       id: `q-stade-${i}`,
       category: 'Stades' as const,
@@ -2492,24 +2313,6 @@ function quizFromStadiums(): QuizQuestion[] {
       choices: values.map((v) => `${v.toLocaleString('fr-FR')} places`),
       answerIndex: values.indexOf(s.capacity),
       explanation: `Le ${s.name} peut accueillir ${s.capacity.toLocaleString('fr-FR')} spectateurs.`,
-    }
-  })
-}
-
-function quizFromClubs(): QuizQuestion[] {
-  const allYears = [...new Set(clubs.map((c) => c.founded))]
-  return rng.pickN(clubs, 8).map((c, i) => {
-    const pool = allYears.filter((y) => y !== c.founded)
-    const distractors = rng.pickN(pool, 3)
-    const values = rng.shuffle([c.founded, ...distractors])
-    return {
-      id: `q-club-${i}`,
-      category: 'Clubs' as const,
-      difficulty: rng.pick(['Amateur', 'Passionné', 'Expert'] as const),
-      question: `En quelle année le club ${c.name} a-t-il été fondé ?`,
-      choices: values.map(String),
-      answerIndex: values.indexOf(c.founded),
-      explanation: `${c.name} a été fondé en ${c.founded}.`,
     }
   })
 }
@@ -2543,7 +2346,6 @@ const realFactQuestions: QuizQuestion[] = [
 export const quizQuestions: QuizQuestion[] = [
   ...realFactQuestions,
   ...quizFromStadiums(),
-  ...quizFromClubs(),
   ...quizFromCompetitions(),
 ]
 
@@ -2594,9 +2396,9 @@ export const digitalCards: DigitalCard[] = [
     id: `dc-team-${i}`, slug: `${slugify(t.name)}-carte-${i}`, collection: 'Éléphants' as const, name: t.name,
     rarity: 'Rare' as const, unlockedBy: 'Suivre 10 matchs de cette sélection', description: `Carte collector de la sélection ${t.name}.`,
   })),
-  ...rng.pickN(stadiums, 10).map((s, i) => ({
+  ...stadiums.map((s, i) => ({
     id: `dc-stade-${i}`, slug: `${slugify(s.name)}-carte-${i}`, collection: 'Stades' as const, name: s.name,
-    rarity: 'Commune' as const, unlockedBy: `Check-in au ${s.name}`, description: `Carte du ${s.name}, ${s.capacity.toLocaleString('fr-FR')} places.`,
+    rarity: 'Commune' as const, unlockedBy: `Check-in au ${s.name}`, description: `Carte du ${s.name}${s.capacity ? `, ${s.capacity.toLocaleString('fr-FR')} places` : ''}.`,
   })),
   ...rng.pickN(clubs.filter((c) => c.achievements.some((a) => a.result === 'Champion')), 8).map((c, i) => ({
     id: `dc-club-${i}`, slug: `${slugify(c.name)}-carte-${i}`, collection: 'Trophées' as const, name: c.name,
@@ -2619,35 +2421,12 @@ const rewardCatalog: { category: RewardEntry['category']; title: string; descrip
 ]
 export const rewards: RewardEntry[] = rewardCatalog.map((r, i) => ({ id: `rw-${i}`, slug: `${slugify(r.title)}-${i}`, ...r }))
 
-const fanZoneCaptions = [
-  'On était plus de 20 000 dans le stade, quelle ambiance !',
-  'Mon fils a vu son premier match des Éléphants aujourd’hui 🐘',
-  'Le tifo de la tribune populaire était magnifique ce soir.',
-  'Retour de Bouaké après une belle victoire, fiers de nos couleurs 🇨🇮',
-  'Nouveau maillot reçu, prêt pour le prochain match !',
-  'La Fan Zone d’Abidjan était incroyable avant le coup d’envoi.',
-  'Souvenir du sacre de 2024, toujours autant d’émotion.',
-  'Chant appris avec la Brigade Orange avant le match.',
-  'Premier déplacement pour voir les Éléphants, expérience inoubliable.',
-  'Le mur de la fierté s’agrandit chaque semaine !',
-]
-export const fanZonePosts: FanZonePost[] = fanZoneCaptions.map((caption, i) => {
-  const city = rng.pick(cities)
-  return {
-    id: `fz-${i}`,
-    authorName: fullName(),
-    authorCityId: city.id,
-    type: rng.pick(['Photo', 'Vidéo', 'Message', 'Tifo'] as const),
-    caption,
-    date: addDays(new Date('2026-09-10T12:00:00Z'), -rng.int(0, 60)).toISOString(),
-    likes: rng.int(4, 480),
-  }
-})
+// Fan Zone : uniquement les publications réelles des supporters (aucune
+// publication ni auteur inventé).
+export const fanZonePosts: FanZonePost[] = []
 
 export function getFanClub(slug: string) { return fanClubs.find((f) => f.slug === slug) }
 
 export interface LeaderboardEntry { pseudo: string; cityId: string; xp: number; accuracyPct: number }
-export const mockFanLeaderboard: LeaderboardEntry[] = Array.from({ length: 30 }, () => {
-  const city = rng.pick(cities)
-  return { pseudo: rng.pick(['Kader', 'Assa', 'Fatou', 'Yannick', 'Moussa', 'Aya', 'Ibrahim', 'Nadège', 'Serge', 'Christelle', 'Amara', 'Rokia']) + rng.int(10, 99), cityId: city.id, xp: rng.int(200, 24000), accuracyPct: rng.int(30, 92) }
-}).sort((a, b) => b.xp - a.xp)
+// Classement : uniquement les supporters réels inscrits (aucun pseudo inventé).
+export const mockFanLeaderboard: LeaderboardEntry[] = []

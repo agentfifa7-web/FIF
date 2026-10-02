@@ -1,7 +1,6 @@
 import { competitions } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionCard } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Compétitions — FIF Digital' }
 
@@ -52,7 +51,6 @@ export default function CompetitionsPage() {
           </section>
         )
       })}
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

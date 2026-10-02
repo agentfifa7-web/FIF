@@ -3,13 +3,32 @@ import { CalendarDays, ClipboardCheck, FileText, GraduationCap } from 'lucide-re
 import { referees, matches, getClubById } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { AvailabilityToggle, ReportsList } from '@/components/site/OfficialPortalTools'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 
 export const metadata = { title: 'Portail Officiels — Mon espace — FIF Digital' }
 
 export default function OfficialPortalPage() {
+  // Espace personnel : affiché seulement pour un officiel réellement enregistré.
   const official = referees[0]
+  if (!official) {
+    return (
+      <main>
+        <PageHero
+          eyebrow="Portail Officiels — Espace personnel"
+          title="Mon espace officiel"
+          subtitle="Désignations, disponibilité et rapports de match des arbitres et officiels licenciés."
+          breadcrumb={[{ label: 'Officiels', href: '/officiels' }, { label: 'Mon espace' }]}
+        />
+        <section className="page-section tight">
+          <div className="dashboard-panel">
+            <h3>Aucun officiel enregistré pour le moment</h3>
+            <p className="lede">Cet espace s’ouvre aux arbitres, délégués et commissaires dès que leur fiche est créée à partir de la liste officielle de la Commission Centrale d’Arbitrage. Aucune désignation fictive n’est affichée.</p>
+            <Link href="/arbitrage" className="button-outline" style={{ marginTop: 12 }}>Voir l’Arbitrage Center</Link>
+          </div>
+        </section>
+      </main>
+    )
+  }
   const designations = matches.filter((m) => m.refereeId === official.id && m.status === 'À venir').slice(0, 5)
   const pastMatches = matches.filter((m) => m.refereeId === official.id && m.status === 'Terminé').slice(0, 5)
 
@@ -75,7 +94,6 @@ export default function OfficialPortalPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

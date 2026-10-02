@@ -51,7 +51,7 @@ function MatchRow({ row }: { row: Row }) {
         <TeamLine name={f.homeClub} bold={false} red={false} />
         <TeamLine name={f.awayClub} bold={false} red={false} />
       </div>
-      <span className="md-date">{shortDate(f.date)}</span>
+      <span className="md-date">{f.date ? shortDate(f.date) : 'À conf.'}</span>
       <div className="md-scores md-time">{f.time ?? '—'}</div>
     </div>
   )
@@ -62,7 +62,7 @@ function MatchRow({ row }: { row: Row }) {
 export function MatchdayList({ results = [], fixtures = [] }: { results?: RealLeagueMatch[]; fixtures?: RealLeagueFixture[] }) {
   const rows: (Row & { matchday: number; date: string })[] = [
     ...results.map((m) => ({ kind: 'result' as const, match: m, matchday: m.matchday, date: m.date })),
-    ...fixtures.map((f) => ({ kind: 'fixture' as const, fixture: f, matchday: f.matchday, date: f.date })),
+    ...fixtures.map((f) => ({ kind: 'fixture' as const, fixture: f, matchday: f.matchday, date: f.date ?? '' })),
   ]
   const isResults = fixtures.length === 0
   const days = [...new Set(rows.map((r) => r.matchday))].sort((a, b) => (isResults ? b - a : a - b))

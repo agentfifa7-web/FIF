@@ -16,13 +16,14 @@ export interface Stadium {
   slug: string
   name: string
   cityId: string
-  capacity: number
-  surface: 'Pelouse naturelle' | 'Pelouse hybride' | 'Synthétique'
-  lighting: boolean
-  changingRooms: number
-  image: string
-  built: number
-  video360Url: string
+  capacity?: number
+  surface?: 'Pelouse naturelle' | 'Pelouse hybride' | 'Synthétique'
+  lighting?: boolean
+  changingRooms?: number
+  image?: string
+  built?: number
+  video360Url?: string
+  note?: string
 }
 
 export interface HonourRecord {
@@ -37,9 +38,10 @@ export interface Club {
   name: string
   shortName: string
   cityId: string
-  stadiumId: string
-  founded: number
-  president: string
+  /** Stade de résidence confirmé, sinon null. */
+  stadiumId: string | null
+  founded?: number
+  president?: string
   colors: [string, string]
   crestInitials: string
   /** Écusson officiel réel (image fournie), sinon l'écusson SVG généré est utilisé. */
@@ -48,7 +50,7 @@ export interface Club {
   category: 'Professionnel' | 'Amateur' | 'Jeunes' | 'Féminin' | 'Futsal'
   group: 'A' | 'B' | null
   competitionIds: string[]
-  website: string
+  website?: string
   honours: { title: string; count: number }[]
   achievements: HonourRecord[]
 }
@@ -267,7 +269,8 @@ export interface StandingRow {
 export type MatchEventType = 'goal' | 'yellow' | 'red' | 'sub' | 'var' | 'ht' | 'ft' | 'kickoff'
 
 export interface MatchEvent {
-  minute: number
+  /** Minute de jeu, absente si elle n'a pas été communiquée. */
+  minute?: number
   type: MatchEventType
   team: 'home' | 'away'
   playerId?: string
@@ -280,16 +283,26 @@ export interface Match {
   matchday: number
   homeClubId: string
   awayClubId: string
-  stadiumId: string
+  stadiumId: string | null
+  /** Lieu tel que communiqué, quand il ne correspond à aucun stade référencé. */
+  venue?: string
   date: string
+  /** false : date pas encore officielle (date sert seulement au tri). */
+  dateConfirmed?: boolean
+  /** false : heure du coup d'envoi non communiquée. */
+  timeConfirmed?: boolean
   status: 'À venir' | 'Live' | 'Terminé' | 'Reporté'
   minute?: number
   homeScore: number | null
   awayScore: number | null
   events: MatchEvent[]
-  refereeId: string
+  refereeId: string | null
+  refereeName?: string
   delegateId: string | null
   attendance?: number
+  /** Page détaillée du match réel (compositions, source). */
+  detailHref?: string
+  source?: string
   /** Scénario d'événements pré-généré (déterministe) utilisé pour dériver, côté
    *  client et à partir de l'heure réelle, le score et la minute « en direct »
    *  une fois le coup d'envoi (date) atteint — voir lib/liveMatch.ts. */

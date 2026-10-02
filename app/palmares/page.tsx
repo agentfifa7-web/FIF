@@ -3,7 +3,6 @@ import { Award, Trophy } from 'lucide-react'
 import { nationalTeams, clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import type { HonourRecord } from '@/lib/data/types'
 
 export const metadata = { title: 'Palmarès — FIF Digital' }
@@ -46,7 +45,7 @@ export default function PalmaresPage() {
       <PageHero
         eyebrow="Archives du football ivoirien"
         title="Palmarès"
-        subtitle="Titres, finales, podiums et qualifications des équipes nationales et des clubs affiliés à la FIF — du plus titré au moins titré."
+        subtitle="Titres officiels des équipes nationales et des clubs affiliés à la FIF — uniquement les palmarès vérifiés."
         breadcrumb={[{ label: 'Palmarès' }]}
         meta={[
           { value: String(rankedTeams.length), label: 'Sélections classées' },
@@ -84,6 +83,7 @@ export default function PalmaresPage() {
       <section className="page-section tight">
         <p className="section-tag">Clubs</p>
         <p className="lede">Classement du plus titré au moins titré. Cliquez sur un club pour voir le détail de son palmarès.</p>
+        {!rankedClubs.length && <p className="lede" style={{ marginTop: 16 }}>Le palmarès officiel des clubs (titres de champion, coupes nationales) est en cours de saisie à partir des archives de la FIF. Aucun titre n’est affiché tant qu’il n’est pas vérifié.</p>}
         <div className="rank-list" style={{ marginTop: 16 }}>
           {rankedClubs.map((c, i) => {
             const sorted = [...c.achievements].sort((a, b) => b.year - a.year)
@@ -108,8 +108,6 @@ export default function PalmaresPage() {
           })}
         </div>
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

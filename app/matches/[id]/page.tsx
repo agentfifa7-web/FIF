@@ -3,7 +3,6 @@ import { matches, getMatch, getClubById } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { MatchCenter } from '@/components/site/MatchCenter'
 import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export function generateStaticParams() {
   return matches.map((m) => ({ id: m.id }))
@@ -28,10 +27,9 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
         <Breadcrumb items={[{ label: 'Calendrier', href: '/matches' }, { label: 'Match Center' }]} />
       </div>
       <MatchCenter match={match} />
-      {match.status !== 'Terminé' && homeClub && awayClub && (
+      {homeClub && awayClub && (
         <MatchSheetBanner matchId={match.id} homeName={homeClub.name} awayName={awayClub.name} />
       )}
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

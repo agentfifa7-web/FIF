@@ -22,3 +22,10 @@ export function age(birthdate: string, reference = '2026-09-17') {
   if (m < 0 || (m === 0 && r.getDate() < b.getDate())) a--
   return a
 }
+
+/** Date (et heure si connue) d'un match, sans jamais afficher une date ou une heure non officielle. */
+export function matchWhen(m: { date: string; dateConfirmed?: boolean; timeConfirmed?: boolean }, opts?: Intl.DateTimeFormatOptions) {
+  if (m.dateConfirmed === false) return 'Date à confirmer'
+  const d = formatDate(m.date, opts)
+  return m.timeConfirmed === false ? d : `${d} · ${formatTime(m.date)}`
+}

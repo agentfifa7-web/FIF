@@ -1,7 +1,6 @@
 import { players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { PlayerExplorer } from '@/components/site/PlayerExplorer'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Joueurs — FIF Digital' }
 
@@ -18,7 +17,6 @@ export default function PlayersPage() {
       <section className="page-section tight">
         <PlayerExplorer players={players} />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

@@ -1,6 +1,5 @@
 import { articles, matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Archives — FIF Digital' }
 
@@ -25,7 +24,6 @@ export default function ArchivesPage() {
         </div>
         <p className="lede" style={{ marginTop: 20 }}>La base d’archives historiques (résultats, photos et vidéos antérieurs à la saison en cours) sera enrichie progressivement à partir des fonds documentaires de la Fédération.</p>
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

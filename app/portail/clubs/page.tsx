@@ -112,7 +112,7 @@ export default function ClubPortalPage() {
                 <div className="dashboard-list">
                   {upcoming.map((m) => (
                     <div key={m.id}>
-                      <div><b>vs {clubs.find((c) => c.id === (m.homeClubId === club.id ? m.awayClubId : m.homeClubId))?.name}</b><small>{new Date(m.date).toLocaleDateString('fr-FR')}</small></div>
+                      <div><b>vs {clubs.find((c) => c.id === (m.homeClubId === club.id ? m.awayClubId : m.homeClubId))?.name}</b><small>{m.dateConfirmed === false ? 'Date à confirmer' : new Date(m.date).toLocaleDateString('fr-FR')}</small></div>
                       <Link href={`/admin/feuille-de-match/${m.id}`} className="status-pill neutral">Saisir</Link>
                     </div>
                   ))}

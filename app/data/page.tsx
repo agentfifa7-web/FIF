@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { clubs, players, matches, competitions, topScorersFor } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { StatCard } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'FIF Data Center' }
 
@@ -48,8 +47,6 @@ export default function DataCenterPage() {
         </div>
         <Link href="/competitions/ligue-1" className="text-link" style={{ marginTop: 16, display: 'inline-flex' }}>Voir la Ligue 1 en détail →</Link>
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

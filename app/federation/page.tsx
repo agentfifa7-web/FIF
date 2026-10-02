@@ -48,10 +48,10 @@ export default function FederationPage() {
         <p className="section-tag">Chiffres clés</p>
         <div className="card-grid cols-4" style={{ marginTop: 16 }}>
           <div className="stat-card"><strong>{clubs.length}</strong><span>Clubs affiliés</span></div>
-          <div className="stat-card"><strong>{players.length.toLocaleString('fr-FR')}</strong><span>Joueurs licenciés</span></div>
-          <div className="stat-card"><strong>{referees.length}</strong><span>Arbitres</span></div>
+          <div className="stat-card"><strong>{players.length.toLocaleString('fr-FR')}</strong><span>Joueurs enregistrés (effectifs officiels)</span></div>
+          {referees.length > 0 && <div className="stat-card"><strong>{referees.length}</strong><span>Arbitres</span></div>}
           <div className="stat-card"><strong>{competitions.length}</strong><span>Compétitions organisées</span></div>
-          <div className="stat-card"><strong>{stadiums.length}</strong><span>Stades homologués</span></div>
+          <div className="stat-card"><strong>{stadiums.length}</strong><span>Grands stades référencés</span></div>
           <div className="stat-card"><strong>{regions.length}</strong><span>Régions couvertes</span></div>
         </div>
       </section>

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, MapPin, CalendarDays, Play, Trophy } from 'lucide-react'
 import type { Article, Club, Competition, Match, Player, Video } from '@/lib/data/types'
 import { getClubById, getStadiumById, cityName } from '@/lib/data/mock'
-import { formatDate, formatTime, age } from '@/lib/format'
+import { formatDate, matchWhen, age } from '@/lib/format'
 import { useLiveMatch } from '@/lib/liveMatch'
 import { NewsThumb } from './NewsThumb'
 
@@ -82,13 +82,13 @@ export function ClubCrest({ club, size = 44 }: { club: Club; size?: number }) {
 export function MatchCard({ match }: { match: Match }) {
   const home = getClubById(match.homeClubId)
   const away = getClubById(match.awayClubId)
-  const stadium = getStadiumById(match.stadiumId)
+  const stadium = match.stadiumId ? getStadiumById(match.stadiumId) : undefined
   const live = useLiveMatch(match)
   if (!home || !away) return null
   return (
     <Link href={`/matches/${match.id}`} className={`match-card status-${live.status === 'Live' ? 'live' : live.status === 'Terminé' ? 'done' : 'upcoming'}`}>
       <div className="match-card-top">
-        <span>{formatDate(match.date)} · {formatTime(match.date)}</span>
+        <span>{matchWhen(match)}</span>
         {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status}</b>}
       </div>
       <div className="match-card-teams">
@@ -96,7 +96,7 @@ export function MatchCard({ match }: { match: Match }) {
         <strong>{live.homeScore !== null ? `${live.homeScore} - ${live.awayScore}` : 'VS'}</strong>
         <div><ClubCrest club={away} size={36} /><span>{away.shortName}</span></div>
       </div>
-      <div className="match-card-bottom"><MapPin /> {stadium?.name ?? ''}</div>
+      <div className="match-card-bottom"><MapPin /> {stadium?.name ?? match.venue ?? 'Stade à confirmer'}</div>
     </Link>
   )
 }
@@ -107,7 +107,7 @@ export function ClubCard({ club }: { club: Club }) {
       <ClubCrest club={club} size={52} />
       <div>
         <strong>{club.name}</strong>
-        <span>{cityName(club.cityId)} · {club.category}</span>
+        <span>{[cityName(club.cityId), club.group ? `Ligue 2 · Poule ${club.group}` : club.competitionIds.includes('comp-l1') ? 'Ligue 1' : club.category].filter(Boolean).join(' · ')}</span>
       </div>
       <ArrowRight />
     </Link>

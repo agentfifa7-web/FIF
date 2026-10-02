@@ -14,7 +14,7 @@ import {
   upcomingMatches,
   videos,
 } from '@/lib/data/mock'
-import { formatDate, formatTime } from '@/lib/format'
+import { formatDate, formatTime, matchWhen } from '@/lib/format'
 import { NewsCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { useFirstLiveMatch } from '@/lib/liveMatch'
@@ -69,7 +69,7 @@ export default function Page() {
       <section className="ticker" aria-label="Fil d'information">
         {ticker.map((item, i) => (
           <span key={i}>
-            {formatDate('title' in item ? item.date : item.date, { day: '2-digit', month: '2-digit' })}{' '}
+            {'title' in item || item.dateConfirmed !== false ? formatDate(item.date, { day: '2-digit', month: '2-digit' }) : 'À conf.'}{' '}
             <b>{'title' in item ? item.category.toUpperCase() : 'MATCH'}</b>{' '}
             {'title' in item ? item.title : `${getClubById(item.homeClubId)?.shortName} vs ${getClubById(item.awayClubId)?.shortName}`}
           </span>
@@ -78,16 +78,16 @@ export default function Page() {
 
       {nextMatch && (
         <section className="match-strip" id="matchs">
-          <div className="section-label"><span className="live-dot" /> Match du jour</div>
+          <div className="section-label"><span className="live-dot" /> Prochain match</div>
           <div className="match-main">
             <div>
-              <small>{'CHAMPIONNAT NATIONAL · J' + nextMatch.matchday}</small>
+              <small>{'LIGUE 1 LONACI · J' + nextMatch.matchday}</small>
               <strong>{getClubById(nextMatch.homeClubId)?.name} <b>vs</b> {getClubById(nextMatch.awayClubId)?.name}</strong>
-              <p><CalendarDays /> {formatDate(nextMatch.date, { weekday: 'long', day: 'numeric', month: 'long' })} <i /> <Clock3 /> {formatTime(nextMatch.date)} · {getStadiumById(nextMatch.stadiumId)?.name}</p>
+              <p><CalendarDays /> {matchWhen(nextMatch, { weekday: 'long', day: 'numeric', month: 'long' })} <i /> <MapPin /> {(nextMatch.stadiumId ? getStadiumById(nextMatch.stadiumId)?.name : nextMatch.venue) ?? 'Stade à confirmer'}</p>
             </div>
             <Link className="circle-arrow" href={`/matches/${nextMatch.id}`} aria-label="Voir le match"><ArrowRight /></Link>
           </div>
-          <div className="match-status"><span>À venir</span><strong>{Math.max(0, Math.round((+new Date(nextMatch.date) - Date.now()) / 86400000))} <small>J</small></strong></div>
+          <div className="match-status"><span>À venir</span>{nextMatch.dateConfirmed !== false && <strong>{Math.max(0, Math.round((+new Date(nextMatch.date) - Date.now()) / 86400000))} <small>J</small></strong>}</div>
         </section>
       )}
 

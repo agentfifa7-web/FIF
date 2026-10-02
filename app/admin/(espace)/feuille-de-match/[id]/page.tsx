@@ -1,12 +1,11 @@
 import { notFound } from 'next/navigation'
 import { matches, players, competitions, getClubById, standingsFor } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { MatchSheetForm } from '@/components/site/MatchSheetForm'
-import { formatDate } from '@/lib/format'
+import { matchWhen } from '@/lib/format'
 
 export function generateStaticParams() {
-  return matches.filter((m) => m.status !== 'Terminé').map((m) => ({ id: m.id }))
+  return matches.map((m) => ({ id: m.id }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -24,8 +23,12 @@ export default async function MatchSheetPage({ params }: { params: Promise<{ id:
   if (!home || !away) notFound()
   const comp = competitions.find((c) => c.id === match.competitionId)
 
-  const homePlayers = players.filter((p) => p.clubId === home.id).map((p) => ({ id: p.id, name: p.name }))
-  const awayPlayers = players.filter((p) => p.clubId === away.id).map((p) => ({ id: p.id, name: p.name }))
+  const roster = (clubId: string) => players
+    .filter((p) => p.clubId === clubId)
+    .sort((a, b) => (a.squadNumber ?? 99) - (b.squadNumber ?? 99))
+    .map((p) => ({ id: p.id, name: p.name, number: p.squadNumber, position: p.positionDetail ?? p.position }))
+  const homePlayers = roster(home.id)
+  const awayPlayers = roster(away.id)
   const standings = standingsFor(match.competitionId)
   const homeStanding = standings.find((s) => s.clubId === home.id) ?? { played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }
   const awayStanding = standings.find((s) => s.clubId === away.id) ?? { played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }
@@ -38,16 +41,15 @@ export default async function MatchSheetPage({ params }: { params: Promise<{ id:
       <section className="page-section tight">
         <MatchSheetForm
           matchId={match.id}
-          matchLabel={`${comp?.name ?? ''} · ${formatDate(match.date)} · ${home.name} vs ${away.name}`}
+          matchLabel={`${comp?.name ?? ''} · Journée ${match.matchday} · ${matchWhen(match)} · ${home.name} vs ${away.name}`}
           homeClub={{ id: home.id, name: home.name }}
           awayClub={{ id: away.id, name: away.name }}
           homePlayers={homePlayers}
           awayPlayers={awayPlayers}
-          homeStanding={homeStanding}
-          awayStanding={awayStanding}
+          homeStanding={match.status === 'Terminé' ? undefined : homeStanding}
+          awayStanding={match.status === 'Terminé' ? undefined : awayStanding}
         />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

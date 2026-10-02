@@ -3,7 +3,6 @@ import { ArrowRight } from 'lucide-react'
 import { coaches, referees, officials, agents } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { OfficialsDirectory } from '@/components/site/OfficialsDirectory'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Portail Officiels — FIF Digital' }
 
@@ -32,7 +31,6 @@ export default async function OfficialsPage({ searchParams }: { searchParams: Pr
       <section className="page-section tight">
         <OfficialsDirectory coaches={coaches} referees={referees} officials={officials} agents={agents} initialRole={role} />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

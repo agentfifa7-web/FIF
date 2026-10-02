@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { Award, Flag, Trophy } from 'lucide-react'
 import { elephantsCallUp, getElephantsPlayer, KEY_ATTRS_BY_POSITION } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { StarRating, PositionChips, AttributePanel } from '@/components/site/PlayerAttributes'
 import { PlayerRadar } from '@/components/site/PlayerRadar'
@@ -151,8 +150,6 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       <section className="page-section tight">
         <Link href="/equipes-nationales/elephants" className="button-outline">Retour à l’effectif des Éléphants</Link>
       </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

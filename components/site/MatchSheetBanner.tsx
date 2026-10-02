@@ -19,7 +19,7 @@ export function MatchSheetBanner({ matchId, homeName, awayName, editHref }: { ma
   if (sheet) {
     return (
       <div className="sim-panel">
-        <p><CheckCircle2 size={15} /> Feuille de match saisie : {homeName} {sheet.homeScore}-{sheet.awayScore} {awayName} (démonstration locale, {new Date(sheet.submittedAt).toLocaleDateString('fr-FR')}) — <Link href={href} className="text-link" style={{ display: 'inline-flex' }}>modifier</Link></p>
+        <p><CheckCircle2 size={15} /> Feuille de match saisie : {homeName} {sheet.homeScore}-{sheet.awayScore} {awayName} (publiée le {new Date(sheet.submittedAt).toLocaleDateString("fr-FR")}) — <Link href={href} className="text-link" style={{ display: 'inline-flex' }}>modifier</Link></p>
       </div>
     )
   }

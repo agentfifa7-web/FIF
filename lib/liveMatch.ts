@@ -39,7 +39,7 @@ export function computeLiveState(match: Match, now: number): LiveState {
   else if (elapsedMin < FULL_MIN) minute = Math.min(90, 45 + Math.floor(elapsedMin - HALF_MIN - HT_BREAK_MIN) + 1)
   else minute = 90
 
-  const visible = script.filter((e) => e.minute <= minute)
+  const visible = script.filter((e) => (e.minute ?? 0) <= minute)
   const homeScore = visible.filter((e) => e.type === 'goal' && e.team === 'home').length
   const awayScore = visible.filter((e) => e.type === 'goal' && e.team === 'away').length
 
