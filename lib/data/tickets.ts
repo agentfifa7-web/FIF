@@ -79,7 +79,7 @@ export const ticketEvents: TicketEvent[] = [
     date: '2026-10-03',
     time: '19:00',
     stadium: { name: 'Stade olympique Alassane-Ouattara', city: 'Ebimpé (Abidjan)', capacity: 60000 },
-    status: 'En vente',
+    status: 'Terminé',
     maxPerOrder: 6,
     gatesOpen: '15:00',
     tiers: [

@@ -38,7 +38,7 @@ export function TicketEventCard({ ev }: { ev: TicketEvent }) {
       <p className="ev-meta"><MapPin size={13} /> {ev.stadium.name}{ev.stadium.city ? `, ${ev.stadium.city}` : ''}</p>
       <div className="ev-card-foot">
         <span>{min !== null ? <>Dès <b>{formatMoney(min)}</b></> : 'Tarifs à venir'}</span>
-        <span className="button button-primary">{ev.status === 'En vente' ? 'Acheter' : 'Être alerté'}</span>
+        <span className="button button-primary">{ev.status === 'En vente' ? 'Acheter' : ev.status === 'Terminé' ? 'Voir le match' : 'Être alerté'}</span>
       </div>
     </Link>
   )

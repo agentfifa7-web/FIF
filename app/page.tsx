@@ -9,7 +9,7 @@ import {
   getStadiumById,
   getTeam,
   matches,
-  nextElephantsFixture,
+  nextElephantsFixture, lastElephantsFixture,
   elephantsFlag,
   upcomingMatches,
   videos,
@@ -30,7 +30,9 @@ export default function Page() {
   const nextMatch = upcomingMatches(1)[0]
   const live = useFirstLiveMatch(matches)
   const elephants = getTeam('elephants')!
-  const nextFixture = nextElephantsFixture()
+  // Prochain match des Éléphants, ou à défaut le dernier match joué (avec son score).
+  const nextFixture = (nextElephantsFixture() ?? lastElephantsFixture())!
+  const played = nextFixture.result
   const ticker = [...articles.slice(0, 3), ...upcomingMatches(2)].slice(0, 4)
 
   return (
@@ -94,18 +96,18 @@ export default function Page() {
       <section className="next-match" id="elephants">
         <div className="next-copy">
           <p className="eyebrow"><span /> Équipe nationale</p>
-          <h2>Prochain match<br /><em>des Éléphants</em></h2>
-          <p className="muted">Les champions d&apos;Afrique retrouvent le terrain pour une nouvelle bataille.</p>
+          <h2>{played ? 'Dernier match' : 'Prochain match'}<br /><em>des Éléphants</em></h2>
+          <p className="muted">{played ? 'Le calendrier de la prochaine fenêtre internationale sera publié dès son annonce par la FIF.' : 'Les champions d’Afrique retrouvent le terrain pour une nouvelle bataille.'}</p>
           <Link className="text-link" href="/equipes-nationales/elephants">Tout sur les Éléphants <ArrowRight /></Link>
         </div>
         <Link href={`/equipes-nationales/elephants/matchs/${nextFixture.slug}`} className="next-card" style={{ display: 'block' }}>
           <div className="next-card-top"><span>{nextFixture.competition.toUpperCase()}</span><span>{formatDate(nextFixture.date).toUpperCase()}</span></div>
           <div className="teams">
             <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-            <div className="versus"><small>{nextFixture.time}</small><b>VS</b><span>{nextFixture.venue}<br />{nextFixture.home ? 'Domicile' : 'Extérieur'}</span></div>
+            <div className="versus"><small>{played ? 'Terminé' : nextFixture.time}</small><b>{played ? `${nextFixture.home ? played.civScore : played.opponentScore} - ${nextFixture.home ? played.opponentScore : played.civScore}` : 'VS'}</b><span>{nextFixture.venue}<br />{nextFixture.home ? 'Domicile' : 'Extérieur'}</span></div>
             <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{nextFixture.opponentFlag}</div><strong>{nextFixture.opponent}</strong></div>
           </div>
-          <CountdownBar targetIso={nextFixture.date} />
+          {!played && <CountdownBar targetIso={nextFixture.date} />}
         </Link>
       </section>
 

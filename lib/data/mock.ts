@@ -1994,7 +1994,15 @@ export const elephantsFixtures: RealFixture[] = [
       source: 'Résultat réel confirmé par la presse ivoirienne, africaine et internationale (Supersport CI, Abidjan.net, Foot Mercato, Africa Top Sports, AfricaSoccer, ESPN) — victoire 2-0 arrachée en fin de match, 0-0 à la pause ; la Côte d’Ivoire prend la tête du groupe C. Minutes des buts légèrement différentes selon les sources (Gboho entre la 87e et la 89e, Touré à 90+4 ou 90+5). Compositions : Afrique-sur7 et Africa Top Sports ; triple changement vers la 65e (Wahi, Pépé et Oulaï remplacés par Rayan Fofana, Patrick Zabi et Bazoumana Touré — seul le remplacement de Pépé par Touré est attribué précisément), Gboho entré à la place de Kessié (82e).',
     },
   },
-  { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 50000, available: 600 }, { name: 'Tribune centrale', price: 10000, available: 6000 }, { name: 'Tribune latérale', price: 5000, available: 18000 }, { name: 'Virages (populaire)', price: 2000, available: 30000 }] },
+  { slug: 'elephants-cameroun-2026-10-03', opponent: 'Cameroun', opponentFlag: '🇨🇲', date: '2026-10-03', time: '19:00', venue: 'Stade Alassane Ouattara, Ebimpé', competition: 'Match amical', home: true, ticketCategories: [{ name: 'VIP', price: 50000, available: 600 }, { name: 'Tribune centrale', price: 10000, available: 6000 }, { name: 'Tribune latérale', price: 5000, available: 18000 }, { name: 'Virages (populaire)', price: 2000, available: 30000 }],
+    result: {
+      civScore: 0,
+      opponentScore: 1,
+      events: [
+        { minute: 46, type: 'goal', team: 'opponent', scorer: 'Bil Nsongo' },
+      ],
+      source: 'Résultat réel confirmé par la presse ivoirienne, camerounaise et internationale (Foot Mercato, Connectionivoirienne, Africa Top Sports, Camfoot, Afrik-Foot, VAVEL, ESPN) — défaite 1-0 des Éléphants, alignés avec une équipe largement remaniée, à Ebimpé. 0-0 à la pause, but de Bil Nsongo dès la reprise (46e). Compositions et passeur décisif non retenus : les sources divergent ou ne donnent que des noms partiels.',
+    } },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
@@ -2027,8 +2035,13 @@ export function getElephantsFixture(slug: string) {
  *  — à utiliser partout où le site affiche « le prochain match » des
  *  Éléphants, plutôt que elephantsFixtures[0] qui reste le premier de la
  *  liste même une fois ce match joué. */
-export function nextElephantsFixture() {
-  return elephantsFixtures.find((f) => !f.result) ?? elephantsFixtures[0]
+export function nextElephantsFixture(): RealFixture | undefined {
+  return elephantsFixtures.find((f) => !f.result)
+}
+
+/** Dernier match joué des Éléphants (avec résultat renseigné). */
+export function lastElephantsFixture(): RealFixture | undefined {
+  return [...elephantsFixtures].reverse().find((f) => f.result)
 }
 
 export function nextFixtureFor(teamId: string) {

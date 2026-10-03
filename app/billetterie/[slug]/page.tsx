@@ -58,8 +58,17 @@ export default async function TicketEventPage({ params }: { params: Promise<{ sl
         ) : (
           <div className="dashboard-panel" style={{ margin: 0, maxWidth: 680 }}>
             <h3><Clock size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />{ev.status}</h3>
-            <p className="lede" style={{ fontSize: 15 }}>{ev.note}</p>
-            <SaleAlertButton slug={ev.slug} />
+            {ev.status === 'Terminé' ? (
+              <>
+                <p className="lede" style={{ fontSize: 15 }}>Ce match a été joué : la vente de billets est close. Les billets achetés restent consultables dans « Mes billets ».</p>
+                {ev.matchHref && <Link href={ev.matchHref} className="button-outline">Voir le résultat du match</Link>}
+              </>
+            ) : (
+              <>
+                <p className="lede" style={{ fontSize: 15 }}>{ev.note}</p>
+                <SaleAlertButton slug={ev.slug} />
+              </>
+            )}
           </div>
         )}
       </section>
