@@ -4,6 +4,7 @@ import { clubs, competitions, getCompetition } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCard, CompetitionCard } from '@/components/site/cards'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 interface PracticeConfig {
   title: string
@@ -72,17 +73,20 @@ const PRACTICES: Record<string, PracticeConfig> = {
   },
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return Object.keys(PRACTICES).map((pratique) => ({ pratique }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ pratique: string }> }) {
+  await loadCms()
   const { pratique } = await params
   const config = PRACTICES[pratique]
   return { title: config ? `${config.title} — FIF Digital` : 'Football' }
 }
 
 export default async function PracticePage({ params }: { params: Promise<{ pratique: string }> }) {
+  await loadCms()
   const { pratique } = await params
   const config = PRACTICES[pratique]
   if (!config) notFound()

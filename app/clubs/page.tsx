@@ -1,10 +1,12 @@
 import { clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubExplorer } from '@/components/site/ClubExplorer'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Clubs — FIF Digital' }
 
-export default function ClubsPage() {
+export default async function ClubsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

@@ -4,6 +4,7 @@ import { nationalTeams, clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
 import type { HonourRecord } from '@/lib/data/types'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Palmarès — FIF Digital' }
 
@@ -31,7 +32,8 @@ function summarize(achievements: HonourRecord[]) {
   return RESULT_ORDER.filter((r) => counts[r]).map((r) => `${counts[r]} ${RESULT_LABEL[r]}`).join(' · ')
 }
 
-export default function PalmaresPage() {
+export default async function PalmaresPage() {
+  await loadCms()
   const rankedTeams = [...nationalTeams]
     .filter((t) => t.achievements.length > 0)
     .sort((a, b) => championCount(b.achievements) - championCount(a.achievements) || b.achievements.length - a.achievements.length)

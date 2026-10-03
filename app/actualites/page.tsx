@@ -5,10 +5,12 @@ import { PageHero } from '@/components/site/PageHero'
 import { NewsExplorer } from '@/components/site/NewsExplorer'
 import { PressReview } from '@/components/site/PressReview'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Actualités — FIF Digital' }
 
 export default async function NewsPage() {
+  await loadCms()
   const press = await getPressReview()
 
   return (

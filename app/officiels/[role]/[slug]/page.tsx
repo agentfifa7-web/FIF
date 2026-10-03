@@ -8,6 +8,7 @@ import {
 import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { formatDate, age } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 const ROLE_CONFIG = {
   entraineurs: { label: 'Entraîneur', dataset: coaches },
@@ -22,13 +23,15 @@ function isRoleKey(value: string): value is RoleKey {
   return value in ROLE_CONFIG
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return (Object.keys(ROLE_CONFIG) as RoleKey[]).flatMap((role) =>
     ROLE_CONFIG[role].dataset.map((p) => ({ role, slug: p.slug })),
   )
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ role: string; slug: string }> }) {
+  await loadCms()
   const { role, slug } = await params
   if (!isRoleKey(role)) return { title: 'Officiel — FIF Digital' }
   const person = ROLE_CONFIG[role].dataset.find((p) => p.slug === slug)
@@ -36,6 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ role: str
 }
 
 export default async function OfficialProfilePage({ params }: { params: Promise<{ role: string; slug: string }> }) {
+  await loadCms()
   const { role, slug } = await params
   if (!isRoleKey(role)) notFound()
   const config = ROLE_CONFIG[role]

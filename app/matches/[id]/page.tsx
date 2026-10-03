@@ -3,18 +3,22 @@ import { matches, getMatch, getClubById } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { MatchCenter } from '@/components/site/MatchCenter'
 import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return matches.map((m) => ({ id: m.id }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  await loadCms()
   const { id } = await params
   const match = getMatch(id)
   return { title: match ? `Match Center — FIF Digital` : 'Match' }
 }
 
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
+  await loadCms()
   const { id } = await params
   const match = getMatch(id)
   if (!match) notFound()

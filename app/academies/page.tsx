@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { academies, cityName } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Academy Directory — FIF Digital' }
 
-export default function AcademiesPage() {
+export default async function AcademiesPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

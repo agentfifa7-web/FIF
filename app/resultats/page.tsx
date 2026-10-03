@@ -1,10 +1,12 @@
 import { matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchExplorer } from '@/components/site/MatchExplorer'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Résultats — FIF Digital' }
 
-export default function ResultsPage() {
+export default async function ResultsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

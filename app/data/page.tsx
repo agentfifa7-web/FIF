@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { clubs, players, matches, competitions, topScorersFor } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { StatCard } from '@/components/site/cards'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF Data Center' }
 
-export default function DataCenterPage() {
+export default async function DataCenterPage() {
+  await loadCms()
   const totalGoals = matches.reduce((sum, m) => sum + (m.homeScore ?? 0) + (m.awayScore ?? 0), 0)
   const totalCards = matches.reduce((sum, m) => sum + m.events.filter((e) => e.type === 'yellow' || e.type === 'red').length, 0)
   const ligue1Scorers = topScorersFor('comp-l1').slice(0, 5)

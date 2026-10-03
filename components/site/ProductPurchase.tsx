@@ -1,5 +1,6 @@
 'use client'
 
+import { getSettings } from '@/lib/cms/runtime'
 import Link from 'next/link'
 import { useState } from 'react'
 import { CheckCircle2, Minus, Plus, ShoppingBag } from 'lucide-react'
@@ -8,7 +9,7 @@ import { formatMoney } from '@/lib/format'
 import { addToCart, FLOCAGE_PRICE, MAX_QTY } from '@/lib/cart'
 
 // Choix de l'article (couleur, taille, floquage, quantité) puis ajout au panier.
-export function ProductPurchase({ product }: { product: Product }) {
+function ProductPurchaseInner({ product }: { product: Product }) {
   // Articles photographiés : les couleurs décrivent le modèle unique, sans choix.
   const colorChoice = !product.photo && product.colors.length > 0
   const [color, setColor] = useState(colorChoice && product.colors.length === 1 ? product.colors[0] : '')
@@ -107,4 +108,10 @@ export function ProductPurchase({ product }: { product: Product }) {
       )}
     </div>
   )
+}
+
+/** Fermeture possible depuis Admin → Paramètres. */
+export function ProductPurchase(props: Parameters<typeof ProductPurchaseInner>[0]) {
+  if (!getSettings().shopOpen) return <p className="sales-closed">La boutique en ligne est momentanément fermée : les commandes reprendront prochainement.</p>
+  return <ProductPurchaseInner {...props} />
 }

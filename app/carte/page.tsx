@@ -3,10 +3,12 @@ import { buildFootballMapZones } from '@/lib/data/ci-geo'
 import { PageHero } from '@/components/site/PageHero'
 import { ClubExplorer } from '@/components/site/ClubExplorer'
 import { IvoryCoastMap } from '@/components/site/IvoryCoastMap'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Carte du football ivoirien — FIF Digital' }
 
-export default function MapPage() {
+export default async function MapPage() {
+  await loadCms()
   const zones = buildFootballMapZones()
 
   return (

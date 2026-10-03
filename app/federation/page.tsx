@@ -8,6 +8,7 @@ import {
 import { PageHero } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'La Fédération — FIF Digital' }
 
@@ -21,7 +22,8 @@ const MISSIONS = [
   'Garantir l’éthique, l’intégrité et la bonne gouvernance du football ivoirien.',
 ]
 
-export default function FederationPage() {
+export default async function FederationPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

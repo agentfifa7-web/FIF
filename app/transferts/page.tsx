@@ -2,10 +2,12 @@ import { clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { TransfertWorkflow } from '@/components/site/TransfertWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Transfer Center — FIF Digital' }
 
-export default function TransfersPage() {
+export default async function TransfersPage() {
+  await loadCms()
   const clubOptions = clubs.map((c) => ({ id: c.id, name: c.name }))
 
   return (

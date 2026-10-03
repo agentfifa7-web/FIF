@@ -4,6 +4,7 @@ import { officialDocuments } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Documents officiels — FIF Digital' }
 
@@ -14,7 +15,8 @@ const ORG_LABEL: Record<(typeof ORGS)[number], string> = {
   FIFA: 'Fédération Internationale de Football Association',
 }
 
-export default function DocumentsPage() {
+export default async function DocumentsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

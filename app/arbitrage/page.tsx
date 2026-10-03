@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { referees, matches, clubs } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { ArbitrageWorkflow } from '@/components/site/ArbitrageWorkflow'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Arbitrage Center — FIF Digital' }
 
-export default function ArbitragePage() {
+export default async function ArbitragePage() {
+  await loadCms()
   const active = referees.filter((r) => r.status === 'Actif')
   const fifa = referees.filter((r) => r.category === 'FIFA')
   const designations = matches.filter((m) => m.status === 'À venir').slice(0, 8)

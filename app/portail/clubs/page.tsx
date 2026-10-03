@@ -5,12 +5,14 @@ import { PageHero } from '@/components/site/PageHero'
 import { MatchCard } from '@/components/site/cards'
 import { ClubPortalTeams, ClubPortalRoster } from '@/components/site/ClubPortalTools'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Portail Clubs — FIF Digital' }
 
 const statusTone: Record<string, string> = { Valide: 'ok', 'En attente': 'pending', Expirée: 'error' }
 
-export default function ClubPortalPage() {
+export default async function ClubPortalPage() {
+  await loadCms()
   const club = clubs[3]
   const roster = players.filter((p) => p.clubId === club.id)
   const pendingLicenses = roster.filter((p) => p.licenseStatus !== 'Valide')

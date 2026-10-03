@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { Lightbulb, Users } from 'lucide-react'
 import { stadiums, cityName } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Stadium Hub — FIF Digital' }
 
-export default function StadiumsPage() {
+export default async function StadiumsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

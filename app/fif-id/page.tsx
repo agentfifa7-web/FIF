@@ -3,12 +3,14 @@ import { QrCode, ShieldCheck, User, Users } from 'lucide-react'
 import { players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF ID — FIF Digital' }
 
 const types = ['Joueur', 'Entraîneur', 'Arbitre', 'Officiel', 'Agent', 'Club', 'Académie']
 
-export default function FifIdPage() {
+export default async function FifIdPage() {
+  await loadCms()
   const sample = players[12]
 
   return (

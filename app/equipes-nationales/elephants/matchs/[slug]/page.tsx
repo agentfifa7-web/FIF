@@ -9,12 +9,15 @@ import { LivePreview } from '@/components/site/ElephantsMatchTools'
 import { ticketEvents } from '@/lib/data/tickets'
 import { MatchSheetBanner } from '@/components/site/MatchSheetBanner'
 import { formatDate, formatDateLong } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return elephantsFixtures.map((f) => ({ slug: f.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
   return { title: fixture ? `Côte d'Ivoire — ${fixture.opponent} — FIF Digital` : 'Match' }
@@ -29,6 +32,7 @@ function subLabel(s: RealFixtureSubstitution) {
 }
 
 export default async function ElephantsMatchPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
   if (!fixture) notFound()

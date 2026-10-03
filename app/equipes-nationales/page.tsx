@@ -3,6 +3,7 @@ import { ArrowRight, Shield } from 'lucide-react'
 import { nationalTeams, nextFixtureFor, nextElephantsFixture } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Équipes nationales — FIF Digital' }
 
@@ -12,7 +13,8 @@ const groups: { title: string; ids: string[] }[] = [
   { title: 'Autres pratiques', ids: ['nt-futsal', 'nt-beach'] },
 ]
 
-export default function NationalTeamsPage() {
+export default async function NationalTeamsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

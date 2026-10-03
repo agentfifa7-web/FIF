@@ -4,18 +4,22 @@ import { officialDocuments } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return officialDocuments.map((d) => ({ slug: d.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const doc = officialDocuments.find((d) => d.slug === slug)
   return { title: doc ? `${doc.title} — FIF Digital` : 'Document' }
 }
 
 export default async function DocumentPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const doc = officialDocuments.find((d) => d.slug === slug)
   if (!doc) notFound()

@@ -3,10 +3,12 @@ import { ArrowRight } from 'lucide-react'
 import { coaches, referees, officials, agents } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { OfficialsDirectory } from '@/components/site/OfficialsDirectory'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Portail Officiels — FIF Digital' }
 
 export default async function OfficialsPage({ searchParams }: { searchParams: Promise<{ role?: string }> }) {
+  await loadCms()
   const { role } = await searchParams
   return (
     <main>

@@ -4,6 +4,7 @@ import { globalSearch } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { EmptyState } from '@/components/site/widgets'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Recherche — FIF Digital' }
 
@@ -12,6 +13,7 @@ const typeLabels: Record<string, string> = {
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  await loadCms()
   const { q = '' } = await searchParams
   const results = globalSearch(q)
   const grouped = results.reduce<Record<string, typeof results>>((acc, r) => {

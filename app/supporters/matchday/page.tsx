@@ -4,10 +4,12 @@ import { PageHero } from '@/components/site/PageHero'
 import { MatchdayVote } from '@/components/site/MatchdayVote'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDateLong } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Mode Matchday — FIF Digital' }
 
-export default function MatchdayPage() {
+export default async function MatchdayPage() {
+  await loadCms()
   const fixture = nextElephantsFixture()
   const candidates = elephantsCallUp.slice(0, 6).map((p) => ({ id: p.slug, name: p.name }))
 

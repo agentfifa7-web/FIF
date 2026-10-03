@@ -5,10 +5,12 @@ import { PageHero } from '@/components/site/PageHero'
 import { NewsCard } from '@/components/site/cards'
 import { AccountDashboard } from '@/components/site/AccountDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Mon compte — FIF Digital' }
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  await loadCms()
   const nextEvent = ticketEvents.find((e) => e.status === 'En vente') ?? ticketEvents[0]
 
   return (

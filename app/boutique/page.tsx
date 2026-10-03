@@ -2,10 +2,12 @@ import { products } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { StoreGrid } from '@/components/site/StoreGrid'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF Store — Boutique' }
 
-export default function StorePage() {
+export default async function StorePage() {
+  await loadCms()
   return (
     <main>
       <PageHero

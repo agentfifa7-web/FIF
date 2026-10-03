@@ -1,5 +1,6 @@
 'use client'
 
+import { getSettings } from '@/lib/cms/runtime'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, Minus, Plus, Printer, Ticket as TicketIcon, UserRound } from 'lucide-react'
@@ -13,7 +14,7 @@ import { DigitalTicket } from './DigitalTicket'
 
 const STEPS = ['Places', 'Titulaires', 'Paiement', 'Billets']
 
-export function TicketCheckout({ event }: { event: TicketEvent }) {
+function TicketCheckoutInner({ event }: { event: TicketEvent }) {
   const { account, ready } = useAccount()
   const storageKey = `fif-checkout-${event.slug}`
   const [step, setStep] = useState(0)
@@ -200,4 +201,10 @@ export function TicketCheckout({ event }: { event: TicketEvent }) {
       )}
     </div>
   )
+}
+
+/** Fermeture possible depuis Admin → Paramètres. */
+export function TicketCheckout(props: Parameters<typeof TicketCheckoutInner>[0]) {
+  if (!getSettings().ticketingOpen) return <p className="sales-closed">La vente de billets en ligne est momentanément fermée. Revenez un peu plus tard.</p>
+  return <TicketCheckoutInner {...props} />
 }

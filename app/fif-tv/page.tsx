@@ -2,10 +2,12 @@ import { videos } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { VideoExplorer } from '@/components/site/VideoExplorer'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF TV — FIF Digital' }
 
-export default function FifTvPage() {
+export default async function FifTvPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

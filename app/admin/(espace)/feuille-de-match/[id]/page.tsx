@@ -3,18 +3,22 @@ import { matches, players, competitions, getClubById, standingsFor } from '@/lib
 import { Breadcrumb } from '@/components/site/PageHero'
 import { MatchSheetForm } from '@/components/site/MatchSheetForm'
 import { matchWhen } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return matches.map((m) => ({ id: m.id }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  await loadCms()
   const { id } = await params
   const match = matches.find((m) => m.id === id)
   return { title: match ? `Feuille de match — FIF Digital Admin` : 'Feuille de match' }
 }
 
 export default async function MatchSheetPage({ params }: { params: Promise<{ id: string }> }) {
+  await loadCms()
   const { id } = await params
   const match = matches.find((m) => m.id === id)
   if (!match) notFound()

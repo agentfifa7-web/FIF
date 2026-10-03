@@ -43,7 +43,7 @@ import type {
 
 export const IS_DEMO_DATA = true
 
-const rng = makeRng(20260917)
+let rng = makeRng(20260917)
 
 const TODAY = new Date('2026-09-17T12:00:00Z')
 
@@ -638,6 +638,47 @@ for (const club of clubs) {
   byPotential.forEach((r, i) => { r.player.potentialAbilityStars = starsFromRank(i, byPotential.length) })
 }
 
+/** Fiche joueur complète pour un joueur créé depuis le back-office ; le profil
+ *  de jeu est généré de façon stable à partir de son identifiant. */
+export function buildPlayerRecord(input: {
+  id: string; name: string; clubId: string; position: Player['position']; positionDetail?: string
+  squadNumber?: number; birthdate?: string; nationality?: string; height?: number; weight?: number
+  preferredFoot?: Player['preferredFoot']; licenseStatus?: Player['licenseStatus']
+}): Player {
+  const club = clubs.find((c) => c.id === input.clubId)
+  const base: BasePlayer = {
+    id: input.id,
+    slug: `${slugify(input.name)}-${input.id.slice(-4)}`,
+    name: input.name,
+    photoSeed: input.id,
+    position: input.position,
+    positionDetail: input.positionDetail || undefined,
+    realMeasures: Boolean(input.height && input.weight && input.birthdate),
+    clubId: input.clubId,
+    gender: club?.gender ?? 'M',
+    birthdate: input.birthdate ?? '',
+    nationality: input.nationality ?? '',
+    fifId: `FIF-${input.id.slice(-6).toUpperCase()}`,
+    licenseStatus: input.licenseStatus ?? 'Valide',
+    squadNumber: input.squadNumber,
+    realRoster: true,
+    stats: { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 },
+    history: [{ clubId: input.clubId, from: 2026, to: null }],
+    nationalSelections: [],
+  }
+  const saved = rng
+  rng = makeRng([...input.id].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7))
+  const profile = buildScoutingProfile(base)
+  rng = saved
+  return {
+    ...base, ...profile,
+    height: input.height ?? profile.height,
+    weight: input.weight ?? profile.weight,
+    preferredFoot: input.preferredFoot ?? profile.preferredFoot,
+    seasonStats: [],
+  }
+}
+
 function playersOf(clubId: string) {
   return players.filter((p) => p.clubId === clubId)
 }
@@ -1212,6 +1253,27 @@ export function realLigue1TopScorers(): { player: string; club: string; goals: n
       const club = e.team === 'home' ? m.homeClub : m.awayClub
       const key = `${e.player}|${club}`
       const row = tally.get(key) ?? { player: e.player, club, goals: 0 }
+      row.goals++
+      tally.set(key, row)
+    }
+  }
+  return [...tally.values()].sort((a, b) => b.goals - a.goals)
+}
+
+/** Meilleurs buteurs d'une compétition, calculés à partir des matchs (résultats
+ *  réels et feuilles de match publiées). */
+export function scorersFromMatches(competitionId: string): { player: string; club: string; goals: number; slug?: string }[] {
+  const tally = new Map<string, { player: string; club: string; goals: number; slug?: string }>()
+  for (const m of matches) {
+    if (m.competitionId !== competitionId || m.status !== 'Terminé') continue
+    for (const e of m.events) {
+      if (e.type !== 'goal') continue
+      const p = e.playerId ? players.find((x) => x.id === e.playerId) : undefined
+      const name = p?.name ?? e.detail
+      if (!name) continue
+      const club = clubs.find((c) => c.id === (e.team === 'home' ? m.homeClubId : m.awayClubId))?.name ?? ''
+      const key = `${name}|${club}`
+      const row = tally.get(key) ?? { player: name, club, goals: 0, slug: p?.slug }
       row.goals++
       tally.set(key, row)
     }
@@ -1978,7 +2040,7 @@ export function nextFixtureFor(teamId: string) {
 // ---------------------------------------------------------------------------
 // News, Videos
 // ---------------------------------------------------------------------------
-const newsCategories = ['Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Amateur', 'Clubs', 'Jeunes', 'Compétitions', 'Arbitrage', 'Formation', 'Fédération', 'Engagement sociétal', 'Futsal', 'Beach Soccer']
+export const newsCategories = ['Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Amateur', 'Clubs', 'Jeunes', 'Compétitions', 'Arbitrage', 'Formation', 'Fédération', 'Engagement sociétal', 'Futsal', 'Beach Soccer']
 const newsTitles = [
   'préparent leur prochaine échéance internationale',
   'annoncent leur liste pour la fenêtre à venir',
@@ -2017,7 +2079,7 @@ export const articles: Article[] = Array.from({ length: 64 }, (_, i) => {
   }
 })
 
-const videoCategories = ['Live', 'Matchs', 'Résumés', 'Inside', 'Interviews', 'Conférences', 'Documentaires', 'Archives', 'Jeunes', 'Féminin', 'Futsal']
+export const videoCategories = ['Live', 'Matchs', 'Résumés', 'Inside', 'Interviews', 'Conférences', 'Documentaires', 'Archives', 'Jeunes', 'Féminin', 'Futsal']
 export const videos: Video[] = Array.from({ length: 48 }, (_, i) => {
   const category = videoCategories[i % videoCategories.length]
   return {
@@ -2049,7 +2111,7 @@ export const academies: Academy[] = Array.from({ length: 18 }, (_, i) => {
 })
 
 
-const productCategories = ['Maillots', 'Tenues', 'Enfants', 'Femmes', 'Accessoires', 'Ballons', 'Écharpes', 'Casquettes']
+export const productCategories = ['Maillots', 'Tenues', 'Enfants', 'Femmes', 'Accessoires', 'Ballons', 'Écharpes', 'Casquettes']
 const productNamer: Record<string, () => string> = {
   Maillots: () => `Maillot Éléphants ${rng.bool() ? 'Domicile' : 'Extérieur'}`,
   Tenues: () => `Tenue d’entraînement Éléphants`,

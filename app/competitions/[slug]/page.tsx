@@ -1,22 +1,26 @@
 import { notFound } from 'next/navigation'
 import { Info } from 'lucide-react'
-import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1Matches, realLigue1Standings, realLigue1TopScorers, realLigue1TopAssists, realLigue1UpcomingFixtures } from '@/lib/data/mock'
+import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1TopAssists, scorersFromMatches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionTabs } from '@/components/site/CompetitionTabs'
 import { RankingTable } from '@/components/site/widgets'
 import { MatchdayList } from '@/components/site/MatchdayList'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return competitions.map((c) => ({ slug: c.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const c = getCompetition(slug)
   return { title: c ? `${c.name} — FIF Digital` : 'Compétition' }
 }
 
 export default async function CompetitionPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const competition = getCompetition(slug)
   if (!competition) notFound()
@@ -37,11 +41,13 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const compPlayers = isRealLigue1
     ? competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id && p.realRoster))
     : competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
-  const realMatches = isRealLigue1 ? realLigue1Matches : []
-  const realStandings = isRealLigue1 ? realLigue1Standings() : []
-  const realScorers = isRealLigue1 ? realLigue1TopScorers() : []
+  // Ligue 1 : résultats, classement et buteurs calculés à partir des matchs
+  // officiels (résultats confirmés et feuilles de match publiées).
+  const realMatches = isRealLigue1 ? compMatches.filter((m) => m.status === 'Terminé') : []
+  const realStandings = isRealLigue1 ? standings.filter((r) => r.played > 0) : []
+  const realScorers = isRealLigue1 ? scorersFromMatches(competition.id) : []
   const realAssisters = isRealLigue1 ? realLigue1TopAssists() : []
-  const upcomingFixtures = isRealLigue1 ? realLigue1UpcomingFixtures : []
+  const upcomingFixtures = isRealLigue1 ? compMatches.filter((m) => m.status !== 'Terminé') : []
 
   return (
     <main>
@@ -59,7 +65,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
       {realMatches.length > 0 && (
         <section className="page-section tight dark-section">
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
-          <div style={{ marginTop: 16 }}><MatchdayList results={realMatches} /></div>
+          <div style={{ marginTop: 16 }}><MatchdayList matches={realMatches} mode="results" /></div>
           <div className="card-grid cols-2" style={{ marginTop: 24, alignItems: 'start' }}>
             {realStandings.length > 0 && (
               <div>
@@ -115,7 +121,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         <section className="page-section tight">
           <p className="section-tag">Prochains matchs réels</p>
           {upcomingFixtures.length > 0 ? (
-            <div style={{ marginTop: 16 }}><MatchdayList fixtures={upcomingFixtures} /></div>
+            <div style={{ marginTop: 16 }}><MatchdayList matches={upcomingFixtures} mode="fixtures" /></div>
           ) : (
             <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
           )}

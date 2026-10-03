@@ -1,10 +1,12 @@
 import { players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { PlayerExplorer } from '@/components/site/PlayerExplorer'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Joueurs — FIF Digital' }
 
-export default function PlayersPage() {
+export default async function PlayersPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

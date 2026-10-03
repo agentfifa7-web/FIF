@@ -1,12 +1,14 @@
 import { competitions } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { CompetitionCard } from '@/components/site/cards'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Compétitions — FIF Digital' }
 
 const groups = ['Seniors', 'Féminin', 'Jeunes', 'Futsal', 'Beach Soccer'] as const
 
-export default function CompetitionsPage() {
+export default async function CompetitionsPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

@@ -4,10 +4,12 @@ import { presidentProfile, presidentPromises } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Le Président — FIF Digital' }
 
-export default function PresidentPage() {
+export default async function PresidentPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

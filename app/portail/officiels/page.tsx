@@ -4,10 +4,12 @@ import { referees, matches, getClubById } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { AvailabilityToggle, ReportsList } from '@/components/site/OfficialPortalTools'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Portail Officiels — Mon espace — FIF Digital' }
 
-export default function OfficialPortalPage() {
+export default async function OfficialPortalPage() {
+  await loadCms()
   // Espace personnel : affiché seulement pour un officiel réellement enregistré.
   const official = referees[0]
   if (!official) {

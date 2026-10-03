@@ -331,6 +331,9 @@ export interface Video {
   duration: string
   date: string
   image: string
+  /** Lien de la vidéo (YouTube, Facebook ou fichier). */
+  url?: string
+  description?: string
 }
 
 export interface Product {

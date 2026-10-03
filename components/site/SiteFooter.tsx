@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { SiteSettings } from '@/lib/cms/types'
 
 const columns = [
   {
@@ -50,7 +51,14 @@ const columns = [
   },
 ]
 
-export function SiteFooter() {
+export function SiteFooter({ settings }: { settings?: SiteSettings }) {
+  const socials = [
+    { href: settings?.facebook, label: 'Facebook', short: 'f' },
+    { href: settings?.x, label: 'X', short: 'x' },
+    { href: settings?.instagram, label: 'Instagram', short: 'ig' },
+    { href: settings?.youtube, label: 'YouTube', short: 'yt' },
+    { href: settings?.tiktok, label: 'TikTok', short: 'tk' },
+  ].filter((s) => s.href)
   return (
     <footer className="footer">
       <div className="footer-top">
@@ -68,15 +76,22 @@ export function SiteFooter() {
               {col.links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
             </div>
           ))}
-          <div>
-            <b>Suivez-nous</b>
-            <div className="socials">
-              <a href="#facebook" aria-label="Facebook">f</a>
-              <a href="#twitter" aria-label="Twitter">x</a>
-              <a href="#instagram" aria-label="Instagram">ig</a>
-              <a href="#youtube" aria-label="Youtube">yt</a>
+          {socials.length > 0 && (
+            <div>
+              <b>Suivez-nous</b>
+              <div className="socials">
+                {socials.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>{s.short}</a>)}
+              </div>
             </div>
-          </div>
+          )}
+          {(settings?.contactEmail || settings?.contactPhone) && (
+            <div>
+              <b>Contact</b>
+              {settings.contactEmail && <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a>}
+              {settings.contactPhone && <a href={`tel:${settings.contactPhone.replace(/\s/g, '')}`}>{settings.contactPhone}</a>}
+              {settings.address && <span>{settings.address}</span>}
+            </div>
+          )}
         </div>
       </div>
       <div className="footer-bottom">

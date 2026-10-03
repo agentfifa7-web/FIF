@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, CheckCircle2, Plus, Trash2, UserPlus, Users } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { saveMatchSheetAction } from '@/app/admin/cms-actions'
 import {
-  getMatchSheet, saveMatchSheet,
+  getMatchSheet,
   type MatchSheetCard, type MatchSheetGoal, type MatchSheetOverride, type MatchSheetPlayer, type MatchSheetSubstitution,
 } from '@/lib/matchsheet'
 
@@ -61,6 +63,8 @@ export function MatchSheetForm({
   const [subs, setSubs] = useState<MatchSheetSubstitution[]>([])
   const [published, setPublished] = useState<MatchSheetOverride | null>(null)
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const existing = getMatchSheet(matchId)
@@ -124,7 +128,7 @@ export function MatchSheetForm({
     setSubs((s) => [...s, { minute: 46, team, outId: list[0].id, outName: nameOf(team, list[0].id), inId: list[1].id, inName: nameOf(team, list[1].id) }])
   }
 
-  function publish(e: React.FormEvent) {
+  async function publish(e: React.FormEvent) {
     e.preventDefault()
     for (const side of ['home', 'away'] as const) {
       const starters = lineups[side].filter((x) => x.status === 'starter').length
@@ -143,8 +147,12 @@ export function MatchSheetForm({
       submittedBy: 'Administrateur FIF',
       submittedAt: new Date().toISOString(),
     }
-    saveMatchSheet(sheet)
+    setSaving(true)
+    const res = await saveMatchSheetAction(sheet)
+    setSaving(false)
+    if (res.error) return setError(res.error)
     setPublished(sheet)
+    router.refresh()
   }
 
   const afterHome = homeStanding ? applyResult(homeStanding, homeScore, awayScore) : null
@@ -256,14 +264,14 @@ export function MatchSheetForm({
 
         {error && <p className="form-error" role="alert" style={{ marginTop: 16 }}>{error}</p>}
         <div className="form-actions">
-          <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Publier la feuille de match</button>
+          <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }} disabled={saving}>{saving ? 'Enregistrement…' : 'Publier la feuille de match'}</button>
         </div>
       </form>
 
       {published && (
         <div className="form-card matchsheet-published" style={{ margin: '24px 0 0', maxWidth: 'none' }}>
           <p className="matchsheet-published-head"><CheckCircle2 size={18} /> Feuille de match publiée</p>
-          <p className="muted-sm">Publiée par {published.submittedBy} le {new Date(published.submittedAt).toLocaleString('fr-FR')}. Elle est enregistrée dans ce navigateur ; la synchronisation avec la base fédérale la rendra visible à tous les visiteurs.</p>
+          <p className="muted-sm">Publiée par {published.submittedBy} le {new Date(published.submittedAt).toLocaleString('fr-FR')}. Le résultat, les compositions, le classement et les statistiques des joueurs sont mis à jour sur le site.</p>
 
           {homeStanding && awayStanding && afterHome && afterAway && (
             <>

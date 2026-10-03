@@ -3,18 +3,22 @@ import { CalendarDays, DoorOpen, Lightbulb, MapPin, Sprout, Users, Video } from 
 import { stadiums, getStadium, cityName, getCity, getRegion, clubs, matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchCard } from '@/components/site/cards'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return stadiums.map((s) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const s = getStadium(slug)
   return { title: s ? `${s.name} — FIF Digital` : 'Stade' }
 }
 
 export default async function StadiumPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const stadium = getStadium(slug)
   if (!stadium) notFound()

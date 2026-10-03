@@ -3,6 +3,7 @@ import { players } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { LicenceWorkflow } from '@/components/site/LicenceWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Licences — FIF Digital' }
 
@@ -12,7 +13,8 @@ const audiences = [
   { icon: Award, label: 'Entraîneurs & agents', desc: 'Licences techniques CAF et licences d’agent sportif.' },
 ]
 
-export default function LicencesPage() {
+export default async function LicencesPage() {
+  await loadCms()
   const valid = players.filter((p) => p.licenseStatus === 'Valide').length
   const pending = players.filter((p) => p.licenseStatus === 'En attente').length
   const expired = players.filter((p) => p.licenseStatus === 'Expirée').length

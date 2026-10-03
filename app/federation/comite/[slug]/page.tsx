@@ -5,18 +5,22 @@ import { executiveCommittee, executiveCommitteeSourceNote, getCommission } from 
 import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return executiveCommittee.map((m) => ({ slug: m.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const member = executiveCommittee.find((m) => m.slug === slug)
   return { title: member ? `${member.name} — FIF Digital` : 'Comité exécutif' }
 }
 
 export default async function ExecutiveMemberPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const member = executiveCommittee.find((m) => m.slug === slug)
   if (!member) notFound()

@@ -4,18 +4,22 @@ import { commissions, executiveCommittee, presidentPromises } from '@/lib/data/m
 import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return commissions.map((c) => ({ slug: c.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const commission = commissions.find((c) => c.slug === slug)
   return { title: commission ? `${commission.name} — FIF Digital` : 'Commission' }
 }
 
 export default async function CommissionPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const commission = commissions.find((c) => c.slug === slug)
   if (!commission) notFound()

@@ -3,18 +3,22 @@ import { elephantsFixtures, getElephantsFixture, elephantsCallUp, elephantsFlag 
 import { Breadcrumb } from '@/components/site/PageHero'
 import { MatchSheetForm } from '@/components/site/MatchSheetForm'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return elephantsFixtures.map((f) => ({ slug: f.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
   return { title: fixture ? `Feuille de match — FIF Digital Admin` : 'Feuille de match' }
 }
 
 export default async function ElephantsMatchSheetPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
   if (!fixture) notFound()

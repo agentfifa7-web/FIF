@@ -5,6 +5,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 import type { TransparencyRecord } from '@/lib/data/types'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Transparence FIF — FIF Digital' }
 
@@ -18,7 +19,8 @@ const CATEGORY_ICON: Record<TransparencyRecord['category'], typeof FileText> = {
 
 const CATEGORIES: TransparencyRecord['category'][] = ['Budget', 'Rapport', 'Décision', 'Appel d’offres', 'Statistique institutionnelle']
 
-export default function TransparencePage() {
+export default async function TransparencePage() {
+  await loadCms()
   const done = presidentPromises.filter((p) => p.status === 'Réalisée').length
 
   return (

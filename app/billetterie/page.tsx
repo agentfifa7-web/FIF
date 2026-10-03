@@ -6,6 +6,7 @@ import { TicketEventCard, SideBadge, eventDateLabel } from '@/components/site/Ti
 import { Countdown } from '@/components/site/Countdown'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatMoney } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF Tickets — Billetterie officielle' }
 
@@ -18,7 +19,8 @@ const FAQ = [
   ['Puis-je être remboursé ?', 'Les conditions d’échange et de remboursement (annulation ou report du match) sont celles des conditions générales de vente publiées par l’organisateur.'],
 ]
 
-export default function TicketsPage() {
+export default async function TicketsPage() {
+  await loadCms()
   const featured = ticketEvents.find((e) => e.status === 'En vente')
   const others = ticketEvents.filter((e) => e !== featured)
   const groups = Array.from(new Set(others.map((e) => e.competition)))

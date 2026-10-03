@@ -4,10 +4,12 @@ import { competitions, matches, getClubById, elephantsFixtures, elephantsFlag } 
 import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
 import { MatchSheetIndicator } from '@/components/site/MatchSheetIndicator'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Feuilles de match — FIF Digital Admin' }
 
-export default function MatchSheetIndexPage() {
+export default async function MatchSheetIndexPage() {
+  await loadCms()
   // Tous les matchs officiels : à venir (feuille à saisir) et déjà joués (compositions à compléter).
   const eligible = [...matches].sort((a, b) => a.matchday - b.matchday || +new Date(a.date) - +new Date(b.date))
 

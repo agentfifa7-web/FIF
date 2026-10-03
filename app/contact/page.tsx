@@ -3,6 +3,7 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { getSettings } from '@/lib/cms/runtime'
 
 const faqs = [
   { q: 'Comment obtenir une licence ?', a: 'Rendez-vous sur la page Licences, ou passez par votre club qui initie la demande depuis son Portail Clubs. Le suivi se fait ensuite dans votre espace Mon FIF.' },
@@ -13,6 +14,7 @@ const faqs = [
 ]
 
 export default function ContactPage() {
+  const settings = getSettings()
   return (
     <main>
       <PageHero
@@ -44,9 +46,9 @@ export default function ContactPage() {
               <div className="form-actions"><button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Envoyer un ticket de support</button></div>
             </form>
             <div className="chip-row" style={{ marginTop: 24 }}>
-              <span className="chip"><Mail size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />contact@fif.ci</span>
-              <span className="chip"><Phone size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />+225 27 20 00 00 00</span>
-              <span className="chip"><MapPin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Abidjan, Côte d’Ivoire</span>
+              {settings.contactEmail && <a className="chip" href={`mailto:${settings.contactEmail}`}><Mail size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{settings.contactEmail}</a>}
+              {settings.contactPhone && <a className="chip" href={`tel:${settings.contactPhone.replace(/\s/g, '')}`}><Phone size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{settings.contactPhone}</a>}
+              {settings.address && <span className="chip"><MapPin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{settings.address}</span>}
             </div>
           </div>
         </div>

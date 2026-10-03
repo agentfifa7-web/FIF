@@ -4,18 +4,22 @@ import { transparencyRecords } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return transparencyRecords.map((t) => ({ slug: t.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const record = transparencyRecords.find((t) => t.slug === slug)
   return { title: record ? `${record.title} — FIF Digital` : 'Transparence FIF' }
 }
 
 export default async function TransparencyRecordPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const record = transparencyRecords.find((t) => t.slug === slug)
   if (!record) notFound()

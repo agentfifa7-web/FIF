@@ -8,18 +8,22 @@ import { StarRating, PositionChips, AttributePanel } from '@/components/site/Pla
 import { PlayerRadar } from '@/components/site/PlayerRadar'
 import { radarAxesFor } from '@/lib/attributes'
 import { age, formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return elephantsCallUp.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const player = getElephantsPlayer(slug)
   return { title: player ? `${player.name} — Éléphants — FIF Digital` : 'Joueur' }
 }
 
 export default async function ElephantsPlayerPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const player = getElephantsPlayer(slug)
   if (!player) notFound()

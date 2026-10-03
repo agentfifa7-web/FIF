@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, Info, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, coaches, competitions, standingsFor, realLeagueMatchesForClub, realLigue1Standings, realLigue1UpcomingFixtures } from '@/lib/data/mock'
+import { clubs, getClub, getStadiumById, cityName, players, coaches, competitions, standingsFor, matchesOf } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, PlayerCard } from '@/components/site/cards'
 import { MatchdayList } from '@/components/site/MatchdayList'
+import { loadCms } from '@/lib/cms/server'
 
 const POSITION_GROUPS = [
   { position: 'Gardien', label: 'Gardiens' },
@@ -13,17 +14,20 @@ const POSITION_GROUPS = [
   { position: 'Attaquant', label: 'Attaquants' },
 ] as const
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return clubs.map((c) => ({ slug: c.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const club = getClub(slug)
   return { title: club ? `${club.name} — FIF Digital` : 'Club' }
 }
 
 export default async function ClubPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const club = getClub(slug)
   if (!club) notFound()
@@ -36,9 +40,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
     .map((id) => competitions.find((c) => c.id === id))
     .filter((c) => c !== undefined)
     .map((comp) => {
-      const standings = comp.id === 'comp-l1'
-        ? realLigue1Standings()
-        : comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
+      const standings = comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
       const idx = standings.findIndex((r) => r.clubId === club.id)
       const row = idx >= 0 ? standings[idx] : undefined
       // Une position n'a de sens que si des matchs ont réellement été joués :
@@ -48,9 +50,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
       const label = comp.id === 'comp-l2' && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
       return { comp, label, position, row }
     })
-  const realResults = realLeagueMatchesForClub(club.name)
-  const realUpcoming = realLigue1UpcomingFixtures.filter((f) => f.homeClub === club.name || f.awayClub === club.name)
-  const isRealLigue1Club = club.competitionIds.includes('comp-l1')
+  const clubMatches = matchesOf(club.id)
+  const realResults = clubMatches.filter((m) => m.status === 'Terminé')
+  const realUpcoming = clubMatches.filter((m) => m.status !== 'Terminé')
+  const isRealLigue1Club = club.competitionIds.includes('comp-l1') || club.competitionIds.includes('comp-l2')
 
   return (
     <main>
@@ -88,16 +91,16 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
       {realResults.length > 0 && (
         <section className="page-section tight dark-section">
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
-          <div style={{ marginTop: 16 }}><MatchdayList results={realResults} /></div>
-          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultat réel confirmé par la presse ivoirienne (Ligue 1 LONACI 2026-2027).</p>
+          <div style={{ marginTop: 16 }}><MatchdayList matches={realResults} mode="results" /></div>
+          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats officiels : confirmés par la presse ivoirienne ou par la feuille de match publiée par la FIF.</p>
         </section>
       )}
 
-      {isRealLigue1Club && (
+      {(isRealLigue1Club || realUpcoming.length > 0) && (
         <section className="page-section tight">
-          <p className="section-tag">Prochains matchs réels (Ligue 1)</p>
+          <p className="section-tag">Prochains matchs</p>
           {realUpcoming.length > 0 ? (
-            <div style={{ marginTop: 16 }}><MatchdayList fixtures={realUpcoming} /></div>
+            <div style={{ marginTop: 16 }}><MatchdayList matches={realUpcoming} mode="fixtures" /></div>
           ) : (
             <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
           )}

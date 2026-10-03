@@ -9,14 +9,17 @@ import { PageHero } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
 import { PlayerPhoto } from '@/components/site/PlayerPhoto'
 import { formatDate, formatDateLong, formatTime, age } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 const callUpPositionOrder = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return nationalTeams.map((t) => ({ slug: t.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const team = getTeam(slug)
   return { title: team ? `${team.name} — FIF Digital` : 'Équipe nationale' }
@@ -25,6 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 const positionOrder = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const
 
 export default async function NationalTeamPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const team = getTeam(slug)
   if (!team) notFound()

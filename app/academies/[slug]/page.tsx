@@ -2,18 +2,22 @@ import { notFound } from 'next/navigation'
 import { academies, getAcademy, cityName } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return academies.map((a) => ({ slug: a.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const a = getAcademy(slug)
   return { title: a ? `${a.name} — FIF Digital` : 'Académie' }
 }
 
 export default async function AcademyPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const academy = getAcademy(slug)
   if (!academy) notFound()

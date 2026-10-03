@@ -4,6 +4,7 @@ import { nextElephantsFixture, quizQuestions, fanZonePosts } from '@/lib/data/mo
 import { PageHero } from '@/components/site/PageHero'
 import { FanHomeDashboard } from '@/components/site/FanHomeDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'FIF Fan Universe — FIF Digital' }
 
@@ -57,7 +58,8 @@ const PILLARS = [
   },
 ]
 
-export default function SupportersPage() {
+export default async function SupportersPage() {
+  await loadCms()
   const fixture = nextElephantsFixture()
   const dailyQuestion = quizQuestions[5]
   const recentPosts = fanZonePosts.slice(0, 3).map((p) => ({ authorName: p.authorName, type: p.type, caption: p.caption }))

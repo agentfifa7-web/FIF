@@ -8,18 +8,22 @@ import { TicketCheckout } from '@/components/site/TicketCheckout'
 import { SaleAlertButton } from '@/components/site/SaleAlertButton'
 import { Countdown } from '@/components/site/Countdown'
 import { DemoBadge } from '@/components/site/DemoBadge'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return ticketEvents.map((e) => ({ slug: e.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const ev = getTicketEvent(slug)
   return { title: ev ? `Billets ${ev.home.name} – ${ev.away.name} — FIF Tickets` : 'FIF Tickets' }
 }
 
 export default async function TicketEventPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const ev = getTicketEvent(slug)
   if (!ev) notFound()

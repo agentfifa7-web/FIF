@@ -6,18 +6,22 @@ import { NewsCard } from '@/components/site/cards'
 import { NewsThumb } from '@/components/site/NewsThumb'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return articles.map((a) => ({ slug: a.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const article = getArticle(slug)
   return { title: article ? `${article.title} — FIF Digital` : 'Article' }
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const article = getArticle(slug)
   if (!article) notFound()

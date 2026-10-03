@@ -46,26 +46,17 @@ export interface MatchSheetOverride {
   submittedAt: string
 }
 
-const STORAGE_KEY = 'fif-matchsheets-v1'
+import { cmsRuntime } from '@/lib/cms/runtime'
+
+// Les feuilles de match sont enregistrées sur le serveur par l'administration
+// (voir app/admin/actions.ts) et transmises à toutes les pages avec les autres
+// données du back-office.
 export const MATCHSHEET_EVENT = 'fif-matchsheet-updated'
 
 export function getMatchSheets(): Record<string, MatchSheetOverride> {
-  if (typeof window === 'undefined') return {}
-  try {
-    return JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
-  } catch {
-    return {}
-  }
+  return cmsRuntime.sheets
 }
 
 export function getMatchSheet(matchId: string): MatchSheetOverride | null {
-  return getMatchSheets()[matchId] ?? null
-}
-
-export function saveMatchSheet(sheet: MatchSheetOverride) {
-  if (typeof window === 'undefined') return
-  const all = getMatchSheets()
-  all[sheet.matchId] = sheet
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(all))
-  window.dispatchEvent(new CustomEvent(MATCHSHEET_EVENT, { detail: sheet }))
+  return cmsRuntime.sheets[matchId] ?? null
 }

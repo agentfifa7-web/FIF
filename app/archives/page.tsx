@@ -1,11 +1,13 @@
 import { articles, matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Archives — FIF Digital' }
 
 const decades = ['2020s', '2010s', '2000s', '1990s', '1980s', '1960s-1970s']
 
-export default function ArchivesPage() {
+export default async function ArchivesPage() {
+  await loadCms()
   return (
     <main>
       <PageHero

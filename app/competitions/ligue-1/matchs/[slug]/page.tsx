@@ -6,12 +6,15 @@ import { realLigue1Matches, getRealLeagueMatch, getClubByName } from '@/lib/data
 import { Breadcrumb } from '@/components/site/PageHero'
 import { ClubCrest } from '@/components/site/cards'
 import { formatDateLong } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  await loadCms()
   return realLigue1Matches.map((m) => ({ slug: m.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const match = getRealLeagueMatch(slug)
   return { title: match ? `${match.homeClub} — ${match.awayClub} — FIF Digital` : 'Match' }
@@ -26,6 +29,7 @@ function subLabel(s: RealLeagueMatchSubstitution) {
 }
 
 export default async function LigueUnMatchPage({ params }: { params: Promise<{ slug: string }> }) {
+  await loadCms()
   const { slug } = await params
   const match = getRealLeagueMatch(slug)
   if (!match) notFound()

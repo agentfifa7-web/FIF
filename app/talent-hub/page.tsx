@@ -4,10 +4,12 @@ import { PageHero } from '@/components/site/PageHero'
 import { PlayerExplorer } from '@/components/site/PlayerExplorer'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { age } from '@/lib/format'
+import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Talent Hub — FIF Digital' }
 
-export default function TalentHubPage() {
+export default async function TalentHubPage() {
+  await loadCms()
   const young = players.filter((p) => age(p.birthdate) <= 19)
 
   return (

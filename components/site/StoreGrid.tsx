@@ -1,5 +1,6 @@
 'use client'
 
+import { getSettings } from '@/lib/cms/runtime'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Check, ShoppingBag } from 'lucide-react'
@@ -24,6 +25,7 @@ export function StoreGrid({ products }: { products: Product[] }) {
   const filtered = useMemo(() => (category === 'Toutes' ? products : products.filter((p) => p.category === category)), [products, category])
 
   function quickAdd(p: Product) {
+    if (!getSettings().shopOpen) return window.alert('La boutique en ligne est momentanément fermée.')
     addToCart({ productId: p.id, qty: 1, color: p.photo ? undefined : p.colors[0] })
     setJustAdded(p.id)
     window.setTimeout(() => setJustAdded((id) => (id === p.id ? null : id)), 1800)
