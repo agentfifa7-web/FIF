@@ -1382,6 +1382,8 @@ export interface RealLeagueFixture {
   venue?: string
   homeClub: string
   awayClub: string
+  /** Source / précision affichée sur la fiche du match. */
+  note?: string
 }
 
 // 2e journée : du dimanche 4 au mercredi 7 octobre 2026 (ami-sportif.com,
@@ -1406,6 +1408,39 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRING
   awayClub: away,
   date,
   time,
+}))
+
+// ---------------------------------------------------------------------------
+// Ligue 2 — 1re journée (saison 2026-2027), du dimanche 4 au jeudi 8 octobre
+// 2026, après le report du début de saison. Affiches publiées par la presse
+// ivoirienne (ami-sportif.com, 2 octobre 2026) ; les autres matchs de la
+// journée seront ajoutés dès la publication du programme complet.
+// ---------------------------------------------------------------------------
+const L2_J1_NOTE = 'Ligue 2 2026-2027, 1re journée (4-8 octobre 2026) — programme publié par la presse ivoirienne (ami-sportif.com).'
+const LIGUE2_J1: { home: string; away: string; date?: string; time?: string; venue?: string; detail?: string }[] = [
+  // Poule A
+  { home: 'Africa Sports', away: 'Leader SC Marcory', date: '2026-10-04', time: '15:30', venue: 'Stade Robert Champroux, Marcory' },
+  { home: 'SC Gagnoa', away: 'CO Bouaflé', date: '2026-10-04', time: '15:30', venue: 'Stade Biaka Boda, Gagnoa' },
+  { home: 'AS Tanda', away: 'AS Divo' },
+  { home: 'FC OSA', away: 'Don Koff FC' },
+  // Poule B
+  { home: 'Nour FC', away: 'Racing Club Abidjan', date: '2026-10-04', time: '15:30', venue: 'Stade Laurent Pokou, San-Pédro' },
+  { home: 'RFC Aboisso', away: 'JAC Zuénoula', venue: 'Stade Aka Aouélé, Aboisso', detail: 'Coup d’envoi annoncé à 15h30, jour à confirmer.' },
+  { home: 'Issia Wazy', away: 'LYS FC', venue: 'Stade Charles Konan Banny, Yamoussoukro', detail: 'Coup d’envoi annoncé à 15h30, jour à confirmer.' },
+  { home: 'WAC', away: 'Agir FC', venue: 'Stade Robert Champroux, Marcory', detail: 'Coup d’envoi annoncé à 18h00, jour à confirmer.' },
+  { home: 'ES Bingerville', away: '2 Plateaux FC' },
+]
+
+export const realLigue2UpcomingFixtures: RealLeagueFixture[] = LIGUE2_J1.map(({ home, away, date, time, venue, detail }) => ({
+  slug: `l2-j1-${slugify(home)}-${slugify(away)}`,
+  competitionId: 'comp-l2',
+  matchday: 1,
+  homeClub: home,
+  awayClub: away,
+  date,
+  time,
+  venue,
+  note: detail ? `${L2_J1_NOTE} ${detail}` : L2_J1_NOTE,
 }))
 
 // Conversion des matchs réels au format commun du site (calendrier, résultats,
@@ -1449,7 +1484,7 @@ for (const m of realLigue1Matches) {
 }
 
 const lastPlayedDate = realLigue1Matches.reduce((max, m) => (m.date > max ? m.date : max), '2026-01-01')
-for (const f of realLigue1UpcomingFixtures) {
+for (const f of [...realLigue1UpcomingFixtures, ...realLigue2UpcomingFixtures]) {
   const home = getClubByName(f.homeClub)
   const away = getClubByName(f.awayClub)
   if (!home || !away) continue
@@ -1471,9 +1506,9 @@ for (const f of realLigue1UpcomingFixtures) {
     events: [],
     refereeId: null,
     delegateId: null,
-    source: f.date
+    source: f.note ?? (f.date
       ? 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF) ; date et heure annoncées par la presse ivoirienne (ami-sportif.com).'
-      : 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF), jouée entre le 4 et le 7 octobre 2026 ; date exacte à confirmer.',
+      : 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF), jouée entre le 4 et le 7 octobre 2026 ; date exacte à confirmer.'),
   })
 }
 

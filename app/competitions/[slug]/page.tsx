@@ -47,7 +47,10 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const realStandings = isRealLigue1 ? standings.filter((r) => r.played > 0) : []
   const realScorers = isRealLigue1 ? scorersFromMatches(competition.id) : []
   const realAssisters = isRealLigue1 ? realLigue1TopAssists() : []
-  const upcomingFixtures = isRealLigue1 ? compMatches.filter((m) => m.status !== 'Terminé') : []
+  const upcomingFixtures = compMatches.filter((m) => m.status !== 'Terminé')
+  const byPoule = competition.id === 'comp-l2'
+    ? (['A', 'B'] as const).map((g) => ({ group: g, matches: upcomingFixtures.filter((m) => getClubById(m.homeClubId)?.group === g) })).filter((p) => p.matches.length)
+    : null
 
   return (
     <main>
@@ -117,10 +120,19 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
         </section>
       )}
 
-      {isRealLigue1 && (
+      {(isRealLigue1 || upcomingFixtures.length > 0) && (
         <section className="page-section tight">
-          <p className="section-tag">Prochains matchs réels</p>
-          {upcomingFixtures.length > 0 ? (
+          <p className="section-tag">Prochains matchs</p>
+          {byPoule ? (
+            <div className="card-grid cols-2" style={{ marginTop: 16, alignItems: 'start' }}>
+              {byPoule.map((p) => (
+                <div key={p.group}>
+                  <b style={{ fontSize: 12, letterSpacing: '.06em', color: 'var(--muted)', textTransform: 'uppercase' }}>Poule {p.group}</b>
+                  <div style={{ marginTop: 10 }}><MatchdayList matches={p.matches} mode="fixtures" /></div>
+                </div>
+              ))}
+            </div>
+          ) : upcomingFixtures.length > 0 ? (
             <div style={{ marginTop: 16 }}><MatchdayList matches={upcomingFixtures} mode="fixtures" /></div>
           ) : (
             <p className="lede" style={{ marginTop: 16 }}>Aucune prochaine journée officiellement programmée pour l’instant. Cette section s’alimentera automatiquement dès que le calendrier sera annoncé.</p>
