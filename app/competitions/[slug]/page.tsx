@@ -26,8 +26,9 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   if (!competition) notFound()
 
   const standings = standingsFor(competition.id)
-  const poules = competition.id === 'comp-l2'
-    ? (['A', 'B'] as const).map((g) => ({
+  const pouleKeys = competition.id === 'comp-l2' ? (['A', 'B'] as const) : competition.id === 'comp-d3' ? (['A', 'B', 'C', 'D'] as const) : null
+  const poules = pouleKeys
+    ? pouleKeys.map((g) => ({
       label: `Poule ${g}`,
       standings: standingsFor(competition.id, g),
       clubIds: competition.clubIds.filter((id) => getClubById(id)?.group === g),
@@ -48,8 +49,8 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const realScorers = isRealLigue1 ? scorersFromMatches(competition.id) : []
   const realAssisters = isRealLigue1 ? realLigue1TopAssists() : []
   const upcomingFixtures = compMatches.filter((m) => m.status !== 'Terminé')
-  const byPoule = competition.id === 'comp-l2'
-    ? (['A', 'B'] as const).map((g) => ({ group: g, matches: upcomingFixtures.filter((m) => getClubById(m.homeClubId)?.group === g) })).filter((p) => p.matches.length)
+  const byPoule = pouleKeys
+    ? pouleKeys.map((g) => ({ group: g, matches: upcomingFixtures.filter((m) => getClubById(m.homeClubId)?.group === g) })).filter((p) => p.matches.length)
     : null
 
   return (

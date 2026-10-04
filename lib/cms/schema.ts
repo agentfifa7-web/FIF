@@ -301,7 +301,7 @@ const clubs: CollectionSchema = {
     { name: 'name', label: 'Nom du club', type: 'text', required: true, wide: true },
     { name: 'shortName', label: 'Nom court', type: 'text' },
     { name: 'category', label: 'Catégorie', type: 'select', options: ['Professionnel', 'Amateur', 'Féminin', 'Jeunes', 'Futsal'], required: true },
-    { name: 'group', label: 'Poule (Ligue 2)', type: 'select', options: ['A', 'B'], optional: true },
+    { name: 'group', label: 'Poule (Ligue 2 : A/B · D3 : A à D)', type: 'select', options: ['A', 'B', 'C', 'D'], optional: true },
     { name: 'cityId', label: 'Ville', type: 'select', ref: 'cities', optional: true },
     { name: 'stadiumId', label: 'Stade', type: 'select', ref: 'stadiums', optional: true },
     { name: 'founded', label: 'Année de fondation', type: 'number', min: 1900, max: 2100 },

@@ -67,7 +67,7 @@ export function CompetitionTabs({
       {tab === 'Présentation' && (
         <div>
           <p className="lede">{clubs.length
-            ? <>{competition.name} réunit {clubs.length} équipes pour la saison {competition.season}. Format : {competition.format}.{poules ? ` Chaque club affronte les 13 autres clubs de sa poule à domicile et à l’extérieur.` : ''}</>
+            ? <>{competition.name} réunit {clubs.length} équipes pour la saison {competition.season}. Format : {competition.format}.{poules ? ` Chaque club affronte les ${(poules[0]?.clubIds.length ?? 1) - 1} autres clubs de sa poule à domicile et à l’extérieur.` : ''}</>
             : <>Format : {competition.format}. Les clubs engagés et le calendrier de la saison {competition.season} n’ont pas encore été publiés : ils apparaîtront ici dès leur communication officielle.</>}</p>
           <div className={`card-grid ${realOverview ? 'cols-3' : 'cols-4'}`} style={{ marginTop: 24 }}>
             <div className="stat-card"><strong>{clubs.length}</strong><span>Équipes engagées</span></div>

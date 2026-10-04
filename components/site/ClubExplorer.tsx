@@ -8,7 +8,7 @@ import { cities, competitions } from '@/lib/data/mock'
 import { ClubCard } from './cards'
 import { EmptyState, FilterSelect } from './widgets'
 
-const LEAGUE_PRIORITY = ['comp-l1', 'comp-l2', 'comp-fem', 'comp-u20', 'comp-futsal', 'comp-beach']
+const LEAGUE_PRIORITY = ['comp-l1', 'comp-l2', 'comp-d3', 'comp-fem', 'comp-u20', 'comp-futsal', 'comp-beach']
 const LEAGUE_LABEL_OVERRIDE: Record<string, string> = {
   'comp-u20': 'Football des jeunes — U20 / U17',
 }

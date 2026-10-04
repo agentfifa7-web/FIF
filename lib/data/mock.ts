@@ -225,6 +225,59 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT }, (_, i) => {
   }
 })
 
+// Division 3 (Championnat National Amateur) 2026-2027 : 40 clubs répartis en
+// 4 poules de 10, début le 16 octobre 2026 à Korhogo — composition publiée par
+// la FIF et relayée par sport-ivoire.ci et ami-sportif.com (1er octobre 2026).
+// Ville renseignée seulement lorsqu'elle figure dans le nom du club.
+const REAL_D3_POULES: Record<'A' | 'B' | 'C' | 'D', string[]> = {
+  A: ['Alliance de l’Indénié', 'Cosmos FC', 'Espoir de Koumassi', 'FC Nafana', 'USC Bassam', 'International Camdine', 'Les Séraphins', 'Ivoire Académie', 'US Fermiers', 'EFYM'],
+  B: ['ASI d’Abengourou', 'Magic System FC', 'Sacraboutou', 'Satellite FC', 'Songon FC', 'Shadrac FC', 'ASPEA', 'JCAT', 'Casy Foot', 'Yopougon FC'],
+  C: ['Académie Diakité FC', 'Académie Tuo Football', 'ASC Bouaké', 'Espérance FC Bouaké', 'FC Bintanan', 'G27 FC', 'Max United FC', 'OC Taabo', 'Réal d’Abobo', 'Young Stallion ETK'],
+  D: ['Abondance Sport FC', 'ASC Ouragahio', 'AS Lianes de Danané', 'ES Bafing', 'Academy Kimbe', 'Gbalet Sport de Buyo', 'Gemelos FC', 'Marahoué FC', 'RC Daloa', 'ZT FC'],
+}
+const REAL_D3_CITY: Record<string, string> = {
+  'Espoir de Koumassi': 'c-abidjan', 'Yopougon FC': 'c-abidjan', 'Réal d’Abobo': 'c-abidjan', 'Songon FC': 'c-abidjan',
+  'ASI d’Abengourou': 'c-abengourou', 'ASC Bouaké': 'c-bouake', 'Espérance FC Bouaké': 'c-bouake', 'RC Daloa': 'c-daloa',
+}
+const REAL_D3_FORMER_NAME: Record<string, string> = {
+  'Magic System FC': 'ex-Racing Club de Koumassi', 'Academy Kimbe': 'ex-FC Solidarité', 'Gemelos FC': 'ex-Tussuamy',
+}
+const D3_CLUB_IDS: string[] = []
+;(Object.keys(REAL_D3_POULES) as ('A' | 'B' | 'C' | 'D')[]).forEach((group) => {
+  REAL_D3_POULES[group].forEach((name) => {
+    const i = D3_CLUB_IDS.length
+    const id = `club-d3-${i}`
+    D3_CLUB_IDS.push(id)
+    const words = name.replace(/’/g, ' ').split(' ').filter(Boolean)
+    clubs.push({
+      id,
+      slug: slugify(name),
+      name,
+      shortName: name,
+      cityId: REAL_D3_CITY[name] ?? '',
+      stadiumId: null,
+      colors: clubColorPairs[i % clubColorPairs.length],
+      crestInitials: words.map((w) => w[0]).slice(0, 3).join('').toUpperCase(),
+      gender: 'M',
+      category: 'Amateur',
+      group,
+      formerName: REAL_D3_FORMER_NAME[name],
+      competitionIds: [],
+      honours: [],
+      achievements: [],
+    })
+  })
+})
+
+/** Ligue principale d'un club, avec sa poule le cas échéant (« Ligue 2 · Poule A »). */
+export function clubLeagueLabel(club: Club): string {
+  if (club.competitionIds.includes('comp-l1')) return 'Ligue 1'
+  const poule = club.group ? ` · Poule ${club.group}` : ''
+  if (club.competitionIds.includes('comp-l2') || (club.group && club.category === 'Professionnel')) return `Ligue 2${poule}`
+  if (club.competitionIds.includes('comp-d3') || (club.group && club.category === 'Amateur')) return `Division 3${poule}`
+  return club.category
+}
+
 function clubBySlug(slug: string) {
   return clubs.find((c) => c.slug === slug)
 }
@@ -961,15 +1014,15 @@ export function getTransparencyRecord(slug: string) { return transparencyRecords
 // ---------------------------------------------------------------------------
 const proClubs = clubs.filter((c) => c.category === 'Professionnel')
 
-// Participants : seuls la Ligue 1 et la Ligue 2 ont une liste officielle de
-// clubs pour 2026-2027 ; les autres compétitions restent sans participants
-// tant que la FIF ne les a pas publiés.
+// Participants : Ligue 1, Ligue 2, Division 3 et Super Coupe ont une liste
+// officielle pour 2026-2027 ; les autres compétitions restent sans
+// participants tant que la FIF ne les a pas publiés.
 export const competitions: Competition[] = [
   { id: 'comp-l1', slug: 'ligue-1', name: 'Ligue 1', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.slice(0, 16).map((c) => c.id), format: 'Championnat, matchs aller-retour', logoInitials: 'L1' },
   { id: 'comp-l2', slug: 'ligue-2', name: 'Ligue 2', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: proClubs.slice(16, 44).map((c) => c.id), format: '2 poules de 14 clubs, matchs aller-retour au sein de la poule', logoInitials: 'L2' },
-  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CN' },
-  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Match unique', logoInitials: 'SC' },
-  { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour', logoInitials: 'D3' },
+  { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe — début annoncé le 29 janvier 2027', logoInitials: 'CN' },
+  { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: ['ASEC Mimosas', 'CO Korhogo'].map((n) => proClubs.find((c) => c.name === n)!.id), format: 'Match unique — 6 août 2026, Stade Félix Houphouët-Boigny : victoire de l’ASEC Mimosas face au CO Korhogo', logoInitials: 'SC' },
+  { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: D3_CLUB_IDS, format: '4 poules de 10 clubs — début le 16 octobre 2026 à Korhogo', logoInitials: 'D3' },
   { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour', logoInitials: 'R1' },
   { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CD' },
   { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'CF' },
@@ -997,7 +1050,7 @@ function competitionBySlug(slug: string) {
 // calendrier, score ou événement n'est généré.
 export const matches: Match[] = []
 
-export function standingsFor(competitionId: string, group?: 'A' | 'B'): StandingRow[] {
+export function standingsFor(competitionId: string, group?: Club['group']): StandingRow[] {
   const comp = competitions.find((c) => c.id === competitionId)
   if (!comp) return []
   const clubIds = group ? comp.clubIds.filter((id) => clubs.find((c) => c.id === id)?.group === group) : comp.clubIds
@@ -1522,13 +1575,24 @@ export interface InternationalFixture {
   opponent: string
   competition: string
   date: string
-  stadiumId: string
+  /** Stade référencé sur le site (sinon `venue`). */
+  stadiumId?: string
+  /** Lieu en toutes lettres lorsque le stade n'est pas référencé (matchs à l'extérieur). */
+  venue?: string
+  /** false tant que l'heure du coup d'envoi n'est pas officielle. */
+  timeConfirmed?: boolean
   home: boolean
+  source?: string
 }
 
-// Seul le calendrier réel des Éléphants est suivi (voir elephantsFixtures) ;
-// les autres sélections n'ont pas encore de match officiel renseigné.
-export const internationalFixtures: InternationalFixture[] = []
+// Calendrier réel des autres sélections (les Éléphants ont elephantsFixtures),
+// ajouté uniquement lorsque date et adversaire sont confirmés par la presse.
+export const internationalFixtures: InternationalFixture[] = [
+  // Éliminatoires JO 2028 (football féminin, zone CAF) — 2e tour face à la RD Congo.
+  // Sources : radiookapi.net, allafrica.com, sport-ivoire.ci, ami-sportif.com (octobre 2026).
+  { id: 'ntf-elephantes-rdc-aller', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (aller)', date: '2026-10-09T13:30:00Z', venue: 'Stade TP Mazembe, Lubumbashi', timeConfirmed: true, home: false, source: 'radiookapi.net, allafrica.com' },
+  { id: 'ntf-elephantes-rdc-retour', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (retour)', date: '2026-10-13T12:00:00Z', stadiumId: 'st-fhb', timeConfirmed: false, home: true, source: 'sport-ivoire.ci, ami-sportif.com' },
+]
 
 // ---------------------------------------------------------------------------
 // Éléphants (équipe A masculine) — sélection et calendrier réels, non générés.
@@ -2087,8 +2151,10 @@ export function lastElephantsFixture(): RealFixture | undefined {
 }
 
 export function nextFixtureFor(teamId: string) {
+  // Un match reste « prochain » jusqu'au lendemain de sa date.
+  const now = Date.now() - 24 * 3600 * 1000
   return internationalFixtures
-    .filter((f) => f.teamId === teamId)
+    .filter((f) => f.teamId === teamId && +new Date(f.date) >= now)
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0]
 }
 

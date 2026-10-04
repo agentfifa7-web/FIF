@@ -41,6 +41,8 @@ export interface Club {
   /** Stade de résidence confirmé, sinon null. */
   stadiumId: string | null
   founded?: number
+  /** Ancien nom du club, lorsqu'il a changé récemment. */
+  formerName?: string
   president?: string
   colors: [string, string]
   crestInitials: string
@@ -48,7 +50,8 @@ export interface Club {
   crestUrl?: string
   gender: Gender
   category: 'Professionnel' | 'Amateur' | 'Jeunes' | 'Féminin' | 'Futsal'
-  group: 'A' | 'B' | null
+  /** Poule : A/B en Ligue 2, A à D en Division 3 (selon la compétition principale du club). */
+  group: 'A' | 'B' | 'C' | 'D' | null
   competitionIds: string[]
   website?: string
   honours: { title: string; count: number }[]

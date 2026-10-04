@@ -36,7 +36,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
   const squad = nationalSquads[team.id] ?? []
   const coach = team.coachId ? getCoachById(team.coachId) : null
   const fixture = nextFixtureFor(team.id)
-  const fixtureStadium = fixture ? getStadiumById(fixture.stadiumId) : null
+  const fixtureStadium = fixture?.stadiumId ? getStadiumById(fixture.stadiumId) : null
 
   const squadByPosition = positionOrder.map((pos) => ({
     position: pos,
@@ -92,7 +92,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
             <div className="next-card-top"><span>{fixture.competition.toUpperCase()}</span><span>{formatDate(fixture.date).toUpperCase()}</span></div>
             <div className="teams">
               <div className="team"><div className="crest ivory">CI</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-              <div className="versus"><small>{formatTime(fixture.date)}</small><b>VS</b><span>{fixtureStadium?.name}<br />{fixture.home ? 'Domicile' : 'Extérieur'}</span></div>
+              <div className="versus"><small>{fixture.timeConfirmed === false ? 'Heure à confirmer' : formatTime(fixture.date)}</small><b>VS</b><span>{fixtureStadium?.name ?? fixture.venue}<br />{fixture.home ? 'Domicile' : 'Extérieur'}</span></div>
               <div className="team"><div className="crest red">{fixture.opponent.slice(0, 2).toUpperCase()}</div><strong>{fixture.opponent}</strong></div>
             </div>
           </div>

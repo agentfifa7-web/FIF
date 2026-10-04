@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight, MapPin, CalendarDays, Play, Trophy } from 'lucide-react'
 import type { Article, Club, Competition, Match, Player, Video } from '@/lib/data/types'
-import { getClubById, getStadiumById, cityName } from '@/lib/data/mock'
+import { getClubById, getStadiumById, cityName, clubLeagueLabel } from '@/lib/data/mock'
 import { formatDate, matchWhen, age } from '@/lib/format'
 import { useLiveMatch } from '@/lib/liveMatch'
 import { NewsThumb } from './NewsThumb'
@@ -107,7 +107,7 @@ export function ClubCard({ club }: { club: Club }) {
       <ClubCrest club={club} size={52} />
       <div>
         <strong>{club.name}</strong>
-        <span>{[cityName(club.cityId), club.group ? `Ligue 2 · Poule ${club.group}` : club.competitionIds.includes('comp-l1') ? 'Ligue 1' : club.category].filter(Boolean).join(' · ')}</span>
+        <span>{[cityName(club.cityId), clubLeagueLabel(club)].filter(Boolean).join(' · ')}</span>
       </div>
       <ArrowRight />
     </Link>

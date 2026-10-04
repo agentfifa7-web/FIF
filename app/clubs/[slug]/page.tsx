@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Globe, Info, MapPin, Shield, Trophy, User } from 'lucide-react'
-import { clubs, getClub, getStadiumById, cityName, players, coaches, competitions, standingsFor, matchesOf } from '@/lib/data/mock'
+import { clubs, getClub, getStadiumById, cityName, players, coaches, competitions, standingsFor, matchesOf, clubLeagueLabel } from '@/lib/data/mock'
 import { HeroCarousel } from '@/components/site/PageHero'
 import { ClubCrest, PlayerCard } from '@/components/site/cards'
 import { MatchdayList } from '@/components/site/MatchdayList'
@@ -40,14 +40,14 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
     .map((id) => competitions.find((c) => c.id === id))
     .filter((c) => c !== undefined)
     .map((comp) => {
-      const standings = comp.id === 'comp-l2' && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
+      const standings = (comp.id === 'comp-l2' || comp.id === 'comp-d3') && club.group ? standingsFor(comp.id, club.group) : standingsFor(comp.id)
       const idx = standings.findIndex((r) => r.clubId === club.id)
       const row = idx >= 0 ? standings[idx] : undefined
       // Une position n'a de sens que si des matchs ont réellement été joués :
       // sinon (classement fictif à zéro, ou club pas encore apparu au réel),
       // on affiche « Classement à venir » plutôt qu'un rang trompeur.
       const position = row && row.played > 0 ? idx + 1 : null
-      const label = comp.id === 'comp-l2' && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
+      const label = (comp.id === 'comp-l2' || comp.id === 'comp-d3') && club.group ? `${comp.name} — Poule ${club.group}` : comp.name
       return { comp, label, position, row }
     })
   const clubMatches = matchesOf(club.id)
@@ -64,8 +64,9 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           <div style={{ alignItems: 'center', display: 'flex', gap: 24, marginTop: 8 }}>
             <ClubCrest club={club} size={80} />
             <div>
-              <p className="eyebrow"><span /> {[club.group ? `Ligue 2 · Poule ${club.group}` : 'Ligue 1', cityName(club.cityId)].filter(Boolean).join(' · ')}</p>
+              <p className="eyebrow"><span /> {[clubLeagueLabel(club), cityName(club.cityId)].filter(Boolean).join(' · ')}</p>
               <h1 style={{ fontSize: 'clamp(30px,4vw,48px)' }}>{club.name}</h1>
+              {club.formerName && <p className="muted-sm" style={{ color: 'rgba(255,255,255,.75)', marginTop: 4 }}>{club.formerName}</p>}
             </div>
           </div>
           <div className="page-hero-meta">
