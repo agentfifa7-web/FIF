@@ -1257,6 +1257,50 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayScore: 1,
     events: [{ type: 'goal', team: 'away' }],
     source: 'Résultat réel confirmé via Eurosport.fr (calendrier & résultats Ligue 1 2026-2027, Côte d’Ivoire) — victoire 1-0 d’ES Agboville pour la 1ère journée.',
+  },  {
+    slug: 'l1-j2-asec-mimosas-stella-club',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-04',
+    homeClub: 'ASEC Mimosas',
+    awayClub: 'Stella Club',
+    venue: 'Stade Olympique Alassane Ouattara (Ebimpé)',
+    homeScore: 0,
+    awayScore: 0,
+    events: [],
+    source: 'Résultat réel confirmé par Supersport CI (« L’Asec et le Stella se neutralisent ») et DailySports — match nul et vierge pour la 2e journée de Ligue 1 LONACI 2026-2027.',
+  },
+  {
+    slug: 'l1-j2-afad-plateau-soa',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-04',
+    homeClub: 'AFAD Plateau',
+    awayClub: 'SOA',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 1,
+    awayScore: 1,
+    events: [
+      { minute: 10, type: 'goal', team: 'away', player: 'Traoré Idriss' },
+      { minute: 41, type: 'goal', team: 'home', player: 'Kacou Stéphane' },
+    ],
+    source: 'Résultat réel confirmé par Supersport CI et Sofascore — match nul 1-1 pour la 2e journée ; buteurs selon Supersport CI.',
+  },
+  {
+    slug: 'l1-j2-us-tchologo-fc-san-pedro',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-04',
+    homeClub: 'US Tchologo',
+    awayClub: 'FC San Pedro',
+    venue: 'Stade Amadou Gon Coulibaly, Korhogo',
+    homeScore: 0,
+    awayScore: 2,
+    events: [
+      { minute: 8, type: 'goal', team: 'away', player: 'Koffi Wilfried' },
+      { minute: 10, type: 'goal', team: 'away', player: 'Karamoko Alpha' },
+    ],
+    source: 'Résultat réel confirmé par Supersport CI et DailySports — victoire 2-0 du FC San Pedro à Korhogo pour la 2e journée.',
   },
 ]
 
@@ -1441,16 +1485,14 @@ export interface RealLeagueFixture {
 
 // 2e journée : du dimanche 4 au mercredi 7 octobre 2026 (ami-sportif.com,
 // 2 octobre 2026). Date et heure renseignées seulement lorsqu'elles ont été
-// annoncées match par match ; les autres restent « à confirmer ».
+// annoncées match par match ; les autres restent « à confirmer ». Les matchs
+// joués passent dans realLigue1Matches.
 const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string }[] = [
   { home: 'FC Mouna', away: 'Yakro FC' },
-  { home: 'ASEC Mimosas', away: 'Stella Club', date: '2026-10-04', time: '15:30' },
   { home: 'SOL FC', away: 'Stade d’Abidjan' },
-  { home: 'AFAD Plateau', away: 'SOA' },
   { home: 'ES Agboville', away: 'OFC Adiaké' },
   { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
   { home: 'Zoman FC', away: 'CO Korhogo' },
-  { home: 'US Tchologo', away: 'FC San Pedro' },
 ]
 
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time }) => ({
