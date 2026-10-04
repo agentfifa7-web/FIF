@@ -1384,23 +1384,28 @@ export interface RealLeagueFixture {
   awayClub: string
 }
 
-const LIGUE1_J2_PAIRINGS: [string, string][] = [
-  ['FC Mouna', 'Yakro FC'],
-  ['ASEC Mimosas', 'Stella Club'],
-  ['SOL FC', 'Stade d’Abidjan'],
-  ['AFAD Plateau', 'SOA'],
-  ['ES Agboville', 'OFC Adiaké'],
-  ['ISCA Inova', 'Bouaké FC'],
-  ['Zoman FC', 'CO Korhogo'],
-  ['US Tchologo', 'FC San Pedro'],
+// 2e journée : du dimanche 4 au mercredi 7 octobre 2026 (ami-sportif.com,
+// 2 octobre 2026). Date et heure renseignées seulement lorsqu'elles ont été
+// annoncées match par match ; les autres restent « à confirmer ».
+const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string }[] = [
+  { home: 'FC Mouna', away: 'Yakro FC' },
+  { home: 'ASEC Mimosas', away: 'Stella Club', date: '2026-10-04', time: '15:30' },
+  { home: 'SOL FC', away: 'Stade d’Abidjan' },
+  { home: 'AFAD Plateau', away: 'SOA' },
+  { home: 'ES Agboville', away: 'OFC Adiaké' },
+  { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
+  { home: 'Zoman FC', away: 'CO Korhogo' },
+  { home: 'US Tchologo', away: 'FC San Pedro' },
 ]
 
-export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(([homeClub, awayClub]) => ({
-  slug: `l1-j2-${slugify(homeClub)}-${slugify(awayClub)}`,
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time }) => ({
+  slug: `l1-j2-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
   matchday: 2,
-  homeClub,
-  awayClub,
+  homeClub: home,
+  awayClub: away,
+  date,
+  time,
 }))
 
 // Conversion des matchs réels au format commun du site (calendrier, résultats,
@@ -1457,7 +1462,7 @@ for (const f of realLigue1UpcomingFixtures) {
     stadiumId: stadiumFromVenue(f.venue),
     venue: f.venue,
     // Date inconnue : valeur de tri seulement (après la dernière journée jouée), jamais affichée.
-    date: f.date ? `${f.date}T12:00:00Z` : `${lastPlayedDate}T23:59:00Z`,
+    date: f.date ? `${f.date}T${f.time ?? '12:00'}:00Z` : `${lastPlayedDate}T23:59:00Z`,
     dateConfirmed: Boolean(f.date),
     timeConfirmed: Boolean(f.time),
     status: 'À venir',
@@ -1466,7 +1471,9 @@ for (const f of realLigue1UpcomingFixtures) {
     events: [],
     refereeId: null,
     delegateId: null,
-    source: 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF).',
+    source: f.date
+      ? 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF) ; date et heure annoncées par la presse ivoirienne (ami-sportif.com).'
+      : 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF), jouée entre le 4 et le 7 octobre 2026 ; date exacte à confirmer.',
   })
 }
 

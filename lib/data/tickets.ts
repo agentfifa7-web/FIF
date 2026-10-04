@@ -4,7 +4,7 @@
 // ont été officiellement communiqués ; sinon la vente est « bientôt ouverte ».
 // ---------------------------------------------------------------------------
 
-import { clubs } from './mock'
+import { clubs, realLigue1UpcomingFixtures } from './mock'
 import { slugify } from './rng'
 
 export type TicketTierId = 'vip' | 'centrale' | 'laterale' | 'virage'
@@ -58,16 +58,7 @@ const CIV: TicketSide = { name: 'Côte d’Ivoire', shortName: 'Éléphants', fl
 
 /** 2e journée de Ligue 1 2026-2027 — affiches officielles (FIF), dates et
  *  stades non encore communiqués au moment de la mise à jour. */
-const LIGUE1_J2: [string, string][] = [
-  ['FC Mouna', 'Yakro FC'],
-  ['ASEC Mimosas', 'Stella Club'],
-  ['SOL FC', 'Stade d’Abidjan'],
-  ['AFAD Plateau', 'SOA'],
-  ['ES Agboville', 'OFC Adiaké'],
-  ['ISCA Inova', 'Bouaké FC'],
-  ['Zoman FC', 'CO Korhogo'],
-  ['US Tchologo', 'FC San Pedro'],
-]
+const LIGUE1_J2 = realLigue1UpcomingFixtures
 
 export const ticketEvents: TicketEvent[] = [
   {
@@ -92,8 +83,10 @@ export const ticketEvents: TicketEvent[] = [
     note: 'Prix officiels communiqués par la FIF (2 000, 5 000, 10 000 et 50 000 F CFA). La répartition des tarifs par tribune affichée ici est indicative.',
     matchHref: '/equipes-nationales/elephants/matchs/elephants-cameroun-2026-10-03',
   },
-  ...LIGUE1_J2.map(([h, a]): TicketEvent => ({
+  ...LIGUE1_J2.map(({ homeClub: h, awayClub: a, date, time }): TicketEvent => ({
     slug: `ligue1-j2-${slugify(h)}-${slugify(a)}`,
+    date,
+    time,
     category: 'Ligue 1',
     competition: 'Ligue 1 — 2e journée (saison 2026-2027)',
     home: clubSide(h),
