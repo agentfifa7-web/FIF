@@ -1301,6 +1301,83 @@ export const realLigue1Matches: RealLeagueMatch[] = [
       { minute: 10, type: 'goal', team: 'away', player: 'Karamoko Alpha' },
     ],
     source: 'Résultat réel confirmé par Supersport CI et DailySports — victoire 2-0 du FC San Pedro à Korhogo pour la 2e journée.',
+  },  {
+    slug: 'l2-j1-africa-sports-leader-sc-marcory',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'Africa Sports',
+    awayClub: 'Leader SC Marcory',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeScore: 0,
+    awayScore: 0,
+    events: [],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par Supersport CI, L’Infodrome, ami-sportif.com et Foot Africa — match nul et vierge en ouverture de la poule A.',
+  },
+  {
+    slug: 'l2-j1-sc-gagnoa-co-bouafle',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'SC Gagnoa',
+    awayClub: 'CO Bouaflé',
+    venue: 'Stade Biaka Boda, Gagnoa',
+    homeScore: 4,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par ami-sportif.com et Foot Africa — large victoire du SC Gagnoa en poule A.',
+  },
+  {
+    slug: 'l2-j1-nour-fc-racing-club-abidjan',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'Nour FC',
+    awayClub: 'Racing Club Abidjan',
+    venue: 'Stade Laurent Pokou, San-Pédro',
+    homeScore: 0,
+    awayScore: 0,
+    events: [],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par ami-sportif.com et Foot Africa — match nul et vierge en poule B.',
+  },
+  {
+    slug: 'l2-j1-rfc-aboisso-jac-zuenoula',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'RFC Aboisso',
+    awayClub: 'JAC Zuénoula',
+    venue: 'Stade Aka Aouélé, Aboisso',
+    homeScore: 0,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'away' }],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par ami-sportif.com et Foot Africa — victoire 1-0 du promu JAC Zuénoula à Aboisso (poule B).',
+  },
+  {
+    slug: 'l2-j1-issia-wazy-lys-fc',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'Issia Wazy',
+    awayClub: 'LYS FC',
+    venue: 'Stade Charles Konan Banny, Yamoussoukro',
+    homeScore: 0,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'away' }],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par ami-sportif.com et Foot Africa — victoire 1-0 du LYS Sassandra (poule B).',
+  },
+  {
+    slug: 'l2-j1-wac-agir-fc',
+    competitionId: 'comp-l2',
+    matchday: 1,
+    date: '2026-10-04',
+    homeClub: 'WAC',
+    awayClub: 'Agir FC',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeScore: 3,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Résultat réel de la 1re journée de Ligue 2 2026-2027, confirmé par ami-sportif.com et Foot Africa — victoire 3-1 du WAC face à l’Agir FC de Guibéroua (poule B).',
   },
 ]
 
@@ -1339,12 +1416,13 @@ export function realLeagueMatchesForClub(clubName: string) {
 }
 
 export function realLigue1LatestMatchday() {
-  return realLigue1Matches.reduce((max, m) => Math.max(max, m.matchday), 0)
+  return realLigue1Matches.filter((m) => m.competitionId === 'comp-l1').reduce((max, m) => Math.max(max, m.matchday), 0)
 }
 
 export function realLigue1TopScorers(): { player: string; club: string; goals: number }[] {
   const tally = new Map<string, { player: string; club: string; goals: number }>()
   for (const m of realLigue1Matches) {
+    if (m.competitionId !== 'comp-l1') continue
     for (const e of m.events) {
       if (e.type !== 'goal' || !e.player) continue
       const club = e.team === 'home' ? m.homeClub : m.awayClub
@@ -1425,15 +1503,15 @@ export interface RealLeagueFixture {
 // 2 octobre 2026). Date et heure renseignées seulement lorsqu'elles ont été
 // annoncées match par match ; les autres restent « à confirmer ». Les matchs
 // joués passent dans realLigue1Matches.
-const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string }[] = [
-  { home: 'FC Mouna', away: 'Yakro FC' },
-  { home: 'SOL FC', away: 'Stade d’Abidjan' },
-  { home: 'ES Agboville', away: 'OFC Adiaké' },
+const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string }[] = [
+  { home: 'FC Mouna', away: 'Yakro FC', date: '2026-10-05', time: '15:30' },
+  { home: 'SOL FC', away: 'Stade d’Abidjan', date: '2026-10-07', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
+  { home: 'ES Agboville', away: 'OFC Adiaké', date: '2026-10-07', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
   { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
-  { home: 'Zoman FC', away: 'CO Korhogo' },
+  { home: 'Zoman FC', away: 'CO Korhogo', date: '2026-10-06', time: '15:30', venue: 'Complexe sportif de Bingerville' },
 ]
 
-export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time }) => ({
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time, venue }) => ({
   slug: `l1-j2-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
   matchday: 2,
@@ -1441,6 +1519,7 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRING
   awayClub: away,
   date,
   time,
+  venue,
 }))
 
 // ---------------------------------------------------------------------------
@@ -1452,15 +1531,9 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRING
 const L2_J1_NOTE = 'Ligue 2 2026-2027, 1re journée (4-8 octobre 2026) — programme publié par la presse ivoirienne (ami-sportif.com).'
 const LIGUE2_J1: { home: string; away: string; date?: string; time?: string; venue?: string; detail?: string }[] = [
   // Poule A
-  { home: 'Africa Sports', away: 'Leader SC Marcory', date: '2026-10-04', time: '15:30', venue: 'Stade Robert Champroux, Marcory' },
-  { home: 'SC Gagnoa', away: 'CO Bouaflé', date: '2026-10-04', time: '15:30', venue: 'Stade Biaka Boda, Gagnoa' },
   { home: 'AS Tanda', away: 'AS Divo' },
   { home: 'FC OSA', away: 'Don Koff FC' },
   // Poule B
-  { home: 'Nour FC', away: 'Racing Club Abidjan', date: '2026-10-04', time: '15:30', venue: 'Stade Laurent Pokou, San-Pédro' },
-  { home: 'RFC Aboisso', away: 'JAC Zuénoula', venue: 'Stade Aka Aouélé, Aboisso', detail: 'Coup d’envoi annoncé à 15h30, jour à confirmer.' },
-  { home: 'Issia Wazy', away: 'LYS FC', venue: 'Stade Charles Konan Banny, Yamoussoukro', detail: 'Coup d’envoi annoncé à 15h30, jour à confirmer.' },
-  { home: 'WAC', away: 'Agir FC', venue: 'Stade Robert Champroux, Marcory', detail: 'Coup d’envoi annoncé à 18h00, jour à confirmer.' },
   { home: 'ES Bingerville', away: '2 Plateaux FC' },
 ]
 
