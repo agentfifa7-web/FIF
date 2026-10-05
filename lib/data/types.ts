@@ -152,6 +152,9 @@ export interface Player {
   /** Nom, poste et numéro réels (source : numérotation officielle du club) —
    *  le reste du profil (âge, attributs, contrat, statistiques) reste généré. */
   realRoster?: boolean
+  /** Fiche créée automatiquement pour un joueur cité dans un match réel
+   *  (buteur, composition…) mais absent des effectifs enregistrés. */
+  autoProfile?: boolean
   /** Intitulé exact du poste publié par le club (ex. « Latéral gauche »). */
   positionDetail?: string
   /** Taille, poids et date de naissance réels (publiés par le club). */

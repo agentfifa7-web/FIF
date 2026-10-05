@@ -515,7 +515,9 @@ h1, h2, h3, h4, h5, h6,
 }
 .button, .button-primary, .button-ghost, .button-secondary, .button-outline,
 .filter, .status-pill, .chip, .demo-badge, .stepper li span { border-radius: 999px; }
-.crest, .next-card, .table-wrap, .stat-bar-track { overflow: hidden; }
+.crest, .next-card, .stat-bar-track { overflow: hidden; }
+/* Tableaux : défilement horizontal sur petit écran (jamais de colonne coupée). */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-wrap { border-radius: var(--radius-md); border: 1px solid var(--line); }
 .table-wrap .data-table { border: 0; }
 .circle-arrow, .socials a { border-radius: 999px; }
@@ -1354,3 +1356,14 @@ button.chip { appearance:none; cursor:pointer; font:inherit; }
 .video-embed iframe { border:0; height:100%; width:100%; }
 .video-play-btn { align-items:center; background:var(--orange); border-radius:50%; color:#fff; display:flex; height:72px; justify-content:center; width:72px; }
 .sales-closed { background:#fff1e3; border:1px solid #ffc58f; border-radius:12px; color:#7a3700; font-weight:700; margin:0; padding:16px 18px; }
+
+/* Classements sur mobile : colonnes secondaires masquées pour garder MJ, DB et PTS visibles. */
+@media (max-width: 640px) {
+  .data-table td, .data-table th { padding-left: 6px; padding-right: 6px; }
+  .data-table .col-goals { display: none; }
+  .table-club { gap: 8px; }
+  .table-club span { display: inline-block; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; white-space: nowrap; }
+}
+@media (max-width: 380px) {
+  .data-table .col-wdl { display: none; }
+}

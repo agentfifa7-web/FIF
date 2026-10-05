@@ -58,10 +58,12 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight" style={{ paddingBottom: 0 }}>
-        <p className="press-source-note"><Info size={13} /> {player.realMeasures
+        <p className="press-source-note"><Info size={13} /> {player.autoProfile
+          ? <>Fiche créée automatiquement à partir des matchs officiels où ce joueur de {club?.name} est cité (buteur, composition, carton). Statistiques réelles ; poste, âge et profil à compléter par l’administration.</>
+          : player.realMeasures
           ? <>Nom, poste, numéro, taille, poids et date de naissance réels — effectif officiel {club?.name}, saison 2026-2027.</>
           : <>Nom, poste et numéro de maillot réels — effectif officiel {club?.name}, saison 2026-2027.</>}
-          {' '}Statistiques calculées à partir des matchs réels de Ligue 1 (buts, passes décisives, cartons, compositions lorsqu’elles sont publiées). Attributs et profil ci-dessous : estimations indicatives, non officielles.</p>
+          {!player.autoProfile && <>{' '}Statistiques calculées à partir des matchs réels (résultats officiels et feuilles de match : buts, passes décisives, cartons, compositions). Attributs et profil ci-dessous : estimations indicatives, non officielles.</>}</p>
       </section>
 
       <section className="page-section tight">
@@ -78,21 +80,22 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               {player.realMeasures && <div><small>Poids</small><b>{player.weight} kg</b></div>}
             </div>
           </div>
-          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
+          {!player.autoProfile && <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
             <h3>Évaluation (estimation)</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <StarRating count={player.currentAbilityStars} label="Niveau actuel" />
               <StarRating count={player.potentialAbilityStars} label="Potentiel" />
             </div>
             <p className="lede" style={{ fontSize: 12, marginTop: 14 }}>Estimation relative à l’effectif de {club?.name}.</p>
-          </div>
-          <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
+          </div>}
+          {!player.autoProfile && <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
             <h3>Postes préférentiels</h3>
             <PositionChips positions={player.preferredPositions} />
-          </div>
+          </div>}
         </div>
       </section>
 
+      {!player.autoProfile && <>
       <section className="page-section tight">
         <p className="section-tag">Attributs — notés sur 20 (estimation)</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
@@ -125,11 +128,12 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           </div>
         )}
       </section>
+      </>}
 
       <section className="page-section tight">
-        <p className="section-tag">Vue d’ensemble des performances</p>
-        <div className="card-grid cols-2" style={{ alignItems: 'start', marginTop: 16 }}>
-          <div className="radar-wrap"><PlayerRadar axes={radarAxes} /></div>
+        <p className="section-tag">{player.autoProfile ? 'Matchs officiels' : 'Vue d’ensemble des performances'}</p>
+        <div className={`card-grid ${player.autoProfile ? '' : 'cols-2'}`} style={{ alignItems: 'start', marginTop: 16 }}>
+          {!player.autoProfile && <div className="radar-wrap"><PlayerRadar axes={radarAxes} /></div>}
           <div className="table-wrap">
             <table className="data-table">
               <thead><tr><th className="align-left">SAISON</th><th className="align-left">COMPÉTITION</th><th>MJ</th><th>BUTS</th><th>PD</th></tr></thead>
@@ -187,7 +191,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      <section className="page-section tight">
+      {!player.autoProfile && <section className="page-section tight">
         <div className="dashboard-panel" style={{ maxWidth: 520 }}>
           <h3>Identité fédérale — FIF ID</h3>
           <div className="dashboard-list">
@@ -196,7 +200,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
           </div>
           <Link href={`/verifier/${player.fifId}`} className="button-outline" style={{ marginTop: 16 }}><QrCode size={14} /> Vérifier ce FIF ID</Link>
         </div>
-      </section>
+      </section>}
 
       {player.nationalSelections.length > 0 && (
         <section className="page-section tight">

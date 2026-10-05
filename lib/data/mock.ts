@@ -1378,9 +1378,10 @@ export function scorersFromMatches(competitionId: string): { player: string; clu
   return [...tally.values()].sort((a, b) => b.goals - a.goals)
 }
 
-export function realLigue1TopAssists(): { player: string; club: string; assists: number }[] {
+export function realLigue1TopAssists(competitionId = 'comp-l1'): { player: string; club: string; assists: number }[] {
   const tally = new Map<string, { player: string; club: string; assists: number }>()
   for (const m of realLigue1Matches) {
+    if (m.competitionId !== competitionId) continue
     for (const e of m.events) {
       if (e.type !== 'goal' || !e.assist) continue
       const club = e.team === 'home' ? m.homeClub : m.awayClub
@@ -1397,72 +1398,9 @@ function normalizePersonName(name: string) {
   return name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’']/g, "'").replace(/\s+/g, ' ').trim().toLowerCase()
 }
 
-function findRosterPlayer(clubName: string, name: string) {
-  const club = getClubByName(clubName)
-  if (!club) return undefined
-  const target = normalizePersonName(name)
-  return players.find((p) => p.clubId === club.id && normalizePersonName(p.name) === target)
-}
 
-// Statistiques de club réelles, recalculées à partir des matchs réels de
-// Ligue 1 : un joueur est compté comme ayant joué s'il figure dans la
-// composition de départ, entre en jeu, marque, fait une passe décisive ou
-// reçoit un carton. Minutes calculées seulement quand la composition et les
-// remplacements (avec minute) sont connus.
-function applyRealClubStats() {
-  const perPlayer = new Map<string, { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }>()
-  const row = (id: string) => {
-    let r = perPlayer.get(id)
-    if (!r) { r = { matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 }; perPlayer.set(id, r) }
-    return r
-  }
-  for (const m of realLigue1Matches) {
-    for (const side of ['home', 'away'] as const) {
-      const clubName = side === 'home' ? m.homeClub : m.awayClub
-      const appeared = new Map<string, number | null>()
-      const lineup = m.lineups?.[side]
-      const subs = (m.substitutions ?? []).filter((s) => s.team === side)
-      for (const name of lineup?.startingXI ?? []) {
-        const p = findRosterPlayer(clubName, name)
-        if (!p) continue
-        const out = subs.find((s) => s.playerOut && findRosterPlayer(clubName, s.playerOut)?.id === p.id)
-        appeared.set(p.id, lineup ? (out ? (out.minute ?? null) : 90) : null)
-      }
-      for (const s of subs) {
-        const p = findRosterPlayer(clubName, s.playerIn)
-        if (p) appeared.set(p.id, s.minute !== undefined ? 90 - s.minute : null)
-      }
-      for (const e of m.events.filter((ev) => ev.team === side)) {
-        const scorer = e.player ? findRosterPlayer(clubName, e.player) : undefined
-        const assister = e.assist ? findRosterPlayer(clubName, e.assist) : undefined
-        if (scorer) {
-          if (!appeared.has(scorer.id)) appeared.set(scorer.id, null)
-          if (e.type === 'goal') row(scorer.id).goals++
-          if (e.type === 'yellow') row(scorer.id).yellow++
-          if (e.type === 'red') row(scorer.id).red++
-        }
-        if (assister) {
-          if (!appeared.has(assister.id)) appeared.set(assister.id, null)
-          row(assister.id).assists++
-        }
-      }
-      for (const [id, minutes] of appeared) {
-        const r = row(id)
-        r.matches++
-        if (minutes !== null) r.minutes += minutes
-      }
-    }
-  }
-  for (const p of players) {
-    const r = perPlayer.get(p.id)
-    if (r) p.stats = r
-    const club = getClubById(p.clubId)
-    if (club?.competitionIds.includes('comp-l1')) {
-      p.seasonStats = [{ season: '2026-2027', competition: 'Ligue 1 LONACI', matches: p.stats.matches, goals: p.stats.goals, assists: p.stats.assists, avgRating: 0 }]
-    }
-  }
-}
-applyRealClubStats()
+// Les statistiques des joueurs sont recalculées à partir des matchs joués
+// (voir recomputeMatchStats, appelé après la conversion des matchs plus bas).
 
 // ---------------------------------------------------------------------------
 // Ligue 1 — prochains matchs réels : affiches officielles publiées par la FIF.
@@ -1565,15 +1503,12 @@ for (const m of realLigue1Matches) {
     status: 'Terminé',
     homeScore: m.homeScore,
     awayScore: m.awayScore,
-    events: m.events.map((e) => {
-      const player = e.player ? findRosterPlayer(e.team === 'home' ? m.homeClub : m.awayClub, e.player) : undefined
-      return { minute: e.minute, type: e.type, team: e.team, playerId: player?.id, detail: player ? undefined : e.player }
-    }),
+    events: m.events.map((e) => ({ minute: e.minute, type: e.type, team: e.team, detail: e.player })),
     refereeId: null,
     refereeName: m.referee?.name,
     delegateId: null,
     attendance: m.attendance,
-    detailHref: `/competitions/ligue-1/matchs/${m.slug}`,
+    detailHref: m.competitionId === 'comp-l1' ? `/competitions/ligue-1/matchs/${m.slug}` : undefined,
     source: m.source,
   })
 }
@@ -1606,6 +1541,183 @@ for (const f of [...realLigue1UpcomingFixtures, ...realLigue2UpcomingFixtures]) 
       : 'Affiche officielle de la 2e journée de Ligue 1 LONACI 2026-2027 (FIF), jouée entre le 4 et le 7 octobre 2026 ; date exacte à confirmer.'),
   })
 }
+
+// ---------------------------------------------------------------------------
+// Statistiques des joueurs — recalculées à partir de tous les matchs joués :
+// résultats réels ajoutés au fil des journées (mode automatique) et feuilles
+// de match publiées depuis l'administration (mode manuel). Un joueur est
+// compté comme ayant joué s'il est titulaire, entre en jeu, marque, fait une
+// passe décisive ou reçoit un carton. Les noms sont rapprochés des effectifs
+// enregistrés (ordre des noms indifférent) ; un joueur cité dans un match mais
+// absent des effectifs reçoit une fiche créée automatiquement, sans aucune
+// donnée inventée (poste, âge et profil à compléter dans l'administration).
+// Appelé ici puis après chaque application des données du back-office.
+// ---------------------------------------------------------------------------
+type StatLine = { matches: number; minutes: number; goals: number; assists: number; yellow: number; red: number }
+const emptyStatLine = (): StatLine => ({ matches: 0, minutes: 0, goals: 0, assists: 0, yellow: 0, red: 0 })
+
+function nameTokens(name: string) {
+  return normalizePersonName(name).replace(/[^a-z0-9' -]/g, ' ').split(/[\s-]+/).filter(Boolean)
+}
+
+/** Même personne si les noms ont les mêmes mots (dans n'importe quel ordre),
+ *  ou si l'un contient au moins deux mots et tous figurent dans l'autre. */
+export function samePersonName(a: string, b: string) {
+  const ta = new Set(nameTokens(a))
+  const tb = new Set(nameTokens(b))
+  if (!ta.size || !tb.size) return false
+  const [small, large] = ta.size <= tb.size ? [ta, tb] : [tb, ta]
+  if (small.size < 2 && small.size !== large.size) return false
+  return [...small].every((t) => large.has(t))
+}
+
+const COMPETITION_STAT_LABEL: Record<string, string> = { 'comp-l1': 'Ligue 1 LONACI', 'comp-l2': 'Ligue 2' }
+
+/** Matchs auxquels une feuille de match publiée s'applique (type minimal). */
+interface SheetLike {
+  lineups?: { home: { id: string; name: string; starter: boolean }[]; away: { id: string; name: string; starter: boolean }[] }
+  substitutions?: { minute: number; team: 'home' | 'away'; outId: string; outName: string; inId: string; inName: string }[]
+  goals: { minute: number; team: 'home' | 'away'; playerId: string; playerName: string }[]
+  cards: { minute: number; team: 'home' | 'away'; playerId: string; playerName: string; type: 'yellow' | 'red' }[]
+}
+
+export function recomputeMatchStats(sheets: Record<string, SheetLike> = {}) {
+  // Fiches automatiques recréées à chaque calcul.
+  for (let i = players.length - 1; i >= 0; i--) if (players[i].autoProfile) players.splice(i, 1)
+  const byId = new Map(players.map((p) => [p.id, p]))
+  const usedSlugs = new Set(players.map((p) => p.slug))
+
+  function resolve(clubId: string, name: string | undefined, id?: string): Player | undefined {
+    const direct = id ? byId.get(id) : undefined
+    if (direct) return direct
+    const clean = name?.trim()
+    if (!clean) return undefined
+    const found = players.find((p) => p.clubId === clubId && samePersonName(p.name, clean))
+    if (found) return found
+    const club = getClubById(clubId)
+    if (!club) return undefined
+    const base = buildPlayerRecord({ id: `auto-${club.id}-${slugify(clean)}`, name: clean, clubId: club.id, position: 'Milieu' })
+    let slug = `${slugify(clean)}-${club.slug}`
+    for (let n = 2; usedSlugs.has(slug); n++) slug = `${slugify(clean)}-${club.slug}-${n}`
+    usedSlugs.add(slug)
+    const created: Player = { ...base, slug, positionDetail: 'Poste à confirmer', licenseStatus: 'En attente', realRoster: false, autoProfile: true }
+    players.push(created)
+    byId.set(created.id, created)
+    return created
+  }
+
+  const lines = new Map<string, Map<string, StatLine>>() // joueur → compétition → stats
+  const line = (playerId: string, competitionId: string) => {
+    let perComp = lines.get(playerId)
+    if (!perComp) { perComp = new Map(); lines.set(playerId, perComp) }
+    let l = perComp.get(competitionId)
+    if (!l) { l = emptyStatLine(); perComp.set(competitionId, l) }
+    return l
+  }
+  const realBySlug = new Map(realLigue1Matches.map((m) => [m.slug, m]))
+
+  for (const m of matches) {
+    if (m.status !== 'Terminé') continue
+    const clubOf = (side: 'home' | 'away') => (side === 'home' ? m.homeClubId : m.awayClubId)
+    // joueur → minutes jouées (null si inconnues), par équipe
+    const appeared = new Map<string, number | null>()
+    const appear = (p: Player | undefined, minutes: number | null) => {
+      if (!p) return
+      if (!appeared.has(p.id) || (appeared.get(p.id) === null && minutes !== null)) appeared.set(p.id, minutes)
+    }
+    const sheet = sheets[m.id]
+    const real = realBySlug.get(m.id)
+    const events: MatchEvent[] = []
+
+    if (sheet) {
+      const subs = sheet.substitutions ?? []
+      for (const side of ['home', 'away'] as const) {
+        for (const entry of sheet.lineups?.[side] ?? []) {
+          const out = subs.find((s) => s.team === side && s.outId === entry.id)
+          const came = subs.find((s) => s.team === side && s.inId === entry.id)
+          if (!entry.starter && !came) continue
+          appear(resolve(clubOf(side), entry.name, entry.id), entry.starter ? (out ? out.minute : 90) : Math.max(0, 90 - (came?.minute ?? 90)))
+        }
+      }
+      for (const g of sheet.goals) {
+        const p = resolve(clubOf(g.team), g.playerName, g.playerId)
+        appear(p, null)
+        if (p) line(p.id, m.competitionId).goals++
+        events.push({ minute: g.minute, type: 'goal', team: g.team, ...(p ? { playerId: p.id } : { detail: g.playerName }) })
+      }
+      for (const c of sheet.cards) {
+        const p = resolve(clubOf(c.team), c.playerName, c.playerId)
+        appear(p, null)
+        if (p) line(p.id, m.competitionId)[c.type === 'red' ? 'red' : 'yellow']++
+        events.push({ minute: c.minute, type: c.type, team: c.team, ...(p ? { playerId: p.id } : { detail: c.playerName }) })
+      }
+      for (const s of subs) events.push({ minute: s.minute, type: 'sub', team: s.team, detail: `${s.inName} ↔ ${s.outName}` })
+    } else if (real) {
+      const subs = real.substitutions ?? []
+      for (const side of ['home', 'away'] as const) {
+        const clubId = clubOf(side)
+        const lineup = real.lineups?.[side]
+        for (const name of lineup?.startingXI ?? []) {
+          const out = subs.find((s) => s.team === side && s.playerOut && samePersonName(s.playerOut, name))
+          appear(resolve(clubId, name), out ? (out.minute ?? null) : 90)
+        }
+        for (const s of subs.filter((x) => x.team === side)) appear(resolve(clubId, s.playerIn), s.minute !== undefined ? 90 - s.minute : null)
+      }
+      for (const e of real.events) {
+        const clubId = clubOf(e.team)
+        const p = resolve(clubId, e.player)
+        const assister = resolve(clubId, e.assist)
+        appear(p, null)
+        appear(assister, null)
+        if (p) {
+          const l = line(p.id, m.competitionId)
+          if (e.type === 'goal') l.goals++
+          if (e.type === 'yellow') l.yellow++
+          if (e.type === 'red') l.red++
+        }
+        if (assister) line(assister.id, m.competitionId).assists++
+        events.push({ minute: e.minute, type: e.type, team: e.team, ...(p ? { playerId: p.id } : e.player ? { detail: e.player } : {}) })
+      }
+    } else {
+      // Match saisi sans feuille (back-office) : faits de match déjà présents.
+      for (const e of m.events) {
+        const p = resolve(clubOf(e.team), e.type === 'sub' ? undefined : e.detail, e.playerId)
+        if (p && e.type !== 'sub') {
+          appear(p, null)
+          const l = line(p.id, m.competitionId)
+          if (e.type === 'goal') l.goals++
+          if (e.type === 'yellow') l.yellow++
+          if (e.type === 'red') l.red++
+        }
+        events.push(p && e.type !== 'sub' ? { ...e, playerId: p.id, detail: undefined } : e)
+      }
+    }
+
+    m.events = events.sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0))
+    for (const [playerId, minutes] of appeared) {
+      const l = line(playerId, m.competitionId)
+      l.matches++
+      if (minutes !== null) l.minutes += minutes
+    }
+  }
+
+  for (const p of players) {
+    const perComp = lines.get(p.id) ?? new Map<string, StatLine>()
+    const club = getClubById(p.clubId)
+    for (const compId of ['comp-l1', 'comp-l2']) {
+      if (club?.competitionIds.includes(compId) && !perComp.has(compId)) perComp.set(compId, emptyStatLine())
+    }
+    const total = emptyStatLine()
+    for (const l of perComp.values()) for (const k of Object.keys(total) as (keyof StatLine)[]) total[k] += l[k]
+    p.stats = total
+    p.seasonStats = [...perComp.entries()].map(([compId, l]) => ({
+      season: '2026-2027',
+      competition: COMPETITION_STAT_LABEL[compId] ?? competitions.find((c) => c.id === compId)?.name ?? compId,
+      matches: l.matches, goals: l.goals, assists: l.assists, avgRating: 0,
+    }))
+  }
+}
+recomputeMatchStats()
 
 // ---------------------------------------------------------------------------
 // International fixtures (national teams) — upcoming only, no fabricated

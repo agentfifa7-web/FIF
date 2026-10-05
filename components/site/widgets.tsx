@@ -37,7 +37,7 @@ export function RankingTable({ rows, highlightTop = 0, highlightBottom = 0 }: { 
       <table className="data-table">
         <thead>
           <tr>
-            <th>POS</th><th className="align-left">CLUB</th><th>MJ</th><th>G</th><th>N</th><th>P</th><th>BP</th><th>BC</th><th>DB</th><th>PTS</th>
+            <th>POS</th><th className="align-left">CLUB</th><th>MJ</th><th className="col-wdl">G</th><th className="col-wdl">N</th><th className="col-wdl">P</th><th className="col-goals">BP</th><th className="col-goals">BC</th><th>DB</th><th>PTS</th>
           </tr>
         </thead>
         <tbody>
@@ -49,14 +49,14 @@ export function RankingTable({ rows, highlightTop = 0, highlightBottom = 0 }: { 
               <tr key={row.clubId} className={rowClass}>
                 <td>{i + 1}</td>
                 <td className="align-left">
-                  <Link href={`/clubs/${club.slug}`} className="table-club"><ClubCrest club={club} size={24} /> {club.name}</Link>
+                  <Link href={`/clubs/${club.slug}`} className="table-club"><ClubCrest club={club} size={24} /> <span>{club.name}</span></Link>
                 </td>
                 <td>{row.played}</td>
-                <td>{row.won}</td>
-                <td>{row.drawn}</td>
-                <td>{row.lost}</td>
-                <td>{row.goalsFor}</td>
-                <td>{row.goalsAgainst}</td>
+                <td className="col-wdl">{row.won}</td>
+                <td className="col-wdl">{row.drawn}</td>
+                <td className="col-wdl">{row.lost}</td>
+                <td className="col-goals">{row.goalsFor}</td>
+                <td className="col-goals">{row.goalsAgainst}</td>
                 <td>{row.goalsFor - row.goalsAgainst}</td>
                 <td><b>{row.points}</b></td>
               </tr>

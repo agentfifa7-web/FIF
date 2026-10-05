@@ -289,7 +289,8 @@ const players: CollectionSchema = {
       if (last && last.to === null) last.to = new Date().getFullYear()
       history.push({ clubId: fields.clubId, from: new Date().getFullYear(), to: null })
     }
-    return { ...e, ...fields, height: fields.height ?? e.height, weight: fields.weight ?? e.weight, preferredFoot: fields.preferredFoot ?? e.preferredFoot, history }
+    // Une fiche créée automatiquement devient une fiche gérée par l'administration.
+    return { ...e, ...fields, autoProfile: false, height: fields.height ?? e.height, weight: fields.weight ?? e.weight, preferredFoot: fields.preferredFoot ?? e.preferredFoot, history }
   },
   publicHref: (r) => `/joueurs/${r.slug}`,
 }

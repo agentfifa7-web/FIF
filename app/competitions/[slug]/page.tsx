@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Info } from 'lucide-react'
 import { competitions, getCompetition, standingsFor, topScorersFor, topAssistsFor, refereesFor, matches, players, getClubById, realLigue1TopAssists, scorersFromMatches } from '@/lib/data/mock'
@@ -39,15 +40,15 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
   const assisters = topAssistsFor(competition.id)
   const officiatingReferees = competition.id === 'comp-l1' ? [] : refereesFor(competition.id)
   const isRealLigue1 = competition.id === 'comp-l1'
-  const compPlayers = isRealLigue1
-    ? competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id && p.realRoster))
-    : competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
-  // Ligue 1 : résultats, classement et buteurs calculés à partir des matchs
-  // officiels (résultats confirmés et feuilles de match publiées).
-  const realMatches = isRealLigue1 ? compMatches.filter((m) => m.status === 'Terminé') : []
-  const realStandings = isRealLigue1 ? standings.filter((r) => r.played > 0) : []
-  const realScorers = isRealLigue1 ? scorersFromMatches(competition.id) : []
-  const realAssisters = isRealLigue1 ? realLigue1TopAssists() : []
+  const compPlayers = competition.clubIds.flatMap((id) => players.filter((p) => p.clubId === id))
+  // Résultats, classement et buteurs calculés à partir des matchs officiels
+  // (résultats confirmés et feuilles de match publiées), pour toutes les compétitions.
+  const realMatches = compMatches.filter((m) => m.status === 'Terminé')
+  const realStandingBlocks = poules
+    ? poules.map((p) => ({ label: `Classement réel — ${p.label}`, rows: p.standings.filter((r) => r.played > 0) })).filter((b) => b.rows.length)
+    : [{ label: 'Classement réel (clubs ayant déjà joué)', rows: standings.filter((r) => r.played > 0) }].filter((b) => b.rows.length)
+  const realScorers = scorersFromMatches(competition.id)
+  const realAssisters = realLigue1TopAssists(competition.id)
   const upcomingFixtures = compMatches.filter((m) => m.status !== 'Terminé')
   const byPoule = pouleKeys
     ? pouleKeys.map((g) => ({ group: g, matches: upcomingFixtures.filter((m) => getClubById(m.homeClubId)?.group === g) })).filter((p) => p.matches.length)
@@ -71,12 +72,12 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
           <div style={{ marginTop: 16 }}><MatchdayList matches={realMatches} mode="results" /></div>
           <div className="card-grid cols-2" style={{ marginTop: 24, alignItems: 'start' }}>
-            {realStandings.length > 0 && (
-              <div>
-                <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Classement réel (clubs ayant déjà joué)</b>
-                <div style={{ marginTop: 10 }}><RankingTable rows={realStandings} /></div>
+            {realStandingBlocks.map((b) => (
+              <div key={b.label}>
+                <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>{b.label}</b>
+                <div style={{ marginTop: 10 }}><RankingTable rows={b.rows} /></div>
               </div>
-            )}
+            ))}
             {realScorers.length > 0 && (
               <div>
                 <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Meilleurs buteurs réels</b>
@@ -87,7 +88,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
                       {realScorers.map((s, i) => (
                         <tr key={`${s.player}-${s.club}`}>
                           <td>{i + 1}</td>
-                          <td className="align-left">{s.player}</td>
+                          <td className="align-left">{s.slug ? <Link href={`/joueurs/${s.slug}`} style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}>{s.player}</Link> : s.player}</td>
                           <td className="align-left">{s.club}</td>
                           <td>{s.goals}</td>
                         </tr>
@@ -117,7 +118,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
               </div>
             </div>
           </div>
-          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la Ligue 1 LONACI, confirmés par la presse ivoirienne et ajoutés au fil des journées.</p>
+          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats réels de la compétition ({competition.name}), confirmés par la presse ivoirienne ou publiés par feuille de match, ajoutés au fil des journées.</p>
         </section>
       )}
 
@@ -152,7 +153,7 @@ export default async function CompetitionPage({ params }: { params: Promise<{ sl
           compPlayers={compPlayers}
           allMatches={compMatches}
           hideGeneratedTabs={competition.id === 'comp-l1'}
-          realOverview={competition.id === 'comp-l1' ? { matchesPlayed: realMatches.length, topScorerGoals: realScorers[0]?.goals ?? 0 } : undefined}
+          realOverview={{ matchesPlayed: realMatches.length, topScorerGoals: realScorers[0]?.goals ?? 0 }}
         />
       </section>
     </main>

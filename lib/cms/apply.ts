@@ -4,11 +4,9 @@
 // donc toujours sûr (idempotent). Utilisé côté serveur et côté navigateur.
 import {
   agents, academies, articles, clubs, coaches, competitions, matches, officials, players,
-  products, referees, stadiums, videos, realLigue1Matches,
+  products, referees, stadiums, videos, recomputeMatchStats,
 } from '@/lib/data/mock'
 import { ticketEvents } from '@/lib/data/tickets'
-import type { MatchEvent } from '@/lib/data/types'
-import type { MatchSheetOverride } from '@/lib/matchsheet'
 import { finances, licences } from './private-data'
 import { cmsRuntime } from './runtime'
 import {
@@ -78,14 +76,11 @@ export function applyOverlay(overlay: PublicOverlay, privateDocs?: Partial<Recor
   return true
 }
 
-const REAL_RESULT_IDS = new Set(realLigue1Matches.map((m) => m.slug))
-
 function recomputeDerived() {
   // Compétitions de chaque club.
   for (const club of clubs) club.competitionIds = competitions.filter((c) => c.clubIds.includes(club.id)).map((c) => c.id)
 
-  // Feuilles de match publiées : résultat, faits de match et statistiques des joueurs.
-  const playerIds = new Set(players.map((p) => p.id))
+  // Feuilles de match publiées : résultat du match.
   for (const m of matches) {
     const sheet = cmsRuntime.sheets[m.id]
     if (!sheet) continue
@@ -93,36 +88,9 @@ function recomputeDerived() {
     m.homeScore = sheet.homeScore
     m.awayScore = sheet.awayScore
     if (sheet.attendance) m.attendance = sheet.attendance
-    m.events = sheetEvents(sheet, playerIds)
-    if (!REAL_RESULT_IDS.has(m.id)) addSheetStats(sheet)
   }
-}
-
-function sheetEvents(sheet: MatchSheetOverride, playerIds: Set<string>): MatchEvent[] {
-  const ref = (id: string, name: string) => (playerIds.has(id) ? { playerId: id } : { detail: name })
-  return [
-    ...sheet.goals.map((g) => ({ minute: g.minute, type: 'goal' as const, team: g.team, ...ref(g.playerId, g.playerName) })),
-    ...sheet.cards.map((c) => ({ minute: c.minute, type: c.type, team: c.team, ...ref(c.playerId, c.playerName) })),
-    ...(sheet.substitutions ?? []).map((s) => ({ minute: s.minute, type: 'sub' as const, team: s.team, detail: `${s.inName} ↔ ${s.outName}` })),
-  ].sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0))
-}
-
-function addSheetStats(sheet: MatchSheetOverride) {
-  const byId = new Map(players.map((p) => [p.id, p]))
-  const subs = sheet.substitutions ?? []
-  for (const side of ['home', 'away'] as const) {
-    for (const entry of sheet.lineups?.[side] ?? []) {
-      const p = byId.get(entry.id)
-      if (!p) continue
-      const out = subs.find((s) => s.team === side && s.outId === entry.id)
-      const came = subs.find((s) => s.team === side && s.inId === entry.id)
-      if (!entry.starter && !came) continue
-      p.stats.matches += 1
-      p.stats.minutes += entry.starter ? (out ? out.minute : 90) : Math.max(0, 90 - (came?.minute ?? 90))
-    }
-  }
-  for (const g of sheet.goals) { const p = byId.get(g.playerId); if (p) p.stats.goals += 1 }
-  for (const c of sheet.cards) { const p = byId.get(c.playerId); if (p) { if (c.type === 'red') p.stats.red += 1; else p.stats.yellow += 1 } }
+  // Faits de match et statistiques des joueurs (résultats réels + feuilles de match).
+  recomputeMatchStats(cmsRuntime.sheets)
 }
 
 export function newRecordId(prefix: string) {
