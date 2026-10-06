@@ -1301,6 +1301,35 @@ export const realLigue1Matches: RealLeagueMatch[] = [
       { minute: 10, type: 'goal', team: 'away', player: 'Karamoko Alpha' },
     ],
     source: 'Résultat réel confirmé par Supersport CI et DailySports — victoire 2-0 du FC San Pedro à Korhogo pour la 2e journée.',
+  },
+  {
+    slug: 'l1-j2-fc-mouna-yakro-fc',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-05',
+    homeClub: 'FC Mouna',
+    awayClub: 'Yakro FC',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 0,
+    awayScore: 2,
+    events: [
+      { minute: 11, type: 'goal', team: 'away', player: 'Jaurès Diomandé' },
+      { minute: 61, type: 'goal', team: 'away', player: 'Elvis N’guessan' },
+    ],
+    source: 'Résultat réel confirmé par Supersport CI (« Yamoussoukro FC surclasse Mouna ») et DailySports — 2e victoire en 2 matchs pour le promu Yakro FC (2e journée).',
+  },
+  {
+    slug: 'l1-j2-zoman-fc-co-korhogo',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-05',
+    homeClub: 'Zoman FC',
+    awayClub: 'CO Korhogo',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 1,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Résultat réel confirmé par Eurosport (score 1-1) et Sofascore ; match nul relayé par la presse ivoirienne — 2e journée, buteurs non communiqués.',
   },  {
     slug: 'l2-j1-africa-sports-leader-sc-marcory',
     competitionId: 'comp-l2',
@@ -1504,11 +1533,9 @@ export interface RealLeagueFixture {
 // annoncées match par match ; les autres restent « à confirmer ». Les matchs
 // joués passent dans realLigue1Matches.
 const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string }[] = [
-  { home: 'FC Mouna', away: 'Yakro FC', date: '2026-10-05', time: '15:30' },
   { home: 'SOL FC', away: 'Stade d’Abidjan', date: '2026-10-07', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
   { home: 'ES Agboville', away: 'OFC Adiaké', date: '2026-10-07', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
   { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
-  { home: 'Zoman FC', away: 'CO Korhogo', date: '2026-10-06', time: '15:30', venue: 'Complexe sportif de Bingerville' },
 ]
 
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time, venue }) => ({
@@ -1531,8 +1558,8 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRING
 const L2_J1_NOTE = 'Ligue 2 2026-2027, 1re journée (4-8 octobre 2026) — programme publié par la presse ivoirienne (ami-sportif.com).'
 const LIGUE2_J1: { home: string; away: string; date?: string; time?: string; venue?: string; detail?: string }[] = [
   // Poule A
-  { home: 'AS Tanda', away: 'AS Divo' },
-  { home: 'FC OSA', away: 'Don Koff FC' },
+  { home: 'AS Tanda', away: 'AS Divo', date: '2026-10-07', time: '15:30', venue: 'Parc des Sports de Treichville' },
+  { home: 'FC OSA', away: 'Don Koff FC', date: '2026-10-06', time: '18:00', venue: 'Stade Robert Champroux, Marcory' },
   // Poule B
   { home: 'ES Bingerville', away: '2 Plateaux FC' },
 ]
