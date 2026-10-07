@@ -1526,19 +1526,21 @@ export interface RealLeagueFixture {
   awayClub: string
   /** Source / précision affichée sur la fiche du match. */
   note?: string
+  /** Match reporté (nouvelle date non communiquée). */
+  postponed?: boolean
 }
 
 // 2e journée : du dimanche 4 au mercredi 7 octobre 2026 (ami-sportif.com,
 // 2 octobre 2026). Date et heure renseignées seulement lorsqu'elles ont été
 // annoncées match par match ; les autres restent « à confirmer ». Les matchs
 // joués passent dans realLigue1Matches.
-const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string }[] = [
-  { home: 'SOL FC', away: 'Stade d’Abidjan', date: '2026-10-07', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
-  { home: 'ES Agboville', away: 'OFC Adiaké', date: '2026-10-07', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Plateau' },
+const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string; postponed?: boolean; note?: string }[] = [
+  { home: 'SOL FC', away: 'Stade d’Abidjan', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 18h00, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
+  { home: 'ES Agboville', away: 'OFC Adiaké', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 15h30, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
   { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
 ]
 
-export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time, venue }) => ({
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time, venue, postponed, note }) => ({
   slug: `l1-j2-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
   matchday: 2,
@@ -1547,6 +1549,8 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRING
   date,
   time,
   venue,
+  postponed,
+  note,
 }))
 
 // ---------------------------------------------------------------------------
@@ -1630,7 +1634,7 @@ for (const f of [...realLigue1UpcomingFixtures, ...realLigue2UpcomingFixtures]) 
     date: f.date ? `${f.date}T${f.time ?? '12:00'}:00Z` : `${lastPlayedDate}T23:59:00Z`,
     dateConfirmed: Boolean(f.date),
     timeConfirmed: Boolean(f.time),
-    status: 'À venir',
+    status: f.postponed ? 'Reporté' : 'À venir',
     homeScore: null,
     awayScore: null,
     events: [],
