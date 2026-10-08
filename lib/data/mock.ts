@@ -1565,7 +1565,7 @@ const LIGUE2_J1: { home: string; away: string; date?: string; time?: string; ven
   { home: 'AS Tanda', away: 'AS Divo', date: '2026-10-07', time: '15:30', venue: 'Parc des Sports de Treichville' },
   { home: 'FC OSA', away: 'Don Koff FC', date: '2026-10-06', time: '18:00', venue: 'Stade Robert Champroux, Marcory' },
   // Poule B
-  { home: 'ES Bingerville', away: '2 Plateaux FC' },
+  { home: 'ES Bingerville', away: '2 Plateaux FC', date: '2026-10-08', time: '15:30', venue: 'Complexe sportif de Bingerville' },
 ]
 
 export const realLigue2UpcomingFixtures: RealLeagueFixture[] = LIGUE2_J1.map(({ home, away, date, time, venue, detail }) => ({
