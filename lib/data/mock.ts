@@ -1587,16 +1587,35 @@ const LIGUE2_J1: { home: string; away: string; date?: string; time?: string; ven
   { home: 'ES Bingerville', away: '2 Plateaux FC', date: '2026-10-08', time: '15:30', venue: 'Complexe sportif de Bingerville' },
 ]
 
-export const realLigue2UpcomingFixtures: RealLeagueFixture[] = LIGUE2_J1.map(({ home, away, date, time, venue, detail }) => ({
-  slug: `l2-j1-${slugify(home)}-${slugify(away)}`,
+// 2e journée (9-13 octobre 2026) — programme publié par ami-sportif.com
+// (9 octobre 2026) ; les autres affiches seront ajoutées dès leur publication.
+const L2_J2_NOTE = 'Ligue 2 2026-2027, 2e journée (9-13 octobre 2026) — programme publié par ami-sportif.com (source unique).'
+const LIGUE2_J2: typeof LIGUE2_J1 = [
+  // Poule A
+  { home: 'CO Bouaflé', away: 'Denguélé FC', date: '2026-10-09', time: '15:30', venue: 'Stade du Lycée scientifique, Yamoussoukro' },
+  { home: 'Lanfiara FC', away: 'Don Koff FC', date: '2026-10-10', time: '15:30' },
+  { home: 'JAC Angré', away: 'AS Athletic', date: '2026-10-10', venue: 'Parc des Sports de Treichville' },
+  { home: 'Sirocco FC', away: 'FC OSA', date: '2026-10-11', time: '15:30', venue: 'Stade Laurent Pokou, San-Pédro' },
+  { home: 'AS Divo', away: 'Africa Sports', date: '2026-10-11', time: '15:30' },
+  { home: 'Leader SC Marcory', away: 'Leader Foot', date: '2026-10-11', time: '18:00', venue: 'Stade Robert Champroux, Marcory' },
+  { home: 'AS Tanda', away: 'SC Gagnoa', date: '2026-10-12', time: '15:30', venue: 'Parc des Sports de Treichville' },
+  // Poule B
+  { home: 'Issia Wazy', away: 'WAC', date: '2026-10-10', time: '15:30', venue: 'Stade du Lycée scientifique, Yamoussoukro' },
+]
+
+export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
+  ...LIGUE2_J1.map((f) => ({ ...f, matchday: 1, base: L2_J1_NOTE })),
+  ...LIGUE2_J2.map((f) => ({ ...f, matchday: 2, base: L2_J2_NOTE })),
+].map(({ home, away, date, time, venue, detail, matchday, base }) => ({
+  slug: `l2-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l2',
-  matchday: 1,
+  matchday,
   homeClub: home,
   awayClub: away,
   date,
   time,
   venue,
-  note: detail ? `${L2_J1_NOTE} ${detail}` : L2_J1_NOTE,
+  note: detail ? `${base} ${detail}` : base,
 }))
 
 // Conversion des matchs réels au format commun du site (calendrier, résultats,
