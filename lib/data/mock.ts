@@ -1540,10 +1540,29 @@ const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: st
   { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
 ]
 
-export const realLigue1UpcomingFixtures: RealLeagueFixture[] = LIGUE1_J2_PAIRINGS.map(({ home, away, date, time, venue, postponed, note }) => ({
-  slug: `l1-j2-${slugify(home)}-${slugify(away)}`,
+// 3e journée : du samedi 10 au mardi 13 octobre 2026 — programme publié par
+// ami-sportif.com (8 octobre 2026), affiches confirmées par DailySports et
+// Supersport CI. Heure laissée « à confirmer » quand elle n'est pas annoncée
+// ou quand les sources divergent (ASEC – AFAD : 18h00 ou 15h30).
+const J3_NOTE = 'Ligue 1 LONACI 2026-2027, 3e journée (10-13 octobre 2026) — programme publié par ami-sportif.com, affiche confirmée par DailySports.'
+const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
+  { home: 'Bouaké FC', away: 'FC San Pedro', date: '2026-10-10', time: '15:30', venue: 'Stade de la Paix, Bouaké', note: J3_NOTE },
+  { home: 'ASEC Mimosas', away: 'AFAD Plateau', date: '2026-10-10', venue: 'Stade Olympique Alassane Ouattara (Ebimpé)', note: `${J3_NOTE} Coup d’envoi annoncé à 18h00 (ami-sportif.com) ou 15h30 GMT (DailySports) : heure à confirmer.` },
+  { home: 'Stella Club', away: 'Yakro FC', date: '2026-10-11', time: '15:30', venue: 'Stade Olympique Alassane Ouattara (Ebimpé)', note: J3_NOTE },
+  { home: 'FC Mouna', away: 'SOL FC', date: '2026-10-11', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J3_NOTE },
+  { home: 'Stade d’Abidjan', away: 'ES Agboville', date: '2026-10-12', venue: 'Complexe sportif de Bingerville', note: J3_NOTE },
+  { home: 'SOA', away: 'ISCA Inova', date: '2026-10-12', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J3_NOTE },
+  { home: 'CO Korhogo', away: 'US Tchologo', date: '2026-10-12', venue: 'Stade Amadou Gon Coulibaly, Korhogo', note: J3_NOTE },
+  { home: 'OFC Adiaké', away: 'Zoman FC', date: '2026-10-13', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J3_NOTE },
+]
+
+export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
+  ...LIGUE1_J2_PAIRINGS.map((f) => ({ ...f, matchday: 2 })),
+  ...LIGUE1_J3_PAIRINGS.map((f) => ({ ...f, matchday: 3 })),
+].map(({ home, away, date, time, venue, postponed, note, matchday }) => ({
+  slug: `l1-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
-  matchday: 2,
+  matchday,
   homeClub: home,
   awayClub: away,
   date,
@@ -1841,6 +1860,8 @@ export interface InternationalFixture {
   timeConfirmed?: boolean
   home: boolean
   source?: string
+  /** Score final (côté Côte d'Ivoire / adversaire) et buteurs, une fois le match joué. */
+  result?: { civ: number; opp: number; scorers?: string }
 }
 
 // Calendrier réel des autres sélections (les Éléphants ont elephantsFixtures),
@@ -1848,8 +1869,8 @@ export interface InternationalFixture {
 export const internationalFixtures: InternationalFixture[] = [
   // Éliminatoires JO 2028 (football féminin, zone CAF) — 2e tour face à la RD Congo.
   // Sources : radiookapi.net, allafrica.com, sport-ivoire.ci, ami-sportif.com (octobre 2026).
-  { id: 'ntf-elephantes-rdc-aller', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (aller)', date: '2026-10-09T13:30:00Z', venue: 'Stade TP Mazembe, Lubumbashi', timeConfirmed: true, home: false, source: 'radiookapi.net, allafrica.com' },
-  { id: 'ntf-elephantes-rdc-retour', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (retour)', date: '2026-10-13T12:00:00Z', stadiumId: 'st-fhb', timeConfirmed: false, home: true, source: 'sport-ivoire.ci, ami-sportif.com' },
+  { id: 'ntf-elephantes-rdc-aller', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (aller)', date: '2026-10-09T13:30:00Z', venue: 'Stade TP Mazembe, Lubumbashi', timeConfirmed: true, home: false, source: 'Radio Okapi, Foot Africa, Supersport CI, Sport-Ivoire, Africa Top Sports (9 octobre 2026)', result: { civ: 4, opp: 1, scorers: 'Grâce Sery (3e, 20e), Estelle Gnaly (49e), Karidja Fofana (53e) ; RD Congo : Anastasia Soulac (16e)' } },
+  { id: 'ntf-elephantes-rdc-retour', teamId: 'nt-elephantes', opponent: 'RD Congo', competition: 'Éliminatoires JO 2028 — 2e tour (retour)', date: '2026-10-13T19:00:00Z', stadiumId: 'st-fhb', timeConfirmed: true, home: true, source: 'Radio Okapi, Foot Africa (coup d’envoi 19h00)' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -2408,11 +2429,18 @@ export function lastElephantsFixture(): RealFixture | undefined {
   return [...elephantsFixtures].reverse().find((f) => f.result)
 }
 
+/** Derniers résultats d'une sélection (matchs joués, du plus récent au plus ancien). */
+export function lastResultsFor(teamId: string) {
+  return internationalFixtures
+    .filter((f) => f.teamId === teamId && f.result)
+    .sort((a, b) => +new Date(b.date) - +new Date(a.date))
+}
+
 export function nextFixtureFor(teamId: string) {
-  // Un match reste « prochain » jusqu'au lendemain de sa date.
+  // Un match reste « prochain » jusqu'au lendemain de sa date, tant qu'il n'a pas de résultat.
   const now = Date.now() - 24 * 3600 * 1000
   return internationalFixtures
-    .filter((f) => f.teamId === teamId && +new Date(f.date) >= now)
+    .filter((f) => f.teamId === teamId && !f.result && +new Date(f.date) >= now)
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0]
 }
 

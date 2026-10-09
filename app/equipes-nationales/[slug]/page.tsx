@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CalendarDays, MapPin, Trophy } from 'lucide-react'
 import {
-  getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, getStadiumById, getClubById,
+  getTeam, nationalTeams, nationalSquads, getPlayerById, getCoachById, nextFixtureFor, lastResultsFor, getStadiumById, getClubById,
   elephantsCoach, elephantsCallUp, elephantsCallUpDate, elephantsFixtures, elephantsFlag,
 } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
@@ -37,6 +37,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
   const coach = team.coachId ? getCoachById(team.coachId) : null
   const fixture = nextFixtureFor(team.id)
   const fixtureStadium = fixture?.stadiumId ? getStadiumById(fixture.stadiumId) : null
+  const lastResult = lastResultsFor(team.id)[0]
 
   const squadByPosition = positionOrder.map((pos) => ({
     position: pos,
@@ -85,8 +86,23 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
             ))}
           </div>
         </section>
-      ) : fixture && (
+      ) : (fixture || lastResult) && (
         <section className="page-section tight">
+          {lastResult?.result && (
+            <div style={{ marginBottom: fixture ? 28 : 0 }}>
+              <p className="section-tag">Dernier résultat</p>
+              <div className="next-card" style={{ maxWidth: 520, marginTop: 16 }}>
+                <div className="next-card-top"><span>{lastResult.competition.toUpperCase()}</span><span>{formatDate(lastResult.date).toUpperCase()}</span></div>
+                <div className="teams">
+                  <div className="team"><div className="crest ivory">CI</div><strong>Côte<br />d&apos;Ivoire</strong></div>
+                  <div className="versus"><b style={{ fontSize: 30 }}>{lastResult.result.civ} - {lastResult.result.opp}</b><span>{lastResult.venue ?? getStadiumById(lastResult.stadiumId ?? '')?.name}<br />{lastResult.home ? 'Domicile' : 'Extérieur'}</span></div>
+                  <div className="team"><div className="crest red">{lastResult.opponent.slice(0, 2).toUpperCase()}</div><strong>{lastResult.opponent}</strong></div>
+                </div>
+                {lastResult.result.scorers && <p className="muted-sm" style={{ marginTop: 12 }}>Buts : {lastResult.result.scorers}</p>}
+              </div>
+            </div>
+          )}
+          {fixture && <>
           <p className="section-tag">Prochain rendez-vous</p>
           <div className="next-card" style={{ maxWidth: 520, marginTop: 16 }}>
             <div className="next-card-top"><span>{fixture.competition.toUpperCase()}</span><span>{formatDate(fixture.date).toUpperCase()}</span></div>
@@ -96,6 +112,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
               <div className="team"><div className="crest red">{fixture.opponent.slice(0, 2).toUpperCase()}</div><strong>{fixture.opponent}</strong></div>
             </div>
           </div>
+          </>}
         </section>
       )}
 

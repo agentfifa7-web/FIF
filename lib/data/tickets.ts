@@ -83,12 +83,12 @@ export const ticketEvents: TicketEvent[] = [
     note: 'Prix officiels communiqués par la FIF (2 000, 5 000, 10 000 et 50 000 F CFA). La répartition des tarifs par tribune affichée ici est indicative.',
     matchHref: '/equipes-nationales/elephants/matchs/elephants-cameroun-2026-10-03',
   },
-  ...LIGUE1_J2.map(({ homeClub: h, awayClub: a, date, time, venue, postponed, note }): TicketEvent => ({
-    slug: `ligue1-j2-${slugify(h)}-${slugify(a)}`,
+  ...LIGUE1_J2.map(({ homeClub: h, awayClub: a, date, time, venue, postponed, note, matchday }): TicketEvent => ({
+    slug: `ligue1-j${matchday}-${slugify(h)}-${slugify(a)}`,
     date,
     time,
     category: 'Ligue 1',
-    competition: 'Ligue 1 — 2e journée (saison 2026-2027)',
+    competition: `Ligue 1 — ${matchday}e journée (saison 2026-2027)`,
     home: clubSide(h),
     away: clubSide(a),
     stadium: { name: venue ?? 'Stade à confirmer', city: '' },
@@ -97,7 +97,7 @@ export const ticketEvents: TicketEvent[] = [
     tiers: [],
     note: postponed && note
       ? `${note} La billetterie ouvrira dès l’annonce de la nouvelle date.`
-      : 'Affiche officielle de la 2e journée. Date, stade et tarifs seront publiés par les organisateurs ; activez l’alerte pour être prévenu de l’ouverture de la vente.',
+      : `Affiche officielle de la ${matchday}e journée. Date, stade et tarifs seront publiés par les organisateurs ; activez l’alerte pour être prévenu de l’ouverture de la vente.`,
   })),
 ]
 
