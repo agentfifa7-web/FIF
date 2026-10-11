@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, MapPin, CalendarDays, Play, Trophy } from 'lucide-react'
 import type { Article, Club, Competition, Match, Player, Video } from '@/lib/data/types'
 import { getClubById, getStadiumById, cityName, clubLeagueLabel } from '@/lib/data/mock'
-import { formatDate, matchWhen, age } from '@/lib/format'
+import { formatDate, matchWhen, age, awaitingScore } from '@/lib/format'
 import { useLiveMatch } from '@/lib/liveMatch'
 import { NewsThumb } from './NewsThumb'
 
@@ -89,7 +89,7 @@ export function MatchCard({ match }: { match: Match }) {
     <Link href={`/matches/${match.id}`} className={`match-card status-${live.status === 'Live' ? 'live' : live.status === 'Terminé' ? 'done' : 'upcoming'}`}>
       <div className="match-card-top">
         <span>{matchWhen(match)}</span>
-        {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status}</b>}
+        {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status === 'À venir' && awaitingScore(match) ? 'Score en attente' : live.status}</b>}
       </div>
       <div className="match-card-teams">
         <div><ClubCrest club={home} size={36} /><span>{home.shortName}</span></div>

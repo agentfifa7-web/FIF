@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Match } from '@/lib/data/types'
 import { getClubById } from '@/lib/data/mock'
 import { ClubCrest } from './cards'
+import { awaitingScore } from '@/lib/format'
 
 function shortDate(m: Match) {
   if (m.dateConfirmed === false) return 'À conf.'
@@ -37,7 +38,7 @@ function MatchRow({ m }: { m: Match }) {
           <b style={{ fontWeight: awayWin ? 900 : 600 }}>{m.awayScore}</b>
         </div>
       ) : (
-        <div className="md-scores md-time">{m.status === 'Reporté' ? 'Rep.' : m.timeConfirmed !== false && m.dateConfirmed !== false ? m.date.slice(11, 16) : '—'}</div>
+        <div className="md-scores md-time">{m.status === 'Reporté' ? 'Rep.' : awaitingScore(m) ? <span title="Match joué, score en attente de confirmation" style={{ fontSize: 10 }}>Score att.</span> : m.timeConfirmed !== false && m.dateConfirmed !== false ? m.date.slice(11, 16) : '—'}</div>
       )}
     </Link>
   )

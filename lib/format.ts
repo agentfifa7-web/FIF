@@ -29,3 +29,9 @@ export function matchWhen(m: { date: string; dateConfirmed?: boolean; timeConfir
   const d = formatDate(m.date, opts)
   return m.timeConfirmed === false ? d : `${d} · ${formatTime(m.date)}`
 }
+
+/** Match dont le coup d'envoi est passé depuis plus de 2 h sans score publié :
+ *  affiché « score en attente » plutôt que « à venir ». */
+export function awaitingScore(m: { status: string; date: string; dateConfirmed?: boolean }, now = Date.now()) {
+  return m.status === 'À venir' && m.dateConfirmed !== false && now > new Date(m.date).getTime() + 2 * 3600 * 1000
+}
