@@ -87,6 +87,7 @@ function recomputeDerived() {
     m.status = 'Terminé'
     m.homeScore = sheet.homeScore
     m.awayScore = sheet.awayScore
+    m.scoreConfirmed = true
     if (sheet.attendance) m.attendance = sheet.attendance
   }
   // Faits de match et statistiques des joueurs (résultats réels + feuilles de match).

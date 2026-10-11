@@ -9,6 +9,8 @@ import { mergeCollection } from '@/lib/cms/apply'
 import { SCHEMAS, SCHEMA_ORDER } from '@/lib/cms/schema'
 import { loadCms } from '@/lib/cms/server'
 import { storageMode } from '@/lib/cms/store'
+import { matches } from '@/lib/data/mock'
+import { awaitingScore } from '@/lib/format'
 import type { CollectionKey } from '@/lib/cms/types'
 
 export const metadata = { title: 'FIF Command Center — Administration' }
@@ -30,6 +32,7 @@ export default async function AdminPage() {
   const mode = storageMode()
   const counts = Object.fromEntries(SCHEMA_ORDER.map((k) => [k, mergeCollection(k, collectionDoc(cms, k)).length])) as Record<CollectionKey, number>
   const sheets = Object.keys(cms.sheets).length
+  const pendingScores = matches.filter((m) => awaitingScore(m) || m.scoreConfirmed === false).length
 
   return (
     <main className="adm-page">
@@ -39,6 +42,7 @@ export default async function AdminPage() {
       <StorageNotice mode={mode} />
 
       <div className="adm-quick">
+        {pendingScores > 0 && <Link href="/admin/feuille-de-match#a-saisir" className="button button-primary"><ClipboardList size={15} /> Scores à saisir ({pendingScores})</Link>}
         <Link href="/admin/gerer/articles" className="button button-primary">+ Nouvelle actualité</Link>
         <Link href="/admin/gerer/matches" className="button-outline">+ Nouveau match</Link>
         <Link href="/admin/feuille-de-match" className="button-outline"><ClipboardList size={15} /> Feuilles de match ({sheets} publiée{sheets > 1 ? 's' : ''})</Link>

@@ -89,7 +89,7 @@ export function MatchCard({ match }: { match: Match }) {
     <Link href={`/matches/${match.id}`} className={`match-card status-${live.status === 'Live' ? 'live' : live.status === 'Terminé' ? 'done' : 'upcoming'}`}>
       <div className="match-card-top">
         <span>{matchWhen(match)}</span>
-        {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status === 'À venir' && awaitingScore(match) ? 'Score en attente' : live.status}</b>}
+        {live.status === 'Live' ? <b className="live-pill"><i /> {live.minute}&apos;</b> : <b>{live.status === 'À venir' && awaitingScore(match) ? 'Score en attente' : live.status === 'Terminé' && match.scoreConfirmed === false ? 'Score à confirmer' : live.status}</b>}
       </div>
       <div className="match-card-teams">
         <div><ClubCrest club={home} size={36} /><span>{home.shortName}</span></div>

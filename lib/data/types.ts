@@ -308,6 +308,8 @@ export interface Match {
   attendance?: number
   /** Page détaillée du match réel (compositions, source). */
   detailHref?: string
+  /** false : score publié par une seule source, en attente de confirmation. */
+  scoreConfirmed?: boolean
   source?: string
   /** Scénario d'événements pré-généré (déterministe) utilisé pour dériver, côté
    *  client et à partir de l'heure réelle, le score et la minute « en direct »

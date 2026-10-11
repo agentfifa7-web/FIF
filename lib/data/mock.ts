@@ -1158,6 +1158,8 @@ export interface RealLeagueMatch {
   referee?: RealLeagueMatchReferee
   attendance?: number
   source: string
+  /** false : score relayé par une seule source (affiché « à confirmer »). */
+  scoreConfirmed?: boolean
 }
 
 export const realLigue1Matches: RealLeagueMatch[] = [
@@ -1330,6 +1332,19 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayScore: 1,
     events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
     source: 'Résultat réel confirmé par Eurosport (score 1-1) et Sofascore ; match nul relayé par la presse ivoirienne — 2e journée, buteurs non communiqués.',
+  },
+  {
+    slug: 'l1-j2-isca-inova-bouake-fc',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-07',
+    homeClub: 'ISCA Inova',
+    awayClub: 'Bouaké FC',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home', player: 'Enoch Quaicoe' }],
+    source: 'Score publié par une seule source (Supersport CI, « ISCA au bout du suspense ») — à confirmer. But d’Enoch Quaicoe en fin de match ; penalty de Bouaké FC arrêté à la 76e.',
+    scoreConfirmed: false,
   },  {
     slug: 'l2-j1-africa-sports-leader-sc-marcory',
     competitionId: 'comp-l2',
@@ -1537,7 +1552,6 @@ export interface RealLeagueFixture {
 const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string; postponed?: boolean; note?: string }[] = [
   { home: 'SOL FC', away: 'Stade d’Abidjan', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 18h00, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
   { home: 'ES Agboville', away: 'OFC Adiaké', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 15h30, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
-  { home: 'ISCA Inova', away: 'Bouaké FC', date: '2026-10-07', time: '15:30' },
 ]
 
 // 3e journée : du samedi 10 au mardi 13 octobre 2026 — programme publié par
@@ -1651,6 +1665,7 @@ for (const m of realLigue1Matches) {
     delegateId: null,
     attendance: m.attendance,
     detailHref: m.competitionId === 'comp-l1' ? `/competitions/ligue-1/matchs/${m.slug}` : undefined,
+    scoreConfirmed: m.scoreConfirmed,
     source: m.source,
   })
 }

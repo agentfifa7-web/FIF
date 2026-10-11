@@ -32,7 +32,7 @@ export function MatchCenter({ match }: { match: Match }) {
   const venue = stadium?.name ?? match.venue
   const homeScore = sheet ? sheet.homeScore : match.homeScore
   const awayScore = sheet ? sheet.awayScore : match.awayScore
-  const status = sheet ? 'Terminé' : match.status
+  const status = sheet ? 'Terminé' : match.status === 'Terminé' && match.scoreConfirmed === false ? 'Terminé (score à confirmer)' : match.status
   const attendance = sheet?.attendance ?? match.attendance
 
   const timeline = useMemo<TimelineRow[]>(() => {
@@ -88,7 +88,7 @@ export function MatchCenter({ match }: { match: Match }) {
                 </div>
               </div>
             ))}
-            {!timeline.length && <p className="lede">{status === 'Terminé' ? 'Détail des buts et cartons non communiqué.' : 'Le match n’a pas encore été joué.'}</p>}
+            {!timeline.length && <p className="lede">{status.startsWith('Terminé') ? 'Détail des buts et cartons non communiqué.' : 'Le match n’a pas encore été joué.'}</p>}
           </div>
         </div>
         <div>

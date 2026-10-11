@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ClipboardList } from 'lucide-react'
 import { competitions, matches, getClubById, elephantsFixtures, elephantsFlag } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
-import { formatDate } from '@/lib/format'
+import { awaitingScore, formatDate } from '@/lib/format'
 import { MatchSheetIndicator } from '@/components/site/MatchSheetIndicator'
 import { loadCms } from '@/lib/cms/server'
 
@@ -12,6 +12,8 @@ export default async function MatchSheetIndexPage() {
   await loadCms()
   // Tous les matchs officiels : à venir (feuille à saisir) et déjà joués (compositions à compléter).
   const eligible = [...matches].sort((a, b) => a.matchday - b.matchday || +new Date(a.date) - +new Date(b.date))
+  // Matchs joués sans score publié, ou dont le score n'a qu'une source : à saisir en priorité.
+  const pending = eligible.filter((m) => awaitingScore(m) || m.scoreConfirmed === false)
 
   return (
     <main>
@@ -22,6 +24,29 @@ export default async function MatchSheetIndexPage() {
         breadcrumb={[{ label: 'Admin', href: '/admin' }, { label: 'Feuilles de match' }]}
         meta={[{ value: String(eligible.length + elephantsFixtures.length), label: 'Matchs officiels' }]}
       />
+
+      <section className="page-section tight" id="a-saisir">
+        <p className="section-tag">Scores à saisir ou à confirmer ({pending.length})</p>
+        <p className="lede" style={{ marginTop: 8 }}>Matchs dont l’heure est passée sans score publié, ou dont le score ne vient que d’une seule source. Saisissez le score officiel : il apparaît aussitôt sur le site (résultats, classement, fiches joueurs) et remplace la mention « à confirmer ».</p>
+        <div className="card-grid cols-2" style={{ marginTop: 16 }}>
+          {pending.map((m) => {
+            const home = getClubById(m.homeClubId)
+            const away = getClubById(m.awayClubId)
+            const comp = competitions.find((c) => c.id === m.competitionId)
+            return (
+              <Link href={`/admin/feuille-de-match/${m.id}`} className="entity-card" key={m.id} style={{ borderLeft: '3px solid var(--orange)' }}>
+                <ClipboardList size={18} color="var(--orange)" />
+                <div>
+                  <strong>{home?.name} vs {away?.name}</strong>
+                  <span>{comp?.name} · J{m.matchday} · {formatDate(m.date)} · {m.scoreConfirmed === false ? `${m.homeScore}-${m.awayScore} à confirmer` : 'score en attente'}</span>
+                </div>
+                <MatchSheetIndicator matchId={m.id} />
+              </Link>
+            )
+          })}
+          {!pending.length && <p className="lede">Aucun score en attente.</p>}
+        </div>
+      </section>
 
       <section className="page-section tight">
         <p className="section-tag">Équipes nationales — Éléphants</p>
