@@ -1369,8 +1369,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     homeScore: 0,
     awayScore: 3,
     events: [{ type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
-    source: 'Victoire du FC San Pedro confirmée par DailySports et Sport-Ivoire ; score 0-3 publié par une seule source (Sport-Ivoire) — à confirmer.',
-    scoreConfirmed: false,
+    source: 'Résultat réel confirmé par Sport-Ivoire et ami-sportif.com (« le FC San Pedro brille ») — victoire 3-0 du FC San Pedro à Bouaké (3e journée).',
   },
   {
     slug: 'l1-j3-stade-d-abidjan-es-agboville',
@@ -1398,6 +1397,46 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     events: [{ minute: 6, type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
     source: 'Score publié par une seule source (Supersport CI, « L’Africa lamine Divo et lance sa saison ») — à confirmer. Divo ouvre le score à la 6e minute, l’Africa Sports s’impose 3-1 (2e journée, poule A).',
     scoreConfirmed: false,
+  },
+  {
+    slug: 'l1-j3-soa-isca-inova',
+    competitionId: 'comp-l1',
+    matchday: 3,
+    date: '2026-10-12',
+    homeClub: 'SOA',
+    awayClub: 'ISCA Inova',
+    venue: 'Stade Charles Konan Banny, Yamoussoukro',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « 20 buts inscrits lors de la 3e journée ») — à confirmer.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l1-j3-co-korhogo-us-tchologo',
+    competitionId: 'comp-l1',
+    matchday: 3,
+    date: '2026-10-12',
+    homeClub: 'CO Korhogo',
+    awayClub: 'US Tchologo',
+    venue: 'Stade Amadou Gon Coulibaly, Korhogo',
+    homeScore: 3,
+    awayScore: 3,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « 20 buts inscrits lors de la 3e journée ») — à confirmer.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l1-j3-ofc-adiake-zoman-fc',
+    competitionId: 'comp-l1',
+    matchday: 3,
+    date: '2026-10-12',
+    homeClub: 'OFC Adiaké',
+    awayClub: 'Zoman FC',
+    homeScore: 1,
+    awayScore: 2,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
+    source: 'Résultat réel confirmé par Supersport CI (« L’OFC Adiaké chute à nouveau face à Zoman FC ») et Sport-Ivoire — victoire 2-1 de Zoman FC (3e journée, jouée entre le 10 et le 12 octobre ; date exacte à confirmer, le programme l’annonçait le 13).',
   },
   {
     slug: 'l1-j3-fc-mouna-sol-fc',
@@ -1639,9 +1678,6 @@ const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: st
 // ou quand les sources divergent (ASEC – AFAD : 18h00 ou 15h30).
 const J3_NOTE = 'Ligue 1 LONACI 2026-2027, 3e journée (10-13 octobre 2026) — programme publié par ami-sportif.com, affiche confirmée par DailySports.'
 const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'SOA', away: 'ISCA Inova', date: '2026-10-12', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J3_NOTE },
-  { home: 'CO Korhogo', away: 'US Tchologo', date: '2026-10-12', venue: 'Stade Amadou Gon Coulibaly, Korhogo', note: J3_NOTE },
-  { home: 'OFC Adiaké', away: 'Zoman FC', date: '2026-10-13', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J3_NOTE },
 ]
 
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
