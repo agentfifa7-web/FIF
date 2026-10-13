@@ -95,7 +95,7 @@ export default async function NationalTeamPage({ params }: { params: Promise<{ s
                 <div className="next-card-top"><span>{lastResult.competition.toUpperCase()}</span><span>{formatDate(lastResult.date).toUpperCase()}</span></div>
                 <div className="teams">
                   <div className="team"><div className="crest ivory">CI</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-                  <div className="versus"><b style={{ fontSize: 30 }}>{lastResult.result.civ} - {lastResult.result.opp}</b><span>{lastResult.venue ?? getStadiumById(lastResult.stadiumId ?? '')?.name}<br />{lastResult.home ? 'Domicile' : 'Extérieur'}</span></div>
+                  <div className="versus"><b style={{ fontSize: 30 }}>{lastResult.result.civ} - {lastResult.result.opp}</b>{lastResult.result.confirmed === false && <small style={{ color: 'var(--orange)' }}>Score à confirmer</small>}<span>{lastResult.venue ?? getStadiumById(lastResult.stadiumId ?? '')?.name}<br />{lastResult.home ? 'Domicile' : 'Extérieur'}</span></div>
                   <div className="team"><div className="crest red">{lastResult.opponent.slice(0, 2).toUpperCase()}</div><strong>{lastResult.opponent}</strong></div>
                 </div>
                 {lastResult.result.scorers && <p className="muted-sm" style={{ marginTop: 12 }}>Buts : {lastResult.result.scorers}</p>}
