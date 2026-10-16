@@ -1347,6 +1347,40 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     scoreConfirmed: false,
   },
   {
+    slug: 'l1-j2-sol-fc-stade-d-abidjan',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-15',
+    homeClub: 'SOL FC',
+    awayClub: 'Stade d’Abidjan',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 5,
+    awayScore: 6,
+    events: [
+      { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' },
+      { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' },
+    ],
+    source: 'Résultat réel confirmé par Foot Africa (« Le Stade d’Abidjan renverse SOL FC dans un match fou à 11 buts »), ami-sportif.com (16 octobre 2026) et DailySports — match en retard de la 2e journée (reporté le 7 octobre), joué le jeudi 15 octobre 2026 à Bingerville.',
+  },
+  {
+    slug: 'l1-j2-es-agboville-ofc-adiake',
+    competitionId: 'comp-l1',
+    matchday: 2,
+    date: '2026-10-15',
+    homeClub: 'ES Agboville',
+    awayClub: 'OFC Adiaké',
+    venue: 'CNTF, Bingerville',
+    homeScore: 2,
+    awayScore: 1,
+    events: [
+      { minute: 5, type: 'goal', team: 'home', player: 'Yann Heddy Camus' },
+      { minute: 45, type: 'goal', team: 'home', player: 'Paul Bouabré' },
+      { type: 'goal', team: 'away' },
+    ],
+    source: 'Score publié par une seule source (DailySports, « Agboville bat OFC Adiaké ») — à confirmer. Match en retard de la 2e journée (reporté le 7 octobre), joué au CNTF de Bingerville après la 3e journée ; date exacte non communiquée (au plus tard le 15 octobre).',
+    scoreConfirmed: false,
+  },
+  {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
     competitionId: 'comp-l1',
     matchday: 3,
@@ -1836,8 +1870,6 @@ export interface RealLeagueFixture {
 // annoncées match par match ; les autres restent « à confirmer ». Les matchs
 // joués passent dans realLigue1Matches.
 const LIGUE1_J2_PAIRINGS: { home: string; away: string; date?: string; time?: string; venue?: string; postponed?: boolean; note?: string }[] = [
-  { home: 'SOL FC', away: 'Stade d’Abidjan', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 18h00, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
-  { home: 'ES Agboville', away: 'OFC Adiaké', venue: 'Stade Félix Houphouët-Boigny, Plateau', postponed: true, note: 'Match prévu le mercredi 7 octobre 2026 à 15h30, reporté à une date ultérieure non communiquée (DailySports, 7 octobre 2026).' },
 ]
 
 // 3e journée : du samedi 10 au mardi 13 octobre 2026 — programme publié par
