@@ -1380,9 +1380,9 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayClub: 'ES Agboville',
     homeScore: 1,
     awayScore: 1,
-    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
-    source: 'Score publié par une seule source (flash Sport-Ivoire du 10 octobre) — à confirmer. Match joué le samedi 10 octobre (fiche d’avant-match Bénin Web TV), et non le 12 comme annoncé au programme initial.',
-    scoreConfirmed: false,
+    venue: 'CNTF, Bingerville',
+    events: [{ minute: 7, type: 'goal', team: 'home', player: 'Koné Khalil' }, { type: 'goal', team: 'away' }],
+    source: 'Résultat réel confirmé par Sport-Ivoire et le compte rendu de la 3e journée (ami-sportif.com / Le Patriote) — nul 1-1 au CNTF de Bingerville, Koné Khalil ouvre le score à la 7e minute pour le Stade d’Abidjan. Match joué le samedi 10 octobre.',
   },
   {
     slug: 'l2-j2-leader-sc-marcory-leader-foot',
@@ -1549,6 +1549,19 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     source: 'Résultat réel confirmé par Supersport CI, ami-sportif.com et Foot Africa — Divo ouvre le score à la 6e minute, l’Africa Sports s’impose 3-1 (2e journée, poule A).',
   },
   {
+    slug: 'l2-j2-atlantis-fc-siguilolo-fc',
+    competitionId: 'comp-l2',
+    matchday: 2,
+    date: '2026-10-13',
+    homeClub: 'Atlantis FC',
+    awayClub: 'Siguilolo FC',
+    homeScore: 1,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Le Patriote, « Le journal de la Ligue 2, 2e journée ») — à confirmer. Match prévu le mardi 13 octobre 2026.',
+    scoreConfirmed: false,
+  },
+  {
     slug: 'l1-j3-soa-isca-inova',
     competitionId: 'comp-l1',
     matchday: 3,
@@ -1558,9 +1571,8 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     venue: 'Stade Charles Konan Banny, Yamoussoukro',
     homeScore: 1,
     awayScore: 0,
-    events: [{ type: 'goal', team: 'home' }],
-    source: 'Score publié par une seule source (Sport-Ivoire, « 20 buts inscrits lors de la 3e journée ») — à confirmer.',
-    scoreConfirmed: false,
+    events: [{ type: 'goal', team: 'home', player: 'Traoré Idriss' }],
+    source: 'Résultat réel confirmé par Sport-Ivoire (« 20 buts inscrits lors de la 3e journée ») et le compte rendu de la 3e journée (ami-sportif.com / Le Patriote) — but d’Idriss Traoré.',
   },
   {
     slug: 'l1-j3-co-korhogo-us-tchologo',
@@ -1572,9 +1584,15 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     venue: 'Stade Amadou Gon Coulibaly, Korhogo',
     homeScore: 3,
     awayScore: 3,
-    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
-    source: 'Score publié par une seule source (Sport-Ivoire, « 20 buts inscrits lors de la 3e journée ») — à confirmer.',
-    scoreConfirmed: false,
+    events: [
+      { minute: 16, type: 'goal', team: 'away', player: 'Michel Ahouo' },
+      { minute: 45, type: 'goal', team: 'home', player: 'Moustapha Ibrahim' },
+      { minute: 49, type: 'goal', team: 'away', player: 'Abroulaye Soumahoro' },
+      { minute: 56, type: 'goal', team: 'home', player: 'Djibril Traoré' },
+      { minute: 73, type: 'goal', team: 'home', player: 'Blaty Mohamed Bamba' },
+      { minute: 91, type: 'goal', team: 'away', player: 'Brice Kanga' },
+    ],
+    source: 'Résultat réel confirmé par Sport-Ivoire, Foot Africa (« le derby du Nord accouche d’un festival de buts ») et DailySports — nul 3-3, égalisation de Brice Kanga à la 90+1.',
   },
   {
     slug: 'l1-j3-ofc-adiake-zoman-fc',
@@ -1830,9 +1848,26 @@ const J3_NOTE = 'Ligue 1 LONACI 2026-2027, 3e journée (10-13 octobre 2026) — 
 const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 ]
 
+// 4e journée : du dimanche 18 au jeudi 29 octobre 2026 — programme publié par
+// DailySports (« Ligue 1 ivoirienne : le programme complet de la 4e journée »,
+// source unique). FC San Pedro et l'ASEC Mimosas, engagés en Ligue des
+// champions CAF, jouent le 29 octobre. Heures non communiquées.
+const J4_NOTE = 'Ligue 1 LONACI 2026-2027, 4e journée (18-29 octobre 2026) — programme publié par DailySports (source unique), heure à confirmer.'
+const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
+  { home: 'Zoman FC', away: 'Stade d’Abidjan', date: '2026-10-18', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
+  { home: 'Yakro FC', away: 'SOL FC', date: '2026-10-18', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J4_NOTE },
+  { home: 'ES Agboville', away: 'FC Mouna', date: '2026-10-19', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
+  { home: 'OFC Adiaké', away: 'US Tchologo', date: '2026-10-20', note: J4_NOTE },
+  { home: 'Stella Club', away: 'AFAD Plateau', date: '2026-10-29', note: J4_NOTE },
+  { home: 'Bouaké FC', away: 'CO Korhogo', date: '2026-10-29', note: J4_NOTE },
+  { home: 'FC San Pedro', away: 'SOA', date: '2026-10-29', venue: 'Stade Laurent Pokou, San Pedro', note: J4_NOTE },
+  { home: 'ISCA Inova', away: 'ASEC Mimosas', date: '2026-10-29', venue: 'Stade olympique Alassane Ouattara, Ébimpé', note: J4_NOTE },
+]
+
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE1_J2_PAIRINGS.map((f) => ({ ...f, matchday: 2 })),
   ...LIGUE1_J3_PAIRINGS.map((f) => ({ ...f, matchday: 3 })),
+  ...LIGUE1_J4_PAIRINGS.map((f) => ({ ...f, matchday: 4 })),
 ].map(({ home, away, date, time, venue, postponed, note, matchday }) => ({
   slug: `l1-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
