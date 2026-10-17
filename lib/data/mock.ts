@@ -1936,9 +1936,19 @@ const LIGUE2_J2: typeof LIGUE2_J1 = [
   // Poule B
 ]
 
+// 3e journée — seule l'affiche Africa Sports – SC Gagnoa est annoncée à ce jour
+// (L'Infodrome, 13 octobre 2026 ; Supersport CI, 16 octobre 2026) ; les autres
+// rencontres seront ajoutées dès la publication du programme complet.
+const L2_J3_NOTE = 'Ligue 2 2026-2027, 3e journée — affiche annoncée par L’Infodrome et Supersport CI (programme complet non publié), heure à confirmer.'
+const LIGUE2_J3: typeof LIGUE2_J1 = [
+  // Poule A
+  { home: 'Africa Sports', away: 'SC Gagnoa', date: '2026-10-18', venue: 'Stade Robert Champroux, Marcory' },
+]
+
 export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE2_J1.map((f) => ({ ...f, matchday: 1, base: L2_J1_NOTE })),
   ...LIGUE2_J2.map((f) => ({ ...f, matchday: 2, base: L2_J2_NOTE })),
+  ...LIGUE2_J3.map((f) => ({ ...f, matchday: 3, base: L2_J3_NOTE })),
 ].map(({ home, away, date, time, venue, detail, matchday, base }) => ({
   slug: `l2-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l2',
