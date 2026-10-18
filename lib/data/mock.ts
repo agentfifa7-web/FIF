@@ -1381,6 +1381,23 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     scoreConfirmed: false,
   },
   {
+    slug: 'l1-j4-yakro-fc-sol-fc',
+    competitionId: 'comp-l1',
+    matchday: 4,
+    date: '2026-10-18',
+    homeClub: 'Yakro FC',
+    awayClub: 'SOL FC',
+    venue: 'Stade Charles Konan Banny, Yamoussoukro',
+    homeScore: 1,
+    awayScore: 1,
+    events: [
+      { minute: 45, type: 'goal', team: 'away', player: 'Michel Asso' },
+      { minute: 72, type: 'goal', team: 'home', player: 'Christian Akala' },
+    ],
+    source: 'Score publié par une seule source (DailySports, « SOL et Yamoussoukro se partagent les points ») — à confirmer. Michel Asso marque pour SOL FC dans le temps additionnel de la 1re période (45+3), Christian Akala égalise à la 72e.',
+    scoreConfirmed: false,
+  },
+  {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
     competitionId: 'comp-l1',
     matchday: 3,
@@ -1593,6 +1610,25 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayScore: 1,
     events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
     source: 'Score publié par une seule source (Le Patriote, « Le journal de la Ligue 2, 2e journée ») — à confirmer. Match prévu le mardi 13 octobre 2026.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j3-africa-sports-sc-gagnoa',
+    competitionId: 'comp-l2',
+    matchday: 3,
+    date: '2026-10-17',
+    homeClub: 'Africa Sports',
+    awayClub: 'SC Gagnoa',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeScore: 3,
+    awayScore: 1,
+    events: [
+      { type: 'goal', team: 'away', player: 'Yao Koiame' },
+      { type: 'goal', team: 'home' },
+      { minute: 71, type: 'goal', team: 'home', player: 'Teddy Maé' },
+      { minute: 82, type: 'goal', team: 'home', player: 'Teddy Maé' },
+    ],
+    source: 'Score publié par une seule source (Foot Africa, « L’Africa Sports renverse le Sporting Club de Gagnoa ») — à confirmer. Match joué le samedi 17 octobre 2026 (annoncé le 18 par L’Infodrome) ; Gagnoa ouvre le score par Yao Koiame, doublé de Teddy Maé (71e, 82e).',
     scoreConfirmed: false,
   },
   {
@@ -1887,7 +1923,6 @@ const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 const J4_NOTE = 'Ligue 1 LONACI 2026-2027, 4e journée (18-29 octobre 2026) — programme publié par DailySports (source unique), heure à confirmer.'
 const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
   { home: 'Zoman FC', away: 'Stade d’Abidjan', date: '2026-10-18', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
-  { home: 'Yakro FC', away: 'SOL FC', date: '2026-10-18', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J4_NOTE },
   { home: 'ES Agboville', away: 'FC Mouna', date: '2026-10-19', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
   { home: 'OFC Adiaké', away: 'US Tchologo', date: '2026-10-20', note: J4_NOTE },
   { home: 'Stella Club', away: 'AFAD Plateau', date: '2026-10-29', note: J4_NOTE },
@@ -1941,8 +1976,6 @@ const LIGUE2_J2: typeof LIGUE2_J1 = [
 // rencontres seront ajoutées dès la publication du programme complet.
 const L2_J3_NOTE = 'Ligue 2 2026-2027, 3e journée — affiche annoncée par L’Infodrome et Supersport CI (programme complet non publié), heure à confirmer.'
 const LIGUE2_J3: typeof LIGUE2_J1 = [
-  // Poule A
-  { home: 'Africa Sports', away: 'SC Gagnoa', date: '2026-10-18', venue: 'Stade Robert Champroux, Marcory' },
 ]
 
 export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
