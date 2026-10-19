@@ -1398,6 +1398,20 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     scoreConfirmed: false,
   },
   {
+    slug: 'l1-j4-es-agboville-fc-mouna',
+    competitionId: 'comp-l1',
+    matchday: 4,
+    date: '2026-10-19',
+    homeClub: 'ES Agboville',
+    awayClub: 'FC Mouna',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 0,
+    awayScore: 1,
+    events: [{ minute: 89, type: 'goal', team: 'away', player: 'Kamara Aziz' }],
+    source: 'Score publié par une seule source (DailySports, « Mouna beat Agboville (1–0) ») — à confirmer. But de Kamara Aziz à la 89e : première victoire de la saison pour FC Mouna, première défaite pour l’ES Agboville.',
+    scoreConfirmed: false,
+  },
+  {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
     competitionId: 'comp-l1',
     matchday: 3,
@@ -1923,7 +1937,6 @@ const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 const J4_NOTE = 'Ligue 1 LONACI 2026-2027, 4e journée (18-29 octobre 2026) — programme publié par DailySports (source unique), heure à confirmer.'
 const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
   { home: 'Zoman FC', away: 'Stade d’Abidjan', date: '2026-10-18', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
-  { home: 'ES Agboville', away: 'FC Mouna', date: '2026-10-19', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
   { home: 'OFC Adiaké', away: 'US Tchologo', date: '2026-10-20', note: J4_NOTE },
   { home: 'Stella Club', away: 'AFAD Plateau', date: '2026-10-29', note: J4_NOTE },
   { home: 'Bouaké FC', away: 'CO Korhogo', date: '2026-10-29', note: J4_NOTE },
