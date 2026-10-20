@@ -1416,6 +1416,23 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     scoreConfirmed: false,
   },
   {
+    slug: 'l1-j4-zoman-fc-stade-d-abidjan',
+    competitionId: 'comp-l1',
+    matchday: 4,
+    date: '2026-10-18',
+    homeClub: 'Zoman FC',
+    awayClub: 'Stade d’Abidjan',
+    venue: 'Complexe sportif de Bingerville',
+    homeScore: 0,
+    awayScore: 2,
+    events: [
+      { minute: 17, type: 'goal', team: 'away', player: 'Romaric Ouattara' },
+      { minute: 82, type: 'goal', team: 'away' },
+    ],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 1 (4ej) : Le Stade d’Abidjan domine Zoman FC (2-0) ») — à confirmer. Ouverture du score de Romaric Ouattara à la 17e, but contre son camp à la 82e ; match joué le dimanche 18 octobre 2026.',
+    scoreConfirmed: false,
+  },
+  {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
     competitionId: 'comp-l1',
     matchday: 3,
@@ -1940,7 +1957,6 @@ const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 // champions CAF, jouent le 29 octobre. Heures non communiquées.
 const J4_NOTE = 'Ligue 1 LONACI 2026-2027, 4e journée (18-29 octobre 2026) — programme publié par DailySports (source unique), heure à confirmer.'
 const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'Zoman FC', away: 'Stade d’Abidjan', date: '2026-10-18', venue: 'Complexe sportif de Bingerville', note: J4_NOTE },
   { home: 'OFC Adiaké', away: 'US Tchologo', date: '2026-10-20', note: J4_NOTE },
   { home: 'Stella Club', away: 'AFAD Plateau', date: '2026-10-29', note: J4_NOTE },
   { home: 'Bouaké FC', away: 'CO Korhogo', date: '2026-10-29', note: J4_NOTE },
