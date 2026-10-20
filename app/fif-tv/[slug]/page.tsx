@@ -8,6 +8,9 @@ import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 import { youtubeId } from '@/lib/cms/schema'
 
+// Rendu à la demande (la mise en page racine lit l'administration à chaque visite).
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
   await loadCms()
   return videos.map((v) => ({ slug: v.slug }))

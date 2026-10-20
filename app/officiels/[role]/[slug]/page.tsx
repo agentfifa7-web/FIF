@@ -23,6 +23,9 @@ function isRoleKey(value: string): value is RoleKey {
   return value in ROLE_CONFIG
 }
 
+// Rendu à la demande (la mise en page racine lit l'administration à chaque visite).
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
   await loadCms()
   return (Object.keys(ROLE_CONFIG) as RoleKey[]).flatMap((role) =>

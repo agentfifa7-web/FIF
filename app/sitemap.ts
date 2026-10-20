@@ -37,6 +37,8 @@ const STATIC: { path: string; priority: number; freq: MetadataRoute.Sitemap[numb
   { path: '/carrieres', priority: 0.3, freq: 'monthly' },
   { path: '/contact', priority: 0.4, freq: 'yearly' },
   { path: '/application', priority: 0.4, freq: 'yearly' },
+  { path: '/mentions-legales', priority: 0.2, freq: 'yearly' },
+  { path: '/confidentialite', priority: 0.2, freq: 'yearly' },
 ]
 
 // Régénéré chaque heure : les articles et scores ajoutés depuis l'administration y apparaissent.

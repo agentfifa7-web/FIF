@@ -2,7 +2,7 @@ import { Breadcrumb } from '@/components/site/PageHero'
 import { TicketControl } from '@/components/site/TicketControl'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Contrôle des billets — FIF Tickets' }
+export const metadata = { title: 'Contrôle des billets — FIF', robots: { index: false, follow: false } }
 
 export default function TicketControlPage() {
   return (

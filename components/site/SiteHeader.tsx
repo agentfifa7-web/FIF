@@ -147,8 +147,9 @@ export function SiteHeader() {
                 >
                   {item.label} <ChevronDown aria-hidden />
                 </button>
-                {open === item.id && (
-                  <div className="sh-mega" id={`mega-${item.id}`} style={{ ['--cols' as string]: item.groups.length }}>
+                {/* Toujours présent dans le HTML (liens visibles des moteurs de recherche), masqué tant qu'il est fermé. */}
+                {(
+                  <div className="sh-mega" id={`mega-${item.id}`} hidden={open !== item.id} style={{ ['--cols' as string]: item.groups.length }}>
                     <div className="sh-mega-intro">
                       <strong>{item.label}</strong>
                       <p>{item.intro}</p>

@@ -47,6 +47,7 @@ export default async function AdminPage() {
         <Link href="/admin/gerer/matches" className="button-outline">+ Nouveau match</Link>
         <Link href="/admin/feuille-de-match" className="button-outline"><ClipboardList size={15} /> Feuilles de match ({sheets} publiée{sheets > 1 ? 's' : ''})</Link>
         <Link href="/admin/parametres" className="button-outline"><Settings size={15} /> Paramètres</Link>
+        <Link href="/billetterie/controle" className="button-outline"><Ticket size={15} /> Contrôle des billets</Link>
       </div>
 
       {GROUPS.map((group) => {

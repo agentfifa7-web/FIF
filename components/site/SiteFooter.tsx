@@ -95,8 +95,8 @@ export function SiteFooter({ settings }: { settings?: SiteSettings }) {
       <div className="sf-bottom">
         <span>© {new Date().getFullYear()} Fédération Ivoirienne de Football <span className="sf-flag" aria-hidden><i /><i /><i /></span></span>
         <nav aria-label="Informations légales">
-          <Link href="/documents">Mentions légales</Link>
-          <Link href="/documents">Politique de confidentialité</Link>
+          <Link href="/mentions-legales">Mentions légales</Link>
+          <Link href="/confidentialite">Politique de confidentialité</Link>
           <Link href="/supporters/charte">Charte du supporter</Link>
           <Link href="/design-system">Design system</Link>
         </nav>

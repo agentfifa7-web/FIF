@@ -35,7 +35,7 @@ const UNIVERSES = [
   },
   {
     icon: Users, title: 'Communauté', text: 'Associations, charte et règles de la communauté.',
-    links: [{ label: 'Associations de supporters', href: '/supporters/associations' }, { label: 'Club des Supporters', href: '/supporters/club-des-supporters' }, { label: 'Charte du supporter', href: '/supporters/charte' }, { label: 'Modération', href: '/supporters/moderation' }],
+    links: [{ label: 'Associations de supporters', href: '/supporters/associations' }, { label: 'Club des Supporters', href: '/supporters/club-des-supporters' }, { label: 'Avantages partenaires', href: '/supporters/partenaires' }, { label: 'Récompenses', href: '/supporters/recompenses' }, { label: 'Charte du supporter', href: '/supporters/charte' }, { label: 'Modération', href: '/supporters/moderation' }],
   },
 ]
 
