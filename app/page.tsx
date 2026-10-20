@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowRight, CalendarDays, Clock3, MapPin, Newspaper, Play, Trophy, Users } from 'lucide-react'
 import {
   articles,
+  competitions,
   getClubById,
   getStadiumById,
   getTeam,
@@ -16,7 +17,6 @@ import {
 } from '@/lib/data/mock'
 import { formatDate, formatTime, matchWhen } from '@/lib/format'
 import { NewsCard } from '@/components/site/cards'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { useFirstLiveMatch } from '@/lib/liveMatch'
 
 const categories = ['Tous', 'Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Jeunes', 'Compétitions', 'Fédération']
@@ -87,7 +87,7 @@ export default function Page() {
           <div className="section-label"><span className="live-dot" /> Prochain match</div>
           <div className="match-main">
             <div>
-              <small>{'LIGUE 1 LONACI · J' + nextMatch.matchday}</small>
+              <small>{`${(competitions.find((c) => c.id === nextMatch.competitionId)?.name ?? 'Championnat').toUpperCase()} · J${nextMatch.matchday}`}</small>
               <strong>{getClubById(nextMatch.homeClubId)?.name} <b>vs</b> {getClubById(nextMatch.awayClubId)?.name}</strong>
               <p><CalendarDays /> {matchWhen(nextMatch, { weekday: 'long', day: 'numeric', month: 'long' })} <i /> <MapPin /> {(nextMatch.stadiumId ? getStadiumById(nextMatch.stadiumId)?.name : nextMatch.venue) ?? 'Stade à confirmer'}</p>
             </div>
@@ -101,7 +101,7 @@ export default function Page() {
         <div className="next-copy">
           <p className="eyebrow"><span /> Équipe nationale</p>
           <h2>{played ? 'Dernier match' : 'Prochain match'}<br /><em>des Éléphants</em></h2>
-          <p className="muted">{played ? 'Le calendrier de la prochaine fenêtre internationale sera publié dès son annonce par la FIF.' : 'Les champions d’Afrique retrouvent le terrain pour une nouvelle bataille.'}</p>
+          <p className="muted">{played ? (elephantsNextWindow ? `Prochain rendez-vous : ${elephantsNextWindow.opponent} — ${elephantsNextWindow.competition}, ${elephantsNextWindow.period}.` : 'Le calendrier de la prochaine fenêtre internationale sera publié dès son annonce par la FIF.') : 'Les champions d’Afrique retrouvent le terrain pour une nouvelle bataille.'}</p>
           <Link className="text-link" href="/equipes-nationales/elephants">Tout sur les Éléphants <ArrowRight /></Link>
         </div>
         <Link href={`/equipes-nationales/elephants/matchs/${nextFixture.slug}`} className="next-card" style={{ display: 'block' }}>
@@ -151,6 +151,9 @@ export default function Page() {
           <div><p className="eyebrow light"><span /> L&apos;image du football ivoirien</p><h2>FIF <em>TV</em></h2></div>
           <Link className="text-link light-link" href="/fif-tv">Voir toutes les vidéos <ArrowRight /></Link>
         </div>
+        {videos.length === 0 ? (
+          <p className="muted" style={{ marginTop: 28, maxWidth: 520 }}>Les vidéos officielles de la FIF (résumés, conférences de presse, coulisses des Éléphants) seront publiées ici dès leur mise en ligne.</p>
+        ) : (
         <div className="video-grid">
           <article className="video-feature">
             <div className="video-image" style={{ backgroundImage: `linear-gradient(0deg,rgba(0,0,0,.45),transparent),url(${videos[0].image})` }}>
@@ -169,12 +172,12 @@ export default function Page() {
             </article>
           ))}
         </div>
+        )}
       </section>
 
       <section className="page-section tight">
-        <DemoBadge />
-        <p style={{ color: 'var(--muted)', fontSize: 12, marginTop: 12, maxWidth: 640 }}>
-          FIF Digital Universe est un prototype : joueurs, clubs, résultats et statistiques affichés sont des données de démonstration générées pour illustrer la plateforme, et ne représentent aucune donnée officielle de la Fédération Ivoirienne de Football, de ses membres ou de ses partenaires.
+        <p style={{ color: 'var(--muted)', fontSize: 12, maxWidth: 680 }}>
+          Résultats, calendriers, classements, clubs, effectifs et sélections proviennent de sources publiques citées sur chaque page (FIF, presse sportive ivoirienne et internationale) et sont mis à jour plusieurs fois par jour. Les services en ligne marqués « Données de démonstration » (boutique, formation, licences, espace supporters…) illustrent les fonctionnalités de la plateforme.
         </p>
       </section>
     </main>

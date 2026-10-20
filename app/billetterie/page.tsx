@@ -22,7 +22,9 @@ const FAQ = [
 export default async function TicketsPage() {
   await loadCms()
   const featured = ticketEvents.find((e) => e.status === 'En vente')
-  const others = ticketEvents.filter((e) => e !== featured)
+  // Matchs passés regroupés en fin de page, les plus récents d'abord.
+  const others = ticketEvents.filter((e) => e !== featured && e.status !== 'Terminé')
+  const past = ticketEvents.filter((e) => e !== featured && e.status === 'Terminé').sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
   const groups = Array.from(new Set(others.map((e) => e.competition)))
 
   return (
@@ -73,6 +75,15 @@ export default async function TicketsPage() {
           </div>
         </section>
       ))}
+
+      {past.length > 0 && (
+        <section className="page-section tight">
+          <p className="section-tag">Matchs passés — vente close</p>
+          <div className="card-grid" style={{ marginTop: 16 }}>
+            {past.map((ev) => <TicketEventCard key={ev.slug} ev={ev} />)}
+          </div>
+        </section>
+      )}
 
       <section className="page-section tight">
         <div className="ev-mytickets">

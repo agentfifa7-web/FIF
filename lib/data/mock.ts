@@ -45,7 +45,8 @@ export const IS_DEMO_DATA = true
 
 let rng = makeRng(20260917)
 
-const TODAY = new Date('2026-09-17T12:00:00Z')
+// Date du jour (âges des joueurs, échéances de contrat).
+const TODAY = new Date()
 
 function addDays(base: Date, days: number) {
   const d = new Date(base)
@@ -205,7 +206,8 @@ export const clubs: Club[] = Array.from({ length: PRO_CLUB_COUNT }, (_, i) => {
     id: `club-${i}`,
     slug,
     name,
-    shortName: name.split(' ').length > 1 ? `${name.split(' ')[0]} ${name.split(' ').slice(-1)[0]}` : name,
+    // Nom complet (les abréviations automatiques donnaient « Don FC », « 2 FC », « FC Pedro »).
+    shortName: name,
     cityId,
     stadiumId: REAL_CLUB_STADIUM[name] ?? null,
     colors: rng.pick(clubColorPairs),
@@ -747,8 +749,10 @@ export const agents: Agent[] = []
 // National teams
 // ---------------------------------------------------------------------------
 export const nationalTeams: NationalTeam[] = [
-  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 39, honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 2015 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
-  { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 78, honours: [], achievements: [] },
+  { id: 'nt-elephants', slug: 'elephants', name: 'Éléphants', gender: 'M', category: 'A', coachId: null, ranking: 29, // classement FIFA du 7 octobre 2026 (Connectionivoirienne, ami-sportif.com)
+    honours: [{ title: 'Coupe d’Afrique des Nations', year: 2024 }, { title: 'Coupe d’Afrique des Nations', year: 2015 }, { title: 'Coupe d’Afrique des Nations', year: 1992 }], achievements: [] },
+  { id: 'nt-elephantes', slug: 'elephantes', name: 'Éléphantes', gender: 'F', category: 'A', coachId: null, ranking: 72, // classement FIFA féminin de juin 2026 (ami-sportif.com), dernier publié
+    honours: [], achievements: [] },
   { id: 'nt-u23', slug: 'u23', name: 'Éléphants U23', gender: 'M', category: 'U23', coachId: null, honours: [], achievements: [] },
   { id: 'nt-u20', slug: 'u20', name: 'Éléphants U20', gender: 'M', category: 'U20', coachId: null, honours: [], achievements: [] },
   { id: 'nt-u17', slug: 'u17', name: 'Éléphants U17', gender: 'M', category: 'U17', coachId: null, honours: [], achievements: [] },
@@ -2838,6 +2842,11 @@ export const elephantsNextWindow: { opponent: string; competition: string; perio
   source: 'Foot Africa et Africa Football Guide (calendrier du groupe C) ; fenêtre CAF du 9 au 17 novembre 2026.',
 }
 
+/** Prochaine échéance annoncée par sélection, quand le match n'a pas encore de date. */
+export const nationalTeamNextWindow: Record<string, string> = {
+  'nt-elephantes': 'Cameroun — Éliminatoires JO 2028, 3e tour (fenêtre FIFA du 23 février au 6 mars 2027)',
+}
+
 export function nextElephantsFixture(): RealFixture | undefined {
   return elephantsFixtures.find((f) => !f.result)
 }
@@ -2866,57 +2875,130 @@ export function nextFixtureFor(teamId: string) {
 // News, Videos
 // ---------------------------------------------------------------------------
 export const newsCategories = ['Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Amateur', 'Clubs', 'Jeunes', 'Compétitions', 'Arbitrage', 'Formation', 'Fédération', 'Engagement sociétal', 'Futsal', 'Beach Soccer']
-const newsTitles = [
-  'préparent leur prochaine échéance internationale',
-  'annoncent leur liste pour la fenêtre à venir',
-  'décrochent une victoire précieuse',
-  'lancent un nouveau programme de développement',
-  'accueillent une délégation pour une visite officielle',
-  'dévoilent le calendrier de la saison',
-  'renforcent leur encadrement technique',
-  'inaugurent de nouvelles infrastructures',
-  'présentent le bilan de la saison',
-  'annoncent une nouvelle session de formation',
-]
-const newsSubjects = ['Les Éléphants', 'Les Éléphantes', 'La Ligue 1', 'La FIF', 'Le football féminin', 'Les clubs amateurs', 'La sélection U20', 'Le corps arbitral', 'La FIF Academy', 'Le futsal ivoirien']
 
-export const articles: Article[] = Array.from({ length: 64 }, (_, i) => {
-  const category = newsCategories[i % newsCategories.length]
-  const subject = rng.pick(newsSubjects)
-  const title = `${subject} ${rng.pick(newsTitles)}`
-  const date = addDays(TODAY, -rng.int(0, 120))
-  return {
-    id: `article-${i}`,
-    slug: `${slugify(title)}-${i}`,
-    title,
-    category,
-    excerpt: `${subject} font l’actualité : retour sur les temps forts et ce qu’il faut retenir pour les prochaines semaines.`,
-    body: [
-      `${subject} continuent de faire parler d’eux cette semaine. La Fédération Ivoirienne de Football suit de près ce dossier et communiquera les prochaines étapes en temps voulu.`,
-      `Sur le terrain comme en dehors, l’objectif reste le même : structurer et faire grandir le football ivoirien à tous les niveaux, des catégories jeunes jusqu’à l’équipe fanion.`,
-      `D’autres annonces sont attendues dans les prochains jours. Retrouvez toute l’actualité fédérale sur FIF Digital.`,
-    ],
-    author: 'Rédaction FIF Digital',
-    date: date.toISOString(),
-    image: `https://picsum.photos/seed/article-${i}/1200/800`,
-    tags: [category, 'FIF', subject.replace('Les ', '').replace('La ', '')],
-    featured: i === 0,
-  }
-})
+// Actualités fédérales : rédigées automatiquement à partir des données réelles
+// déjà vérifiées et sourcées sur le site (résultats, programmes, classement
+// FIFA) — aucun texte inventé. Elles se mettent à jour d'elles-mêmes à chaque
+// nouveau score ajouté ; la rédaction peut publier ses propres articles depuis
+// l'administration (ils s'affichent en tête).
+const frDate = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+const ordinal = (n: number) => (n === 1 ? '1re' : `${n}e`)
+const PRESS_OUTLETS = ['Supersport CI', 'ami-sportif', 'Foot Africa', 'Sport-Ivoire', 'DailySports', 'Le Patriote', 'L’Infodrome', 'Fratmat', 'AIP', 'Abidjan.net', 'Africasport', 'Mondialsport', 'Afrik-Foot', 'Linfodrome']
+
+function leagueRoundArticles(competitionId: string, label: string, category: string): Article[] {
+  const played = realLigue1Matches.filter((m) => m.competitionId === competitionId)
+  const days = [...new Set(played.map((m) => m.matchday))].sort((a, b) => a - b)
+  return days.map((day) => {
+    const list = played.filter((m) => m.matchday === day).sort((a, b) => a.date.localeCompare(b.date))
+    const last = list[list.length - 1]
+    const pending = list.filter((m) => m.scoreConfirmed === false).length
+    const lines = list.map((m) => {
+      const scorers = m.events.filter((e) => e.type === 'goal' && e.player).map((e) => `${e.player}${e.minute ? ` (${e.minute}e)` : ''}`)
+      return `${m.homeClub} ${m.homeScore}-${m.awayScore} ${m.awayClub}${m.scoreConfirmed === false ? ' (score à confirmer)' : ''}${scorers.length ? ` — buts : ${scorers.join(', ')}` : ''}.`
+    })
+    const goals = list.reduce((t, m) => t + m.homeScore + m.awayScore, 0)
+    const title = `${label} — ${ordinal(day)} journée : ${list.length} résultat${list.length > 1 ? 's' : ''}, ${goals} but${goals > 1 ? 's' : ''}`
+    return {
+      id: `auto-${competitionId}-j${day}`,
+      slug: `${slugify(label)}-${day}e-journee-resultats`,
+      title,
+      category,
+      excerpt: `${lines.slice(0, 2).join(' ')}${list.length > 2 ? ' …' : ''}`,
+      body: [
+        `Les résultats de la ${ordinal(day)} journée de ${label} (saison 2026-2027), du ${frDate(list[0].date)} au ${frDate(last.date)} :`,
+        ...lines,
+        ...(pending ? [`${pending} score${pending > 1 ? 's' : ''} relayé${pending > 1 ? 's' : ''} par une seule source de presse : ${pending > 1 ? 'ils seront confirmés' : 'il sera confirmé'} dès qu’une seconde source ou la feuille de match officielle sera disponible.`] : []),
+        `Sources : ${PRESS_OUTLETS.filter((o) => list.some((m) => m.source.toLowerCase().includes(o.toLowerCase()))).join(', ') || 'presse sportive ivoirienne'}. Classement et détails des matchs sur la page de la compétition.`,
+      ],
+      author: 'Rédaction FIF Digital',
+      date: `${last.date}T22:00:00Z`,
+      image: '',
+      tags: [label, `${ordinal(day)} journée`, 'Résultats'],
+    }
+  })
+}
+
+function elephantsArticles(): Article[] {
+  return elephantsFixtures.filter((f) => f.result).map((f) => {
+    const r = f.result!
+    const goals = r.events.filter((e) => (e.type === 'goal' || e.type === 'penalty'))
+    const civGoals = goals.filter((e) => e.team === 'civ').map((e) => `${e.scorer ?? 'buteur non communiqué'} (${e.minute}${e.stoppage ? `+${e.stoppage}` : ''}e${e.type === 'penalty' ? ', sur penalty' : ''})`)
+    const oppGoals = goals.filter((e) => e.team === 'opponent').map((e) => `${e.scorer ?? 'buteur non communiqué'} (${e.minute}e)`)
+    const verdict = r.civScore > r.opponentScore ? 'victoire' : r.civScore < r.opponentScore ? 'défaite' : 'match nul'
+    return {
+      id: `auto-${f.slug}`,
+      slug: `${f.slug}-compte-rendu`,
+      title: `Éléphants : ${verdict} ${r.civScore}-${r.opponentScore} face ${/^[AEIOUÉ]/i.test(f.opponent) ? 'à l’' : 'au '}${f.opponent}`.replace('au Somalie', 'à la Somalie').replace('au Gambie', 'à la Gambie'),
+      category: 'Éléphants',
+      excerpt: `${f.competition} — ${frDate(f.date)}, ${f.venue} : Côte d’Ivoire ${r.civScore}-${r.opponentScore} ${f.opponent}.`,
+      body: [
+        `${f.competition}. Le ${frDate(f.date)} au ${f.venue}, la Côte d’Ivoire et ${f.opponent === 'Cameroun' || f.opponent === 'Ghana' ? 'le' : 'la'} ${f.opponent} se sont quittés sur le score de ${r.civScore}-${r.opponentScore}.`,
+        civGoals.length ? `Buts ivoiriens : ${civGoals.join(', ')}.` : 'Aucun but ivoirien.',
+        ...(oppGoals.length ? [`Pour ${f.opponent} : ${oppGoals.join(', ')}.`] : []),
+        `Source : ${r.source}`,
+      ],
+      author: 'Rédaction FIF Digital',
+      date: `${f.date}T22:00:00Z`,
+      image: '',
+      tags: ['Éléphants', f.competition.split(' — ')[0], f.opponent],
+    }
+  })
+}
+
+function otherSelectionArticles(): Article[] {
+  return internationalFixtures.filter((f) => f.result).map((f) => {
+    const team = nationalTeams.find((t) => t.id === f.teamId)
+    const r = f.result!
+    return {
+      id: `auto-${f.id}`,
+      slug: `${f.id.replace(/^ntf-/, '')}-resultat`,
+      title: `${team?.name ?? 'Sélection'} : Côte d’Ivoire ${r.civ}-${r.opp} ${f.opponent}${r.confirmed === false ? ' (score à confirmer)' : ''}`,
+      category: team?.gender === 'F' ? 'Éléphantes' : 'Jeunes',
+      excerpt: `${f.competition} — ${frDate(f.date)} : Côte d’Ivoire ${r.civ}-${r.opp} ${f.opponent}.`,
+      body: [
+        `${f.competition}, le ${frDate(f.date)}${f.venue ? ` (${f.venue})` : f.home ? ' (à domicile)' : ''} : Côte d’Ivoire ${r.civ}-${r.opp} ${f.opponent}.`,
+        ...(r.scorers ? [`Buteuses et buteurs : ${r.scorers}.`] : []),
+        ...(f.source ? [`Sources : ${f.source}`] : []),
+      ],
+      author: 'Rédaction FIF Digital',
+      date: f.date,
+      image: '',
+      tags: [team?.name ?? 'Sélection', f.competition.split(' — ')[0], f.opponent],
+    }
+  })
+}
+
+const fifaRankingArticle: Article = {
+  id: 'auto-classement-fifa-2026-10',
+  slug: 'classement-fifa-octobre-2026-cote-divoire-29e',
+  title: 'Classement FIFA : la Côte d’Ivoire remonte au 29e rang mondial',
+  category: 'Éléphants',
+  excerpt: 'Au classement FIFA du 7 octobre 2026, les Éléphants gagnent deux places et retrouvent le top 30 mondial.',
+  body: [
+    'Au classement mondial FIFA publié le 7 octobre 2026, la Côte d’Ivoire gagne deux places et occupe le 29e rang, de retour dans le top 30 six ans après.',
+    'Cette progression fait suite aux deux victoires des Éléphants en éliminatoires de la CAN 2027 (2-0 contre le Ghana, 2-0 contre la Somalie). La défaite en match amical contre le Cameroun (0-1, 3 octobre) n’a pas empêché la remontée.',
+    'Prochaine mise à jour du classement : novembre 2026, après la 3e journée des éliminatoires contre la Gambie.',
+    'Sources : Connectionivoirienne et ami-sportif.com (7 octobre 2026).',
+  ],
+  author: 'Rédaction FIF Digital',
+  date: '2026-10-07T12:00:00Z',
+  image: '',
+  tags: ['Éléphants', 'Classement FIFA'],
+}
+
+export const articles: Article[] = [
+  ...leagueRoundArticles('comp-l1', 'Ligue 1', 'Ligue 1'),
+  ...leagueRoundArticles('comp-l2', 'Ligue 2', 'Compétitions'),
+  ...elephantsArticles(),
+  ...otherSelectionArticles(),
+  fifaRankingArticle,
+].sort((a, b) => b.date.localeCompare(a.date))
+articles.forEach((a, i) => { a.featured = i === 0 })
 
 export const videoCategories = ['Live', 'Matchs', 'Résumés', 'Inside', 'Interviews', 'Conférences', 'Documentaires', 'Archives', 'Jeunes', 'Féminin', 'Futsal']
-export const videos: Video[] = Array.from({ length: 48 }, (_, i) => {
-  const category = videoCategories[i % videoCategories.length]
-  return {
-    id: `video-${i}`,
-    slug: `video-${i}`,
-    title: `${category} — épisode ${Math.floor(i / videoCategories.length) + 1}`,
-    category,
-    duration: `${rng.int(1, 24)}:${String(rng.int(0, 59)).padStart(2, '0')}`,
-    date: addDays(TODAY, -rng.int(0, 90)).toISOString(),
-    image: `https://picsum.photos/seed/video-${i}/900/560`,
-  }
-})
+// FIF TV : aucune vidéo fictive. Les vidéos officielles sont publiées depuis
+// l'administration (collection « Vidéos ») et s'affichent ici.
+export const videos: Video[] = []
 
 // ---------------------------------------------------------------------------
 // Academies, Training, Products, Tickets
@@ -3015,7 +3097,8 @@ export { cityName }
 
 export function upcomingMatches(limit = 6) {
   return matches
-    .filter((m) => m.status === 'À venir')
+    // Un match dont l'heure est passée (score en attente) n'est plus « à venir ».
+    .filter((m) => m.status === 'À venir' && (m.dateConfirmed === false || Date.now() <= new Date(m.date).getTime() + 2 * 3600 * 1000))
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))
     .slice(0, limit)
 }

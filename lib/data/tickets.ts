@@ -92,7 +92,8 @@ export const ticketEvents: TicketEvent[] = [
     home: clubSide(h),
     away: clubSide(a),
     stadium: { name: venue ?? 'Stade à confirmer', city: '' },
-    status: 'Bientôt en vente',
+    // Date passée (match joué, score en attente) : la vente est close.
+    status: date && Date.now() > new Date(`${date}T23:59:00Z`).getTime() ? 'Terminé' : 'Bientôt en vente',
     maxPerOrder: 6,
     tiers: [],
     note: postponed && note

@@ -101,7 +101,7 @@ export default async function ClubPortalPage() {
               <div className="chip-row">
                 {clubCompetitions.map((c) => <Link key={c.id} href={`/competitions/${c.slug}`} className="chip">{c.name}</Link>)}
               </div>
-              <h3 style={{ marginTop: 24 }}>Prochains matchs</h3>
+              <h3 style={{ marginTop: 24 }}>Matchs à venir ou à compléter</h3>
               <div className="card-grid cols-2">
                 {upcoming.length ? upcoming.map((m) => <MatchCard key={m.id} match={m} />) : <p className="lede">Aucun match à venir.</p>}
               </div>

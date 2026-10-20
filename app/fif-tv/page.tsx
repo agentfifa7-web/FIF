@@ -18,7 +18,9 @@ export default async function FifTvPage() {
         meta={[{ value: String(videos.length), label: 'Vidéos disponibles' }]}
       />
       <section className="page-section tight">
-        <VideoExplorer videos={videos} />
+        {videos.length === 0
+          ? <p className="lede">Aucune vidéo officielle n’est encore publiée. Les résumés, conférences de presse et coulisses des Éléphants apparaîtront ici dès leur mise en ligne par la FIF.</p>
+          : <VideoExplorer videos={videos} />}
       </section>
       <section className="page-section tight"><DemoBadge /></section>
     </main>

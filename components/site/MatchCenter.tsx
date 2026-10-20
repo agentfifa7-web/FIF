@@ -7,7 +7,7 @@ import type { Match, MatchEvent } from '@/lib/data/types'
 import { ClubCrest } from './cards'
 import { getClubById, getPlayerById, getStadiumById } from '@/lib/data/mock'
 import { getMatchSheet, MATCHSHEET_EVENT, type MatchSheetOverride, type MatchSheetPlayer } from '@/lib/matchsheet'
-import { matchWhen } from '@/lib/format'
+import { awaitingScore, matchWhen } from '@/lib/format'
 
 const eventLabel: Record<MatchEvent['type'], string> = {
   goal: 'BUT', yellow: 'CARTON JAUNE', red: 'CARTON ROUGE', sub: 'REMPLACEMENT', var: 'VAR', ht: 'MI-TEMPS', ft: 'FIN', kickoff: 'COUP D’ENVOI',
@@ -32,7 +32,7 @@ export function MatchCenter({ match }: { match: Match }) {
   const venue = stadium?.name ?? match.venue
   const homeScore = sheet ? sheet.homeScore : match.homeScore
   const awayScore = sheet ? sheet.awayScore : match.awayScore
-  const status = sheet ? 'Terminé' : match.status === 'Terminé' && match.scoreConfirmed === false ? 'Terminé (score à confirmer)' : match.status
+  const status = sheet ? 'Terminé' : match.status === 'Terminé' && match.scoreConfirmed === false ? 'Terminé (score à confirmer)' : awaitingScore(match) ? 'Joué — score en attente' : match.status
   const attendance = sheet?.attendance ?? match.attendance
 
   const timeline = useMemo<TimelineRow[]>(() => {
@@ -88,7 +88,7 @@ export function MatchCenter({ match }: { match: Match }) {
                 </div>
               </div>
             ))}
-            {!timeline.length && <p className="lede">{status.startsWith('Terminé') ? 'Détail des buts et cartons non communiqué.' : 'Le match n’a pas encore été joué.'}</p>}
+            {!timeline.length && <p className="lede">{status.startsWith('Terminé') ? 'Détail des buts et cartons non communiqué.' : status.startsWith('Joué') ? 'Le score et les faits de match ne sont pas encore publiés.' : 'Le match n’a pas encore été joué.'}</p>}
           </div>
         </div>
         <div>

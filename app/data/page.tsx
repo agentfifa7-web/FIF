@@ -30,7 +30,7 @@ export default async function DataCenterPage() {
           <StatCard label="Buts marqués" value={totalGoals} />
           <StatCard label="Cartons distribués" value={totalCards} />
           <StatCard label="Moyenne de buts / match" value={(totalGoals / Math.max(1, matches.filter((m) => m.status === 'Terminé').length)).toFixed(2)} />
-          <StatCard label="Arbitres actifs" value={players.filter((p) => p.licenseStatus === 'Valide').length} hint="Licences joueurs valides" />
+          <StatCard label="Licences joueurs valides" value={players.filter((p) => p.licenseStatus === 'Valide').length} />
         </div>
       </section>
 

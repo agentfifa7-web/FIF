@@ -4,7 +4,6 @@ import { articles, getArticle } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { NewsCard } from '@/components/site/cards'
 import { NewsThumb } from '@/components/site/NewsThumb'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
@@ -62,7 +61,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

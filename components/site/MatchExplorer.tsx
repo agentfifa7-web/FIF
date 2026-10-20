@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import type { Match } from '@/lib/data/types'
 import { competitions } from '@/lib/data/mock'
-import { formatDate } from '@/lib/format'
+import { awaitingScore, formatDate } from '@/lib/format'
 import { EmptyState, FilterSelect } from './widgets'
 import { MatchCard } from './cards'
 import { useLiveMatches } from '@/lib/liveMatch'
@@ -40,7 +40,9 @@ export function MatchExplorer({ matches, mode }: { matches: Match[]; mode: 'cale
   const grouped = useMemo(() => {
     const map = new Map<string, Match[]>()
     for (const m of filtered) {
-      const key = m.dateConfirmed === false
+      const key = awaitingScore(m)
+        ? 'Matchs joués — score en attente'
+        : m.dateConfirmed === false
         ? `${competitions.find((c) => c.id === m.competitionId)?.name ?? ''} — journée ${m.matchday} · date à confirmer`
         : formatDate(m.date, { weekday: 'long', day: 'numeric', month: 'long' })
       map.set(key, [...(map.get(key) ?? []), m])

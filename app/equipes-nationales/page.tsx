@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Shield } from 'lucide-react'
-import { nationalTeams, nextFixtureFor, nextElephantsFixture } from '@/lib/data/mock'
+import { nationalTeams, nextFixtureFor, nextElephantsFixture, lastElephantsFixture, lastResultsFor, elephantsNextWindow, nationalTeamNextWindow } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
@@ -25,7 +25,7 @@ export default async function NationalTeamsPage() {
         meta={[
           { value: String(nationalTeams.length), label: 'Sélections' },
           { value: '2027', label: 'Prochaine CAN' },
-          { value: '39ᵉ', label: 'Classement FIFA Éléphants' },
+          { value: `${nationalTeams.find((t) => t.id === 'nt-elephants')?.ranking ?? '—'}ᵉ`, label: 'Classement FIFA Éléphants (oct. 2026)' },
         ]}
       />
       {groups.map((group) => (
@@ -35,13 +35,19 @@ export default async function NationalTeamsPage() {
             {group.ids.map((id) => {
               const team = nationalTeams.find((t) => t.id === id)
               if (!team) return null
-              const fixture = team.id === 'nt-elephants' ? nextElephantsFixture() : nextFixtureFor(team.id)
+              const isElephants = team.id === 'nt-elephants'
+              const fixture = isElephants ? nextElephantsFixture() : nextFixtureFor(team.id)
+              const window = isElephants ? (elephantsNextWindow && `${elephantsNextWindow.opponent} — ${elephantsNextWindow.competition}, ${elephantsNextWindow.period}`) : nationalTeamNextWindow[team.id]
+              const last = isElephants
+                ? (() => { const f = lastElephantsFixture(); return f?.result ? `${formatDate(f.date)} : Côte d’Ivoire ${f.result.civScore}-${f.result.opponentScore} ${f.opponent}` : null })()
+                : (() => { const f = lastResultsFor(team.id)[0]; return f?.result ? `${formatDate(f.date)} : Côte d’Ivoire ${f.result.civ}-${f.result.opp} ${f.opponent}` : null })()
               return (
                 <Link key={team.id} href={`/equipes-nationales/${team.slug}`} className="entity-card">
                   <span className="comp-badge"><Shield /></span>
                   <div>
                     <strong>{team.name}</strong>
-                    <span>{fixture ? `Prochain match : ${formatDate(fixture.date)} vs ${fixture.opponent}` : 'Calendrier à venir'}</span>
+                    <span>{fixture ? `Prochain match : ${formatDate(fixture.date)} vs ${fixture.opponent}` : window ? `Prochain rendez-vous : ${window}` : 'Calendrier à venir'}</span>
+                    {!fixture && last && <span>Dernier match — {last}</span>}
                   </div>
                   <ArrowRight />
                 </Link>

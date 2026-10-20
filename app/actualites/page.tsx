@@ -4,7 +4,6 @@ import { getPressReview } from '@/lib/news/rss'
 import { PageHero } from '@/components/site/PageHero'
 import { NewsExplorer } from '@/components/site/NewsExplorer'
 import { PressReview } from '@/components/site/PressReview'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
 export const metadata = { title: 'Actualités — FIF Digital' }
@@ -18,7 +17,7 @@ export default async function NewsPage() {
       <PageHero
         eyebrow="Newsroom fédérale"
         title="Actualités"
-        subtitle="Éléphants, football féminin, clubs, jeunes, compétitions, arbitrage, formation : toute l’actualité du football ivoirien."
+        subtitle="Résultats des championnats et des sélections, classements et revue de presse : l’actualité réelle du football ivoirien, mise à jour plusieurs fois par jour."
         breadcrumb={[{ label: 'Actualités' }]}
         meta={[{ value: String(articles.length), label: 'Articles publiés' }]}
       />
@@ -37,7 +36,6 @@ export default async function NewsPage() {
         </div>
         <NewsExplorer articles={articles} />
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

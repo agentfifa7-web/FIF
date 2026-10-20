@@ -1,4 +1,5 @@
 import { matches } from '@/lib/data/mock'
+import { awaitingScore } from '@/lib/format'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchExplorer } from '@/components/site/MatchExplorer'
 import { loadCms } from '@/lib/cms/server'
@@ -14,7 +15,7 @@ export default async function MatchesPage() {
         title="Calendrier des matchs"
         subtitle="Les prochains matchs officiels du football ivoirien. Seules les affiches confirmées par la FIF sont publiées ; dates, heures et stades s’affichent dès leur annonce."
         breadcrumb={[{ label: 'Calendrier' }]}
-        meta={[{ value: String(matches.filter((m) => m.status !== 'Terminé').length), label: 'Matchs officiels à venir' }]}
+        meta={[{ value: String(matches.filter((m) => m.status !== 'Terminé' && !awaitingScore(m)).length), label: 'Matchs officiels à venir' }]}
       />
       <section className="page-section tight">
         <MatchExplorer matches={matches} mode="calendrier" />
