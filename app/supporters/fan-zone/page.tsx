@@ -7,7 +7,6 @@ import { cityName, fanZonePosts } from '@/lib/data/mock'
 import { publishFanZonePost, type FanZoneDraft, type FanProfile } from '@/lib/fan'
 import { FanIdGate } from '@/components/site/FanIdGate'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 
 const TYPES: FanZoneDraft['type'][] = ['Photo', 'Vidéo', 'Chant', 'Message', 'Tifo']
@@ -42,7 +41,7 @@ function PublishForm({ profile }: { profile: FanProfile }) {
       <div className="form-actions">
         <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}><Camera size={14} /> Publier (+20 XP)</button>
       </div>
-      {justPublished && <p className="pronostic-submitted" style={{ justifyContent: 'flex-start' }}><Clock size={14} /> Envoyé — en attente de modération</p>}
+      {justPublished && <p className="pronostic-submitted" style={{ justifyContent: 'flex-start' }}><Clock size={14} /> Enregistré dans ce navigateur — en attente de modération</p>}
       {profile.fanZonePosts.length > 0 && (
         <>
           <p className="section-tag" style={{ marginTop: 24 }}>Mes publications</p>
@@ -65,11 +64,11 @@ export default function FanZonePage() {
   return (
     <main>
       <PageHero
-        eyebrow="📸 Fan Zone"
+        eyebrow="Fan Zone"
         title="FIF Fan Zone"
         subtitle="La plateforme communautaire modérée par la FIF : photos, vidéos, chants, messages et créations des supporters."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Zone' }]}
-        meta={[{ value: String(fanZonePosts.length), label: 'Publications' }]}
+        noPhotos
       />
 
       <section className="page-section tight">
@@ -80,6 +79,13 @@ export default function FanZonePage() {
 
       <section className="page-section tight">
         <p className="section-tag">Fil Fan Zone</p>
+        {fanZonePosts.length === 0 && (
+          <div className="empty-state" style={{ marginTop: 16 }}>
+            <Camera aria-hidden />
+            <strong>Aucune publication validée pour l’instant</strong>
+            <p>Le fil affiche uniquement les contenus des supporters validés par la modération. Vos propres envois restent visibles ci-dessus, dans « Mes publications ».</p>
+          </div>
+        )}
         <div className="fanzone-grid" style={{ marginTop: 16 }}>
           {fanZonePosts.map((p) => (
             <div className="fanzone-post" key={p.id}>
@@ -98,7 +104,6 @@ export default function FanZonePage() {
         <p className="muted-sm" style={{ marginTop: 20 }}><Flag size={12} style={{ verticalAlign: 'middle' }} /> Un contenu vous semble inapproprié ? Consultez la page <Link href="/supporters/moderation">Modération &amp; signalement</Link>.</p>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

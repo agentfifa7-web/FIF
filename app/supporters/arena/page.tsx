@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Brain, Gamepad2, ImageIcon, ListChecks, Music, Puzzle, Swords, Target, Trophy } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'FIF Game Arena — FIF Digital' }
 
@@ -21,7 +20,7 @@ export default function ArenaPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🎮 Fan Arena"
+        eyebrow="Fan Arena"
         title="FIF Game Arena"
         subtitle="Jeux, quiz et défis gamifiés — uniquement XP, badges et classements. Aucune mécanique de jeu ne nécessite ni ne rapporte d’argent réel."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Arena' }]}
@@ -29,17 +28,15 @@ export default function ArenaPage() {
 
       <section className="page-section tight">
         <div className="card-grid cols-2">
-          {GAMES.map((g) => (
-            <Link href={g.href} key={g.title} className="entity-card" style={{ pointerEvents: g.live ? 'auto' : 'none', opacity: g.live ? 1 : 0.6 }}>
-              <g.icon size={20} color="var(--orange)" />
-              <div><strong>{g.title}</strong><span>{g.desc}</span></div>
-              <span className={`status-pill ${g.live ? 'ok' : 'neutral'}`}>{g.live ? 'Jouer' : 'Bientôt'}</span>
-            </Link>
-          ))}
+          {GAMES.map((g) => {
+            const body = (<><g.icon size={20} aria-hidden /><div><strong>{g.title}</strong><span>{g.desc}</span></div><span className={`status-pill ${g.live ? 'ok' : 'neutral'}`}>{g.live ? 'Jouer' : 'Bientôt'}</span></>)
+            return g.live
+              ? <Link href={g.href} key={g.title} className="entity-card">{body}</Link>
+              : <div key={g.title} className="entity-card is-soon" aria-disabled="true">{body}</div>
+          })}
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

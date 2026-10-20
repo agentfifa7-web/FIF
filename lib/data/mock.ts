@@ -3213,13 +3213,13 @@ export function verifyIdentity(rawId: string): VerifiedIdentity | null {
 // utilisateur persistant côté serveur ni d'aucun système de paiement.
 // ---------------------------------------------------------------------------
 export const fanLevels: FanLevel[] = [
-  { id: 'lvl-1', order: 1, name: 'Nouveau Fan', icon: '🟢', minXp: 0, perks: ['Carte Fan ID numérique', 'Accès au fil Fan Zone'] },
-  { id: 'lvl-2', order: 2, name: 'Supporter', icon: '⚪', minXp: 500, perks: ['Badge de bienvenue', 'Accès aux quiz réguliers'] },
-  { id: 'lvl-3', order: 3, name: 'Passionné', icon: '🟠', minXp: 1500, perks: ['Avantages partenaires FAN+', 'Accès prioritaire à certains quiz'] },
-  { id: 'lvl-4', order: 4, name: '12e Homme', icon: '🇨🇮', minXp: 3500, perks: ['Accès anticipé à la billetterie', 'Cartes numériques rares débloquées plus vite'] },
-  { id: 'lvl-5', order: 5, name: 'Ultra Fan', icon: '🔥', minXp: 7000, perks: ['Expériences FAN PREMIUM', 'Éligible au Photobooth FIF'] },
-  { id: 'lvl-6', order: 6, name: 'Légende', icon: '🏆', minXp: 12000, perks: ['Expériences FAN LEGEND', 'Statut Fan Reporter éligible'] },
-  { id: 'lvl-7', order: 7, name: 'Icône du Football Ivoirien', icon: '👑', minXp: 20000, perks: ['Éligible au Trophée du Supporter', 'Invitations exclusives FIF'] },
+  { id: 'lvl-1', order: 1, name: 'Nouveau Fan', icon: '🟢', minXp: 0, perks: ['Carte Fan ID numérique', 'Quiz et pronostics'] },
+  { id: 'lvl-2', order: 2, name: 'Supporter', icon: '⚪', minXp: 500, perks: ['Titre « Supporter » sur votre Fan ID'] },
+  { id: 'lvl-3', order: 3, name: 'Passionné', icon: '🟠', minXp: 1500, perks: ['Titre « Passionné » sur votre Fan ID'] },
+  { id: 'lvl-4', order: 4, name: '12e Homme', icon: '🇨🇮', minXp: 3500, perks: ['Titre « 12e Homme » sur votre Fan ID'] },
+  { id: 'lvl-5', order: 5, name: 'Ultra Fan', icon: '🔥', minXp: 7000, perks: ['Titre « Ultra Fan » sur votre Fan ID'] },
+  { id: 'lvl-6', order: 6, name: 'Légende', icon: '🏆', minXp: 12000, perks: ['Titre « Légende » sur votre Fan ID'] },
+  { id: 'lvl-7', order: 7, name: 'Icône du Football Ivoirien', icon: '👑', minXp: 20000, perks: ['Titre « Icône » sur votre Fan ID'] },
 ]
 
 export function levelForXp(xp: number): FanLevel {
@@ -3319,47 +3319,18 @@ export const quizQuestions: QuizQuestion[] = [
   ...quizFromCompetitions(),
 ]
 
-const fanClubNames = ['Ultras Éléphants', 'Brigade Orange', '12e Homme Abidjan', 'Fan Club Bouaké', 'Les Fidèles de Yamoussoukro', 'Green Army CI', 'Supporters du Nord', 'Fan Club San-Pédro', 'Les Irréductibles', 'Éléphants Diaspora']
-export const fanClubs: FanClubAssociation[] = fanClubNames.map((name, i) => {
-  const city = rng.pick(cities)
-  return {
-    id: `fc-${i}`,
-    slug: `${slugify(name)}-${i}`,
-    name,
-    cityId: city.id,
-    founded: rng.int(2005, 2023),
-    members: rng.int(80, 4200),
-    description: `Association de supporters basée à ${city.name}, engagée pour soutenir les Éléphants et le football ivoirien dans le respect de la charte du supporter.`,
-  }
-})
+// Associations de supporters : uniquement celles reconnues par la FIF
+// (aucune n'est publiée à ce jour — aucun nom ni effectif inventé).
+export const fanClubs: FanClubAssociation[] = []
 
-const partnerCatalog: { partner: string; category: PartnerOffer['category']; title: string; discount: string; minLevelOrder: number }[] = [
-  { partner: 'Restaurant partenaire (Abidjan)', category: 'Restauration', title: 'Réduction menu jour de match', discount: '-15%', minLevelOrder: 1 },
-  { partner: 'Compagnie de transport partenaire', category: 'Transport', title: 'Tarif réduit vers le stade', discount: '-10%', minLevelOrder: 2 },
-  { partner: 'Opérateur télécom partenaire', category: 'Télécoms', title: 'Forfait data Fan Zone', discount: 'Data offerte', minLevelOrder: 1 },
-  { partner: 'Banque partenaire', category: 'Banque', title: 'Carte bancaire aux couleurs des Éléphants', discount: 'Frais de dossier offerts', minLevelOrder: 3 },
-  { partner: 'Complexe cinéma partenaire', category: 'Loisirs', title: 'Place de cinéma', discount: '-20%', minLevelOrder: 2 },
-  { partner: 'Hôtel partenaire', category: 'Hôtellerie', title: 'Nuitée déplacement Éléphants', discount: '-12%', minLevelOrder: 4 },
-  { partner: 'Centre sportif partenaire', category: 'Loisirs', title: 'Séance d’entraînement libre', discount: '-25%', minLevelOrder: 3 },
-]
-export const partnerOffers: PartnerOffer[] = partnerCatalog.map((p, i) => ({
-  id: `po-${i}`,
-  slug: `${slugify(p.title)}-${i}`,
-  ...p,
-  expiresAt: addDays(new Date('2026-12-31T00:00:00Z'), rng.int(-60, 120)).toISOString(),
-}))
+// Avantages partenaires : uniquement des partenariats officiels annoncés par
+// la FIF (aucun à ce jour — aucune enseigne ni remise inventée).
+export const partnerOffers: PartnerOffer[] = []
 
-const chantCatalog: { title: string; category: ChantEntry['category']; origin: string; occasion: string }[] = [
-  { title: 'On est ensemble', category: 'Éléphants', origin: 'Tribune populaire, Abidjan', occasion: 'Avant match à domicile' },
-  { title: 'Éléphants debout', category: 'Éléphants', origin: 'Supporters historiques', occasion: 'Entrée des joueurs' },
-  { title: 'Le chant du 12e homme', category: 'Éléphants', origin: 'Fan Zone nationale', occasion: 'Pendant le match' },
-  { title: 'Orange, blanc, vert', category: 'Historique', origin: 'CAN 1992', occasion: 'Commémoration' },
-  { title: 'La fierté du pays', category: 'Historique', origin: 'CAN 2024', occasion: 'Célébration de victoire' },
-  { title: 'Chant du district d’Abidjan', category: 'Régional', origin: 'Ultras Éléphants', occasion: 'Déplacements' },
-  { title: 'Chant de Bouaké', category: 'Régional', origin: 'Fan Club Bouaké', occasion: 'Matchs régionaux' },
-  { title: 'Hymne des clubs amateurs', category: 'Club', origin: 'Championnat amateur', occasion: 'Matchs locaux' },
+// Chants : uniquement des chants documentés (aucun titre ni origine inventés).
+export const chants: ChantEntry[] = [
+  { id: 'ch-0', slug: 'l-abidjanaise', title: 'L’Abidjanaise', category: 'Éléphants', origin: 'Hymne national de la Côte d’Ivoire, adopté en 1960', occasion: 'Avant chaque match des sélections nationales', lyricsAvailable: false },
 ]
-export const chants: ChantEntry[] = chantCatalog.map((c, i) => ({ id: `ch-${i}`, slug: `${slugify(c.title)}-${i}`, ...c, lyricsAvailable: rng.bool(0.6) }))
 
 export const digitalCards: DigitalCard[] = [
   ...nationalTeams.filter((t) => t.achievements.length > 0).map((t, i) => ({

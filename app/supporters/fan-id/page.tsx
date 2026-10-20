@@ -10,7 +10,6 @@ import { PageHero } from '@/components/site/PageHero'
 import { FanIdCard } from '@/components/site/FanIdCard'
 import { SupportPicker, supportModeOf, type SupportMode } from '@/components/site/SupportPicker'
 import { FanIdGate } from '@/components/site/FanIdGate'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 function SupporterSettings() {
   const { account } = useAccount()
@@ -77,7 +76,7 @@ export default function FanIdPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🪪 Fan Pass"
+        eyebrow="Fan Pass"
         title="Mon FIF Fan ID"
         subtitle="Votre carte de supporter, incluse dans votre FIF ID : équipes supportées, niveau, XP, badges et historique."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan ID' }]}
@@ -110,7 +109,6 @@ export default function FanIdPage() {
         </FanIdGate>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

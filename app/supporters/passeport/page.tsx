@@ -6,7 +6,6 @@ import { useFanProfile, checkInStadium } from '@/lib/fan'
 import { FanIdGate } from '@/components/site/FanIdGate'
 import { IvoryCoastMap } from '@/components/site/IvoryCoastMap'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 const STAMPS = [
   { icon: '🇨🇮', label: 'Match des Éléphants' },
@@ -22,7 +21,7 @@ export default function PasseportPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🎟️ Fan Pass"
+        eyebrow="Fan Pass"
         title="Passeport FIF & Football Tour"
         subtitle="Collectionnez des tampons numériques et visitez le football ivoirien : cliquez sur un pôle de la carte pour faire votre check-in FIF."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Passeport FIF' }]}
@@ -60,7 +59,6 @@ export default function PasseportPage() {
         </FanIdGate>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

@@ -3,7 +3,6 @@
 import { fanLevels, xpActions } from '@/lib/data/mock'
 import { useFanProfile, fanLevelProgress } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export default function NiveauxPage() {
   const { profile, ready } = useFanProfile()
@@ -13,7 +12,7 @@ export default function NiveauxPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🏆 Fan Pass"
+        eyebrow="Fan Pass"
         title="Niveaux & points XP"
         subtitle="Gagnez de l’XP en participant positivement à la vie du football ivoirien. Aucun argent réel n’est jamais gagné ou misé."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Niveaux' }]}
@@ -48,7 +47,6 @@ export default function NiveauxPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

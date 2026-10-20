@@ -1,75 +1,38 @@
 import Link from 'next/link'
-import { CalendarDays, Gift, Percent, ShoppingBag, Ticket, Users } from 'lucide-react'
+import { CalendarDays, IdCard, Ticket, Users } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
-import { ClubDesSupportersJoin, type MembershipTier } from '@/components/site/ClubDesSupportersJoin'
+import { DemoNotice } from '@/components/site/DemoNotice'
 
-export const metadata = { title: 'Club des Supporters — FIF Digital' }
+export const metadata = { title: 'Club des Supporters — FIF Fan Universe', description: 'Le projet de Club des Supporters des Éléphants : principes et services envisagés.' }
 
-const ADVANTAGES = [
-  { icon: Gift, title: 'Kit de bienvenue', description: 'Écharpe, carte de membre et goodies Éléphants, à retirer au siège de la FIF ou livrés.' },
-  { icon: Ticket, title: 'Billetterie prioritaire', description: 'Accès prioritaire aux matchs à domicile et à l’extérieur, ainsi qu’à la CAN.' },
-  { icon: Percent, title: '-10% sur les tribunes', description: 'Réduction sur vos achats de billets hors places déjà préférentielles.' },
-  { icon: CalendarDays, title: 'Entraînements publics', description: 'Accès privilégié aux séances d’entraînement ouvertes des Éléphants.' },
-  { icon: Users, title: 'Événements exclusifs', description: 'Invitations aux avant-matchs, rencontres joueurs et événements supporters.' },
-  { icon: ShoppingBag, title: 'Réductions boutique', description: 'Remises sur la Boutique FIF officielle, ventes privées réservées aux membres.' },
-]
-
-const TIERS: MembershipTier[] = [
-  {
-    name: 'Éléphant',
-    price: 15000,
-    tagline: 'L’essentiel pour suivre les Éléphants.',
-    benefits: ['Billetterie prioritaire', 'Carte de membre numérique', '-5% Boutique FIF'],
-  },
-  {
-    name: 'Éléphant Or',
-    price: 35000,
-    tagline: 'Pour les supporters les plus fidèles.',
-    benefits: ['Tous les avantages Éléphant', 'Kit de bienvenue complet', '-10% Boutique FIF', 'Accès entraînements publics'],
-  },
-  {
-    name: 'Carré VIP',
-    price: 75000,
-    tagline: 'L’expérience supporter complète.',
-    benefits: ['Tous les avantages Éléphant Or', 'Espace Supporters les jours de match', 'Invitations événements exclusifs', 'Priorité absolue billetterie CAN'],
-  },
+const IDEAS = [
+  { icon: IdCard, title: 'Carte de membre', text: 'Une carte de membre numérique rattachée au FIF ID.' },
+  { icon: Ticket, title: 'Billetterie', text: 'Un accès facilité aux matchs des sélections nationales.' },
+  { icon: CalendarDays, title: 'Rencontres', text: 'Des rendez-vous supporters autour des matchs et des entraînements ouverts.' },
+  { icon: Users, title: 'Associations', text: 'Un lien direct avec les associations de supporters reconnues.' },
 ]
 
 export default function ClubDesSupportersPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🎟️ Club des Supporters"
-        title="Vivez votre passion des Éléphants encore plus près."
-        subtitle="Le Club des Supporters réunit tous les avantages et services exclusifs pour suivre et soutenir l’équipe nationale dans les meilleures conditions."
+        eyebrow="Communauté"
+        title="Club des Supporters"
+        subtitle="Un programme d’adhésion pour soutenir les sélections nationales au plus près, rattaché à votre FIF ID."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Club des Supporters' }]}
-        meta={[{ value: String(TIERS.length), label: 'Formules d’abonnement' }]}
+        noPhotos
       />
-
-      <section className="page-section tight">
-        <p className="section-tag">Vos avantages</p>
-        <div className="info-tiles" style={{ marginTop: 16 }}>
-          {ADVANTAGES.map((a) => (
-            <div className="info-tile" key={a.title}><a.icon /><strong>{a.title}</strong><p>{a.description}</p></div>
-          ))}
+      <section className="page-section">
+        <DemoNotice title="Programme en préparation">Aucune formule d’adhésion n’est ouverte pour l’instant : les tarifs et avantages seront annoncés officiellement par la FIF. Les services ci-dessous sont des pistes de travail.</DemoNotice>
+        <div className="svc-who" style={{ marginTop: 24 }}>
+          {IDEAS.map((a) => <div key={a.title}><a.icon aria-hidden /><strong>{a.title}</strong><p>{a.text}</p></div>)}
+        </div>
+        <div className="button-group" style={{ marginTop: 32 }}>
+          <Link href="/supporters/fan-id" className="button button-primary">Créer mon Fan ID</Link>
+          <Link href="/supporters/associations" className="button-outline">Associations de supporters</Link>
+          <Link href="/billetterie" className="button-outline">Billetterie</Link>
         </div>
       </section>
-
-      <section className="page-section tight">
-        <p className="section-tag">Nos abonnements</p>
-        <ClubDesSupportersJoin tiers={TIERS} />
-      </section>
-
-      <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Aller plus loin</p>
-        <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-          <Link href="/supporters/associations" className="entity-card"><Users size={18} color="var(--orange)" /><div><strong>Fan Clubs & associations</strong><span>Rejoindre ou créer une association reconnue par la FIF</span></div></Link>
-          <Link href="/billetterie" className="entity-card"><Ticket size={18} color="var(--orange)" /><div><strong>Billetterie</strong><span>Réserver vos places pour les prochains matchs</span></div></Link>
-        </div>
-      </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

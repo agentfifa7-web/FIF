@@ -6,7 +6,6 @@ import { upcomingMatches, getClubById, nextElephantsFixture } from '@/lib/data/m
 import { recordPronostic, type FanProfile } from '@/lib/fan'
 import { FanIdGate } from '@/components/site/FanIdGate'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 
 interface PronosticTarget { id: string; home: string; away: string; competition: string; date: string }
@@ -68,7 +67,7 @@ export default function PronosticsPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🔮 Fan Arena"
+        eyebrow="Fan Arena"
         title="FIF Prédictions"
         subtitle="Prédisez le score des prochains matchs. Aucune mise, aucun gain monétaire — uniquement des points XP."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Arena', href: '/supporters/arena' }, { label: 'Pronostics' }]}
@@ -85,7 +84,6 @@ export default function PronosticsPage() {
           }}
         </FanIdGate>
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

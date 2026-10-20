@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { cityName, mockFanLeaderboard } from '@/lib/data/mock'
 import { useFanProfile } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 type Tab = 'xp' | 'precision'
 
@@ -25,9 +24,10 @@ export default function ClassementsPage() {
   return (
     <main>
       <PageHero
-        eyebrow="📊 Fan Arena"
+        eyebrow="Fan Arena"
         title="Classements"
-        subtitle="Classement communautaire par XP et par précision de pronostics. Consultez aussi les classements par ville, club, association ou entreprise depuis votre Fan ID."
+        subtitle="Classement par XP et par précision des pronostics."
+        noPhotos
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Classements' }]}
       />
 
@@ -37,6 +37,13 @@ export default function ClassementsPage() {
           <button type="button" className={tab === 'precision' ? 'tab active' : 'tab'} onClick={() => setTab('precision')}>Précision des pronostics</button>
         </div>
 
+        {rows.length === 0 && (
+          <div className="empty-state" style={{ marginTop: 20 }}>
+            <strong>Aucun classement à afficher</strong>
+            <p>Le classement communautaire sera publié lorsque les comptes supporters seront raccordés aux serveurs de la FIF. Connectez-vous pour voir votre propre score.</p>
+          </div>
+        )}
+        {rows.length > 0 && !mockFanLeaderboard.length && <p className="muted-sm" style={{ marginTop: 16 }}>Seul votre score, enregistré dans ce navigateur, est affiché pour l’instant.</p>}
         <div className="rank-podium-list" style={{ marginTop: 20 }}>
           {rows.slice(0, 20).map((r, i) => (
             <div className={`rank-podium-row${r.mine ? ' me' : ''}`} key={`${r.pseudo}-${i}`}>
@@ -51,7 +58,6 @@ export default function ClassementsPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

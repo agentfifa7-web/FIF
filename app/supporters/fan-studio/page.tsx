@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Download } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 const COLORS = ['#f7941d', '#0a5c33', '#ffffff', '#0b1110', '#1c4587', '#c62828']
 
@@ -49,7 +48,7 @@ export default function FanStudioPage() {
   return (
     <main>
       <PageHero
-        eyebrow="👕 Fan Zone"
+        eyebrow="Fan Zone"
         title="Fan Studio"
         subtitle="Personnalisez votre avatar de supporter ou créez votre bannière digitale."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Studio' }]}
@@ -112,7 +111,6 @@ export default function FanStudioPage() {
         )}
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

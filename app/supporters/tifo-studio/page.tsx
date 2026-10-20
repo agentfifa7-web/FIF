@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Download, Shuffle } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 const COLORS = ['#f7941d', '#0a5c33', '#ffffff', '#0b1110', '#1c4587', '#c62828']
 const PATTERNS = ['Uni', 'Rayures', 'Chevrons'] as const
@@ -42,7 +41,7 @@ export default function TifoStudioPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🎨 Fan Zone"
+        eyebrow="Fan Zone"
         title="Tifo Studio"
         subtitle="Créez votre tifo : couleurs, motif et message. La FIF peut sélectionner certains designs pour des animations officielles, selon autorisation."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Tifo Studio' }]}
@@ -95,7 +94,6 @@ export default function TifoStudioPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

@@ -2,7 +2,6 @@
 
 import { useFanProfile, badgeCatalogWithStatus } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 const CATEGORIES = ['Supporter', 'Historique', 'Social', 'Saison'] as const
 
@@ -15,7 +14,7 @@ export default function BadgesPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🏅 Fan Pass"
+        eyebrow="Fan Pass"
         title="Mes badges"
         subtitle="Des dizaines de badges à débloquer en participant à la vie du football ivoirien : matchs suivis, quiz, Fan Zone, Football Tour…"
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Badges' }]}
@@ -40,7 +39,6 @@ export default function BadgesPage() {
         )
       })}
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

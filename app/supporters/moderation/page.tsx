@@ -1,6 +1,5 @@
 import { AlertTriangle, Bot, Flag, ShieldCheck, UserCheck } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 export const metadata = { title: 'Modération & signalement — FIF Digital' }
 
@@ -10,7 +9,7 @@ export default function ModerationPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🛡️ Fan Life"
+        eyebrow="Fan Life"
         title="Modération & signalement"
         subtitle="La Fan Zone est modérée pour rester un espace sûr, positif et respectueux — pour tous les supporters."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Modération' }]}
@@ -37,7 +36,6 @@ export default function ModerationPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

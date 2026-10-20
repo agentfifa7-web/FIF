@@ -1,58 +1,41 @@
 'use client'
 
+import Link from 'next/link'
 import { Music } from 'lucide-react'
 import { chants } from '@/lib/data/mock'
 import { useFanProfile, viewChant } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
-
-const CATEGORIES = ['Éléphants', 'Historique', 'Régional', 'Club'] as const
 
 export default function ChantsPage() {
-  const { profile, ready } = useFanProfile()
-  if (!ready) return null
-
+  const { profile } = useFanProfile()
   return (
     <main>
       <PageHero
-        eyebrow="🎤 Fan Zone"
+        eyebrow="Fan Zone"
         title="Chants des supporters"
-        subtitle="Chants des Éléphants, des clubs, historiques et régionaux — origine, occasion et disponibilité des paroles."
+        subtitle="Les chants qui accompagnent les Éléphants et les clubs ivoiriens, avec leur origine et le moment où on les entonne."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Chants' }]}
+        noPhotos
       />
-
-      {CATEGORIES.map((cat) => {
-        const items = chants.filter((c) => c.category === cat)
-        if (!items.length) return null
-        return (
-          <section className="page-section tight" key={cat}>
-            <p className="section-tag">{cat}</p>
-            <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-              {items.map((c) => {
-                const learned = profile?.chantsViewed.includes(c.id)
-                return (
-                  <button
-                    type="button"
-                    key={c.id}
-                    className="entity-card"
-                    style={{ appearance: 'none', cursor: 'pointer', font: 'inherit', textAlign: 'left', width: '100%' }}
-                    onClick={() => viewChant(c.id)}
-                  >
-                    <Music size={18} color="var(--orange)" />
-                    <div>
-                      <strong>{c.title}</strong>
-                      <span>{c.origin} · {c.occasion}{c.lyricsAvailable ? ' · Paroles disponibles' : ''}</span>
-                    </div>
-                    {profile && <span className={`status-pill ${learned ? 'ok' : 'neutral'}`}>{learned ? 'Appris' : '+10 XP'}</span>}
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-        )
-      })}
-
-      <section className="page-section tight"><DemoBadge /></section>
+      <section className="page-section">
+        <div className="card-grid cols-2">
+          {chants.map((c) => {
+            const learned = profile?.chantsViewed.includes(c.id)
+            return (
+              <button type="button" key={c.id} className="entity-card fan-chant" onClick={() => viewChant(c.id)}>
+                <Music size={18} aria-hidden />
+                <div><strong>{c.title}</strong><span>{c.origin} · {c.occasion}</span></div>
+                {profile && <span className={`status-pill ${learned ? 'ok' : 'neutral'}`}>{learned ? 'Consulté' : '+10 XP'}</span>}
+              </button>
+            )
+          })}
+        </div>
+        <div className="empty-state" style={{ marginTop: 24 }}>
+          <Music aria-hidden />
+          <strong>Les chants des tribunes arrivent</strong>
+          <p>Seuls des chants dont l’origine est documentée sont publiés. Vous connaissez un chant de supporters ? Partagez-le dans la <Link href="/supporters/fan-zone">Fan Zone</Link> : après modération, il pourra rejoindre ce recueil.</p>
+        </div>
+      </section>
     </main>
   )
 }

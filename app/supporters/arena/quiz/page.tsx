@@ -8,7 +8,6 @@ import type { QuizQuestion } from '@/lib/data/types'
 import { recordQuizAnswer } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
 import { FanIdGate } from '@/components/site/FanIdGate'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
 const ROUND_SIZE = 8
 
@@ -91,7 +90,7 @@ export default function QuizPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🧠 Fan Arena"
+        eyebrow="Fan Arena"
         title="Quiz Éléphants"
         subtitle="Questions sur les Éléphants, les clubs, les stades et les compétitions du football ivoirien. +20 XP par question, +50 XP bonus si la réponse est correcte."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Fan Arena', href: '/supporters/arena' }, { label: 'Quiz' }]}
@@ -101,7 +100,6 @@ export default function QuizPage() {
           {() => <QuizRunner />}
         </FanIdGate>
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

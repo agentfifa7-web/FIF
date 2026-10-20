@@ -754,3 +754,66 @@ a.fx-card:hover { border-color: var(--fif-green-600); box-shadow: var(--shadow-m
 .auth-card h1 { color: var(--fif-green-900); font-size: 36px; margin: 0 0 8px; }
 .otp-demo { background: var(--fif-orange-50) !important; border: 1px dashed #ffb76b !important; border-radius: var(--radius-sm); color: var(--gray-900) !important; font-size: 14px !important; padding: 10px 12px; }
 .checkout-steps li { font-size: 14px; }
+
+/* ---------------------------------------------------------------- FIF Fan Universe (étape 8) */
+.fan-nav .subnav-inner { align-items: center; }
+.fan-nav-brand { color: var(--fif-orange-text); flex-shrink: 0; font-size: 13px; font-weight: 800; letter-spacing: .08em; padding-right: 4px; text-transform: uppercase; }
+.fan-kicker { align-items: center; color: var(--fif-orange-text); display: inline-flex; font-size: 13px; font-weight: 700; gap: 6px; letter-spacing: .04em; text-transform: uppercase; }
+.fan-kicker svg { height: 16px; width: 16px; }
+.fan-welcome { align-items: center; background: linear-gradient(135deg, var(--fif-green-50), #fff 60%); border: 1px solid var(--fif-green-100); border-radius: var(--radius-lg); display: grid; gap: var(--sp-6); min-height: 120px; padding: var(--sp-6); }
+.fan-welcome.has-card { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); }
+.fan-welcome-text h2 { font-size: var(--fs-h3) !important; margin: 8px 0 !important; }
+.fan-welcome-text p { color: var(--gray-600, #4b5563); margin: 0 0 var(--sp-4); max-width: 62ch; }
+.fan-rdv { display: grid; gap: var(--sp-5); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.fan-rdv-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 10px; padding: var(--sp-6); }
+.fan-rdv-card h3 { font-size: 26px; margin: 0; }
+.fan-rdv-card p { color: var(--gray-500); margin: 0; }
+.fan-rdv-card .button, .fan-rdv-card .button-group { align-self: flex-start; margin-top: 6px; }
+.fan-rdv-card.is-quiz { border-top: 4px solid var(--fif-orange); }
+.fan-rdv-last { border-top: 1px solid var(--gray-200); font-size: 14px; margin-top: 8px !important; padding-top: 12px; }
+.fan-rdv-last a { color: var(--fif-green-800); font-weight: 600; text-decoration: underline; }
+.fan-play { display: grid; gap: var(--sp-4); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fan-play-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-md); color: var(--gray-900); display: flex; flex-direction: column; gap: 8px; padding: var(--sp-5); transition: border-color .2s, box-shadow .2s, transform .2s; }
+.fan-play-card:hover { border-color: var(--fif-green-600); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.fan-play-card > svg { color: var(--fif-orange-text); height: 28px; width: 28px; }
+.fan-play-card strong { font-size: 18px; }
+.fan-play-card > span:not(.text-link) { color: var(--gray-500); flex: 1; font-size: 15px; }
+.fan-universes { display: grid; gap: var(--sp-4); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fan-universe { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: var(--sp-5); }
+.fan-universe > svg { color: var(--fif-green-600); height: 26px; width: 26px; }
+.fan-universe h3 { font-size: 20px; margin: 10px 0 4px; }
+.fan-universe p { color: var(--gray-500); font-size: 15px; margin: 0 0 12px; }
+.fan-universe ul { display: grid; gap: 2px; list-style: none; margin: 0; padding: 0; }
+.fan-universe a { color: var(--fif-green-800); display: block; font-size: 15px; font-weight: 600; padding: 6px 0; }
+.fan-universe a:hover { color: var(--fif-orange-text); text-decoration: underline; }
+.fan-values { align-items: center; display: grid; gap: var(--sp-6); grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.fan-values p { color: var(--gray-500); margin: 0 0 var(--sp-4); max-width: 60ch; }
+.fan-values-list { display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+.fan-values-list li { align-items: center; background: var(--gray-50); border-radius: var(--radius-md); display: flex; font-weight: 600; gap: 12px; padding: 14px 16px; }
+.fan-values-list svg { color: var(--fif-orange-text); flex-shrink: 0; }
+.fan-steps { counter-reset: none; display: grid; gap: var(--sp-4); grid-template-columns: repeat(4, minmax(0, 1fr)); list-style: none; margin: var(--sp-4) 0 0; padding: 0; }
+.fan-steps li { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: var(--sp-5); }
+.fan-steps span { background: var(--fif-green-900); border-radius: 999px; color: #fff; display: inline-block; font-size: 13px; font-weight: 700; padding: 3px 10px; }
+.fan-steps strong { display: block; font-size: 18px; margin-top: 10px; }
+.fan-steps p { color: var(--gray-500); font-size: 15px; margin: 4px 0 0; }
+.fan-chant { appearance: none; cursor: pointer; font: inherit; text-align: left; width: 100%; }
+.fan-notice { margin-top: var(--sp-5); }
+.empty-state { align-items: center; }
+.empty-state > svg { color: var(--gray-400, #9ca3af); height: 28px; width: 28px; }
+.empty-state p { color: var(--gray-500); margin: 0; max-width: 60ch; }
+.empty-state p a { color: var(--fif-green-800); font-weight: 600; text-decoration: underline; }
+.svc-form { display: grid; gap: 14px; }
+.svc-form .button { justify-self: start; }
+.check-field { align-items: center; display: flex; gap: 10px; }
+.check-field input { height: 18px; width: 18px; }
+.check-field a { color: var(--fif-green-800); text-decoration: underline; }
+@media (max-width: 1100px) { .fan-play, .fan-universes, .fan-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .fan-welcome.has-card, .fan-rdv, .fan-values { grid-template-columns: minmax(0, 1fr); }
+  .fan-welcome { padding: var(--sp-5); }
+  .fan-rdv-card { padding: var(--sp-5); }
+  .fan-rdv-card h3 { font-size: 22px; }
+}
+@media (max-width: 520px) { .fan-play, .fan-universes, .fan-steps { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .fan-play-card { transition: none; } .fan-play-card:hover { transform: none; } }
+.entity-card.is-soon { opacity: .65; }

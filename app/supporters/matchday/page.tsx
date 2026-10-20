@@ -1,12 +1,20 @@
-import { CalendarDays, MapPin, QrCode, Tv } from 'lucide-react'
-import { nextElephantsFixture, elephantsCallUp } from '@/lib/data/mock'
+import Link from 'next/link'
+import { CalendarDays, MapPin } from 'lucide-react'
+import { elephantsNextWindow, nextElephantsFixture, elephantsCallUp } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { MatchdayVote } from '@/components/site/MatchdayVote'
-import { DemoBadge } from '@/components/site/DemoBadge'
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { formatDateLong } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Mode Matchday — FIF Digital' }
+export const metadata = { title: 'Mode Matchday — FIF Fan Universe', description: 'Avant, pendant et après le match des Éléphants : informations pratiques, pronostic, vote des supporters.' }
+
+const STEPS = [
+  { tag: 'J-1', title: 'Préparation', text: 'Liste des joueurs convoqués, pronostic, quiz et informations pratiques.' },
+  { tag: 'Jour J', title: 'Au stade', text: 'Billet, accès au stade, horaires d’ouverture des portes.' },
+  { tag: 'Live', title: 'Pendant le match', text: 'Score et faits de match, vote « Joueur du match » des supporters.' },
+  { tag: 'Après', title: 'Le résumé', text: 'Compte rendu, résultat de votre pronostic, classement.' },
+]
 
 export default async function MatchdayPage() {
   await loadCms()
@@ -16,50 +24,49 @@ export default async function MatchdayPage() {
   return (
     <main>
       <PageHero
-        eyebrow="🏟️ Fan Life"
-        title="Mode Matchday"
-        subtitle="Avant, pendant et après le match : le supporter reste connecté à l’expérience du football ivoirien."
+        eyebrow="Matchday"
+        title="Le jour de match des Éléphants"
+        subtitle="Avant, pendant et après le match : tout ce qu’il faut pour vivre la rencontre, au stade ou à distance."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Matchday' }]}
+        noPhotos
       />
 
-      {fixture && (
-        <section className="page-section tight">
-          <div className="sim-panel" style={{ marginLeft: 0, marginRight: 0 }}>
-            <p><CalendarDays size={15} /> Côte d’Ivoire vs {fixture.opponent} · {formatDateLong(fixture.date)}</p>
-            <p><MapPin size={15} /> {fixture.venue}</p>
-          </div>
-        </section>
-      )}
-
-      <section className="page-section tight">
-        <div className="timeline">
-          <div><b>J-1</b><div><strong>Préparation</strong><span>Composition probable, interview, quiz, historique, informations pratiques.</span></div></div>
-          <div><b>J-0</b><div><strong>Jour de match</strong><span>Itinéraire vers le stade, parking, portes, horaires, billetterie, animations, Fan Zone.</span></div></div>
-          <div><b>Live</b><div><strong>Pendant le match</strong><span>Score en direct, statistiques, événements, vote « Joueur du match ».</span></div></div>
-          <div><b>Après</b><div><strong>Résumé</strong><span>Photos, vidéos, classement, quiz post-match.</span></div></div>
+      <section className="page-section">
+        <div className="fan-rdv-card">
+          <span className="fan-kicker"><CalendarDays aria-hidden /> Prochain match</span>
+          {fixture ? (
+            <>
+              <h3>Côte d’Ivoire – {fixture.opponent}</h3>
+              <p>{fixture.competition} · {formatDateLong(fixture.date)} · <MapPin size={14} aria-hidden style={{ verticalAlign: 'middle' }} /> {fixture.venue}</p>
+              <div className="button-group"><Link href="/billetterie" className="button button-primary">Billetterie</Link><Link href="/supporters/arena/pronostics" className="button-outline">Mon pronostic</Link></div>
+            </>
+          ) : elephantsNextWindow ? (
+            <>
+              <h3>Côte d’Ivoire – {elephantsNextWindow.opponent}</h3>
+              <p>{elephantsNextWindow.competition} · {elephantsNextWindow.period}. Le stade et l’heure seront précisés dès l’annonce officielle.</p>
+              <div className="button-group"><Link href="/supporters/arena/pronostics" className="button button-primary">Mon pronostic</Link><Link href="/equipes-nationales/elephants" className="button-outline">Les Éléphants</Link></div>
+            </>
+          ) : <p>Le prochain match sera annoncé dès sa confirmation officielle.</p>}
         </div>
       </section>
 
-      <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}><QrCode size={13} style={{ verticalAlign: 'middle' }} /> « Je suis au stade »</p>
-        <p className="lede" style={{ color: '#a9b7af' }}>Le supporter scanne son billet vérifié à l’entrée du stade et passe en mode Matchday : quiz, sondages, vote joueur du match, caméra Fan Zone, chants, défis et animations.</p>
+      <section className="page-section section-alt" aria-labelledby="md-steps">
+        <h2 id="md-steps">Le déroulé</h2>
+        <ol className="fan-steps">
+          {STEPS.map((s) => <li key={s.tag}><span>{s.tag}</span><strong>{s.title}</strong><p>{s.text}</p></li>)}
+        </ol>
+        <div style={{ marginTop: 24 }}>
+          <DemoNotice title="« Je suis au stade » — fonctionnalité à venir">Le passage en mode Matchday par scan du billet à l’entrée du stade n’est pas encore disponible.</DemoNotice>
+        </div>
       </section>
 
       {candidates.length > 0 && (
-        <section className="page-section tight">
-          <p className="section-tag">Vote « Joueur du match » — Choix des supporters</p>
-          <p className="lede" style={{ marginBottom: 16 }}>Ce vote populaire des fans est distinct de toute distinction sportive officielle.</p>
+        <section className="page-section" aria-labelledby="md-vote">
+          <h2 id="md-vote">Vote « Joueur du match » des supporters</h2>
+          <p className="lede" style={{ marginBottom: 16 }}>Parmi les joueurs convoqués. Ce vote des supporters, enregistré dans ce navigateur, est distinct de toute distinction officielle.</p>
           <MatchdayVote candidates={candidates} />
         </section>
       )}
-
-      <section className="page-section tight">
-        <div className="info-tiles">
-          <div className="info-tile"><Tv /><strong>Et après le match ?</strong><p>J+1 résumé, J+2 quiz, J+3 défi, J+4 archive, J+5 interview, J+6 pronostic, J+7 nouveau Matchday.</p></div>
-        </div>
-      </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

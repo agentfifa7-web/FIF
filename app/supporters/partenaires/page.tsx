@@ -1,55 +1,35 @@
-'use client'
-
-import { Percent } from 'lucide-react'
-import { partnerOffers, fanLevels } from '@/lib/data/mock'
-import { useFanProfile, fanLevelProgress } from '@/lib/fan'
+import Link from 'next/link'
+import { Handshake } from 'lucide-react'
+import { partnerOffers } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
-import { formatDate } from '@/lib/format'
 
-const CATEGORIES = ['Restauration', 'Transport', 'Télécoms', 'Banque', 'Loisirs', 'Hôtellerie'] as const
+export const metadata = { title: 'Avantages partenaires — FIF Fan Universe', description: 'Les avantages proposés aux supporters par les partenaires officiels de la FIF.' }
 
 export default function PartenairesPage() {
-  const { profile, ready } = useFanProfile()
-  if (!ready) return null
-  const myLevelOrder = profile ? fanLevelProgress(profile.xp).level.order : 0
-
   return (
     <main>
       <PageHero
-        eyebrow="🎁 Fan Life"
-        title="FIF Fan Pass — Avantages partenaires"
-        subtitle="Des avantages chez des partenaires selon votre niveau de supporter. Les avantages réels dépendent des partenariats et disponibilités de la FIF."
+        eyebrow="Communauté"
+        title="Avantages partenaires"
+        subtitle="Les avantages réservés aux supporters par les partenaires officiels de la FIF, selon votre niveau de Fan ID."
         breadcrumb={[{ label: 'Supporters', href: '/supporters' }, { label: 'Partenaires' }]}
+        noPhotos
       />
-
-      {CATEGORIES.map((cat) => {
-        const items = partnerOffers.filter((o) => o.category === cat)
-        if (!items.length) return null
-        return (
-          <section className="page-section tight" key={cat}>
-            <p className="section-tag">{cat}</p>
-            <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-              {items.map((o) => {
-                const level = fanLevels.find((l) => l.order === o.minLevelOrder)
-                const eligible = profile ? myLevelOrder >= o.minLevelOrder : false
-                return (
-                  <div className="entity-card" key={o.id}>
-                    <Percent size={18} color="var(--orange)" />
-                    <div>
-                      <strong>{o.title}</strong>
-                      <span>{o.partner} · {o.discount} · dès {level?.icon} {level?.name} · expire le {formatDate(o.expiresAt)}</span>
-                    </div>
-                    <span className={`status-pill ${eligible ? 'ok' : 'neutral'}`}>{eligible ? 'Débloqué' : 'À débloquer'}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </section>
-        )
-      })}
-
-      <section className="page-section tight"><DemoBadge /></section>
+      <section className="page-section">
+        {partnerOffers.length ? (
+          <div className="card-grid cols-2">
+            {partnerOffers.map((o) => (
+              <div className="entity-card" key={o.id}><Handshake size={18} aria-hidden /><div><strong>{o.title}</strong><span>{o.partner} · {o.discount}</span></div></div>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <Handshake aria-hidden />
+            <strong>Aucun avantage partenaire n’est proposé pour l’instant</strong>
+            <p>Les offres seront publiées ici uniquement lorsqu’un partenariat officiel aura été annoncé par la FIF. En attendant, progressez avec votre <Link href="/supporters/fan-id">Fan ID</Link> en jouant aux <Link href="/supporters/arena">quiz et pronostics</Link>.</p>
+          </div>
+        )}
+      </section>
     </main>
   )
 }
