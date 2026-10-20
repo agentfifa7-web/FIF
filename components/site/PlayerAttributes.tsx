@@ -5,7 +5,7 @@ import { attributeColor, attributeTint } from '@/lib/attributes'
 export function StarRating({ count, label }: { count: number; label: string }) {
   return (
     <div style={{ alignItems: 'center', display: 'flex', gap: 10 }}>
-      <span style={{ color: 'var(--muted)', fontSize: 11, letterSpacing: '.05em', textTransform: 'uppercase', width: 108 }}>{label}</span>
+      <span style={{ color: 'var(--muted)', fontSize: 12, letterSpacing: '.05em', textTransform: 'uppercase', width: 108 }}>{label}</span>
       <div style={{ display: 'flex', gap: 2 }}>
         {Array.from({ length: 5 }, (_, i) => (
           <Star key={i} size={16} fill={i < count ? 'var(--orange)' : 'none'} color={i < count ? 'var(--orange)' : 'var(--line)'} />
@@ -25,7 +25,7 @@ export function PositionChips({ positions }: { positions: PositionFamiliarity[] 
             background: attributeTint(p.familiarity),
             borderRadius: 8,
             color: attributeColor(p.familiarity),
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 800,
             padding: '6px 11px',
           }}

@@ -9,6 +9,7 @@ import { CmsHydrator } from '@/components/site/CmsHydrator'
 import { SiteAnnouncement } from '@/components/site/SiteAnnouncement'
 import { PwaRegister } from '@/components/site/InstallApp'
 import { RevealObserver } from '@/components/site/RevealObserver'
+import { MobileTabBar } from '@/components/site/MobileTabBar'
 import { connection } from 'next/server'
 import { loadCms, toPublicOverlay } from '@/lib/cms/server'
 
@@ -41,7 +42,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
+  colorScheme: 'light',
+  viewportFit: 'cover',
   themeColor: '#041b12',
 }
 
@@ -63,6 +65,7 @@ export default async function RootLayout({
             <div id="contenu" tabIndex={-1}>{children}</div>
             <SiteFooter settings={cms.settings} />
           </div>
+          <MobileTabBar />
         </CmsHydrator>
         <PwaRegister />
         <RevealObserver />

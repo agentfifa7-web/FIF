@@ -87,7 +87,7 @@ export function PlayerExplorer({ players }: { players: Player[] }) {
               <div key={club.id} style={{ marginBottom: 24, marginTop: 16 }}>
                 <div style={{ alignItems: 'center', display: 'flex', gap: 10, marginBottom: 12 }}>
                   <b style={{ fontSize: 13, letterSpacing: '.02em' }}>{club.name}</b>
-                  <span style={{ color: 'var(--muted)', fontSize: 11 }}>{roster.length} joueur{roster.length > 1 ? 's' : ''}</span>
+                  <span style={{ color: 'var(--muted)', fontSize: 12 }}>{roster.length} joueur{roster.length > 1 ? 's' : ''}</span>
                 </div>
                 <div className="card-grid cols-4">
                   {roster.slice(0, 4).map((p) => <PlayerCard key={p.id} player={p} />)}

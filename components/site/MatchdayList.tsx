@@ -36,10 +36,10 @@ function MatchRow({ m }: { m: Match }) {
         <div className="md-scores">
           <b style={{ fontWeight: homeWin ? 900 : 600 }}>{m.homeScore}</b>
           <b style={{ fontWeight: awayWin ? 900 : 600 }}>{m.awayScore}</b>
-          {m.scoreConfirmed === false && <small title="Score publié par une seule source, à confirmer" style={{ color: 'var(--orange)', fontSize: 9, fontWeight: 700 }}>à conf.</small>}
+          {m.scoreConfirmed === false && <small title="Score publié par une seule source, à confirmer" style={{ color: 'var(--orange)', fontSize: 12, fontWeight: 700 }}>à conf.</small>}
         </div>
       ) : (
-        <div className="md-scores md-time">{m.status === 'Reporté' ? 'Rep.' : awaitingScore(m) ? <span title="Match joué, score en attente de confirmation" style={{ fontSize: 10 }}>Score att.</span> : m.timeConfirmed !== false && m.dateConfirmed !== false ? m.date.slice(11, 16) : '—'}</div>
+        <div className="md-scores md-time">{m.status === 'Reporté' ? 'Rep.' : awaitingScore(m) ? <span title="Match joué, score en attente de confirmation" style={{ fontSize: 12 }}>Score att.</span> : m.timeConfirmed !== false && m.dateConfirmed !== false ? m.date.slice(11, 16) : '—'}</div>
       )}
     </Link>
   )

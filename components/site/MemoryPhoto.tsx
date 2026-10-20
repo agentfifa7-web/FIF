@@ -32,7 +32,7 @@ export function MemoryPhoto({ name, src, sourceUrl, width, height, radius = 8, c
         style={{ background: 'var(--cream, #f3efe6)', borderRadius: radius, display: 'block', height, objectFit: 'cover', objectPosition: 'center 20%', width }}
       />
       {credit && sourceUrl && (
-        <figcaption style={{ color: 'var(--muted)', fontSize: 11, marginTop: 6 }}>
+        <figcaption style={{ color: 'var(--muted)', fontSize: 12, marginTop: 6 }}>
           Photo : <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>
         </figcaption>
       )}

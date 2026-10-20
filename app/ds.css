@@ -554,7 +554,7 @@ small, .small { font-size: 13px; }
 .md-team { font-size: 15px !important; gap: 10px !important; }
 .md-date { font-size: 13px !important; }
 .md-scores { font-family: var(--font-display); font-size: 18px !important; }
-.md-scores small { font-family: var(--font-text); font-size: 11px !important; }
+.md-scores small { font-family: var(--font-text); font-size:12px !important; }
 .md-scores.md-time { font-family: var(--font-text); font-size: 13px !important; }
 .data-table th { text-transform: uppercase; }
 .data-table td, .data-table th { padding: 11px 12px !important; }
@@ -817,3 +817,54 @@ a.fx-card:hover { border-color: var(--fif-green-600); box-shadow: var(--shadow-m
 @media (max-width: 520px) { .fan-play, .fan-universes, .fan-steps { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .fan-play-card { transition: none; } .fan-play-card:hover { transform: none; } }
 .entity-card.is-soon { opacity: .65; }
+
+/* ---------------------------------------------------------------- Mobile (étape 9) */
+/* Textes : rien sous 12 px (anciens composants à 9-11 px). */
+.ev-competition, .purchase-field span, .acc-badge, .prog-level, .prog-foot small, .md-scores span, .md-scores small,
+.next-card-top span, .versus span, .match-center-meta span, .stats-highlight-sub, .ci-map-legend span, .rank-badge,
+.cart-pill, .product-badge, .session-opt small, .enroll-note, .dashboard-card span, .fif-id-card-top span,
+.fif-id-card-foot span, .fif-id-card-body span, .support-legend, .fan-id-card span, .ev-card-foot .button, .palmares em, .honour-list em { font-size: 12px !important; }
+
+/* Formulaires : 16 px minimum pour éviter le zoom automatique d'iOS. */
+@media (max-width: 1024px) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea { font-size: 16px !important; }
+}
+
+/* Barre d'onglets mobile. */
+.mtab { display: none; }
+@media (max-width: 760px) {
+  .mtab {
+    background: rgba(255, 255, 255, .97); backdrop-filter: saturate(1.4) blur(10px); border-top: 1px solid var(--gray-200);
+    bottom: 0; box-shadow: 0 -6px 20px rgba(4, 27, 18, .06); display: grid; grid-template-columns: repeat(5, 1fr);
+    left: 0; padding-bottom: env(safe-area-inset-bottom); position: fixed; right: 0; z-index: 90;
+  }
+  .mtab a { align-items: center; color: var(--gray-500); display: flex; flex-direction: column; font-size: 12px; font-weight: 600; gap: 3px; justify-content: center; min-height: 58px; position: relative; }
+  .mtab a svg { height: 22px; width: 22px; }
+  .mtab a.is-active { color: var(--fif-green-900); }
+  .mtab a.is-active::before { background: var(--fif-orange); border-radius: 0 0 3px 3px; content: ''; height: 3px; left: 30%; position: absolute; right: 30%; top: 0; }
+  .mtab a:focus-visible { outline: 3px solid var(--fif-orange); outline-offset: -3px; }
+  .site-shell { padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+  .xp-toast { bottom: calc(76px + env(safe-area-inset-bottom)) !important; }
+  .install-dialog { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+  /* Cibles tactiles : 44 px minimum. */
+  .breadcrumb a { display: inline-block; padding-block: 12px; }
+  .breadcrumb { margin-block: -8px; }
+  .sf-cols a { padding: 11px 0; }
+  .sf-bottom a { display: inline-block; padding: 12px 0; }
+  .sf-bottom nav { gap: 0 20px; }
+  .news-body > a[aria-label] { align-items: center; display: inline-flex; height: 44px; justify-content: center; width: 44px; }
+  .text-link { align-items: center; display: inline-flex; min-height: 44px; }
+  summary { align-items: center; display: flex; min-height: 44px; }
+  .tab-bar .tab, .tab-bar button { min-width: 44px; }
+  .filters .filter, .filter-bar .filter { min-height: 44px; }
+  a.chip, button.chip { align-items: center; display: inline-flex; min-height: 44px; }
+  .color-swatch { height: 44px !important; width: 44px !important; }
+  .md-picker a, .md-picker button { min-height: 44px; min-width: 44px; }
+  .button, .button-outline, .button-primary, .cart-pill, .option-chip { min-height: 44px; }
+  .cart-pill { align-items: center; display: inline-flex; }
+  .check-line input { height: 22px; width: 22px; }
+  .match-center-team a { display: inline-block; min-height: 44px; padding-block: 6px; }
+
+  body { -webkit-text-size-adjust: 100%; }
+}
