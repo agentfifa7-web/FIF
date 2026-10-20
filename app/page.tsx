@@ -9,7 +9,7 @@ import {
   getStadiumById,
   getTeam,
   matches,
-  nextElephantsFixture, lastElephantsFixture,
+  nextElephantsFixture, lastElephantsFixture, elephantsNextWindow,
   elephantsFlag,
   upcomingMatches,
   videos,
@@ -62,10 +62,14 @@ export default function Page() {
       </section>
 
       <section className="alert-bar">
-        <span className="alert-live"><i /> EN DIRECT</span>
+        <span className="alert-live">{live ? <><i /> EN DIRECT</> : 'À LA UNE'}</span>
         <strong>{live ? getClubById(live.homeClubId)?.shortName : 'Éléphants'}</strong>
-        <span>{live ? `${getClubById(live.homeClubId)?.name} ${live.homeScore} - ${live.awayScore} ${getClubById(live.awayClubId)?.name} (${live.minute}')` : `Prochain rendez-vous : ${elephants.name} vs ${nextFixture.opponent}, ${formatDate(nextFixture.date)}`}</span>
-        <Link href="/actualites">Lire l&apos;annonce <ArrowRight /></Link>
+        <span>{live
+          ? `${getClubById(live.homeClubId)?.name} ${live.homeScore} - ${live.awayScore} ${getClubById(live.awayClubId)?.name} (${live.minute}')`
+          : played
+            ? `Dernier match : Côte d'Ivoire ${played.civScore}-${played.opponentScore} ${nextFixture.opponent} (${formatDate(nextFixture.date)})${elephantsNextWindow ? ` · Prochain rendez-vous : ${elephantsNextWindow.opponent}, ${elephantsNextWindow.competition}, ${elephantsNextWindow.period}` : ''}`
+            : `Prochain rendez-vous : ${elephants.name} vs ${nextFixture.opponent}, ${formatDate(nextFixture.date)}`}</span>
+        <Link href={live ? `/matches/${live.id}` : '/equipes-nationales/elephants'}>{live ? 'Suivre le match' : 'Voir les Éléphants'} <ArrowRight /></Link>
       </section>
 
       <section className="ticker" aria-label="Fil d'information">

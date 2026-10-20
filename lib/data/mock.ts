@@ -2829,6 +2829,15 @@ export function getElephantsFixture(slug: string) {
  *  — à utiliser partout où le site affiche « le prochain match » des
  *  Éléphants, plutôt que elephantsFixtures[0] qui reste le premier de la
  *  liste même une fois ce match joué. */
+/** Prochaine échéance annoncée des Éléphants lorsque le match n'a pas encore
+ *  de date officielle (affichée dans le bandeau de l'accueil). */
+export const elephantsNextWindow: { opponent: string; competition: string; period: string; source: string } | null = {
+  opponent: 'Gambie',
+  competition: 'Éliminatoires CAN 2027 — 3e journée (groupe C)',
+  period: 'fenêtre du 9 au 17 novembre 2026, date à confirmer',
+  source: 'Foot Africa et Africa Football Guide (calendrier du groupe C) ; fenêtre CAF du 9 au 17 novembre 2026.',
+}
+
 export function nextElephantsFixture(): RealFixture | undefined {
   return elephantsFixtures.find((f) => !f.result)
 }
