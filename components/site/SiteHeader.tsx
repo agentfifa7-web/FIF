@@ -60,6 +60,7 @@ const universe = [
 ]
 
 const utilityLinks = [
+  { label: 'Application', href: '/application' },
   { label: 'Billetterie', href: '/billetterie' },
   { label: 'Boutique', href: '/boutique' },
   { label: 'Supporters', href: '/supporters' },

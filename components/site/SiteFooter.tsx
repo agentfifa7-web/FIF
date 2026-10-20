@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { SiteSettings } from '@/lib/cms/types'
+import { InstallAppButton } from '@/components/site/InstallApp'
 
 const columns = [
   {
@@ -68,6 +69,10 @@ export function SiteFooter({ settings }: { settings?: SiteSettings }) {
             <span className="brand-copy"><strong>FIF</strong><small>DIGITAL</small></span>
           </Link>
           <p>Tout le football ivoirien,<br /><strong>dans un seul univers.</strong></p>
+          <div className="footer-app">
+            <InstallAppButton className="button button-primary" label="Télécharger l’application" />
+            <Link href="/application">Android · iPhone · ordinateur</Link>
+          </div>
         </div>
         <div className="footer-links">
           {columns.map((col) => (

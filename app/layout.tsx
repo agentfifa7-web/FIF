@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { CmsHydrator } from '@/components/site/CmsHydrator'
 import { SiteAnnouncement } from '@/components/site/SiteAnnouncement'
+import { PwaRegister } from '@/components/site/InstallApp'
 import { connection } from 'next/server'
 import { loadCms, toPublicOverlay } from '@/lib/cms/server'
 
@@ -27,31 +28,20 @@ export const metadata: Metadata = {
   title: 'FIF Digital — Le football ivoirien, plus proche que jamais',
   description: 'Actualités, compétitions, Éléphants, clubs, joueurs et données du football ivoirien.',
   generator: 'v0.app',
+  applicationName: 'FIF',
+  appleWebApp: { capable: true, title: 'FIF', statusBarStyle: 'black-translucent' },
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
-    apple: '/apple-icon.png',
+    apple: '/icons/apple-touch-icon.png',
   },
 }
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  themeColor: '#041b12',
 }
 
 export default async function RootLayout({
@@ -73,6 +63,7 @@ export default async function RootLayout({
             <SiteFooter settings={cms.settings} />
           </div>
         </CmsHydrator>
+        <PwaRegister />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
