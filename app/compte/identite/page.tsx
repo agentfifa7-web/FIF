@@ -1,7 +1,7 @@
 import { Breadcrumb } from '@/components/site/PageHero'
 import { IdentityForm } from '@/components/site/IdentityForm'
 
-export const metadata = { title: 'Mon identité — FIF Digital' }
+export const metadata = { title: 'Mon identité — FIF' }
 
 export default function IdentityPage() {
   return (

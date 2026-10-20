@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const doc = officialDocuments.find((d) => d.slug === slug)
-  return { title: doc ? `${doc.title} — FIF Digital` : 'Document' }
+  return { title: doc ? `${doc.title} — FIF` : 'Document' }
 }
 
 export default async function DocumentPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -15,9 +15,9 @@ export function NewsExplorer({ articles }: { articles: Article[] }) {
 
   return (
     <div>
-      <div className="filters" role="tablist" aria-label="Filtrer les actualités">
+      <div className="filters" role="group" aria-label="Filtrer les actualités">
         {categories.map((c) => (
-          <button key={c} type="button" className={category === c ? 'filter active' : 'filter'} onClick={() => setCategory(c)}>{c}</button>
+          <button key={c} type="button" aria-pressed={category === c} className={category === c ? 'filter active' : 'filter'} onClick={() => setCategory(c)}>{c}</button>
         ))}
       </div>
       {!filtered.length && <EmptyState title="Aucun article" />}

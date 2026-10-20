@@ -16,7 +16,7 @@
   --fif-green-50: #f1f8f4;
   --fif-orange: #f77f00;          /* fond des actions (texte foncé : contraste 6,4:1) */
   --fif-orange-hover: #e86f00;
-  --fif-orange-text: #c25400;     /* orange lisible sur blanc (4,6:1) */
+  --fif-orange-text: #b34700;     /* orange lisible sur blanc (5,5:1) et fonds clairs (≥ 5:1) */
   --fif-orange-50: #fff4e8;
   /* Neutres */
   --gray-0: #ffffff;
@@ -868,3 +868,13 @@ a.fx-card:hover { border-color: var(--fif-green-600); box-shadow: var(--shadow-m
 
   body { -webkit-text-size-adjust: 100%; }
 }
+
+/* Initiales des avatars : couleur calculée selon le fond (voir readableOn). */
+.avatar { color: var(--avatar-fg, #fff) !important; }
+.h-hero-pause { align-items: center; background: rgba(4, 27, 18, .55); border: 1px solid rgba(255, 255, 255, .35); border-radius: 999px; bottom: 20px; color: #fff; cursor: pointer; display: flex; height: 44px; justify-content: center; position: absolute; right: 20px; width: 44px; z-index: 2; }
+.h-hero-pause:hover { background: rgba(4, 27, 18, .8); }
+.h-hero-pause:focus-visible { outline: 3px solid var(--fif-orange); outline-offset: 2px; }
+.h-hero-pause svg { height: 18px; width: 18px; }
+h2.section-tag, .page-section h2.section-tag { font-family: var(--font-body); font-size: var(--fs-label) !important; letter-spacing: .1em; line-height: 1.4; margin: 0 !important; text-transform: uppercase; }
+h2.panel-title, .page-section h2.panel-title { font-size: 20px !important; margin: 0 0 8px !important; }
+.rank-more { display: inline-flex; margin: 4px 0 12px 16px; }

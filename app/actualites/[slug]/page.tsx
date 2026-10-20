@@ -1,3 +1,5 @@
+import { JsonLd } from '@/components/site/JsonLd'
+import { SITE_NAME, SITE_URL } from '@/lib/site'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { articles, getArticle } from '@/lib/data/mock'
@@ -17,7 +19,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const article = getArticle(slug)
-  return { title: article ? `${article.title} — FIF Digital` : 'Article' }
+  if (!article) return { title: 'Article — FIF' }
+  return {
+    title: `${article.title} — FIF`,
+    description: article.excerpt,
+    alternates: { canonical: `/actualites/${article.slug}` },
+    openGraph: { type: 'article', title: article.title, description: article.excerpt, publishedTime: article.date, section: article.category, images: [{ url: article.image && !article.image.includes('picsum') ? article.image : '/media/hero-poster.jpg', alt: article.title }] },
+  }
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -29,6 +37,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
+      <JsonLd data={{
+        '@context': 'https://schema.org', '@type': 'NewsArticle', headline: article.title, description: article.excerpt,
+        datePublished: article.date, articleSection: article.category, inLanguage: 'fr',
+        author: { '@type': 'Organization', name: article.author }, publisher: { '@type': 'Organization', name: SITE_NAME, logo: { '@type': 'ImageObject', url: `${SITE_URL}/fif-logo.png` } },
+        mainEntityOfPage: `${SITE_URL}/actualites/${article.slug}`,
+      }} />
       <article className="article-layout">
         <Breadcrumb items={[{ label: 'Actualités', href: '/actualites' }, { label: article.category }]} />
         <p className="h-kicker" style={{ marginTop: 24 }}>{article.category}</p>

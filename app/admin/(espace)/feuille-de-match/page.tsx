@@ -6,7 +6,7 @@ import { awaitingScore, formatDate } from '@/lib/format'
 import { MatchSheetIndicator } from '@/components/site/MatchSheetIndicator'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Feuilles de match — FIF Digital Admin' }
+export const metadata = { title: 'Feuilles de match — FIF Admin' }
 
 export default async function MatchSheetIndexPage() {
   await loadCms()
@@ -35,7 +35,7 @@ export default async function MatchSheetIndexPage() {
             const comp = competitions.find((c) => c.id === m.competitionId)
             return (
               <Link href={`/admin/feuille-de-match/${m.id}`} className="entity-card" key={m.id} style={{ borderLeft: '3px solid var(--orange)' }}>
-                <ClipboardList size={18} color="var(--orange)" />
+                <ClipboardList size={18} color="var(--fif-orange-text)" />
                 <div>
                   <strong>{home?.name} vs {away?.name}</strong>
                   <span>{comp?.name} · J{m.matchday} · {formatDate(m.date)} · {m.scoreConfirmed === false ? `${m.homeScore}-${m.awayScore} à confirmer` : 'score en attente'}</span>
@@ -53,7 +53,7 @@ export default async function MatchSheetIndexPage() {
         <div className="card-grid cols-2" style={{ marginTop: 16 }}>
           {elephantsFixtures.map((f) => (
             <Link href={`/admin/feuille-de-match/elephants/${f.slug}`} className="entity-card" key={f.slug}>
-              <ClipboardList size={18} color="var(--orange)" />
+              <ClipboardList size={18} color="var(--fif-orange-text)" />
               <div>
                 <strong>{elephantsFlag} Côte d’Ivoire vs {f.opponentFlag} {f.opponent}</strong>
                 <span>{formatDate(f.date)} · {f.competition}</span>
@@ -76,7 +76,7 @@ export default async function MatchSheetIndexPage() {
                 const away = getClubById(m.awayClubId)
                 return (
                   <Link href={`/admin/feuille-de-match/${m.id}`} className="entity-card" key={m.id}>
-                    <ClipboardList size={18} color="var(--orange)" />
+                    <ClipboardList size={18} color="var(--fif-orange-text)" />
                     <div>
                       <strong>{home?.name} vs {away?.name}</strong>
                       <span>Journée {m.matchday} · {m.dateConfirmed === false ? 'date à confirmer' : formatDate(m.date)} · {m.status === 'Terminé' ? `joué (${m.homeScore}-${m.awayScore})` : 'à venir'}</span>

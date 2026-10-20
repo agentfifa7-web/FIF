@@ -4,7 +4,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { MatchExplorer } from '@/components/site/MatchExplorer'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Calendrier des matchs — FIF Digital' }
+export const metadata = { title: 'Calendrier des matchs — FIF' }
 
 export default async function MatchesPage() {
   await loadCms()

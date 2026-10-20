@@ -24,7 +24,7 @@ export function MyAcademy({ compact = false }: { compact?: boolean }) {
           <div key={e.slug}><div><b>{e.title}</b><small>{e.diplomaNo ? `Diplômé(e) · ${e.diplomaNo}` : `${pct} % · ${e.sessionLabel}`}</small></div><Link href={`/formation/espace/${e.slug}`} className="text-link">Ouvrir</Link></div>
         ) : (
           <Link key={e.slug} href={`/formation/espace/${e.slug}`} className="my-course">
-            {e.diplomaNo ? <Award size={22} color="var(--orange)" /> : <GraduationCap size={22} color="var(--green)" />}
+            {e.diplomaNo ? <Award size={22} color="var(--fif-orange-text)" /> : <GraduationCap size={22} color="var(--green)" />}
             <div>
               <strong>{e.title}</strong>
               <span>{e.sessionLabel}</span>

@@ -6,8 +6,7 @@ import { PageHero } from '@/components/site/PageHero'
 const CATEGORIES = ['Supporter', 'Historique', 'Social', 'Saison'] as const
 
 export default function BadgesPage() {
-  const { profile, ready } = useFanProfile()
-  if (!ready) return null
+  const { profile } = useFanProfile()
   const catalog = badgeCatalogWithStatus(profile)
   const earnedCount = catalog.filter((b) => b.earned).length
 

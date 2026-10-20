@@ -69,7 +69,7 @@ export default async function ClubPortalPage() {
           <div className="dashboard-card"><strong>{cityName(club.cityId) || '—'}</strong><span>Ville</span></div>
         </div>
         <div className="portal-layout" style={{ padding: 0 }}>
-          <aside>
+          <div>
             <nav className="sidebar-nav" aria-label="Rubriques de l’espace club">
               <a href="#effectifs"><Users size={15} /> Effectifs</a>
               <a href="#equipes"><Repeat size={15} /> Équipes</a>
@@ -78,7 +78,7 @@ export default async function ClubPortalPage() {
               <a href="#documents"><FileText size={15} /> Documents</a>
               <a href="#finances"><Banknote size={15} /> Aides & projets</a>
             </nav>
-          </aside>
+          </div>
           <div>
             <div className="dashboard-panel" id="effectifs">
               <h3>{club.name} — effectif ({roster.length} joueurs)</h3>

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const commission = commissions.find((c) => c.slug === slug)
-  return { title: commission ? `${commission.name} — FIF Digital` : 'Commission' }
+  return { title: commission ? `${commission.name} — FIF` : 'Commission' }
 }
 
 export default async function CommissionPage({ params }: { params: Promise<{ slug: string }> }) {

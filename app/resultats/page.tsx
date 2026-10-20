@@ -3,7 +3,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { MatchExplorer } from '@/components/site/MatchExplorer'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Résultats — FIF Digital' }
+export const metadata = { title: 'Résultats — FIF' }
 
 export default async function ResultsPage() {
   await loadCms()

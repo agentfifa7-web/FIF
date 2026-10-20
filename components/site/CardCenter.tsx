@@ -51,7 +51,7 @@ export function CardCenter() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div className="dashboard-panel" style={{ margin: 0 }}>
-            <h3><IdCard size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Ma carte FIF ID</h3>
+            <h3><IdCard size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Ma carte FIF ID</h3>
             <ol className="card-steps">
               {steps.map((s, i) => (
                 <li key={s.label} className={s.done ? 'is-done' : i === current ? 'is-current' : ''}><b>{s.done ? '✓' : i + 1}</b>{s.label}</li>
@@ -68,7 +68,7 @@ export function CardCenter() {
           </div>
 
           <div className="dashboard-panel" style={{ margin: 0 }}>
-            <h3><CreditCard size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Carte physique</h3>
+            <h3><CreditCard size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Carte physique</h3>
             {!account.physicalCard ? (
               <>
                 <p className="lede" style={{ fontSize: 14 }}>Recevez votre carte FIF ID en PVC au format carte bancaire, avec photo, QR code de vérification et puce prête pour le paiement.</p>
@@ -97,7 +97,7 @@ export function CardCenter() {
           </div>
 
           <div className="dashboard-panel" style={{ margin: 0 }}>
-            <h3><BellRing size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Paiement avec la carte</h3>
+            <h3><BellRing size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Paiement avec la carte</h3>
             <span className="status-pill pending">Partenariat bancaire en préparation</span>
             <p className="lede" style={{ fontSize: 14 }}>
               Grâce au partenariat entre la FIF et une banque, votre carte FIF ID pourra servir de moyen de paiement : achats en ligne (billetterie, boutique FIF), paiement sans contact en magasin et au stade.

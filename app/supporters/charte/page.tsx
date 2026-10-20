@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
 
-export const metadata = { title: 'Charte du supporter — FIF Digital' }
+export const metadata = { title: 'Charte du supporter — FIF' }
 
 const PRINCIPLES = [
   'Respect', 'Fair-play', 'Respect des adversaires', 'Respect des arbitres', 'Respect des joueurs',

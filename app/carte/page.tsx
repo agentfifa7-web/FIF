@@ -5,7 +5,7 @@ import { ClubExplorer } from '@/components/site/ClubExplorer'
 import { IvoryCoastMap } from '@/components/site/IvoryCoastMap'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Carte du football ivoirien — FIF Digital' }
+export const metadata = { title: 'Carte du football ivoirien — FIF' }
 
 export default async function MapPage() {
   await loadCms()

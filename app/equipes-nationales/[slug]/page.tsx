@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const team = getTeam(slug)
-  return { title: team ? `${team.name} — FIF Digital` : 'Équipe nationale' }
+  return { title: team ? `${team.name} — FIF` : 'Équipe nationale' }
 }
 
 const positionOrder = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant'] as const

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const club = getClub(slug)
-  return { title: club ? `${club.name} — FIF Digital` : 'Club' }
+  return { title: club ? `${club.name} — FIF` : 'Club' }
 }
 
 export default async function ClubPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -91,9 +91,9 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
 
       {realResults.length > 0 && (
         <section className="page-section tight dark-section">
-          <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultats réels</p>
+          <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Résultats réels</p>
           <div style={{ marginTop: 16 }}><MatchdayList matches={realResults} mode="results" /></div>
-          <p className="press-source-note" style={{ color: '#cfe0d6', marginTop: 20 }}><Info size={13} /> Résultats officiels : confirmés par la presse ivoirienne ou par la feuille de match publiée par la FIF.</p>
+          <p className="press-source-note" style={{ marginTop: 20 }}><Info size={13} /> Résultats officiels : confirmés par la presse ivoirienne ou par la feuille de match publiée par la FIF.</p>
         </section>
       )}
 
@@ -149,7 +149,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
 
       {club.honours.length > 0 && (
         <section className="page-section tight dark-section">
-          <p className="section-tag" style={{ color: 'var(--orange)' }}>Palmarès</p>
+          <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Palmarès</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
             {club.honours.map((h, i) => (
               <div className="info-tile" key={i}><Trophy /><strong>{h.title}</strong><p>{h.count} fois</p></div>

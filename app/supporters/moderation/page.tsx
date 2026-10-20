@@ -1,7 +1,7 @@
 import { AlertTriangle, Bot, Flag, ShieldCheck, UserCheck } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
 
-export const metadata = { title: 'Modération & signalement — FIF Digital' }
+export const metadata = { title: 'Modération & signalement — FIF' }
 
 const REPORT_REASONS = ['Harcèlement', 'Insulte', 'Discrimination', 'Spam', 'Contenu violent', 'Fausse information', 'Droits d’auteur', 'Autre']
 
@@ -24,7 +24,7 @@ export default function ModerationPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}><Flag size={13} style={{ verticalAlign: 'middle' }} /> Motifs de signalement</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}><Flag size={13} style={{ verticalAlign: 'middle' }} /> Motifs de signalement</p>
         <div className="chip-row" style={{ marginTop: 12 }}>
           {REPORT_REASONS.map((r) => <span className="chip" key={r}>{r}</span>)}
         </div>

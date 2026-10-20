@@ -2,7 +2,7 @@ import { articles, matches } from '@/lib/data/mock'
 import { PageHero } from '@/components/site/PageHero'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Archives — FIF Digital' }
+export const metadata = { title: 'Archives — FIF' }
 
 const decades = ['2020s', '2010s', '2000s', '1990s', '1980s', '1960s-1970s']
 

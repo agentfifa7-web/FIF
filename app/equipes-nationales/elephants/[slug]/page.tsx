@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const player = getElephantsPlayer(slug)
-  return { title: player ? `${player.name} — Éléphants — FIF Digital` : 'Joueur' }
+  return { title: player ? `${player.name} — Éléphants — FIF` : 'Joueur' }
 }
 
 export default async function ElephantsPlayerPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -129,13 +129,13 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Profil psychologique & rapport (estimation)</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Profil psychologique & rapport (estimation)</p>
         <div className="card-grid cols-3" style={{ marginTop: 16, alignItems: 'start' }}>
           <div className="info-tile"><strong>Personnalité</strong><p>{player.personality}</p></div>
           <div className="info-tile"><strong>Points forts</strong><p>{player.scoutReport.pros.join(' · ')}</p></div>
           <div className="info-tile"><strong>Axes de progression</strong><p>{player.scoutReport.cons.join(' · ')}</p></div>
         </div>
-        <p className="lede" style={{ color: '#cfe0d6', marginTop: 20 }}>{player.scoutReport.summary}</p>
+        <p className="lede" style={{ marginTop: 20 }}>{player.scoutReport.summary}</p>
         {player.traits.length > 0 && (
           <div style={{ marginTop: 20 }}>
             <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Caractéristiques du joueur</b>

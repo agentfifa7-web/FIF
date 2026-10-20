@@ -39,8 +39,8 @@ export function ClubPortalRoster() {
   return (
     <>
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-        <input type="text" required placeholder="Nom du joueur" value={name} onChange={(e) => setName(e.target.value)} style={{ flex: 1, minWidth: 160, border: '1px solid var(--line)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', font: 'inherit' }} />
-        <select value={position} onChange={(e) => setPosition(e.target.value)} style={{ border: '1px solid var(--line)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', font: 'inherit' }}>
+        <input type="text" required aria-label="Nom du joueur" placeholder="Nom du joueur" value={name} onChange={(e) => setName(e.target.value)} style={{ flex: 1, minWidth: 160, border: '1px solid var(--line)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', font: 'inherit' }} />
+        <select aria-label="Poste" value={position} onChange={(e) => setPosition(e.target.value)} style={{ border: '1px solid var(--line)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', font: 'inherit' }}>
           {['Gardien', 'Défenseur', 'Milieu', 'Attaquant'].map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
         <button type="submit" className="button-outline"><UserPlus size={14} /> Ajouter au dossier</button>

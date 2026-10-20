@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const s = getStadium(slug)
-  return { title: s ? `${s.name} — FIF Digital` : 'Stade' }
+  return { title: s ? `${s.name} — FIF` : 'Stade' }
 }
 
 export default async function StadiumPage({ params }: { params: Promise<{ slug: string }> }) {

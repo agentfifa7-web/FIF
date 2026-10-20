@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { readableOn } from '@/lib/format'
 
 // Tente d'afficher une photo réelle (Wikimedia Commons) ; si l'image est
 // indisponible ou introuvable, bascule silencieusement sur les initiales.
@@ -10,7 +11,7 @@ export function PlayerPhoto({ name, photoUrl, size, background }: { name: string
 
   if (!photoUrl || failed) {
     return (
-      <span className="avatar" style={{ background, fontSize: size * 0.36, height: size, width: size }}>
+      <span className="avatar" style={{ background, fontSize: size * 0.36, height: size, width: size, ['--avatar-fg' as string]: readableOn(background) }}>
         {initials}
       </span>
     )

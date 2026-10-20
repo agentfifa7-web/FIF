@@ -28,7 +28,7 @@ export function IvoryCoastMap({ zones, checkedInCityIds, onCheckIn }: { zones: M
 
   return (
     <div className="ci-map">
-      <svg viewBox={CI_MAP_VIEWBOX} className="ci-map-svg" role="img" aria-label="Carte du football ivoirien par district">
+      <svg viewBox={CI_MAP_VIEWBOX} className="ci-map-svg" role="group" aria-label="Carte du football ivoirien par district">
         <path d={CI_PATH} className="ci-map-outline" />
         {zones.map((z) => {
           const size = 10 + Math.min(10, z.clubs.length + z.stadiums.length)
@@ -99,7 +99,7 @@ export function IvoryCoastMap({ zones, checkedInCityIds, onCheckIn }: { zones: M
               <div className="ci-map-panel-list">
                 {active.stadiums.map((s) => (
                   <Link href={`/stades/${s.slug}`} key={s.id} className="entity-card">
-                    <Trophy size={16} color="var(--orange)" />
+                    <Trophy size={16} color="var(--fif-orange-text)" />
                     <div><strong>{s.name}</strong><span>{s.capacity ? `${s.capacity.toLocaleString('fr-FR')} places` : 'Capacité non communiquée'}</span></div>
                   </Link>
                 ))}

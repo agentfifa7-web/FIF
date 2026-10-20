@@ -2,7 +2,7 @@ import { Breadcrumb } from '@/components/site/PageHero'
 import { CardCenter } from '@/components/site/CardCenter'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Ma carte FIF ID — FIF Digital' }
+export const metadata = { title: 'Ma carte FIF ID — FIF' }
 
 export default function CardPage() {
   return (

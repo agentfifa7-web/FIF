@@ -6,7 +6,7 @@ import { DemoBadge } from '@/components/site/DemoBadge'
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Documents officiels — FIF Digital' }
+export const metadata = { title: 'Documents officiels — FIF' }
 
 const ORGS = ['FIF', 'CAF', 'FIFA'] as const
 const ORG_LABEL: Record<(typeof ORGS)[number], string> = {
@@ -35,7 +35,7 @@ export default async function DocumentsPage() {
               <div className="card-grid cols-2" style={{ marginTop: 12 }}>
                 {docs.map((d) => (
                   <Link href={`/documents/${d.slug}`} className="entity-card" key={d.id}>
-                    <FileText size={18} color="var(--orange)" />
+                    <FileText size={18} color="var(--fif-orange-text)" />
                     <div><strong>{d.title}</strong><span>{d.category} · {formatDate(d.date)}</span></div>
                   </Link>
                 ))}

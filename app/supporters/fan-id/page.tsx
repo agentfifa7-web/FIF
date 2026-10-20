@@ -63,7 +63,7 @@ function SupporterSettings() {
 }
 
 export default function FanIdPage() {
-  const { profile, ready } = useFanProfile()
+  const { profile } = useFanProfile()
 
   function handleReset() {
     if (window.confirm('Remettre à zéro votre progression supporter ? Votre XP, vos badges et votre historique seront effacés (votre FIF ID et vos équipes sont conservés).')) {
@@ -71,7 +71,6 @@ export default function FanIdPage() {
     }
   }
 
-  if (!ready) return null
 
   return (
     <main>

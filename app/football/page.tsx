@@ -5,7 +5,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { MemoryPhoto } from '@/components/site/MemoryPhoto'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Mémoire du football ivoirien — FIF Digital' }
+export const metadata = { title: 'Mémoire du football ivoirien — FIF' }
 
 const PRACTICES = [
   { label: 'Football féminin', href: '/football/feminin' },
@@ -50,8 +50,8 @@ export default function FootballMemoryPage() {
         if (!list.length) return null
         return (
           <section key={c.id} id={c.id} className={`page-section tight${i % 2 === 1 ? ' dark-section' : ''}`}>
-            <p className="section-tag" style={i % 2 === 1 ? { color: 'var(--orange)' } : undefined}>{c.label}</p>
-            <p className="lede" style={{ marginTop: 8, ...(i % 2 === 1 ? { color: '#cfe0d6' } : {}) }}>{c.description}</p>
+            <p className="section-tag" style={i % 2 === 1 ? { color: 'var(--fif-orange-text)' } : undefined}>{c.label}</p>
+            <p className="lede" style={{ marginTop: 8,  }}>{c.description}</p>
             <div className="card-grid" style={{ marginTop: 16 }}>
               {list.map((p) => (
                 <Link key={p.slug} href={`/football/memoire/${p.slug}`} className="entity-card memory-card">
@@ -71,7 +71,7 @@ export default function FootballMemoryPage() {
 
       <section className="page-section tight">
         <div className="dashboard-panel" style={{ margin: 0, maxWidth: 760 }}>
-          <h3><Heart size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Proposer un hommage</h3>
+          <h2 className="panel-title"><Heart size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Proposer un hommage</h2>
           <p className="lede" style={{ fontSize: 14, marginTop: 8 }}>Vous détenez des photos, des archives ou un témoignage sur l’une de ces personnalités, ou souhaitez proposer une personne qui a contribué au football ivoirien ? Écrivez à la Fédération en précisant le nom, le rôle joué et vos sources.</p>
           <a href="mailto:contact@fif.ci?subject=M%C3%A9moire%20du%20football%20ivoirien" className="button button-primary" style={{ marginTop: 14 }}>Proposer un hommage <ArrowRight size={14} /></a>
         </div>

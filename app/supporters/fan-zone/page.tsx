@@ -48,7 +48,7 @@ function PublishForm({ profile }: { profile: FanProfile }) {
           <div className="ci-map-panel-list" style={{ marginTop: 10 }}>
             {profile.fanZonePosts.map((d) => (
               <div className="entity-card" key={d.id}>
-                <Clock size={16} color="var(--orange)" />
+                <Clock size={16} color="var(--fif-orange-text)" />
                 <div><strong>{d.type}</strong><span>{d.caption}</span></div>
                 <span className="status-pill pending">En modération</span>
               </div>

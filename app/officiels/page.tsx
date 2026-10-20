@@ -5,7 +5,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { OfficialsDirectory } from '@/components/site/OfficialsDirectory'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Portail Officiels — FIF Digital' }
+export const metadata = { title: 'Portail Officiels — FIF' }
 
 export default async function OfficialsPage({ searchParams }: { searchParams: Promise<{ role?: string }> }) {
   await loadCms()

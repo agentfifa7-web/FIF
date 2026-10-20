@@ -6,7 +6,7 @@ import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Le Président — FIF Digital' }
+export const metadata = { title: 'Le Président — FIF' }
 
 export default async function PresidentPage() {
   await loadCms()
@@ -47,7 +47,7 @@ export default async function PresidentPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Bilan du premier mandat (2022-2026)</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Bilan du premier mandat (2022-2026)</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           {presidentProfile.record.map((r, i) => (
             <div className="info-tile" key={i}><CheckCircle2 /><p>{r}</p></div>

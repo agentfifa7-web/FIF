@@ -5,7 +5,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'FIF Notifications — FIF Digital' }
+export const metadata = { title: 'FIF Notifications — FIF' }
 
 // Notifications construites à partir des données réelles du site : derniers
 // résultats publiés et prochains matchs programmés.

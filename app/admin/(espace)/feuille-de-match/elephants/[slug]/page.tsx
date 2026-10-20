@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
-  return { title: fixture ? `Feuille de match — FIF Digital Admin` : 'Feuille de match' }
+  return { title: fixture ? `Feuille de match — FIF Admin` : 'Feuille de match' }
 }
 
 export default async function ElephantsMatchSheetPage({ params }: { params: Promise<{ slug: string }> }) {

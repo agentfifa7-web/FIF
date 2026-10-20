@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const member = executiveCommittee.find((m) => m.slug === slug)
-  return { title: member ? `${member.name} — FIF Digital` : 'Comité exécutif' }
+  return { title: member ? `${member.name} — FIF` : 'Comité exécutif' }
 }
 
 export default async function ExecutiveMemberPage({ params }: { params: Promise<{ slug: string }> }) {

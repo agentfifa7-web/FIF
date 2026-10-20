@@ -6,7 +6,7 @@ export default function SupportersLayout({ children }: { children: React.ReactNo
     <>
       <FanNav />
       {children}
-      <section className="page-section tight">
+      <aside className="page-section tight" aria-label="Avertissement">
         <div className="demo-notice fan-notice" role="note">
           <ShieldCheck aria-hidden />
           <div>
@@ -14,7 +14,7 @@ export default function SupportersLayout({ children }: { children: React.ReactNo
             <span>Votre progression (XP, badges, pronostics, publications) est enregistrée uniquement dans ce navigateur. Aucun jeu ne demande de mise ni ne fait gagner d’argent, et aucune récompense ou adhésion n’est encore délivrée par la FIF.</span>
           </div>
         </div>
-      </section>
+      </aside>
     </>
   )
 }

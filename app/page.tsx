@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { HeroVideo } from '@/components/site/HeroVideo'
 import {
   ArrowRight, BadgeCheck, BookOpen, CalendarDays, ClipboardList, Clock3, FileText, GraduationCap, Heart, IdCard,
   MapPin, Megaphone, Newspaper, PlayCircle, Scale, Shield, Trophy, Users, Flag,
@@ -40,11 +41,9 @@ export default function HomePage() {
     <main>
       {/* A. HÉROS ÉDITORIAL */}
       <section className="h-hero" aria-labelledby="hero-title">
-        <div className="h-hero-media" aria-hidden="true">
-          {settings.heroImage
-            ? <img src={settings.heroImage} alt="" fetchPriority="high" />
-            : <video src="/hero-elephants.mp4" poster="/media/hero-poster.jpg" autoPlay muted loop playsInline preload="metadata" />}
-        </div>
+        {settings.heroImage
+          ? <div className="h-hero-media" aria-hidden="true"><img src={settings.heroImage} alt="" fetchPriority="high" /></div>
+          : <HeroVideo src="/hero-elephants.mp4" poster="/media/hero-poster.jpg" />}
         <div className="h-hero-inner">
           <p className="eyebrow" style={{ color: '#fff' }}><span /> Fédération Ivoirienne de Football</p>
           <h1 id="hero-title">La fierté d’une nation,<br /><em>la passion d’un peuple.</em></h1>
@@ -58,7 +57,8 @@ export default function HomePage() {
       </section>
 
       {/* B. MATCH CENTER */}
-      <section className="h-mc" aria-label="Match Center">
+      <section className="h-mc" aria-labelledby="h-mc-title">
+        <h2 id="h-mc-title" className="sr-only">Match Center</h2>
         <div className="h-mc-grid">
           <div className="h-mc-next">
             {next ? (

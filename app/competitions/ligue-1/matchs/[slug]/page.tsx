@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const match = getRealLeagueMatch(slug)
-  return { title: match ? `${match.homeClub} — ${match.awayClub} — FIF Digital` : 'Match' }
+  return { title: match ? `${match.homeClub} — ${match.awayClub} — FIF` : 'Match' }
 }
 
 const eventLabel: Record<RealLeagueMatchEvent['type'], string> = {
@@ -61,7 +61,7 @@ export default async function LigueUnMatchPage({ params }: { params: Promise<{ s
             <div className="team">
               {home ? <Link href={`/clubs/${home.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><div className="crest ivory" style={{ fontSize: 20 }}><ClubCrest club={home} size={32} /></div><strong>{match.homeClub}</strong></Link> : <strong>{match.homeClub}</strong>}
             </div>
-            <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 28 }}>{match.homeScore} - {match.awayScore}</b>{match.venue && <span><MapPin size={11} style={{ verticalAlign: 'middle' }} /> {match.venue}</span>}</div>
+            <div className="versus"><small style={{ color: 'var(--fif-orange-text)' }}>TERMINÉ</small><b style={{ fontSize: 28 }}>{match.homeScore} - {match.awayScore}</b>{match.venue && <span><MapPin size={11} style={{ verticalAlign: 'middle' }} /> {match.venue}</span>}</div>
             <div className="team">
               {away ? <Link href={`/clubs/${away.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}><div className="crest red" style={{ fontSize: 20 }}><ClubCrest club={away} size={32} /></div><strong>{match.awayClub}</strong></Link> : <strong>{match.awayClub}</strong>}
             </div>
@@ -70,7 +70,7 @@ export default async function LigueUnMatchPage({ params }: { params: Promise<{ s
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultat</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Résultat</p>
         <div className="timeline" style={{ marginTop: 16, maxWidth: 640 }}>
           {match.events.map((e, i) => (
             <div key={i}>
@@ -81,7 +81,7 @@ export default async function LigueUnMatchPage({ params }: { params: Promise<{ s
               </div>
             </div>
           ))}
-          {!match.events.length && <p className="lede" style={{ color: '#cfe0d6' }}>Aucun but ni carton recensé pour ce match.</p>}
+          {!match.events.length && <p className="lede" >Aucun but ni carton recensé pour ce match.</p>}
         </div>
         {match.referee && (
           <p className="lede" style={{ color: '#8fa79a', marginTop: 24, fontSize: 12 }}>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { PhoneAuthForm } from '@/components/site/PhoneAuthForm'
 import { DemoNotice } from '@/components/site/DemoNotice'
 
-export const metadata = { title: 'Se connecter — FIF Digital' }
+export const metadata = { title: 'Se connecter — FIF' }
 
 export default function LoginPage() {
   return (

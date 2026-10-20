@@ -60,7 +60,7 @@ export default function AcademyPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Votre parcours</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Votre parcours</p>
         <div className="info-tiles" style={{ marginTop: 16 }}>
           <div className="info-tile"><UserRound /><strong>1. FIF ID</strong><p>Inscription avec votre FIF ID : votre diplôme porte votre identité vérifiée.</p></div>
           <div className="info-tile"><CreditCard /><strong>2. Paiement</strong><p>Mobile Money ou carte, comptant ou en 3 fois pour les formations longues.</p></div>

@@ -6,7 +6,7 @@ import { AvailabilityToggle, ReportsList } from '@/components/site/OfficialPorta
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Portail Officiels — Mon espace — FIF Digital' }
+export const metadata = { title: 'Portail Officiels — Mon espace — FIF' }
 
 export default async function OfficialPortalPage() {
   await loadCms()

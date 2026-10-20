@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const record = transparencyRecords.find((t) => t.slug === slug)
-  return { title: record ? `${record.title} — FIF Digital` : 'Transparence FIF' }
+  return { title: record ? `${record.title} — FIF` : 'Transparence FIF' }
 }
 
 export default async function TransparencyRecordPage({ params }: { params: Promise<{ slug: string }> }) {

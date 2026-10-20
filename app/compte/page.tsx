@@ -7,7 +7,7 @@ import { AccountDashboard } from '@/components/site/AccountDashboard'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Mon compte — FIF Digital' }
+export const metadata = { title: 'Mon compte — FIF' }
 
 export default async function AccountPage() {
   await loadCms()

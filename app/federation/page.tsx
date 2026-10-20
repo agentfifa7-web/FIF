@@ -10,7 +10,7 @@ import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'La Fédération — FIF Digital' }
+export const metadata = { title: 'La Fédération — FIF' }
 
 const ORGS = ['FIF', 'CAF', 'FIFA'] as const
 
@@ -100,7 +100,7 @@ export default async function FederationPage() {
       </section>
 
       <section className="page-section tight dark-section" id="commissions">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Commissions</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Commissions</p>
         <div className="card-grid cols-2" style={{ marginTop: 16 }}>
           {commissions.map((c) => (
             <Link href={`/federation/commissions/${c.slug}`} className="entity-card" key={c.id}>
@@ -125,7 +125,7 @@ export default async function FederationPage() {
       </section>
 
       <section className="page-section tight dark-section" id="historique">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Historique</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Historique</p>
         <div className="checkin-list" style={{ marginTop: 16 }}>
           {federationMilestones.map((m, i) => (
             <div className="checkin-row" key={i}>
@@ -147,7 +147,7 @@ export default async function FederationPage() {
             <div className="card-grid cols-2" style={{ marginTop: 10 }}>
               {officialDocuments.filter((d) => d.organization === org).slice(0, 4).map((d) => (
                 <Link href={`/documents/${d.slug}`} className="entity-card" key={d.id}>
-                  <Landmark size={18} color="var(--orange)" />
+                  <Landmark size={18} color="var(--fif-orange-text)" />
                   <div><strong>{d.title}</strong><span>{d.category}</span></div>
                 </Link>
               ))}
@@ -163,7 +163,7 @@ export default async function FederationPage() {
       </section>
 
       <section className="page-section tight dark-section" id="contacts">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Contacts</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Contacts</p>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           <div className="info-tile"><MapPin /><strong>Siège fédéral</strong><p>Cocody, Abidjan — Côte d’Ivoire</p></div>
           <div className="info-tile"><Phone /><strong>Standard</strong><p>+225 27 22 00 00 00</p></div>

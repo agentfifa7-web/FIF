@@ -77,7 +77,7 @@ export function LearningSpace({ program }: { program: AcademyProgram }) {
 
       {graduated && (
         <section className="learn-block">
-          <h3><Award size={18} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Félicitations, vous êtes diplômé(e) !</h3>
+          <h3><Award size={18} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Félicitations, vous êtes diplômé(e) !</h3>
           <div className="print-area"><Diploma e={e} birth={account.identity?.birthDate} /></div>
           <div className="button-group" style={{ marginTop: 14 }}>
             <button type="button" className="button button-primary" onClick={() => window.print()}><Printer size={15} /> Imprimer / enregistrer en PDF</button>

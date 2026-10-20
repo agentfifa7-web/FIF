@@ -8,9 +8,8 @@ import { PageHero } from '@/components/site/PageHero'
 type Tab = 'xp' | 'precision'
 
 export default function ClassementsPage() {
-  const { profile, ready } = useFanProfile()
+  const { profile } = useFanProfile()
   const [tab, setTab] = useState<Tab>('xp')
-  if (!ready) return null
 
   const correct = profile ? Object.values(profile.quizAnswered).filter(Boolean).length : 0
   const answered = profile ? Object.values(profile.quizAnswered).length : 0

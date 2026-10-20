@@ -14,7 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   await loadCms()
   const { id } = await params
   const match = getMatch(id)
-  return { title: match ? `Match Center — FIF Digital` : 'Match' }
+  const h = match && getClubById(match.homeClubId)?.name
+  const a = match && getClubById(match.awayClubId)?.name
+  return match ? { title: `${h} – ${a} — Match Center FIF`, description: `Fiche du match ${h} – ${a} : score, faits de match et informations officielles.` } : { title: 'Match — FIF' }
 }
 
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,6 +32,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
       <div style={{ padding: '28px clamp(20px,9vw,140px) 0' }}>
         <Breadcrumb items={[{ label: 'Calendrier', href: '/matches' }, { label: 'Match Center' }]} />
       </div>
+      <h1 className="sr-only">{homeClub?.name} – {awayClub?.name}</h1>
       <MatchCenter match={match} />
       {homeClub && awayClub && (
         <MatchSheetBanner matchId={match.id} homeName={homeClub.name} awayName={awayClub.name} />

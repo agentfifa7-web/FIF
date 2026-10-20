@@ -7,7 +7,7 @@ import { formatDate } from '@/lib/format'
 import type { TransparencyRecord } from '@/lib/data/types'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Transparence FIF — FIF Digital' }
+export const metadata = { title: 'Transparence FIF — FIF' }
 
 const CATEGORY_ICON: Record<TransparencyRecord['category'], typeof FileText> = {
   Rapport: FileText,
@@ -85,7 +85,7 @@ export default async function TransparencePage() {
             <div className="card-grid cols-2" style={{ marginTop: 16 }}>
               {items.map((t) => (
                 <Link href={`/federation/transparence/${t.slug}`} className="entity-card" key={t.id}>
-                  <Icon size={18} color="var(--orange)" />
+                  <Icon size={18} color="var(--fif-orange-text)" />
                   <div>
                     <strong>{t.title}</strong>
                     <span>{formatDate(t.date)}{t.amount ? ` · ${t.amount}` : ''}</span>

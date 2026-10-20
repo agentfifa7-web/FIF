@@ -33,9 +33,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ role: string; slug: string }> }) {
   await loadCms()
   const { role, slug } = await params
-  if (!isRoleKey(role)) return { title: 'Officiel — FIF Digital' }
+  if (!isRoleKey(role)) return { title: 'Officiel — FIF' }
   const person = ROLE_CONFIG[role].dataset.find((p) => p.slug === slug)
-  return { title: person ? `${person.name} — FIF Digital` : 'Officiel' }
+  return { title: person ? `${person.name} — FIF` : 'Officiel' }
 }
 
 export default async function OfficialProfilePage({ params }: { params: Promise<{ role: string; slug: string }> }) {

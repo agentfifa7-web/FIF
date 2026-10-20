@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             {related.map((p) => (
               <Link key={p.id} href={`/boutique/${p.id}`} className="product-card">
                 <div className={p.photo ? 'product-image has-photo' : 'product-image'}>
-                  {p.photo ? <img src={p.photo} alt={p.name} loading="lazy" /> : <ProductArt product={p} />}
+                  {p.photo ? <img src={p.photo} alt="" loading="lazy" /> : <ProductArt product={p} />}
                 </div>
                 <strong>{p.name}</strong>
               </Link>

@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/site/widgets'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Recherche — FIF Digital' }
+export const metadata = { title: 'Recherche — FIF' }
 
 const typeLabels: Record<string, string> = {
   joueur: 'Joueurs', club: 'Clubs', match: 'Matchs', 'compétition': 'Compétitions', article: 'Actualités', 'vidéo': 'Vidéos', arbitre: 'Arbitres', stade: 'Stades', formation: 'Formations',

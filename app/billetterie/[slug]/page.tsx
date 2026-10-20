@@ -36,6 +36,7 @@ export default async function TicketEventPage({ params }: { params: Promise<{ sl
 
       <section className="page-section tight">
         <div className="ev-header">
+          <h1 className="sr-only">Billetterie : {ev.home.name} – {ev.away.name}</h1>
           <span className="ev-competition">{ev.competition}</span>
           <div className="ev-hero-teams">
             <SideBadge side={ev.home} size={72} />
@@ -57,7 +58,7 @@ export default async function TicketEventPage({ params }: { params: Promise<{ sl
           <TicketCheckout event={ev} />
         ) : (
           <div className="dashboard-panel" style={{ margin: 0, maxWidth: 680 }}>
-            <h3><Clock size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />{ev.status}</h3>
+            <h2 className="panel-title"><Clock size={17} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />{ev.status}</h2>
             {ev.status === 'Terminé' ? (
               <>
                 <p className="lede" style={{ fontSize: 15 }}>Ce match a été joué : la vente de billets est close. Les billets achetés restent consultables dans « Mes billets ».</p>
@@ -80,7 +81,7 @@ export default async function TicketEventPage({ params }: { params: Promise<{ sl
       )}
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Le jour du match</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Le jour du match</p>
         <div className="info-tiles" style={{ marginTop: 16 }}>
           <div className="info-tile"><DoorOpen /><strong>Arrivez tôt</strong><p>{ev.gatesOpen ? `Portes ouvertes dès ${ev.gatesOpen}.` : 'Horaires d’ouverture communiqués avant le match.'} Rejoignez la porte indiquée sur votre billet.</p></div>
           <div className="info-tile"><ShieldCheck /><strong>Contrôle à l’entrée</strong><p>QR code du billet + pièce d’identité ou carte FIF ID. Un billet = une entrée.</p></div>

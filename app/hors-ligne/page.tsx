@@ -8,7 +8,7 @@ export const metadata = { title: 'Hors connexion — FIF', robots: { index: fals
 export default function OfflinePage() {
   return (
     <main className="page-section" style={{ textAlign: 'center', minHeight: '50vh' }}>
-      <WifiOff size={40} aria-hidden style={{ color: 'var(--orange)' }} />
+      <WifiOff size={40} aria-hidden style={{ color: 'var(--fif-orange-text)' }} />
       <h2>Vous êtes hors connexion</h2>
       <p className="lede" style={{ margin: '0 auto 24px' }}>
         Cette page n’est pas encore disponible hors connexion. Les pages déjà consultées restent accessibles ;

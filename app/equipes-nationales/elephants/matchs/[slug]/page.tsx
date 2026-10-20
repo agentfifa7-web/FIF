@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const fixture = getElephantsFixture(slug)
-  return { title: fixture ? `Côte d'Ivoire — ${fixture.opponent} — FIF Digital` : 'Match' }
+  return { title: fixture ? `Côte d'Ivoire — ${fixture.opponent} — FIF` : 'Match' }
 }
 
 const eventLabel: Record<RealFixtureEvent['type'], string> = {
@@ -161,7 +161,7 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
           </section>
 
           <section className="page-section tight dark-section">
-            <p className="section-tag" style={{ color: 'var(--orange)' }}>Suivre le match</p>
+            <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Suivre le match</p>
             <div style={{ marginTop: 16, maxWidth: 640 }}>
               <LivePreview isUpcoming />
             </div>

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const a = getAcademy(slug)
-  return { title: a ? `${a.name} — FIF Digital` : 'Académie' }
+  return { title: a ? `${a.name} — FIF` : 'Académie' }
 }
 
 export default async function AcademyPage({ params }: { params: Promise<{ slug: string }> }) {

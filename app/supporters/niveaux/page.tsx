@@ -5,8 +5,7 @@ import { useFanProfile, fanLevelProgress } from '@/lib/fan'
 import { PageHero } from '@/components/site/PageHero'
 
 export default function NiveauxPage() {
-  const { profile, ready } = useFanProfile()
-  if (!ready) return null
+  const { profile } = useFanProfile()
   const currentOrder = profile ? fanLevelProgress(profile.xp).level.order : 0
 
   return (
@@ -36,7 +35,7 @@ export default function NiveauxPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Comment gagner de l’XP</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Comment gagner de l’XP</p>
         <div className="card-grid cols-2" style={{ marginTop: 16 }}>
           {xpActions.map((a) => (
             <div className="entity-card" key={a.id}>

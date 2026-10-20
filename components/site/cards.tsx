@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, MapPin, CalendarDays, Play, Trophy } from 'lucide-react'
 import type { Article, Club, Competition, Match, Player, Video } from '@/lib/data/types'
 import { getClubById, getStadiumById, cityName, clubLeagueLabel } from '@/lib/data/mock'
-import { formatDate, matchWhen, age, awaitingScore } from '@/lib/format'
+import { formatDate, matchWhen, age, awaitingScore, readableOn } from '@/lib/format'
 import { useLiveMatch } from '@/lib/liveMatch'
 import { NewsThumb } from './NewsThumb'
 
@@ -119,7 +119,7 @@ export function PlayerCard({ player }: { player: Player }) {
   return (
     <Link href={`/joueurs/${player.slug}`} className="entity-card player-card">
       <span className="avatar-wrap">
-        <span className="avatar" style={{ background: club?.colors[0] }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
+        <span className="avatar" style={{ background: club?.colors[0], ['--avatar-fg' as string]: readableOn(club?.colors[0]) }}>{player.name.split(' ').map((n) => n[0]).join('')}</span>
         {club && <span className="avatar-crest-badge avatar-crest-badge-sm"><ClubCrest club={club} size={16} /></span>}
       </span>
       <div>

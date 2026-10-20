@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Brain, Gamepad2, ImageIcon, ListChecks, Music, Puzzle, Swords, Target, Trophy } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
 
-export const metadata = { title: 'FIF Game Arena — FIF Digital' }
+export const metadata = { title: 'FIF Game Arena — FIF' }
 
 const GAMES = [
   { icon: Trophy, title: 'Quiz Éléphants', desc: 'Questions sur les Éléphants, les clubs, les stades et les compétitions.', href: '/supporters/arena/quiz', live: true },

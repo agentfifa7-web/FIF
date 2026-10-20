@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   await loadCms()
   const { id } = await params
   const match = matches.find((m) => m.id === id)
-  return { title: match ? `Feuille de match — FIF Digital Admin` : 'Feuille de match' }
+  return { title: match ? `Feuille de match — FIF Admin` : 'Feuille de match' }
 }
 
 export default async function MatchSheetPage({ params }: { params: Promise<{ id: string }> }) {

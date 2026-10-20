@@ -56,7 +56,7 @@ export default async function TicketsPage() {
               {featured.date && featured.time && <Countdown iso={`${featured.date}T${featured.time}:00Z`} />}
             </div>
             <div className="ev-hero-side">
-              <p className="section-tag" style={{ color: 'var(--orange)' }}>Tarifs officiels</p>
+              <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Tarifs officiels</p>
               <ul className="ev-prices">
                 {[...featured.tiers].sort((a, b) => b.price - a.price).map((t) => <li key={t.id}><span>{t.name}</span><b>{formatMoney(t.price)}</b></li>)}
               </ul>
@@ -94,7 +94,7 @@ export default async function TicketsPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Comment ça marche</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Comment ça marche</p>
         <div className="info-tiles" style={{ marginTop: 16 }}>
           <div className="info-tile"><MapPin /><strong>1. Choisissez vos places</strong><p>Sur le plan du stade, sélectionnez la tribune et le nombre de billets.</p></div>
           <div className="info-tile"><Users /><strong>2. Nommez les titulaires</strong><p>Billets nominatifs, connectés à votre FIF ID, places côte à côte.</p></div>

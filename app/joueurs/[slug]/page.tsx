@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const player = getPlayer(slug)
-  return { title: player ? `${player.name} — FIF Digital` : 'Joueur' }
+  return { title: player ? `${player.name} — FIF` : 'Joueur' }
 }
 
 export default async function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -67,7 +67,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Informations générales</p>
+        <h2 className="section-tag">Informations générales</h2>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
             <h3>Identité</h3>
@@ -97,7 +97,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
 
       {!player.autoProfile && <>
       <section className="page-section tight">
-        <p className="section-tag">Attributs — notés sur 20 (estimation)</p>
+        <h2 className="section-tag">Attributs — notés sur 20 (estimation)</h2>
         <div className="card-grid cols-3" style={{ marginTop: 16 }}>
           <AttributePanel title="Technique" attrs={player.attributes.technical} keyAttrs={keyAttrs} />
           <AttributePanel title="Mental" attrs={player.attributes.mental} keyAttrs={keyAttrs} />
@@ -106,7 +106,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Profil psychologique & rapports (estimation)</p>
+        <h2 className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Profil psychologique & rapports (estimation)</h2>
         <div className="card-grid cols-3" style={{ marginTop: 16, alignItems: 'start' }}>
           <div className="info-tile"><strong>Personnalité</strong><p>{player.personality}</p></div>
           <div className="info-tile">
@@ -118,7 +118,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <p>{player.scoutReport.cons.join(' · ')}</p>
           </div>
         </div>
-        <p className="lede" style={{ color: '#cfe0d6', marginTop: 20 }}>{player.scoutReport.summary}</p>
+        <p className="lede" style={{ marginTop: 20 }}>{player.scoutReport.summary}</p>
         {player.traits.length > 0 && (
           <div style={{ marginTop: 20 }}>
             <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Caractéristiques du joueur</b>
@@ -131,7 +131,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </>}
 
       <section className="page-section tight">
-        <p className="section-tag">{player.autoProfile ? 'Matchs officiels' : 'Vue d’ensemble des performances'}</p>
+        <h2 className="section-tag">{player.autoProfile ? 'Matchs officiels' : 'Vue d’ensemble des performances'}</h2>
         <div className={`card-grid ${player.autoProfile ? '' : 'cols-2'}`} style={{ alignItems: 'start', marginTop: 16 }}>
           {!player.autoProfile && <div className="radar-wrap"><PlayerRadar axes={radarAxes} /></div>}
           <div className="table-wrap">
@@ -155,7 +155,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <section className="page-section tight">
-        <p className="section-tag">Statistiques</p>
+        <h2 className="section-tag">Statistiques</h2>
         <div className="stats-highlight-grid" style={{ marginTop: 16 }}>
           <div className="stats-highlight-card tone-orange">
             <Trophy size={22} />
@@ -204,7 +204,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
 
       {player.nationalSelections.length > 0 && (
         <section className="page-section tight">
-          <p className="section-tag">Sélections nationales</p>
+          <h2 className="section-tag">Sélections nationales</h2>
           <div className="table-wrap" style={{ marginTop: 16 }}>
             <table className="data-table">
               <thead><tr><th className="align-left">ÉQUIPE</th><th>SÉLECTIONS</th><th>BUTS</th></tr></thead>

@@ -2,7 +2,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { AideWorkflow } from '@/components/site/AideWorkflow'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'FIF Aides & Projets — FIF Digital' }
+export const metadata = { title: 'FIF Aides & Projets — FIF' }
 
 const programs = [
   { title: 'Fonds Développement Féminin', desc: 'Soutien aux clubs qui structurent une section féminine.' },

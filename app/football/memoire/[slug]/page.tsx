@@ -87,7 +87,7 @@ export default async function MemoryPersonPage({ params }: { params: Promise<{ s
 
       <section className="page-section tight">
         <div className="dashboard-panel" style={{ margin: 0, maxWidth: 760 }}>
-          <h3><Camera size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Enrichir cet hommage</h3>
+          <h3><Camera size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Enrichir cet hommage</h3>
           <p className="lede" style={{ fontSize: 14, marginTop: 8 }}>Photos, archives, témoignages : aidez-nous à compléter la mémoire de {person.name}.</p>
           <a href={`mailto:contact@fif.ci?subject=${encodeURIComponent(`Mémoire du football ivoirien — ${person.name}`)}`} className="button-outline" style={{ marginTop: 14 }}>Envoyer une contribution</a>
         </div>

@@ -6,7 +6,7 @@ import { ClubCrest } from '@/components/site/cards'
 import type { HonourRecord } from '@/lib/data/types'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Palmarès — FIF Digital' }
+export const metadata = { title: 'Palmarès — FIF' }
 
 const RESULT_ORDER: HonourRecord['result'][] = ['Champion', 'Finaliste', 'Podium (3e)', 'Demi-finaliste', 'Qualifié']
 const RESULT_LABEL: Record<HonourRecord['result'], string> = {
@@ -56,8 +56,8 @@ export default async function PalmaresPage() {
       />
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Équipes nationales</p>
-        <p className="lede" style={{ color: '#a9b7af' }}>Cliquez sur une sélection pour dérouler l’historique complet de ses résultats en compétitions officielles.</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Équipes nationales</p>
+        <p className="lede" >Cliquez sur une sélection pour dérouler l’historique complet de ses résultats en compétitions officielles.</p>
         <div className="rank-list" style={{ marginTop: 16 }}>
           {rankedTeams.map((t, i) => {
             const sorted = [...t.achievements].sort((a, b) => b.year - a.year)
@@ -69,13 +69,13 @@ export default async function PalmaresPage() {
                     <strong>{t.name}</strong>
                     <span>{summarize(t.achievements)}</span>
                   </div>
-                  <Link href={`/equipes-nationales/${t.slug}`} className="chip">Fiche équipe</Link>
                 </summary>
                 <ul className="honour-list">
                   {sorted.map((a, ai) => (
                     <li key={ai}><Trophy size={13} /><b>{a.year}</b><span>{a.competition}</span><em>{a.result}</em></li>
                   ))}
                 </ul>
+                <Link href={`/equipes-nationales/${t.slug}`} className="text-link rank-more">Fiche équipe</Link>
               </details>
             )
           })}
@@ -98,13 +98,13 @@ export default async function PalmaresPage() {
                     <strong>{c.name}</strong>
                     <span>{summarize(c.achievements)}</span>
                   </div>
-                  <Link href={`/clubs/${c.slug}`} className="chip">Fiche club</Link>
                 </summary>
                 <ul className="honour-list">
                   {sorted.map((a, ai) => (
                     <li key={ai}><Award size={13} /><b>{a.year}</b><span>{a.competition}</span><em>{a.result}</em></li>
                   ))}
                 </ul>
+                <Link href={`/clubs/${c.slug}`} className="text-link rank-more">Fiche club</Link>
               </details>
             )
           })}

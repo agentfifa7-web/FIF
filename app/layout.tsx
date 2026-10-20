@@ -10,8 +10,10 @@ import { SiteAnnouncement } from '@/components/site/SiteAnnouncement'
 import { PwaRegister } from '@/components/site/InstallApp'
 import { RevealObserver } from '@/components/site/RevealObserver'
 import { MobileTabBar } from '@/components/site/MobileTabBar'
+import { JsonLd } from '@/components/site/JsonLd'
 import { connection } from 'next/server'
 import { loadCms, toPublicOverlay } from '@/lib/cms/server'
+import { SITE_NAME, SITE_URL } from '@/lib/site'
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ['latin'],
@@ -27,9 +29,15 @@ const barlow = Barlow({
   display: 'swap',
 })
 
+const DESCRIPTION = 'Site de la Fédération Ivoirienne de Football : Éléphants et Éléphantes, Ligue 1 et Ligue 2, calendrier, résultats, clubs, joueurs, billetterie et services aux licenciés.'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { default: 'Fédération Ivoirienne de Football — FIF', template: '%s' },
-  description: 'Actualités, compétitions, Éléphants, clubs, joueurs et données du football ivoirien.',
+  description: DESCRIPTION,
+  openGraph: { type: 'website', locale: 'fr_CI', siteName: SITE_NAME, title: 'Fédération Ivoirienne de Football — FIF', description: DESCRIPTION, images: [{ url: '/media/hero-poster.jpg', alt: 'Fédération Ivoirienne de Football' }] },
+  twitter: { card: 'summary_large_image' },
+  formatDetection: { telephone: false },
   applicationName: 'FIF',
   appleWebApp: { capable: true, title: 'FIF', statusBarStyle: 'black-translucent' },
   icons: {
@@ -58,6 +66,11 @@ export default async function RootLayout({
   return (
     <html lang="fr" className={`${barlowCondensed.variable} ${barlow.variable}`}>
       <body className="antialiased">
+        <JsonLd data={{
+          '@context': 'https://schema.org', '@type': 'SportsOrganization', name: SITE_NAME, alternateName: 'FIF', sport: 'Football',
+          url: SITE_URL, logo: `${SITE_URL}/fif-logo.png`, areaServed: 'Côte d’Ivoire',
+          memberOf: [{ '@type': 'SportsOrganization', name: 'FIFA' }, { '@type': 'SportsOrganization', name: 'CAF' }],
+        }} />
         <CmsHydrator overlay={toPublicOverlay(cms)}>
           <div className="site-shell">
             <SiteAnnouncement settings={cms.settings} />

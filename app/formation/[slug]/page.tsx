@@ -105,7 +105,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
 
-          <aside className="prog-aside"><ProgramEnroll program={p} /></aside>
+          <div className="prog-aside"><ProgramEnroll program={p} /></div>
         </div>
       </section>
 

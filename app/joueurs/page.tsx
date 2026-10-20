@@ -3,7 +3,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { PlayerExplorer } from '@/components/site/PlayerExplorer'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Joueurs — FIF Digital' }
+export const metadata = { title: 'Joueurs — FIF' }
 
 export default async function PlayersPage() {
   await loadCms()

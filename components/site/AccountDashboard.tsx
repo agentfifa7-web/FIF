@@ -33,7 +33,7 @@ export function AccountDashboard({ nextMatch, news }: { nextMatch: React.ReactNo
   if (!account) {
     return (
       <div className="dashboard-panel" style={{ margin: 0, maxWidth: 720 }}>
-        <h3><UserRound size={18} style={{ verticalAlign: 'middle', marginRight: 8, color: 'var(--orange)' }} />À qui s’adresse « Mon compte » ?</h3>
+        <h2 className="panel-title"><UserRound size={18} style={{ verticalAlign: 'middle', marginRight: 8, color: 'var(--fif-orange-text)' }} />À qui s’adresse « Mon compte » ?</h2>
         <p className="lede" style={{ fontSize: 15 }}>
           « Mon compte » est l’espace personnel de toute personne qui possède un <b>FIF ID</b> : supporters, joueurs et joueuses, dirigeants de club, entraîneurs, arbitres, agents et journalistes.
           On y retrouve son identifiant FIF ID et son QR code, son club favori, ses commandes de la boutique, ses billets et les prochains matchs à suivre.
@@ -90,7 +90,7 @@ export function AccountDashboard({ nextMatch, news }: { nextMatch: React.ReactNo
       </div>
 
       <div className="dashboard-panel" style={{ margin: 0 }}>
-        <h3><Heart size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--orange)' }} />Je supporte</h3>
+        <h3><Heart size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: 'var(--fif-orange-text)' }} />Je supporte</h3>
         {editing ? (
           <>
             <SupportPicker mode={support.mode} nationalTeamId={support.nationalTeamId} clubId={support.clubId} onChange={setSupport} idPrefix="acc" />

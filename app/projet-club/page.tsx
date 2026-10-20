@@ -2,7 +2,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { ProjetClubScore, ProjetClubModules } from '@/components/site/ProjetClubDiagnostic'
 import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Projet Club FIF — FIF Digital' }
+export const metadata = { title: 'Projet Club FIF — FIF' }
 
 export default function ProjetClubPage() {
   return (

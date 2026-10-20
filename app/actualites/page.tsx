@@ -6,7 +6,7 @@ import { NewsExplorer } from '@/components/site/NewsExplorer'
 import { PressReview } from '@/components/site/PressReview'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Actualités — FIF Digital' }
+export const metadata = { title: 'Actualités — FIF' }
 
 export default async function NewsPage() {
   await loadCms()

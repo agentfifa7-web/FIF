@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await loadCms()
   const { slug } = await params
   const c = getCompetition(slug)
-  return { title: c ? `${c.name} — FIF Digital` : 'Compétition' }
+  return { title: c ? `${c.name} — FIF` : 'Compétition' }
 }
 
 export default async function CompetitionPage({ params }: { params: Promise<{ slug: string }> }) {

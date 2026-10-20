@@ -5,7 +5,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { DemoBadge } from '@/components/site/DemoBadge'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'FIF ID — FIF Digital' }
+export const metadata = { title: 'FIF ID — FIF' }
 
 const types = ['Joueur', 'Entraîneur', 'Arbitre', 'Officiel', 'Agent', 'Club', 'Académie']
 
@@ -38,7 +38,7 @@ export default async function FifIdPage() {
           <div className="fif-id-card">
             <div className="fif-id-card-top"><span>FIF ID</span><QrCode /></div>
             <div className="fif-id-card-body">
-              <span className="avatar" style={{ background: '#087443' }}>{sample.name.split(' ').map((n) => n[0]).join('')}</span>
+              <span className="avatar" style={{ background: '#087443', color: '#fff' }}>{sample.name.split(' ').map((n) => n[0]).join('')}</span>
               <div>
                 <strong>{sample.name}</strong>
                 <span>{sample.fifId}</span>
@@ -50,7 +50,7 @@ export default async function FifIdPage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Comment ça marche</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Comment ça marche</p>
         <div className="info-tiles" style={{ marginTop: 20 }}>
           <div className="info-tile"><User /><strong>1. Créer son identité</strong><p>Inscription en ligne ou via son club, sa ligue ou son district. Vérification par la FIF.</p></div>
           <div className="info-tile"><QrCode /><strong>2. Recevoir son FIF ID</strong><p>Identifiant unique, QR code et profil numérique consultables à tout moment.</p></div>

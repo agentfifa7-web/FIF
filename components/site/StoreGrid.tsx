@@ -40,8 +40,8 @@ export function StoreGrid({ products }: { products: Product[] }) {
       <div className="card-grid cols-4">
         {filtered.map((p) => (
           <div className="product-card" key={p.id}>
-            <Link href={`/boutique/${p.id}`} className={p.photo ? 'product-image has-photo' : 'product-image'}>
-              {p.photo ? <img src={p.photo} alt={p.name} loading="lazy" /> : <ProductArt product={p} />}
+            <Link href={`/boutique/${p.id}`} className={p.photo ? 'product-image has-photo' : 'product-image'} aria-hidden="true" tabIndex={-1}>
+              {p.photo ? <img src={p.photo} alt="" loading="lazy" /> : <ProductArt product={p} />}
               {p.badge && <em className="product-badge">{p.badge}</em>}
             </Link>
             <Link href={`/boutique/${p.id}`} className="product-name"><strong>{p.name}</strong></Link>

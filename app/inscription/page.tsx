@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { PhoneAuthForm } from '@/components/site/PhoneAuthForm'
 import { DemoNotice } from '@/components/site/DemoNotice'
 
-export const metadata = { title: 'Créer un FIF ID — FIF Digital' }
+export const metadata = { title: 'Créer un FIF ID — FIF' }
 
 export default function RegisterPage() {
   return (

@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: { params: Promise<{ pratique:
   await loadCms()
   const { pratique } = await params
   const config = PRACTICES[pratique]
-  return { title: config ? `${config.title} — FIF Digital` : 'Football' }
+  return { title: config ? `${config.title} — FIF` : 'Football' }
 }
 
 export default async function PracticePage({ params }: { params: Promise<{ pratique: string }> }) {

@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   await loadCms()
   const { id } = await params
-  return { title: `Vérification ${decodeURIComponent(id)} — FIF Digital` }
+  return { title: `Vérification ${decodeURIComponent(id)} — FIF` }
 }
 
 export default async function VerifyResultPage({ params }: { params: Promise<{ id: string }> }) {

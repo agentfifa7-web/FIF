@@ -4,7 +4,7 @@ import { PageHero } from '@/components/site/PageHero'
 import { ArbitrageWorkflow } from '@/components/site/ArbitrageWorkflow'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Arbitrage Center — FIF Digital' }
+export const metadata = { title: 'Arbitrage Center — FIF' }
 
 export default async function ArbitragePage() {
   await loadCms()
@@ -61,8 +61,8 @@ export default async function ArbitragePage() {
       </section>
 
       <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Mon parcours arbitre</p>
-        <p className="lede" style={{ color: '#a9b7af' }}>Inscription, formation initiale, examen théorique, examen pratique puis résultat — suivez votre parcours de candidat arbitre.</p>
+        <p className="section-tag" style={{ color: 'var(--fif-orange-text)' }}>Mon parcours arbitre</p>
+        <p className="lede" >Inscription, formation initiale, examen théorique, examen pratique puis résultat — suivez votre parcours de candidat arbitre.</p>
         <ArbitrageWorkflow />
       </section>
 

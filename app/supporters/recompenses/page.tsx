@@ -9,8 +9,7 @@ import { DemoNotice } from '@/components/site/DemoNotice'
 const CATEGORIES = ['Digital', 'Expériences', 'Produits', 'Billetterie'] as const
 
 export default function RecompensesPage() {
-  const { profile, ready } = useFanProfile()
-  if (!ready) return null
+  const { profile } = useFanProfile()
 
   return (
     <main>
@@ -33,7 +32,7 @@ export default function RecompensesPage() {
               const level = fanLevels.find((l) => l.order === r.minLevelOrder)
                             return (
                 <div className="entity-card" key={r.id}>
-                  <Gift size={18} color="var(--orange)" />
+                  <Gift size={18} color="var(--fif-orange-text)" />
                   <div>
                     <strong>{r.title}</strong>
                     <span>{r.description} · dès {level?.icon} {level?.name}</span>
