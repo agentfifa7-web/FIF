@@ -1,62 +1,66 @@
-import { Award, Shield, Users } from 'lucide-react'
-import { players } from '@/lib/data/mock'
+import { Award, FileCheck2, Shield, Users } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
 import { LicenceWorkflow } from '@/components/site/LicenceWorkflow'
-import { DemoBadge } from '@/components/site/DemoBadge'
+import { ServiceSteps } from '@/components/site/ServiceSteps'
 import { loadCms } from '@/lib/cms/server'
 
-export const metadata = { title: 'Licences — FIF Digital' }
+export const metadata = { title: 'Licences — FIF', description: 'Demander ou renouveler une licence fédérale : joueurs, entraîneurs, arbitres, dirigeants, agents et clubs.' }
 
 const audiences = [
-  { icon: Users, label: 'Joueurs & joueuses', desc: 'Licence sportive obligatoire pour évoluer en compétition officielle.' },
-  { icon: Shield, label: 'Dirigeants & clubs', desc: 'Affiliation et habilitation des dirigeants et structures.' },
-  { icon: Award, label: 'Entraîneurs & agents', desc: 'Licences techniques CAF et licences d’agent sportif.' },
+  { icon: Users, label: 'Joueurs et joueuses', desc: 'Licence sportive obligatoire pour évoluer en compétition officielle.' },
+  { icon: Shield, label: 'Dirigeants et clubs', desc: 'Affiliation du club et habilitation des dirigeants.' },
+  { icon: Award, label: 'Entraîneurs, arbitres et agents', desc: 'Licences techniques, d’arbitre et d’agent sportif.' },
+]
+const documents = [
+  { title: 'Certificat médical', hint: 'De moins de 3 mois' },
+  { title: 'Pièce d’identité', hint: 'CNI, passeport ou extrait de naissance' },
+  { title: 'Photo d’identité', hint: 'Fond clair, format JPEG ou PNG' },
+  { title: 'Justificatif du club', hint: 'Attestation signée par le club' },
 ]
 
 export default async function LicencesPage() {
   await loadCms()
-  const valid = players.filter((p) => p.licenseStatus === 'Valide').length
-  const pending = players.filter((p) => p.licenseStatus === 'En attente').length
-  const expired = players.filter((p) => p.licenseStatus === 'Expirée').length
-
   return (
     <main>
       <PageHero
-        eyebrow="FIF Licensing"
-        title="Licences"
+        eyebrow="Services · Licences"
+        title="Demander une licence"
         subtitle="La licence fédérale ouvre l’accès aux compétitions officielles pour les joueurs, entraîneurs, arbitres, dirigeants, agents et clubs."
-        breadcrumb={[{ label: 'Licences' }]}
-        meta={[
-          { value: String(valid), label: 'Licences valides (joueurs)' },
-          { value: String(pending), label: 'En attente' },
-          { value: String(expired), label: 'Expirées' },
-        ]}
+        breadcrumb={[{ label: 'Services', href: '/services' }, { label: 'Licences' }]}
+        actions={<a className="button button-primary" href="#demarche">Commencer ma demande</a>}
       />
-
-      <section className="page-section tight">
-        <p className="section-tag">Qui peut demander une licence ?</p>
-        <div className="info-tiles" style={{ marginTop: 16 }}>
-          {audiences.map((a) => (
-            <div className="info-tile" key={a.label}><a.icon /><strong>{a.label}</strong><p>{a.desc}</p></div>
-          ))}
+      <section className="page-section">
+        <div className="svc-layout">
+          <div>
+            <div className="svc-block">
+              <h2>Qui est concerné ?</h2>
+              <div className="svc-who">
+                {audiences.map((a) => <div key={a.label}><a.icon aria-hidden /><strong>{a.label}</strong><p>{a.desc}</p></div>)}
+              </div>
+            </div>
+            <div className="svc-block">
+              <h2>Comment ça marche</h2>
+              <ServiceSteps steps={[
+                { title: 'Création du dossier', text: 'Le licencié ou son club renseigne le type de licence et l’identité.' },
+                { title: 'Pièces justificatives', text: 'Certificat médical, pièce d’identité, photo et justificatif du club.' },
+                { title: 'Validation', text: 'Contrôle par la ligue et la FIF, puis paiement des droits de licence.' },
+                { title: 'Émission', text: 'Licence numérique rattachée au FIF ID, renouvelable chaque saison.' },
+              ]} />
+            </div>
+            <div className="svc-block">
+              <h2>Pièces à fournir</h2>
+              <ul className="svc-docs">
+                {documents.map((d) => <li key={d.title}><FileCheck2 size={20} aria-hidden /><div><strong>{d.title}</strong><span>{d.hint}</span></div></li>)}
+              </ul>
+            </div>
+          </div>
+          <aside className="svc-action" id="demarche" aria-label="Formulaire de demande">
+            <h2>Votre demande</h2>
+            <p>Suivez ensuite l’avancement de votre dossier sur cette page.</p>
+            <LicenceWorkflow />
+          </aside>
         </div>
       </section>
-
-      <section className="page-section tight">
-        <p className="section-tag">Déposer une demande et suivre mon dossier</p>
-        <LicenceWorkflow />
-      </section>
-
-      <section className="page-section tight dark-section">
-        <p className="section-tag" style={{ color: 'var(--orange)' }}>Documents requis</p>
-        <div className="card-grid cols-4" style={{ marginTop: 16 }}>
-          {['Certificat médical', 'Pièce d’identité', 'Photo d’identité', 'Justificatif de club'].map((d) => (
-            <div className="entity-card" key={d}><div><strong>{d}</strong><span>Formats acceptés : PDF, JPEG, PNG.</span></div></div>
-          ))}
-        </div>
-      </section>
-
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { useState } from 'react'
 import { EXAMEN_STAGES, submitExamen, advanceExamen, useDossiers } from '@/lib/workflows'
 import { Stepper } from '@/components/site/widgets'
@@ -21,6 +22,7 @@ export function ArbitrageWorkflow() {
 
   return (
     <>
+      <DemoNotice />
       <form className="form-card" style={{ margin: '16px 0 0', maxWidth: 480 }} onSubmit={handleSubmit}>
         <div className="text-field">
           <label htmlFor="exa-candidat">Nom du candidat</label>
@@ -35,7 +37,6 @@ export function ArbitrageWorkflow() {
         <div className="form-actions">
           <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>S’inscrire au parcours arbitre</button>
         </div>
-        <p className="muted-sm" style={{ margin: '14px 0 0' }}>Démonstration locale : le parcours est suivi dans votre navigateur.</p>
       </form>
 
       {ready && examen.length > 0 && (

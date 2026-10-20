@@ -1,48 +1,28 @@
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
 
-export const metadata = { title: 'Carrières — FIF Digital' }
+export const metadata = { title: 'Recrutement — FIF', description: 'Offres d’emploi et candidatures à la Fédération Ivoirienne de Football.' }
 
-const offers = [
-  { title: 'Chargé(e) de communication digitale', dept: 'Communication', location: 'Abidjan', type: 'CDI' },
-  { title: 'Analyste données football', dept: 'Digital', location: 'Abidjan', type: 'CDI' },
-  { title: 'Responsable juridique', dept: 'Juridique', location: 'Abidjan', type: 'CDI' },
-  { title: 'Coordinateur football féminin', dept: 'Sport', location: 'Abidjan', type: 'CDI' },
-  { title: 'Chargé(e) de billetterie événementielle', dept: 'Événementiel', location: 'Abidjan', type: 'CDD' },
-  { title: 'Médecin fédéral adjoint', dept: 'Médical', location: 'Abidjan', type: 'CDI' },
-]
-
+// Aucune offre fictive : seules les offres officiellement publiées par la FIF
+// (collection « Offres » de l'administration, à venir) seront listées ici.
 export default function CareersPage() {
   return (
     <main>
       <PageHero
-        eyebrow="Travailler à la FIF"
-        title="Carrières"
-        subtitle="Rejoignez les équipes de la Fédération : administration, sport, communication, digital, juridique, finance, médias, technique."
-        breadcrumb={[{ label: 'Carrières' }]}
-        meta={[{ value: String(offers.length), label: 'Offres ouvertes' }]}
+        eyebrow="Fédération · Recrutement"
+        title="Travailler à la FIF"
+        subtitle="Administration, sport, communication, digital, juridique, finance, médical : rejoignez les équipes de la Fédération."
+        breadcrumb={[{ label: 'Fédération', href: '/federation' }, { label: 'Recrutement' }]}
+        noPhotos
       />
-      <section className="page-section tight">
-        <div className="table-wrap">
-          <table className="data-table">
-            <thead><tr><th className="align-left">POSTE</th><th className="align-left">DÉPARTEMENT</th><th className="align-left">LIEU</th><th>CONTRAT</th><th></th></tr></thead>
-            <tbody>
-              {offers.map((o) => (
-                <tr key={o.title}>
-                  <td className="align-left">{o.title}</td>
-                  <td className="align-left">{o.dept}</td>
-                  <td className="align-left">{o.location}</td>
-                  <td>{o.type}</td>
-                  <td><Link href="/contact" className="text-link" style={{ margin: 0 }}>Postuler <ArrowRight size={14} /></Link></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <section className="page-section">
+        <h2>Offres en cours</h2>
+        <div className="empty-state" style={{ marginTop: 16 }}>
+          <strong>Aucune offre publiée pour le moment</strong>
+          <span>Les offres d’emploi et de stage de la FIF seront publiées sur cette page avec leur fiche de poste et la procédure de candidature.</span>
         </div>
+        <p style={{ marginTop: 24 }}><Link className="button-outline" href="/contact">Contacter la FIF</Link></p>
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

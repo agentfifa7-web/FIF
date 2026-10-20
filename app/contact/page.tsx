@@ -2,7 +2,7 @@
 
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { PageHero } from '@/components/site/PageHero'
-import { DemoBadge } from '@/components/site/DemoBadge'
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { getSettings } from '@/lib/cms/runtime'
 
 const faqs = [
@@ -39,12 +39,21 @@ export default function ContactPage() {
           </div>
           <div>
             <p className="section-tag">Nous contacter</p>
-            <form className="form-card" style={{ marginTop: 16, marginLeft: 0, maxWidth: 460 }} onSubmit={(e) => e.preventDefault()}>
-              <div className="text-field"><label htmlFor="subject">Sujet</label><input id="subject" required /></div>
-              <div className="text-field"><label htmlFor="email2">Email</label><input id="email2" type="email" required /></div>
-              <div className="text-field"><label htmlFor="message">Message</label><textarea id="message" rows={4} required /></div>
-              <div className="form-actions"><button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Envoyer un ticket de support</button></div>
-            </form>
+            {settings.contactEmail ? (
+              <form className="form-card" style={{ marginTop: 16, marginLeft: 0, maxWidth: 460 }} onSubmit={(e) => {
+                e.preventDefault()
+                const f = new FormData(e.currentTarget)
+                window.location.href = `mailto:${settings.contactEmail}?subject=${encodeURIComponent(String(f.get('subject') ?? ''))}&body=${encodeURIComponent(`${f.get('message') ?? ''}\n\n${f.get('email') ?? ''}`)}`
+              }}>
+                <div className="text-field"><label htmlFor="subject">Sujet</label><input id="subject" name="subject" required /></div>
+                <div className="text-field"><label htmlFor="email2">Votre e-mail</label><input id="email2" name="email" type="email" required /></div>
+                <div className="text-field"><label htmlFor="message">Message</label><textarea id="message" name="message" rows={4} required /></div>
+                <div className="form-actions"><button type="submit" className="button button-primary">Écrire à la FIF</button></div>
+                <p className="muted" style={{ fontSize: 14, margin: '10px 0 0' }}>Votre logiciel de messagerie s’ouvre avec le message prérempli.</p>
+              </form>
+            ) : (
+              <div style={{ marginTop: 16 }}><DemoNotice title="Coordonnées en cours de publication">Les coordonnées officielles de contact seront affichées ici dès leur renseignement par la FIF (Administration → Paramètres).</DemoNotice></div>
+            )}
             <div className="chip-row" style={{ marginTop: 24 }}>
               {settings.contactEmail && <a className="chip" href={`mailto:${settings.contactEmail}`}><Mail size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{settings.contactEmail}</a>}
               {settings.contactPhone && <a className="chip" href={`tel:${settings.contactPhone.replace(/\s/g, '')}`}><Phone size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{settings.contactPhone}</a>}
@@ -54,7 +63,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

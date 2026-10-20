@@ -1,5 +1,6 @@
 'use client'
 
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { useState } from 'react'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { AIDE_STAGES, submitAide, advanceAide, useDossiers, type AideDossier } from '@/lib/workflows'
@@ -52,6 +53,7 @@ export function AideWorkflow({ programs }: { programs: Program[] }) {
 
   return (
     <>
+      <DemoNotice />
       <form className="form-card" style={{ margin: '16px 0 0', maxWidth: 480 }} onSubmit={handleSubmit}>
         <div className="text-field">
           <label htmlFor="aid-programme">Programme</label>
@@ -66,7 +68,6 @@ export function AideWorkflow({ programs }: { programs: Program[] }) {
         <div className="form-actions">
           <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Déposer le dossier</button>
         </div>
-        <p className="muted-sm" style={{ margin: '14px 0 0' }}>Démonstration locale : le dossier est suivi dans votre navigateur.</p>
       </form>
 
       {ready && aide.length > 0 && (

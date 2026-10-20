@@ -1,5 +1,6 @@
 'use client'
 
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { useState } from 'react'
 import { IdCard } from 'lucide-react'
 import { LICENCE_STAGES, submitLicence, advanceLicence, useDossiers } from '@/lib/workflows'
@@ -28,6 +29,7 @@ export function LicenceWorkflow() {
 
   return (
     <>
+      <DemoNotice />
       <form className="form-card" style={{ margin: '16px 0 0', maxWidth: 480 }} onSubmit={handleSubmit}>
         <div className="text-field">
           <label htmlFor="lic-acteur">Type de demandeur</label>
@@ -42,7 +44,6 @@ export function LicenceWorkflow() {
         <div className="form-actions">
           <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Créer le dossier de licence</button>
         </div>
-        <p className="muted-sm" style={{ margin: '14px 0 0' }}>Démonstration locale : le dossier est suivi dans votre navigateur, sans paiement réel.</p>
       </form>
 
       {ready && licence.length > 0 && (

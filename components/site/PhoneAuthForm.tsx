@@ -69,9 +69,9 @@ export function PhoneAuthForm({ mode }: { mode: 'signup' | 'login' }) {
       <form onSubmit={verify}>
         <p className="muted-sm" style={{ marginBottom: 16 }}>
           <MessageSquareText size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
-          Un code à 6 chiffres a été envoyé par SMS au <b>{formatPhone(phone)}</b>.
+          Saisissez le code de vérification à 6 chiffres associé au <b>{formatPhone(phone)}</b>.
         </p>
-        <div className="otp-demo">Prototype : aucun SMS n’est réellement envoyé. Votre code est <b>{sentCode}</b>.</div>
+        <div className="otp-demo">Démonstration : aucun SMS n’est envoyé et ce compte n’est pas une authentification sécurisée. Code à saisir : <b>{sentCode}</b>.</div>
         <div className="text-field">
           <label htmlFor="otp">Code reçu par SMS</label>
           <input id="otp" inputMode="numeric" autoComplete="one-time-code" maxLength={6} required autoFocus placeholder="••••••"

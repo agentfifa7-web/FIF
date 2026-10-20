@@ -1,5 +1,7 @@
 'use client'
 
+import { DemoNotice } from './DemoNotice'
+
 import Link from 'next/link'
 import { useState } from 'react'
 import { CheckCircle2, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
@@ -88,6 +90,8 @@ export function CartView({ products }: { products: Product[] }) {
   }
 
   return (
+    <>
+    <DemoNotice title="Boutique en démonstration">Aucune commande n’est transmise et aucun paiement n’est effectué. Les produits officiels sont disponibles auprès des revendeurs agréés par la FIF.</DemoNotice>
     <div className="cart-layout">
       <div className="cart-lines">
         {detailed.map((l) => (
@@ -151,5 +155,6 @@ export function CartView({ products }: { products: Product[] }) {
         <p className="muted-sm" style={{ margin: '12px 0 0' }}>Démonstration : aucun paiement réel n’est effectué.</p>
       </form>
     </div>
+    </>
   )
 }

@@ -1,36 +1,48 @@
-'use client'
-
 import { PageHero } from '@/components/site/PageHero'
-import { Stepper } from '@/components/site/widgets'
-import { DemoBadge } from '@/components/site/DemoBadge'
+import { ServiceSteps } from '@/components/site/ServiceSteps'
+import { ReclamationForm } from '@/components/site/ReclamationForm'
+import { loadCms } from '@/lib/cms/server'
+import { getSettings } from '@/lib/cms/runtime'
 
-export default function ComplaintsPage() {
+export const metadata = { title: 'Réclamations et appels — FIF', description: 'Déposer une réclamation ou un appel et suivre son instruction.' }
+
+export default async function ComplaintsPage() {
+  await loadCms()
+  const settings = getSettings()
   return (
     <main>
       <PageHero
-        eyebrow="Réclamations & Appels"
-        title="Réclamations"
-        subtitle="Déposez une réclamation ou un appel et suivez son instruction en toute transparence."
-        breadcrumb={[{ label: 'Réclamations' }]}
+        eyebrow="Services · Réclamations"
+        title="Réclamations et appels"
+        subtitle="Contester un résultat, une décision disciplinaire ou une décision administrative, et suivre l’instruction de votre dossier."
+        breadcrumb={[{ label: 'Services', href: '/services' }, { label: 'Réclamations' }]}
+        actions={<a className="button button-primary" href="#demarche">Déposer une réclamation</a>}
+        noPhotos
       />
-      <section className="page-section tight">
-        <div className="card-grid cols-2">
-          <form className="form-card" style={{ marginTop: 0, marginLeft: 0 }} onSubmit={(e) => e.preventDefault()}>
-            <div className="text-field"><label htmlFor="object">Objet de la réclamation</label><input id="object" required /></div>
-            <div className="text-field"><label htmlFor="context">Contexte (match, licence, décision…)</label><input id="context" /></div>
-            <div className="text-field"><label htmlFor="details">Détails</label><textarea id="details" rows={4} required /></div>
-            <div className="form-actions"><button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Déposer le dossier</button></div>
-          </form>
+      <section className="page-section">
+        <div className="svc-layout">
           <div>
-            <p className="section-tag">Suivi du dossier</p>
-            <div style={{ marginTop: 16 }}>
-              <Stepper steps={['Formulaire', 'Numéro attribué', 'Documents', 'Instruction', 'Notification']} active={1} />
+            <div className="svc-block">
+              <h2>Comment ça marche</h2>
+              <ServiceSteps steps={[
+                { title: 'Dépôt', text: 'Exposez les faits et joignez les pièces utiles, dans les délais prévus par les règlements.' },
+                { title: 'Numéro de dossier', text: 'Un numéro de suivi vous est attribué dès l’enregistrement.' },
+                { title: 'Instruction', text: 'La commission compétente examine le dossier et peut vous entendre.' },
+                { title: 'Notification', text: 'La décision motivée vous est notifiée et peut faire l’objet d’un appel.' },
+              ]} />
             </div>
-            <p className="lede">Un numéro de dossier est généré à la soumission et son statut reste consultable à tout moment depuis votre espace Mon FIF.</p>
+            <div className="svc-block">
+              <h2>Bon à savoir</h2>
+              <p className="lede">Les délais et conditions de recevabilité sont fixés par les règlements des compétitions et le Code disciplinaire, consultables dans les documents officiels.</p>
+              <a className="text-link" href="/documents">Consulter les documents officiels</a>
+            </div>
           </div>
+          <aside className="svc-action" id="demarche" aria-label="Formulaire de réclamation">
+            <h2>Votre réclamation</h2>
+            <ReclamationForm contactEmail={settings.contactEmail} />
+          </aside>
         </div>
       </section>
-      <section className="page-section tight"><DemoBadge /></section>
     </main>
   )
 }

@@ -1,5 +1,7 @@
 'use client'
 
+import { DemoNotice } from './DemoNotice'
+
 import { getSettings } from '@/lib/cms/runtime'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
@@ -97,6 +99,7 @@ function TicketCheckoutInner({ event }: { event: TicketEvent }) {
 
   return (
     <div className="checkout">
+      <DemoNotice title="Billetterie en démonstration">Le parcours d’achat est présenté à titre d’illustration : aucun paiement n’est effectué et les billets générés ne donnent pas accès au stade. Les billets officiels sont vendus par les canaux annoncés par la FIF.</DemoNotice>
       <ol className="checkout-steps">
         {STEPS.map((s, i) => <li key={s} className={i === step ? 'is-current' : i < step ? 'is-done' : ''}><b>{i < step ? '✓' : i + 1}</b>{s}</li>)}
       </ol>

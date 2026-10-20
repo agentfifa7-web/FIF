@@ -29,6 +29,7 @@ const columns = [
   {
     title: 'Services',
     links: [
+      { label: 'Tous les services', href: '/services' },
       { label: 'Licences', href: '/licences' },
       { label: 'FIF ID', href: '/fif-id' },
       { label: 'Formation', href: '/formation' },

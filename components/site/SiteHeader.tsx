@@ -58,12 +58,12 @@ export const NAV: NavEntry[] = [
     groups: [{ title: 'Vidéothèque', links: [{ label: 'Toutes les vidéos', href: '/fif-tv' }, { label: 'Application FIF', href: '/application', hint: 'Installer sur votre téléphone' }] }],
   },
   {
-    id: 'federation', label: 'Fédération', href: '/federation', match: ['/federation', '/documents', '/discipline', '/reclamations', '/carrieres', '/licences', '/formation', '/arbitrage', '/transferts', '/portail', '/officiels', '/fif-id', '/aides-projets', '/projet-club', '/contact'],
+    id: 'federation', label: 'Fédération', href: '/federation', match: ['/federation', '/services', '/documents', '/discipline', '/reclamations', '/carrieres', '/licences', '/formation', '/arbitrage', '/transferts', '/portail', '/officiels', '/fif-id', '/aides-projets', '/projet-club', '/contact'],
     intro: 'Gouvernance, transparence, documents officiels et services aux licenciés.',
     cta: { label: 'Découvrir la FIF', href: '/federation' },
     groups: [
       { title: 'Institution', links: [{ label: 'La Fédération', href: '/federation' }, { label: 'Le Président', href: '/federation/president' }, { label: 'Transparence', href: '/federation/transparence' }, { label: 'Documents officiels', href: '/documents' }, { label: 'Discipline', href: '/discipline' }, { label: 'Carrières', href: '/carrieres' }] },
-      { title: 'Services', links: [{ label: 'Licences', href: '/licences' }, { label: 'FIF ID', href: '/fif-id' }, { label: 'Formation — FIF Academy', href: '/formation' }, { label: 'Arbitrage', href: '/arbitrage' }, { label: 'Transferts', href: '/transferts' }, { label: 'Réclamations', href: '/reclamations' }] },
+      { title: 'Services', links: [{ label: 'Tous les services en ligne', href: '/services' }, { label: 'Licences', href: '/licences' }, { label: 'FIF ID', href: '/fif-id' }, { label: 'Formation — FIF Academy', href: '/formation' }, { label: 'Arbitrage', href: '/arbitrage' }, { label: 'Transferts', href: '/transferts' }, { label: 'Réclamations', href: '/reclamations' }] },
       { title: 'Espaces professionnels', links: [{ label: 'Portail Clubs', href: '/portail/clubs' }, { label: 'Portail Officiels', href: '/officiels' }, { label: 'Projet Club & aides', href: '/aides-projets' }, { label: 'Contact', href: '/contact' }] },
     ],
   },

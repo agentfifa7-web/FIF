@@ -1,5 +1,6 @@
 'use client'
 
+import { DemoNotice } from '@/components/site/DemoNotice'
 import { useState } from 'react'
 import { ArrowRightLeft } from 'lucide-react'
 import { TRANSFERT_STAGES, submitTransfert, advanceTransfert, useDossiers } from '@/lib/workflows'
@@ -23,6 +24,7 @@ export function TransfertWorkflow({ clubs }: { clubs: ClubOption[] }) {
 
   return (
     <>
+      <DemoNotice />
       <form className="form-card" style={{ margin: '16px 0 0', maxWidth: 480 }} onSubmit={handleSubmit}>
         <div className="text-field">
           <label htmlFor="trf-joueur">Joueur concerné</label>
@@ -43,7 +45,6 @@ export function TransfertWorkflow({ clubs }: { clubs: ClubOption[] }) {
         <div className="form-actions">
           <button type="submit" className="button button-primary" style={{ justifyContent: 'center' }}>Créer la demande de transfert</button>
         </div>
-        <p className="muted-sm" style={{ margin: '14px 0 0' }}>Démonstration locale : la demande est suivie dans votre navigateur.</p>
       </form>
 
       {ready && transfert.length > 0 && (

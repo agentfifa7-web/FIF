@@ -264,6 +264,7 @@ export default function HomePage() {
       <section className="h-section section-alt reveal" aria-labelledby="services-title">
         <div className="h-head">
           <div><span className="h-kicker">Services fédéraux</span><h2 id="services-title">Vos démarches en ligne</h2></div>
+          <Link className="text-link" href="/services">Tous les services <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
         </div>
         <div className="h-services">
           <Link href="/licences"><IdCard aria-hidden /><div><strong>Licences</strong><span>Demander ou renouveler une licence</span></div></Link>
