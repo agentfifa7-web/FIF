@@ -91,7 +91,10 @@ export function SiteHeader() {
   useEffect(() => {
     const el = headerRef.current
     if (!el) return
-    const update = () => document.documentElement.style.setProperty('--sh-bottom', `${el.getBoundingClientRect().bottom}px`)
+    const update = () => {
+      document.documentElement.style.setProperty('--sh-bottom', `${el.getBoundingClientRect().bottom}px`)
+      document.documentElement.style.setProperty('--sh-height', `${el.offsetHeight}px`)
+    }
     update()
     window.addEventListener('scroll', update, { passive: true })
     window.addEventListener('resize', update)

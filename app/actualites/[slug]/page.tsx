@@ -4,6 +4,7 @@ import { articles, getArticle } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
 import { NewsCard } from '@/components/site/cards'
 import { NewsThumb } from '@/components/site/NewsThumb'
+import { ShareButtons } from '@/components/site/ShareButtons'
 import { formatDate } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
 
@@ -28,34 +29,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
-      <div style={{ padding: '28px clamp(20px,9vw,140px) 0' }}>
-        <Breadcrumb items={[{ label: 'Actualités', href: '/actualites' }, { label: article.category, href: `/actualites?category=${article.category}` }, { label: article.title }]} />
-      </div>
       <article className="article-layout">
-        <p className="section-tag">{article.category}</p>
+        <Breadcrumb items={[{ label: 'Actualités', href: '/actualites' }, { label: article.category }]} />
+        <p className="h-kicker" style={{ marginTop: 24 }}>{article.category}</p>
         <h1>{article.title}</h1>
+        <p className="article-lead">{article.excerpt}</p>
         <div className="article-meta">
           <span>Par {article.author}</span>
-          <span>{formatDate(article.date, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+          <time dateTime={article.date}>{formatDate(article.date, { day: 'numeric', month: 'long', year: 'numeric' })}</time>
         </div>
         <div className="article-image"><NewsThumb article={article} /></div>
         <div className="article-body">
-          {article.body.map((p, i) => <p key={i}>{p}</p>)}
+          {article.body.map((p, i) => (p.startsWith('Source') ? <p key={i} className="article-source">{p}</p> : <p key={i}>{p}</p>))}
         </div>
         <div className="chip-row" style={{ marginTop: 24 }}>
           {article.tags.map((t) => <span className="chip" key={t}>{t}</span>)}
         </div>
-        <div className="share-row">
-          <span>Partager :</span>
-          <a href="#" aria-label="Partager sur Facebook">f</a>
-          <a href="#" aria-label="Partager sur Twitter">x</a>
-          <a href="#" aria-label="Partager sur LinkedIn">in</a>
-        </div>
+        <ShareButtons title={article.title} />
       </article>
 
       {related.length > 0 && (
-        <section className="page-section tight">
-          <p className="section-tag">Articles liés</p>
+        <section className="page-section section-alt">
+          <h2>À lire aussi</h2>
           <div className="news-grid" style={{ marginTop: 16 }}>
             {related.map((a) => <NewsCard key={a.id} article={a} />)}
           </div>

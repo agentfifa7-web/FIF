@@ -139,7 +139,7 @@ export function NewsCard({ article, featured = false }: { article: Article; feat
         <span>{article.category}</span>
       </Link>
       <div className="news-body">
-        <small>{formatDate(article.date).toUpperCase()}</small>
+        <small><span className="nc-cat">{article.category}</span> · <time dateTime={article.date}>{formatDate(article.date)}</time></small>
         <h3><Link href={`/actualites/${article.slug}`}>{article.title}</Link></h3>
         <Link href={`/actualites/${article.slug}`} aria-label={`Lire : ${article.title}`}><ArrowRight /></Link>
       </div>

@@ -9,16 +9,9 @@ import {
   articles,
   clubs,
   competitions,
-  elephantsNextWindow,
   getClubById,
   getStadiumById,
-  lastElephantsFixture,
-  lastResultsFor,
   matches,
-  nationalTeamNextWindow,
-  nationalTeams,
-  nextElephantsFixture,
-  nextFixtureFor,
   players,
   recentResults,
   standingsFor,
@@ -29,6 +22,7 @@ import { formatDate, matchWhen } from '@/lib/format'
 import { ClubCrest } from '@/components/site/cards'
 import { NewsThumb } from '@/components/site/NewsThumb'
 import { useFirstLiveMatch } from '@/lib/liveMatch'
+import { NationalTeamsGrid } from '@/components/site/NationalTeamsGrid'
 import { getSettings } from '@/lib/cms/runtime'
 
 export default function HomePage() {
@@ -39,9 +33,6 @@ export default function HomePage() {
   const lead = articles[0]
   const secondary = articles.slice(1, 5)
   const table = standingsFor('comp-l1').filter((r) => r.played > 0).slice(0, 8)
-  const elephants = nationalTeams.find((t) => t.id === 'nt-elephants')!
-  const lastCiv = lastElephantsFixture()
-  const nextCiv = nextElephantsFixture()
   const proClubs = clubs.filter((c) => c.category === 'Professionnel').length
   const activeComps = competitions.filter((c) => c.clubIds.length > 0)
 
@@ -158,34 +149,7 @@ export default function HomePage() {
           <div><span className="h-kicker">Équipes nationales</span><h2 id="teams-title">Sept sélections, une seule fierté</h2></div>
           <Link className="text-link" href="/equipes-nationales">Toutes les sélections <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
         </div>
-        <div className="h-teams">
-          <Link href="/equipes-nationales/elephants" className="h-team h-team-feature" style={{ ['--feature-img' as string]: 'url(/hero-photos/elephants-09.jpg)' }}>
-            <span>Équipe A masculine · Champions d’Afrique 2024</span>
-            <strong>Les Éléphants</strong>
-            {elephants.ranking && <div className="h-team-rank"><b>{elephants.ranking}ᵉ</b><span>au classement FIFA</span></div>}
-            <span className="h-team-next">
-              {nextCiv ? `Prochain match : ${nextCiv.opponent}, ${formatDate(nextCiv.date)}`
-                : elephantsNextWindow ? `Prochain rendez-vous : ${elephantsNextWindow.opponent} — ${elephantsNextWindow.period}`
-                : lastCiv?.result ? `Dernier match : ${lastCiv.result.civScore}-${lastCiv.result.opponentScore} contre ${lastCiv.opponent}` : ''}
-            </span>
-          </Link>
-          {nationalTeams.filter((t) => t.id !== 'nt-elephants').map((t) => {
-            const fx = nextFixtureFor(t.id)
-            const last = lastResultsFor(t.id)[0]
-            const windowNext = nationalTeamNextWindow[t.id]
-            return (
-              <Link key={t.id} href={`/equipes-nationales/${t.slug}`} className="h-team">
-                <strong>{t.name}</strong>
-                <span>{t.gender === 'F' ? 'Équipe A féminine' : t.category === 'A' ? 'Équipe A' : t.category}</span>
-                <span className="h-team-next">
-                  {fx ? `Prochain match : ${fx.opponent}, ${formatDate(fx.date)}`
-                    : windowNext ? `Prochain : ${windowNext.split(' — ')[0]}`
-                    : last?.result ? `Dernier match : ${last.result.civ}-${last.result.opp} contre ${last.opponent}` : 'Calendrier à venir'}
-                </span>
-              </Link>
-            )
-          })}
-        </div>
+        <NationalTeamsGrid />
       </section>
 
       {/* E. COMPÉTITIONS */}

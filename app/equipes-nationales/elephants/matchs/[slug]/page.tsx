@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin } from 'lucide-react'
+import { CalendarDays, MapPin } from 'lucide-react'
 import type { RealFixtureEvent, RealFixtureSubstitution } from '@/lib/data/mock'
 import { elephantsFixtures, getElephantsFixture, elephantsFlag, elephantsCallUp } from '@/lib/data/mock'
 import { Breadcrumb } from '@/components/site/PageHero'
@@ -41,44 +41,30 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
 
   return (
     <main>
-      <section className="page-hero tone-forest">
-        <div className="page-hero-content">
-          <div style={{ padding: '0 0 8px' }}>
-            <Breadcrumb items={[{ label: 'Équipes nationales', href: '/equipes-nationales' }, { label: 'Éléphants', href: '/equipes-nationales/elephants' }, { label: matchLabel }]} />
+      <div className="container" style={{ paddingTop: 20 }}>
+        <Breadcrumb items={[{ label: 'Équipes nationales', href: '/equipes-nationales' }, { label: 'Éléphants', href: '/equipes-nationales/elephants' }, { label: matchLabel }]} />
+      </div>
+      <section className="sb" aria-label="Tableau de score">
+        <p className="sb-comp">{fixture.competition}</p>
+        <div className="sb-teams">
+          <div className="sb-team"><span className="sb-flag">{elephantsFlag}</span><strong>Côte d’Ivoire</strong></div>
+          <div className="sb-score">
+            {result ? <b>{result.civScore} – {result.opponentScore}</b> : <b className="sb-vs">{fixture.time}</b>}
+            <span>{result ? 'Terminé' : 'Coup d’envoi'}</span>
           </div>
-          <p className="eyebrow"><span /> {fixture.competition}{result ? ' · Terminé' : ''}</p>
-          <h1 style={{ fontSize: 'clamp(28px,4vw,44px)' }}>{matchLabel}</h1>
-          <div className="page-hero-meta">
-            {result ? (
-              <div><strong>{result?.civScore} - {result?.opponentScore}</strong><span>Score final</span></div>
-            ) : (
-              <div><strong>{fixture.time}</strong><span>Coup d’envoi</span></div>
-            )}
-            <div><strong>{formatDate(fixture.date)}</strong><span>Date</span></div>
-            <div><strong>{fixture.venue}</strong><span>Stade</span></div>
-          </div>
+          <div className="sb-team"><span className="sb-flag">{fixture.opponentFlag}</span><strong>{fixture.opponent}</strong></div>
         </div>
-      </section>
-
-      <section className="page-section tight">
-        <div className="next-card" style={{ maxWidth: 560 }}>
-          <div className="next-card-top"><span>{fixture.competition.toUpperCase()}</span><span>{formatDateLong(fixture.date).toUpperCase()}</span></div>
-          <div className="teams">
-            <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-            {result ? (
-              <div className="versus"><small>TERMINÉ</small><b style={{ fontSize: 28 }}>{result?.civScore} - {result?.opponentScore}</b><span><MapPin size={11} style={{ verticalAlign: 'middle' }} /> {fixture.venue}</span></div>
-            ) : (
-              <div className="versus"><small>{fixture.time}</small><b>VS</b><span><MapPin size={11} style={{ verticalAlign: 'middle' }} /> {fixture.venue}<br />{fixture.home ? 'Domicile' : 'Extérieur'}</span></div>
-            )}
-            <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{fixture.opponentFlag}</div><strong>{fixture.opponent}</strong></div>
-          </div>
+        <h1 className="sr-only">{matchLabel}</h1>
+        <div className="sb-meta">
+          <span><CalendarDays size={16} aria-hidden /> {formatDateLong(fixture.date)}</span>
+          <span><MapPin size={16} aria-hidden /> {fixture.venue} · {fixture.home ? 'Domicile' : 'Extérieur'}</span>
         </div>
       </section>
 
       {result ? (
         <>
           <section className="page-section tight dark-section">
-            <p className="section-tag" style={{ color: 'var(--orange)' }}>Résultat</p>
+            <h2>Faits de match</h2>
             <div className="timeline" style={{ marginTop: 16, maxWidth: 640 }}>
               {result.events.map((e, i) => (
                 <div key={i}>
@@ -89,14 +75,14 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
                   </div>
                 </div>
               ))}
-              {!result.events.length && <p className="lede" style={{ color: '#cfe0d6' }}>Aucun but ni carton recensé pour ce match.</p>}
+              {!result.events.length && <p className="lede">Aucun but ni carton recensé pour ce match.</p>}
             </div>
             {result.cards && result.cards.length > 0 && (
               <div style={{ marginTop: 24, maxWidth: 640 }}>
-                <b style={{ fontSize: 12, letterSpacing: '.06em', color: '#8fa79a', textTransform: 'uppercase' }}>Cartons</b>
+                <h3 style={{ fontSize: 18, margin: 0 }}>Cartons</h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
                   {result.cards.map((c, i) => (
-                    <span key={i} style={{ background: 'rgba(255,255,255,.08)', border: `1px solid ${c.type === 'yellow' ? '#e8b923' : '#e0433d'}`, borderRadius: 999, color: '#fff', fontSize: 12, fontWeight: 600, padding: '6px 12px' }}>
+                    <span key={i} className={`card-chip ${c.type}`}>
                       {c.type === 'yellow' ? '🟨' : '🟥'} {c.player} · {c.team === 'civ' ? 'CIV' : fixture.opponent}
                     </span>
                   ))}
@@ -104,7 +90,7 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
               </div>
             )}
             {result.referee && (
-              <p className="lede" style={{ color: '#8fa79a', marginTop: 24, fontSize: 12 }}>
+              <p className="muted" style={{ marginTop: 24, fontSize: 14 }}>
                 Arbitre : {result.referee.name}{result.referee.assistants.length ? ` · Assistants : ${result.referee.assistants.join(', ')}` : ''}{result.referee.fourthOfficial ? ` · 4e arbitre : ${result.referee.fourthOfficial}` : ''}
               </p>
             )}
@@ -112,7 +98,7 @@ export default async function ElephantsMatchPage({ params }: { params: Promise<{
 
           {result.lineups && (
             <section className="page-section tight">
-              <p className="section-tag">Compositions de départ</p>
+              <h2>Compositions de départ</h2>
               <div className="card-grid cols-2" style={{ marginTop: 16 }}>
                 <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
                   <h3>Côte d&apos;Ivoire <span style={{ color: 'var(--muted)', fontWeight: 400, fontSize: 13 }}>({result.lineups.civ.formation})</span></h3>
