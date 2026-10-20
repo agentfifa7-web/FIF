@@ -61,49 +61,73 @@ export function HeroCarousel({ seed, images, imageFit = 'cover' }: { seed: strin
   )
 }
 
+/** Photo d'illustration encadrée (côté droit de l'en-tête). Les photos
+ *  officielles disponibles sont de petite taille : elles sont affichées
+ *  dans un cadre plutôt qu'en plein écran pour rester nettes. */
+function HeroPhoto({ seed, images }: { seed: string; images?: string[] }) {
+  const photos = images && images.length ? images : pickPhotos(seed)
+  const [index, setIndex] = useState(0)
+  useEffect(() => {
+    if (photos.length <= 1) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % photos.length), 6000)
+    return () => clearInterval(id)
+  }, [photos.length])
+  return (
+    <figure className="page-hero-photo" aria-hidden="true">
+      {photos.map((src, i) => (
+        <div key={src + i} className={i === index ? 'page-hero-media-slide is-active' : 'page-hero-media-slide'} style={{ backgroundImage: `url(${src})` }} />
+      ))}
+    </figure>
+  )
+}
+
 export function PageHero({
   eyebrow,
   title,
   subtitle,
   breadcrumb,
   meta,
-  tone = 'forest',
   images,
-  imageFit,
   noPhotos = false,
+  actions,
 }: {
   eyebrow?: string
   title: string
   subtitle?: string
   breadcrumb?: { label: string; href?: string }[]
   meta?: { label: string; value: string }[]
+  /** Conservé pour compatibilité : l'en-tête est désormais toujours clair. */
   tone?: 'forest' | 'cream'
   images?: string[]
   imageFit?: 'cover' | 'side'
   noPhotos?: boolean
+  actions?: React.ReactNode
 }) {
   return (
-    <section className={`page-hero tone-${tone}`}>
-      {!noPhotos && <HeroCarousel seed={title} images={images} imageFit={imageFit} />}
-      <div className="page-hero-content">
-        {breadcrumb && <Breadcrumb items={breadcrumb} />}
-        {eyebrow && (
-          <p className="eyebrow">
-            <span /> {eyebrow}
-          </p>
-        )}
-        <h1>{title}</h1>
-        {subtitle && <p className="page-hero-sub">{subtitle}</p>}
-        {meta && meta.length > 0 && (
-          <div className="page-hero-meta">
-            {meta.map((m) => (
-              <div key={m.label}>
-                <strong>{m.value}</strong>
-                <span>{m.label}</span>
-              </div>
-            ))}
-          </div>
-        )}
+    <section className={noPhotos ? 'page-hero no-media' : 'page-hero'}>
+      <div className="page-hero-inner">
+        <div className="page-hero-content">
+          {breadcrumb && <Breadcrumb items={breadcrumb} />}
+          {eyebrow && (
+            <p className="eyebrow">
+              <span /> {eyebrow}
+            </p>
+          )}
+          <h1>{title}</h1>
+          {subtitle && <p className="page-hero-sub">{subtitle}</p>}
+          {actions && <div className="page-hero-actions">{actions}</div>}
+          {meta && meta.length > 0 && (
+            <div className="page-hero-meta">
+              {meta.map((m) => (
+                <div key={m.label}>
+                  <strong>{m.value}</strong>
+                  <span>{m.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {!noPhotos && <HeroPhoto seed={title} images={images} />}
       </div>
     </section>
   )

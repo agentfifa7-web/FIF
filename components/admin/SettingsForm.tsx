@@ -13,6 +13,10 @@ const SECTIONS: { title: string; fields: { key: Key; label: string; type?: 'bool
     { key: 'tagline', label: 'Slogan' },
     { key: 'season', label: 'Saison en cours', placeholder: '2026-2027' },
   ] },
+  { title: 'Visuel d’accueil', fields: [
+    { key: 'heroImage', label: 'Photo officielle du grand visuel (URL)', hint: 'Photo authentique en haute définition (1920 × 1080 px minimum), libre de droits pour la FIF. Laissez vide pour utiliser la vidéo par défaut.', placeholder: 'https://… ou /media/hero.jpg' },
+    { key: 'heroCredit', label: 'Crédit photo', placeholder: '© FIF / Nom du photographe' },
+  ] },
   { title: 'Bandeau d’annonce', fields: [
     { key: 'alertEnabled', label: 'Afficher un bandeau d’annonce en haut de toutes les pages', type: 'bool' },
     { key: 'alertText', label: 'Texte du bandeau', type: 'textarea', placeholder: 'Billetterie ouverte pour Côte d’Ivoire – Cameroun !' },
@@ -66,8 +70,8 @@ export function SettingsForm({ initial, canWrite }: { initial: SiteSettings; can
                   <>
                     <label htmlFor={`s-${f.key}`}>{f.label}</label>
                     {f.type === 'textarea'
-                      ? <textarea id={`s-${f.key}`} rows={2} value={String(values[f.key])} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />
-                      : <input id={`s-${f.key}`} value={String(values[f.key])} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />}
+                      ? <textarea id={`s-${f.key}`} rows={2} value={String(values[f.key] ?? "")} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />
+                      : <input id={`s-${f.key}`} value={String(values[f.key] ?? "")} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />}
                   </>
                 )}
               </div>

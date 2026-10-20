@@ -38,6 +38,9 @@ export interface SiteSettings {
   alertLink: string
   ticketingOpen: boolean
   shopOpen: boolean
+  /** Photo officielle HD du grand visuel d'accueil (URL). */
+  heroImage?: string
+  heroCredit?: string
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -57,6 +60,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   alertLink: '',
   ticketingOpen: true,
   shopOpen: true,
+  heroImage: '',
+  heroCredit: '',
 }
 
 /** Partie publique, transmise à toutes les pages. */

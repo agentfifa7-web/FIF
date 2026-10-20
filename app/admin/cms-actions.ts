@@ -110,6 +110,8 @@ export async function saveSettingsAction(values: Partial<SiteSettings>): Promise
       if (typeof DEFAULT_SETTINGS[key] === 'boolean') (clean as unknown as Record<string, unknown>)[key] = Boolean(v)
       else (clean as unknown as Record<string, unknown>)[key] = String(v ?? '').trim()
     }
+    // Visuel d'accueil : seules les adresses https ou les chemins du site sont acceptés.
+    if (clean.heroImage && !/^(https:\/\/|\/(?!\/))[^\s"'()<>]+$/.test(clean.heroImage)) clean.heroImage = ''
     await updateCms((data) => { data.settings = clean })
     done()
     return { ok: true }

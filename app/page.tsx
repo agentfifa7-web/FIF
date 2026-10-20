@@ -1,210 +1,337 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, CalendarDays, Clock3, MapPin, Newspaper, Play, Trophy, Users } from 'lucide-react'
+import {
+  ArrowRight, BadgeCheck, BookOpen, CalendarDays, ClipboardList, Clock3, FileText, GraduationCap, Heart, IdCard,
+  MapPin, Megaphone, Newspaper, PlayCircle, Scale, Shield, Trophy, Users, Flag,
+} from 'lucide-react'
 import {
   articles,
+  clubs,
   competitions,
+  elephantsNextWindow,
   getClubById,
   getStadiumById,
-  getTeam,
+  lastElephantsFixture,
+  lastResultsFor,
   matches,
-  nextElephantsFixture, lastElephantsFixture, elephantsNextWindow,
-  elephantsFlag,
+  nationalTeamNextWindow,
+  nationalTeams,
+  nextElephantsFixture,
+  nextFixtureFor,
+  players,
+  recentResults,
+  standingsFor,
   upcomingMatches,
   videos,
 } from '@/lib/data/mock'
-import { formatDate, formatTime, matchWhen } from '@/lib/format'
-import { NewsCard } from '@/components/site/cards'
+import { formatDate, matchWhen } from '@/lib/format'
+import { ClubCrest } from '@/components/site/cards'
+import { NewsThumb } from '@/components/site/NewsThumb'
 import { useFirstLiveMatch } from '@/lib/liveMatch'
+import { getSettings } from '@/lib/cms/runtime'
 
-const categories = ['Tous', 'Éléphants', 'Éléphantes', 'Ligue 1', 'Féminin', 'Jeunes', 'Compétitions', 'Fédération']
-
-export default function Page() {
-  const [category, setCategory] = useState('Tous')
-  const filteredNews = useMemo(
-    () => (category === 'Tous' ? articles.slice(0, 4) : articles.filter((a) => a.category === category).slice(0, 4)),
-    [category],
-  )
-  const nextMatch = upcomingMatches(1)[0]
+export default function HomePage() {
+  const settings = getSettings()
   const live = useFirstLiveMatch(matches)
-  const elephants = getTeam('elephants')!
-  // Prochain match des Éléphants, ou à défaut le dernier match joué (avec son score).
-  const nextFixture = (nextElephantsFixture() ?? lastElephantsFixture())!
-  const played = nextFixture.result
-  const ticker = [...articles.slice(0, 3), ...upcomingMatches(2)].slice(0, 4)
+  const next = live ?? upcomingMatches(1)[0]
+  const results = recentResults(5)
+  const lead = articles[0]
+  const secondary = articles.slice(1, 5)
+  const table = standingsFor('comp-l1').filter((r) => r.played > 0).slice(0, 8)
+  const elephants = nationalTeams.find((t) => t.id === 'nt-elephants')!
+  const lastCiv = lastElephantsFixture()
+  const nextCiv = nextElephantsFixture()
+  const proClubs = clubs.filter((c) => c.category === 'Professionnel').length
+  const activeComps = competitions.filter((c) => c.clubIds.length > 0)
 
   return (
     <main>
-      <section className="hero" id="accueil">
-        <video
-          className="hero-video"
-          src="/hero-elephants.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        />
-        <div className="hero-overlay" />
-        <div className="hero-content">
-          <p className="eyebrow light"><span /> Fédération Ivoirienne de Football</p>
-          <h1>Le football ivoirien,<br /><em>entre dans une</em><br />nouvelle ère.</h1>
-          <p className="hero-lede">Tout le football ivoirien, dans un seul univers. Actualités, compétitions, Éléphants, clubs, joueurs et données fédérales.</p>
-          <div className="hero-actions">
-            <Link className="button button-primary" href="/matches">Voir les prochains matchs <ArrowRight /></Link>
-            <Link className="button button-ghost" href="/equipes-nationales/elephants">Découvrir les Éléphants</Link>
+      {/* A. HÉROS ÉDITORIAL */}
+      <section className="h-hero" aria-labelledby="hero-title">
+        <div className="h-hero-media" aria-hidden="true">
+          {settings.heroImage
+            ? <img src={settings.heroImage} alt="" fetchPriority="high" />
+            : <video src="/hero-elephants.mp4" poster="/media/hero-poster.jpg" autoPlay muted loop playsInline preload="metadata" />}
+        </div>
+        <div className="h-hero-inner">
+          <p className="eyebrow" style={{ color: '#fff' }}><span /> Fédération Ivoirienne de Football</p>
+          <h1 id="hero-title">La fierté d’une nation,<br /><em>la passion d’un peuple.</em></h1>
+          <p>Éléphants, championnats, clubs et supporters : suivez tout le football ivoirien, en direct et au quotidien.</p>
+          <div className="h-hero-actions">
+            <Link className="button button-primary" href="/equipes-nationales/elephants">Découvrir les Éléphants <ArrowRight /></Link>
+            <Link className="button button-ghost" href="/matches">Prochains matchs</Link>
           </div>
         </div>
-        <div className="hero-meta"><span>01</span><div className="hero-line"><i /></div><span>03</span><b>Abidjan · Côte d&apos;Ivoire</b></div>
+        {settings.heroImage && settings.heroCredit && <span className="h-hero-credit">{settings.heroCredit}</span>}
       </section>
 
-      <section className="alert-bar">
-        <span className="alert-live">{live ? <><i /> EN DIRECT</> : 'À LA UNE'}</span>
-        <strong>{live ? getClubById(live.homeClubId)?.shortName : 'Éléphants'}</strong>
-        <span>{live
-          ? `${getClubById(live.homeClubId)?.name} ${live.homeScore} - ${live.awayScore} ${getClubById(live.awayClubId)?.name} (${live.minute}')`
-          : played
-            ? `Dernier match : Côte d'Ivoire ${played.civScore}-${played.opponentScore} ${nextFixture.opponent} (${formatDate(nextFixture.date)})${elephantsNextWindow ? ` · Prochain rendez-vous : ${elephantsNextWindow.opponent}, ${elephantsNextWindow.competition}, ${elephantsNextWindow.period}` : ''}`
-            : `Prochain rendez-vous : ${elephants.name} vs ${nextFixture.opponent}, ${formatDate(nextFixture.date)}`}</span>
-        <Link href={live ? `/matches/${live.id}` : '/equipes-nationales/elephants'}>{live ? 'Suivre le match' : 'Voir les Éléphants'} <ArrowRight /></Link>
-      </section>
-
-      <section className="ticker" aria-label="Fil d'information">
-        {ticker.map((item, i) => (
-          <span key={i}>
-            {'title' in item || item.dateConfirmed !== false ? formatDate(item.date, { day: '2-digit', month: '2-digit' }) : 'À conf.'}{' '}
-            <b>{'title' in item ? item.category.toUpperCase() : 'MATCH'}</b>{' '}
-            {'title' in item ? item.title : `${getClubById(item.homeClubId)?.shortName} vs ${getClubById(item.awayClubId)?.shortName}`}
-          </span>
-        ))}
-      </section>
-
-      {nextMatch && (
-        <section className="match-strip" id="matchs">
-          <div className="section-label"><span className="live-dot" /> Prochain match</div>
-          <div className="match-main">
-            <div>
-              <small>{`${(competitions.find((c) => c.id === nextMatch.competitionId)?.name ?? 'Championnat').toUpperCase()} · J${nextMatch.matchday}`}</small>
-              <strong>{getClubById(nextMatch.homeClubId)?.name} <b>vs</b> {getClubById(nextMatch.awayClubId)?.name}</strong>
-              <p><CalendarDays /> {matchWhen(nextMatch, { weekday: 'long', day: 'numeric', month: 'long' })} <i /> <MapPin /> {(nextMatch.stadiumId ? getStadiumById(nextMatch.stadiumId)?.name : nextMatch.venue) ?? 'Stade à confirmer'}</p>
-            </div>
-            <Link className="circle-arrow" href={`/matches/${nextMatch.id}`} aria-label="Voir le match"><ArrowRight /></Link>
+      {/* B. MATCH CENTER */}
+      <section className="h-mc" aria-label="Match Center">
+        <div className="h-mc-grid">
+          <div className="h-mc-next">
+            {next ? (
+              <>
+                <p className="h-mc-label"><i /> {live ? 'En direct' : 'Prochain match'}</p>
+                <p className="h-mc-comp">{competitions.find((c) => c.id === next.competitionId)?.name} · {next.matchday}e journée</p>
+                <div className="h-mc-teams">
+                  {[next.homeClubId, next.awayClubId].map((id, i) => {
+                    const club = getClubById(id)
+                    return (
+                      <div className="h-mc-team" key={id} style={{ order: i === 0 ? 0 : 2 }}>
+                        {club && <ClubCrest club={club} size={64} />}
+                        <strong>{club?.name}</strong>
+                      </div>
+                    )
+                  })}
+                  <div className="h-mc-vs" style={{ order: 1 }}>
+                    {live ? <b>{live.homeScore} – {live.awayScore}</b> : 'VS'}
+                  </div>
+                </div>
+                <div className="h-mc-meta">
+                  <span><CalendarDays aria-hidden /> {matchWhen(next, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                  <span><MapPin aria-hidden /> {(next.stadiumId ? getStadiumById(next.stadiumId)?.name : next.venue) ?? 'Stade à confirmer'}</span>
+                </div>
+                <div className="h-mc-actions">
+                  <Link className="button button-secondary" href={`/matches/${next.id}`}>Fiche du match</Link>
+                  <Link className="button-outline" href="/matches">Calendrier complet <ArrowRight size={16} /></Link>
+                </div>
+              </>
+            ) : (
+              <p className="lede">Le prochain programme sera publié dès son annonce par la FIF.</p>
+            )}
           </div>
-          <div className="match-status"><span>À venir</span>{nextMatch.dateConfirmed !== false && <strong>{Math.max(0, Math.round((+new Date(nextMatch.date) - Date.now()) / 86400000))} <small>J</small></strong>}</div>
-        </section>
-      )}
-
-      <section className="next-match" id="elephants">
-        <div className="next-copy">
-          <p className="eyebrow"><span /> Équipe nationale</p>
-          <h2>{played ? 'Dernier match' : 'Prochain match'}<br /><em>des Éléphants</em></h2>
-          <p className="muted">{played ? (elephantsNextWindow ? `Prochain rendez-vous : ${elephantsNextWindow.opponent} — ${elephantsNextWindow.competition}, ${elephantsNextWindow.period}.` : 'Le calendrier de la prochaine fenêtre internationale sera publié dès son annonce par la FIF.') : 'Les champions d’Afrique retrouvent le terrain pour une nouvelle bataille.'}</p>
-          <Link className="text-link" href="/equipes-nationales/elephants">Tout sur les Éléphants <ArrowRight /></Link>
-        </div>
-        <Link href={`/equipes-nationales/elephants/matchs/${nextFixture.slug}`} className="next-card" style={{ display: 'block' }}>
-          <div className="next-card-top"><span>{nextFixture.competition.toUpperCase()}</span><span>{formatDate(nextFixture.date).toUpperCase()}</span></div>
-          <div className="teams">
-            <div className="team"><div className="crest ivory" style={{ fontSize: 32 }}>{elephantsFlag}</div><strong>Côte<br />d&apos;Ivoire</strong></div>
-            <div className="versus"><small>{played ? 'Terminé' : nextFixture.time}</small><b>{played ? `${nextFixture.home ? played.civScore : played.opponentScore} - ${nextFixture.home ? played.opponentScore : played.civScore}` : 'VS'}</b><span>{nextFixture.venue}<br />{nextFixture.home ? 'Domicile' : 'Extérieur'}</span></div>
-            <div className="team"><div className="crest red" style={{ fontSize: 32 }}>{nextFixture.opponentFlag}</div><strong>{nextFixture.opponent}</strong></div>
+          <div className="h-mc-results">
+            <h3>Derniers résultats</h3>
+            {results.map((m) => (
+              <Link key={m.id} href={`/matches/${m.id}`} className="h-res">
+                <small>{competitions.find((c) => c.id === m.competitionId)?.name} · {formatDate(m.date)}</small>
+                <span>{getClubById(m.homeClubId)?.name} – {getClubById(m.awayClubId)?.name}</span>
+                <b>{m.homeScore}-{m.awayScore}</b>
+                {m.scoreConfirmed === false && <em>Score à confirmer</em>}
+              </Link>
+            ))}
+            <Link className="text-link" href="/resultats">Tous les résultats <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
           </div>
-          {!played && <CountdownBar targetIso={nextFixture.date} />}
-        </Link>
-      </section>
-
-      <section className="news-section" id="actualites">
-        <div className="section-heading">
-          <div><p className="eyebrow"><span /> Le fil FIF</p><h2>À la une</h2></div>
-          <Link className="text-link" href="/actualites">Toutes les actualités <ArrowRight /></Link>
-        </div>
-        <div className="filters" role="tablist" aria-label="Filtrer les actualités">
-          {categories.map((item) => (
-            <button key={item} type="button" className={category === item ? 'filter active' : 'filter'} onClick={() => setCategory(item)}>{item}</button>
-          ))}
-        </div>
-        <div className="news-grid">
-          {filteredNews.map((item, i) => <NewsCard key={item.id} article={item} featured={i === 0} />)}
-        </div>
-        <Link href="/actualites#revue-de-presse" className="press-teaser">
-          <Newspaper />
-          <div><strong>Revue de presse — médias ivoiriens</strong><span>Titres agrégés en direct depuis Fraternité Matin, Koaci, Abidjan.net, RTI et plus, sur le football ivoirien et les pros ivoiriens à l’international.</span></div>
-          <ArrowRight />
-        </Link>
-      </section>
-
-      <section className="quick-links">
-        <div className="section-heading">
-          <div><p className="eyebrow"><span /> Services fédéraux</p><h2>Tout le football,<br /><em>à portée de main.</em></h2></div>
-        </div>
-        <div className="service-grid">
-          <Link href="/competitions"><Trophy /><strong>Compétitions</strong><span>Calendriers, classements et résultats <ArrowRight /></span></Link>
-          <Link href="/clubs"><Users /><strong>Clubs & licenciés</strong><span>Trouver un club, gérer sa licence <ArrowRight /></span></Link>
-          <Link href="/formation"><CalendarDays /><strong>Formation</strong><span>FIF Academy et parcours fédéraux <ArrowRight /></span></Link>
         </div>
       </section>
 
-      <section className="tv-section" id="fif-tv">
-        <div className="section-heading">
-          <div><p className="eyebrow light"><span /> L&apos;image du football ivoirien</p><h2>FIF <em>TV</em></h2></div>
-          <Link className="text-link light-link" href="/fif-tv">Voir toutes les vidéos <ArrowRight /></Link>
+      {/* C. ACTUALITÉS À LA UNE */}
+      <section className="h-section reveal" aria-labelledby="news-title">
+        <div className="h-head">
+          <div><span className="h-kicker">À la une</span><h2 id="news-title">L’actualité du football ivoirien</h2></div>
+          <Link className="text-link" href="/actualites">Toutes les actualités <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
         </div>
-        {videos.length === 0 ? (
-          <p className="muted" style={{ marginTop: 28, maxWidth: 520 }}>Les vidéos officielles de la FIF (résumés, conférences de presse, coulisses des Éléphants) seront publiées ici dès leur mise en ligne.</p>
-        ) : (
-        <div className="video-grid">
-          <article className="video-feature">
-            <div className="video-image" style={{ backgroundImage: `linear-gradient(0deg,rgba(0,0,0,.45),transparent),url(${videos[0].image})` }}>
-              <Link href={`/fif-tv/${videos[0].slug}`} aria-label="Lire la vidéo"><Play fill="currentColor" /></Link>
-              <span>{videos[0].duration}</span>
-            </div>
-            <div><small>{videos[0].category.toUpperCase()}</small><h3>{videos[0].title}</h3></div>
-          </article>
-          {videos.slice(1, 3).map((v, i) => (
-            <article className="video-small" key={v.id}>
-              <div className={`video-thumb thumb-${i === 0 ? 'two' : 'three'}`} style={{ backgroundImage: `linear-gradient(0deg,rgba(0,0,0,.35),transparent),url(${v.image})` }}>
-                <Link href={`/fif-tv/${v.slug}`} aria-label="Lire la vidéo"><Play fill="currentColor" /></Link>
+        <div className="h-news">
+          {lead && (
+            <article className="news-card h-news-lead">
+              <Link href={`/actualites/${lead.slug}`} className="news-image"><NewsThumb article={lead} /><span>{lead.category}</span></Link>
+              <div className="news-body">
+                <small>{formatDate(lead.date, { day: 'numeric', month: 'long', year: 'numeric' })}</small>
+                <h3><Link href={`/actualites/${lead.slug}`}>{lead.title}</Link></h3>
+                <p className="muted" style={{ margin: '10px 0 0' }}>{lead.excerpt}</p>
               </div>
-              <small>{v.category.toUpperCase()}</small>
-              <h3>{v.title}</h3>
             </article>
-          ))}
+          )}
+          <div className="h-news-list">
+            {secondary.map((a) => (
+              <article className="h-news-item" key={a.id}>
+                <Link href={`/actualites/${a.slug}`} className="h-news-thumb" tabIndex={-1} aria-hidden="true"><NewsThumb article={a} /></Link>
+                <div>
+                  <small>{a.category}<time dateTime={a.date}>{formatDate(a.date)}</time></small>
+                  <h3><Link href={`/actualites/${a.slug}`}>{a.title}</Link></h3>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-        )}
+        <Link className="h-press" href="/actualites#revue-de-presse">
+          <Newspaper aria-hidden />
+          <div><strong>Revue de presse</strong><span>Les titres des médias sportifs ivoiriens, mis à jour en continu.</span></div>
+          <ArrowRight aria-hidden />
+        </Link>
       </section>
 
-      <section className="page-section tight">
-        <p style={{ color: 'var(--muted)', fontSize: 12, maxWidth: 680 }}>
-          Résultats, calendriers, classements, clubs, effectifs et sélections proviennent de sources publiques citées sur chaque page (FIF, presse sportive ivoirienne et internationale) et sont mis à jour plusieurs fois par jour. Les services en ligne marqués « Données de démonstration » (boutique, formation, licences, espace supporters…) illustrent les fonctionnalités de la plateforme.
-        </p>
+      {/* D. ÉQUIPES NATIONALES */}
+      <section className="h-section section-alt reveal" aria-labelledby="teams-title">
+        <div className="h-head">
+          <div><span className="h-kicker">Équipes nationales</span><h2 id="teams-title">Sept sélections, une seule fierté</h2></div>
+          <Link className="text-link" href="/equipes-nationales">Toutes les sélections <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
+        </div>
+        <div className="h-teams">
+          <Link href="/equipes-nationales/elephants" className="h-team h-team-feature" style={{ ['--feature-img' as string]: 'url(/hero-photos/elephants-09.jpg)' }}>
+            <span>Équipe A masculine · Champions d’Afrique 2024</span>
+            <strong>Les Éléphants</strong>
+            {elephants.ranking && <div className="h-team-rank"><b>{elephants.ranking}ᵉ</b><span>au classement FIFA</span></div>}
+            <span className="h-team-next">
+              {nextCiv ? `Prochain match : ${nextCiv.opponent}, ${formatDate(nextCiv.date)}`
+                : elephantsNextWindow ? `Prochain rendez-vous : ${elephantsNextWindow.opponent} — ${elephantsNextWindow.period}`
+                : lastCiv?.result ? `Dernier match : ${lastCiv.result.civScore}-${lastCiv.result.opponentScore} contre ${lastCiv.opponent}` : ''}
+            </span>
+          </Link>
+          {nationalTeams.filter((t) => t.id !== 'nt-elephants').map((t) => {
+            const fx = nextFixtureFor(t.id)
+            const last = lastResultsFor(t.id)[0]
+            const windowNext = nationalTeamNextWindow[t.id]
+            return (
+              <Link key={t.id} href={`/equipes-nationales/${t.slug}`} className="h-team">
+                <strong>{t.name}</strong>
+                <span>{t.gender === 'F' ? 'Équipe A féminine' : t.category === 'A' ? 'Équipe A' : t.category}</span>
+                <span className="h-team-next">
+                  {fx ? `Prochain match : ${fx.opponent}, ${formatDate(fx.date)}`
+                    : windowNext ? `Prochain : ${windowNext.split(' — ')[0]}`
+                    : last?.result ? `Dernier match : ${last.result.civ}-${last.result.opp} contre ${last.opponent}` : 'Calendrier à venir'}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* E. COMPÉTITIONS */}
+      <section className="h-section reveal" aria-labelledby="comp-title">
+        <div className="h-head">
+          <div><span className="h-kicker">Compétitions</span><h2 id="comp-title">Saison 2026-2027</h2><p>Classements calculés à partir des résultats officiels publiés.</p></div>
+          <Link className="text-link" href="/competitions">Toutes les compétitions <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
+        </div>
+        <div className="h-comp">
+          <div className="h-table">
+            <div className="h-table-head"><strong>Ligue 1 — classement</strong><Link className="text-link" href="/competitions/ligue-1">Complet</Link></div>
+            <div className="table-scroll">
+              <table>
+                <caption className="sr-only">Classement de la Ligue 1 (8 premiers)</caption>
+                <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col">J</th><th scope="col" className="hide-sm">Diff.</th><th scope="col">Pts</th></tr></thead>
+                <tbody>
+                  {table.map((r, i) => {
+                    const club = getClubById(r.clubId)
+                    return (
+                      <tr key={r.clubId}>
+                        <td>{i + 1}</td>
+                        <td className="club">{club && <ClubCrest club={club} size={24} />}<Link href={`/clubs/${club?.slug}`}>{club?.name}</Link></td>
+                        <td>{r.played}</td>
+                        <td className="hide-sm">{r.goalsFor - r.goalsAgainst > 0 ? '+' : ''}{r.goalsFor - r.goalsAgainst}</td>
+                        <td className="pts">{r.points}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="h-comp-list">
+            {activeComps.map((c) => (
+              <Link key={c.id} href={`/competitions/${c.slug}`} className="h-comp-link">
+                <span className="h-comp-icon"><Trophy aria-hidden size={20} /></span>
+                <div><strong>{c.name}</strong><span>{c.clubIds.length} équipes · {c.format.split(' — ')[0]}</span></div>
+                <ArrowRight aria-hidden />
+              </Link>
+            ))}
+            <Link href="/matches" className="h-comp-link">
+              <span className="h-comp-icon"><CalendarDays aria-hidden size={20} /></span>
+              <div><strong>Calendrier & résultats</strong><span>Tous les matchs officiels, journée par journée</span></div>
+              <ArrowRight aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* F. FIF TV */}
+      <section className="h-section section-brand reveal" aria-labelledby="tv-title">
+        <div className="h-head">
+          <div><span className="h-kicker">FIF TV</span><h2 id="tv-title">Le football ivoirien en images</h2></div>
+          <Link className="text-link" style={{ color: '#fff' }} href="/fif-tv">Ouvrir FIF TV <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></Link>
+        </div>
+        <div className="h-tv">
+          <div className="h-tv-screen">
+            {videos[0]
+              ? <Link href={`/fif-tv/${videos[0].slug}`} aria-label={`Lire : ${videos[0].title}`}><img src={videos[0].image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></Link>
+              : <video src="/hero-elephants.mp4" poster="/media/hero-poster.jpg" muted loop playsInline preload="none" controls aria-label="Clip vidéo FIF" />}
+          </div>
+          <div className="h-tv-list">
+            {videos.length ? videos.slice(0, 4).map((v) => (
+              <div key={v.id}><strong><Link href={`/fif-tv/${v.slug}`}>{v.title}</Link></strong><span>{v.category} · {v.duration}</span></div>
+            )) : (
+              <>
+                <div><strong>Résumés des matchs</strong><span>Les temps forts des Éléphants et des championnats.</span></div>
+                <div><strong>Conférences de presse</strong><span>Sélectionneurs, joueurs et dirigeants.</span></div>
+                <div><strong>Coulisses et reportages</strong><span>Au cœur des sélections et des clubs.</span></div>
+                <p className="h-fan-note" style={{ color: '#c8d6ce' }}>Les vidéos officielles seront publiées ici dès leur mise en ligne par la FIF.</p>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* G. FOOTBALL IVOIRIEN */}
+      <section className="h-section reveal" aria-labelledby="foot-title">
+        <div className="h-head">
+          <div><span className="h-kicker">Football ivoirien</span><h2 id="foot-title">Du quartier à l’élite</h2><p>Clubs, joueurs, formation et toutes les pratiques du football en Côte d’Ivoire.</p></div>
+        </div>
+        <div className="h-foot">
+          <Link href="/clubs"><b>{proClubs}</b><strong>Clubs professionnels</strong><span>Ligue 1 et Ligue 2 : fiches, effectifs, stades et résultats.</span><span className="text-link">Trouver un club <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></span></Link>
+          <Link href="/joueurs"><Users aria-hidden /><strong>Joueurs</strong><span>{players.length} profils de licenciés et d’internationaux.</span></Link>
+          <Link href="/formation"><GraduationCap aria-hidden /><strong>Formation</strong><span>FIF Academy : entraîneurs, arbitres, dirigeants.</span></Link>
+          <Link href="/football/amateur"><Shield aria-hidden /><strong>Football amateur</strong><span>Championnats régionaux, D3 et districts.</span></Link>
+          <Link href="/football/feminin"><Heart aria-hidden /><strong>Football féminin</strong><span>Éléphantes, championnat et développement.</span></Link>
+          <Link href="/talent-hub"><BadgeCheck aria-hidden /><strong>Talents</strong><span>Académies agréées et détection.</span></Link>
+        </div>
+      </section>
+
+      {/* H. FIF FAN UNIVERSE */}
+      <section className="h-section compact reveal" aria-labelledby="fan-title">
+        <div className="h-fan">
+          <div>
+            <span className="h-kicker" style={{ color: 'var(--gray-900)' }}>FIF Fan Universe</span>
+            <h2 id="fan-title">Supporters, entrez dans le jeu</h2>
+            <p>Créez votre Fan ID, gagnez des points et des badges, jouez aux quiz et partagez votre passion dans la Fan Zone.</p>
+            <Link className="button button-secondary" href="/supporters/fan-id">Créer mon Fan ID <ArrowRight /></Link>
+            <p className="h-fan-note">Points symboliques uniquement : aucune mise, aucun gain d’argent.</p>
+          </div>
+          <div className="h-fan-grid">
+            <Link href="/supporters/arena/quiz"><strong>Quiz</strong><span>Testez vos connaissances</span></Link>
+            <Link href="/supporters/arena/pronostics"><strong>Pronostics</strong><span>Gratuits, sans mise</span></Link>
+            <Link href="/supporters/fan-zone"><strong>Fan Zone</strong><span>Photos, chants, créations</span></Link>
+            <Link href="/supporters/classements"><strong>Classements</strong><span>Villes, écoles, communautés</span></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* I. SERVICES FÉDÉRAUX */}
+      <section className="h-section section-alt reveal" aria-labelledby="services-title">
+        <div className="h-head">
+          <div><span className="h-kicker">Services fédéraux</span><h2 id="services-title">Vos démarches en ligne</h2></div>
+        </div>
+        <div className="h-services">
+          <Link href="/licences"><IdCard aria-hidden /><div><strong>Licences</strong><span>Demander ou renouveler une licence</span></div></Link>
+          <Link href="/portail/clubs"><ClipboardList aria-hidden /><div><strong>Portail Clubs</strong><span>Effectifs, licenciés, feuilles de match</span></div></Link>
+          <Link href="/officiels"><Flag aria-hidden /><div><strong>Portail Officiels</strong><span>Arbitres, délégués, commissaires</span></div></Link>
+          <Link href="/formation"><BookOpen aria-hidden /><div><strong>Formation</strong><span>Parcours diplômants FIF Academy</span></div></Link>
+          <Link href="/documents"><FileText aria-hidden /><div><strong>Documents officiels</strong><span>Règlements, circulaires, décisions</span></div></Link>
+          <Link href="/reclamations"><Scale aria-hidden /><div><strong>Réclamations</strong><span>Déposer et suivre une réclamation</span></div></Link>
+        </div>
+      </section>
+
+      {/* J. FOOTBALL POUR TOUS & PARTENAIRES */}
+      <section className="h-section reveal" aria-labelledby="all-title">
+        <div className="h-for-all">
+          <div>
+            <span className="h-kicker">Football pour tous</span>
+            <h2 id="all-title" style={{ fontSize: 'var(--fs-h2)', margin: 0 }}>Développer le football partout en Côte d’Ivoire</h2>
+            <div className="h-programs" style={{ marginTop: 24 }}>
+              <Link href="/aides-projets"><Megaphone aria-hidden /><div><strong>Projet Club & aides FIF</strong><span>Accompagnement et financement des clubs</span></div></Link>
+              <Link href="/football/scolaire"><GraduationCap aria-hidden /><div><strong>Football scolaire</strong><span>Le football à l’école et à l’université</span></div></Link>
+              <Link href="/academies"><Clock3 aria-hidden /><div><strong>Académies</strong><span>Formation des jeunes talents</span></div></Link>
+            </div>
+          </div>
+          <div className="h-partners">
+            <span className="h-kicker">Partenaires</span>
+            <strong>Partenaires officiels de la FIF</strong>
+            <p>Cet espace présente uniquement les partenaires dont le contrat est validé par la Fédération. Les logos seront affichés dès leur transmission officielle.</p>
+            <Link className="button-outline" href="/contact" style={{ alignSelf: 'flex-start' }}>Devenir partenaire <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+        <p className="h-source"><PlayCircle size={14} style={{ verticalAlign: 'middle' }} aria-hidden /> Résultats, calendriers et classements issus de sources publiques citées sur chaque page (FIF, presse sportive), mis à jour plusieurs fois par jour.</p>
       </section>
     </main>
-  )
-}
-
-function CountdownBar({ targetIso }: { targetIso: string }) {
-  const initialDiff = Math.max(0, +new Date(targetIso) - +new Date('2026-09-17T12:00:00Z'))
-  const [diff, setDiff] = useState(initialDiff)
-
-  useEffect(() => {
-    const tick = () => setDiff(Math.max(0, +new Date(targetIso) - Date.now()))
-    tick()
-    const id = setInterval(tick, 60000)
-    return () => clearInterval(id)
-  }, [targetIso])
-
-  const days = Math.floor(diff / 86400000)
-  const hours = Math.floor((diff % 86400000) / 3600000)
-  const minutes = Math.floor((diff % 3600000) / 60000)
-  return (
-    <div className="countdown" suppressHydrationWarning>
-      <div><b>{String(days).padStart(2, '0')}</b><small>JOURS</small></div>
-      <i>:</i>
-      <div><b>{String(hours).padStart(2, '0')}</b><small>HEURES</small></div>
-      <i>:</i>
-      <div><b>{String(minutes).padStart(2, '0')}</b><small>MINUTES</small></div>
-    </div>
   )
 }

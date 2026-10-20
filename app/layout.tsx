@@ -2,11 +2,13 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Barlow, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
+import './ds.css'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { CmsHydrator } from '@/components/site/CmsHydrator'
 import { SiteAnnouncement } from '@/components/site/SiteAnnouncement'
 import { PwaRegister } from '@/components/site/InstallApp'
+import { RevealObserver } from '@/components/site/RevealObserver'
 import { connection } from 'next/server'
 import { loadCms, toPublicOverlay } from '@/lib/cms/server'
 
@@ -25,9 +27,8 @@ const barlow = Barlow({
 })
 
 export const metadata: Metadata = {
-  title: 'FIF Digital — Le football ivoirien, plus proche que jamais',
+  title: { default: 'Fédération Ivoirienne de Football — FIF', template: '%s' },
   description: 'Actualités, compétitions, Éléphants, clubs, joueurs et données du football ivoirien.',
-  generator: 'v0.app',
   applicationName: 'FIF',
   appleWebApp: { capable: true, title: 'FIF', statusBarStyle: 'black-translucent' },
   icons: {
@@ -59,11 +60,12 @@ export default async function RootLayout({
           <div className="site-shell">
             <SiteAnnouncement settings={cms.settings} />
             <SiteHeader />
-            {children}
+            <div id="contenu" tabIndex={-1}>{children}</div>
             <SiteFooter settings={cms.settings} />
           </div>
         </CmsHydrator>
         <PwaRegister />
+        <RevealObserver />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
