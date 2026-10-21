@@ -1431,7 +1431,19 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     ],
     source: 'Score publié par une seule source (Supersport CI, « Ligue 1 (4ej) : Le Stade d’Abidjan domine Zoman FC (2-0) ») — à confirmer. Ouverture du score de Romaric Ouattara à la 17e, but contre son camp à la 82e ; match joué le dimanche 18 octobre 2026.',
     scoreConfirmed: false,
+  },  {
+    slug: 'l1-j4-ofc-adiake-us-tchologo',
+    competitionId: 'comp-l1',
+    matchday: 4,
+    date: '2026-10-20',
+    homeClub: 'OFC Adiaké',
+    awayClub: 'US Tchologo',
+    homeScore: 0,
+    awayScore: 0,
+    events: [],
+    source: 'Résultat confirmé par Sofascore et Foot Africa (match nul 0-0, 0-0 à la mi-temps) — 4e journée, mardi 20 octobre 2026.',
   },
+
   {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
     competitionId: 'comp-l1',
@@ -1957,7 +1969,6 @@ const LIGUE1_J3_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 // champions CAF, jouent le 29 octobre. Heures non communiquées.
 const J4_NOTE = 'Ligue 1 LONACI 2026-2027, 4e journée (18-29 octobre 2026) — programme publié par DailySports (source unique), heure à confirmer.'
 const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'OFC Adiaké', away: 'US Tchologo', date: '2026-10-20', note: J4_NOTE },
   { home: 'Stella Club', away: 'AFAD Plateau', date: '2026-10-29', note: J4_NOTE },
   { home: 'Bouaké FC', away: 'CO Korhogo', date: '2026-10-29', note: J4_NOTE },
   { home: 'FC San Pedro', away: 'SOA', date: '2026-10-29', venue: 'Stade Laurent Pokou, San Pedro', note: J4_NOTE },
