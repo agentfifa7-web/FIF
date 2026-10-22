@@ -1975,10 +1975,27 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
   { home: 'ISCA Inova', away: 'ASEC Mimosas', date: '2026-10-29', venue: 'Stade olympique Alassane Ouattara, Ébimpé', note: J4_NOTE },
 ]
 
+// 5e journée : du vendredi 23 octobre au dimanche 1er novembre 2026 — programme
+// publié par ami-sportif.com (22 octobre 2026) et DailySports. Les clubs engagés
+// en compétitions africaines jouent le 1er novembre. Heure communiquée
+// uniquement pour ASEC Mimosas – FC San Pedro (18h00).
+const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée (23 octobre – 1er novembre 2026) — programme publié par ami-sportif.com et DailySports.'
+const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
+  { home: 'FC Mouna', away: 'Zoman FC', date: '2026-10-23', note: J5_NOTE },
+  { home: 'SOL FC', away: 'ES Agboville', date: '2026-10-24', note: J5_NOTE },
+  { home: 'OFC Adiaké', away: 'Bouaké FC', date: '2026-10-24', note: J5_NOTE },
+  { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', note: J5_NOTE },
+  { home: 'US Tchologo', away: 'Stade d’Abidjan', date: '2026-10-25', note: J5_NOTE },
+  { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', note: J5_NOTE },
+  { home: 'AFAD Plateau', away: 'Yakro FC', date: '2026-11-01', note: J5_NOTE },
+  { home: 'ASEC Mimosas', away: 'FC San Pedro', date: '2026-11-01', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
+]
+
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE1_J2_PAIRINGS.map((f) => ({ ...f, matchday: 2 })),
   ...LIGUE1_J3_PAIRINGS.map((f) => ({ ...f, matchday: 3 })),
   ...LIGUE1_J4_PAIRINGS.map((f) => ({ ...f, matchday: 4 })),
+  ...LIGUE1_J5_PAIRINGS.map((f) => ({ ...f, matchday: 5 })),
 ].map(({ home, away, date, time, venue, postponed, note, matchday }) => ({
   slug: `l1-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
