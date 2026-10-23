@@ -1456,7 +1456,22 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayScore: 0,
     events: [],
     source: 'Résultat confirmé par Sofascore et Foot Africa (match nul 0-0, 0-0 à la mi-temps) — 4e journée, mardi 20 octobre 2026.',
+  },  {
+    slug: 'l1-j5-fc-mouna-zoman-fc',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-10-23',
+    time: '15:30',
+    venue: 'Complexe sportif de Bingerville',
+    homeClub: 'FC Mouna',
+    awayClub: 'Zoman FC',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home', player: 'Toure Lamine' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 1 (5e journée) : Mouna enchaîne face à Zoman ») — à confirmer. But de Touré Lamine en première période ; Zoman FC a manqué un penalty. Match joué le vendredi 23 octobre 2026.',
+    scoreConfirmed: false,
   },
+
 
   {
     slug: 'l1-j3-asec-mimosas-afad-plateau',
@@ -1994,7 +2009,6 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 // annoncé aussi par ami-sportif.com et DailySports. Susceptible de modifications.
 const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'FC Mouna', away: 'Zoman FC', date: '2026-10-23', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
   { home: 'SOL FC', away: 'ES Agboville', date: '2026-10-24', time: '15:30', venue: 'CNTF de Bingerville', note: J5_NOTE },
   { home: 'OFC Adiaké', away: 'Bouaké FC', date: '2026-10-24', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
   { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
