@@ -896,3 +896,6 @@ h2.panel-title, .page-section h2.panel-title { font-size: 20px !important; margi
 .legal a { color: var(--fif-green-800); text-decoration: underline; }
 .legal-todo { background: var(--fif-orange-50); border-radius: 4px; color: var(--fif-orange-text); font-style: normal; padding: 1px 6px; }
 .err-inner .button-group { margin-top: var(--sp-5); }
+.lineup-coach { border-top: 1px solid var(--gray-200); color: var(--gray-500); font-size: 14px; margin: 12px 0 0; padding-top: 10px; }
+.match-officials { color: var(--gray-500); font-size: 14px; margin: 16px 0 0; }
+.mc-lineups { margin-top: var(--sp-7); padding: 0 var(--page-x) var(--sp-8); }

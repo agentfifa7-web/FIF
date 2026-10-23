@@ -34,6 +34,14 @@ export function MatchCenter({ match }: { match: Match }) {
   const awayScore = sheet ? sheet.awayScore : match.awayScore
   const status = sheet ? 'Terminé' : match.status === 'Terminé' && match.scoreConfirmed === false ? 'Terminé (score à confirmer)' : awaitingScore(match) ? 'Joué — score en attente' : match.status
   const attendance = sheet?.attendance ?? match.attendance
+  // Composition : feuille saisie dans l'administration, sinon feuille officielle LFP.
+  const fromOfficial = (side: 'home' | 'away'): MatchSheetPlayer[] => (match.officialLineups?.[side].players ?? []).map((p, i) => ({
+    id: `${side}-${i}`, name: p.name, number: p.number, starter: p.starter, captain: p.captain, position: p.goalkeeper ? 'Gardien' : undefined,
+  }))
+  const lineups = sheet?.lineups && (sheet.lineups.home.length > 0 || sheet.lineups.away.length > 0)
+    ? { home: sheet.lineups.home, away: sheet.lineups.away, homeCoach: undefined, awayCoach: undefined }
+    : match.officialLineups ? { home: fromOfficial('home'), away: fromOfficial('away'), homeCoach: match.officialLineups.home.coach, awayCoach: match.officialLineups.away.coach } : null
+  const off = match.officials
 
   const timeline = useMemo<TimelineRow[]>(() => {
     const rows: TimelineRow[] = sheet
@@ -72,7 +80,7 @@ export function MatchCenter({ match }: { match: Match }) {
         <span><CalendarDays /> {matchWhen(match, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}{match.timeConfirmed === false && match.dateConfirmed !== false ? ' · heure non communiquée' : ''}</span>
         <span><MapPin /> {venue ?? 'Stade à confirmer'}</span>
         {attendance ? <span><Users /> {attendance.toLocaleString('fr-FR')} spectateurs</span> : null}
-        {match.refereeName && <span>Arbitre : {match.refereeName}</span>}
+        {match.refereeName && !off && <span>Arbitre : {match.refereeName}</span>}
       </div>
 
       <div className="match-center-grid">
@@ -96,19 +104,24 @@ export function MatchCenter({ match }: { match: Match }) {
           <ul className="match-facts">
             <li><span>Compétition</span><b>Journée {match.matchday}</b></li>
             <li><span>Statut</span><b>{status}</b></li>
+            {off?.referee && <li><span>Arbitre</span><b>{off.referee}</b></li>}
+            {off?.assistants?.length ? <li><span>Assistants</span><b>{off.assistants.join(' · ')}</b></li> : null}
+            {off?.fourthOfficial && <li><span>4e officiel</span><b>{off.fourthOfficial}</b></li>}
+            {off?.commissioner && <li><span>Commissaire au match</span><b>{off.commissioner}</b></li>}
             {match.source && <li><span>Source</span><b>{match.source}</b></li>}
+            {match.sheetSource && <li><span>Feuille de match</span><b>{match.sheetSource}</b></li>}
             {sheet && <li><span>Feuille de match</span><b>Publiée le {new Date(sheet.submittedAt).toLocaleDateString('fr-FR')}</b></li>}
           </ul>
           {match.detailHref && <Link href={match.detailHref} className="text-link" style={{ marginTop: 12 }}>Fiche complète du match <ExternalLink size={14} /></Link>}
         </div>
       </div>
 
-      <div style={{ marginTop: 40 }}>
+      <div className="mc-lineups">
         <p className="section-tag"><ClipboardList size={14} /> Compositions</p>
-        {sheet?.lineups && (sheet.lineups.home.length > 0 || sheet.lineups.away.length > 0) ? (
+        {lineups ? (
           <div className="lineup-public">
-            <LineupColumn title={home.name} players={sheet.lineups.home} />
-            <LineupColumn title={away.name} players={sheet.lineups.away} />
+            <LineupColumn title={home.name} players={lineups.home} coach={lineups.homeCoach} />
+            <LineupColumn title={away.name} players={lineups.away} coach={lineups.awayCoach} />
           </div>
         ) : (
           <p className="lede" style={{ marginTop: 12 }}>Compositions d’équipe non publiées pour ce match.</p>
@@ -118,7 +131,7 @@ export function MatchCenter({ match }: { match: Match }) {
   )
 }
 
-function LineupColumn({ title, players }: { title: string; players: MatchSheetPlayer[] }) {
+function LineupColumn({ title, players, coach }: { title: string; players: MatchSheetPlayer[]; coach?: string }) {
   const starters = players.filter((p) => p.starter)
   const subs = players.filter((p) => !p.starter)
   const row = (p: MatchSheetPlayer) => (
@@ -131,6 +144,7 @@ function LineupColumn({ title, players }: { title: string; players: MatchSheetPl
       {starters.length ? <ul>{starters.map(row)}</ul> : <p className="muted-sm">Non renseignés</p>}
       <p className="lineup-sub">Remplaçants</p>
       {subs.length ? <ul>{subs.map(row)}</ul> : <p className="muted-sm">Non renseignés</p>}
+      {coach && <p className="lineup-coach">Entraîneur : <b>{coach}</b></p>}
     </div>
   )
 }

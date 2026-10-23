@@ -9,6 +9,7 @@ import { Breadcrumb } from '@/components/site/PageHero'
 import { PersonPortrait } from '@/components/site/PersonPortrait'
 import { formatDate, age } from '@/lib/format'
 import { loadCms } from '@/lib/cms/server'
+import type { OfficialDesignation } from '@/lib/data/types'
 
 const ROLE_CONFIG = {
   entraineurs: { label: 'Entraîneur', dataset: coaches },
@@ -74,17 +75,38 @@ export default async function OfficialProfilePage({ params }: { params: Promise<
   )
 }
 
-function IdCard({ fifId, birthdate, rows }: { fifId: string; birthdate: string; rows: { label: string; value: React.ReactNode }[] }) {
+// N'affiche que les informations connues (une fiche créée à partir d'une
+// feuille de match n'a ni FIF ID ni date de naissance).
+function IdCard({ fifId, birthdate, rows }: { fifId?: string; birthdate?: string; rows: { label: string; value: React.ReactNode }[] }) {
+  const shown = rows.filter((r) => r.value !== undefined && r.value !== null && r.value !== '')
   return (
     <div className="dashboard-panel" style={{ maxWidth: 460 }}>
-      <h3>Identité fédérale</h3>
+      <h3>{fifId ? 'Identité fédérale' : 'Informations'}</h3>
       <div className="dashboard-list">
-        <div><small>FIF ID</small><b>{fifId}</b></div>
-        <div><small>Date de naissance</small><b>{formatDate(birthdate)} · {age(birthdate)} ans</b></div>
-        {rows.map((r, i) => <div key={i}><small>{r.label}</small><b>{r.value}</b></div>)}
+        {fifId && <div><small>FIF ID</small><b>{fifId}</b></div>}
+        {birthdate && <div><small>Date de naissance</small><b>{formatDate(birthdate)} · {age(birthdate)} ans</b></div>}
+        {shown.map((r, i) => <div key={i}><small>{r.label}</small><b>{r.value}</b></div>)}
       </div>
-      <Link href={`/verifier/${fifId}`} className="button-outline" style={{ marginTop: 16 }}><QrCode size={14} /> Vérifier ce FIF ID</Link>
+      {fifId && <Link href={`/verifier/${fifId}`} className="button-outline" style={{ marginTop: 16 }}><QrCode size={14} /> Vérifier ce FIF ID</Link>}
     </div>
+  )
+}
+
+/** Matchs inscrits sur les feuilles de match officielles. */
+function Designations({ list }: { list?: OfficialDesignation[] }) {
+  if (!list?.length) return null
+  return (
+    <section className="page-section tight">
+      <h2 className="section-tag">Feuilles de match officielles</h2>
+      <div className="dashboard-list" style={{ marginTop: 16, maxWidth: 720 }}>
+        {list.map((d) => (
+          <div key={`${d.matchId}-${d.role}`}>
+            <div><b>{d.label}</b><small>{formatDate(d.date)} · {d.role}</small></div>
+            <Link href={`/matches/${d.matchId}`} className="status-pill neutral">Voir le match</Link>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -105,11 +127,12 @@ function CoachDetails({ coach }: { coach: (typeof coaches)[number] }) {
           ]}
         />
       </section>
-      {coach.history.length > 0 && (
+      <Designations list={coach.designations} />
+      {(coach.history?.length ?? 0) > 0 && (
         <section className="page-section tight">
           <p className="section-tag">Équipes dirigées</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            {coach.history.map((h, i) => {
+            {(coach.history ?? []).map((h, i) => {
               const c = getClubById(h.clubId)
               return c ? (
                 <Link key={i} href={`/clubs/${c.slug}`} className="entity-card">
@@ -125,7 +148,7 @@ function CoachDetails({ coach }: { coach: (typeof coaches)[number] }) {
 }
 
 function RefereeDetails({ referee }: { referee: (typeof referees)[number] }) {
-  const region = getRegion(referee.regionId)
+  const region = referee.regionId ? getRegion(referee.regionId) : undefined
   const designations = matches.filter((m) => m.refereeId === referee.id && m.status === 'À venir').slice(0, 5)
   return (
     <>
@@ -135,9 +158,9 @@ function RefereeDetails({ referee }: { referee: (typeof referees)[number] }) {
           birthdate={referee.birthdate}
           rows={[
             { label: 'Catégorie', value: referee.category },
-            { label: 'Région', value: region?.name ?? '—' },
-            { label: 'Statut', value: <span className={`status-pill ${referee.status === 'Actif' ? 'ok' : referee.status === 'Suspendu' ? 'error' : 'neutral'}`}>{referee.status}</span> },
-            { label: 'Matchs arbitrés', value: referee.matchesOfficiated },
+            { label: 'Région', value: region?.name },
+            { label: 'Statut', value: referee.status ? <span className={`status-pill ${referee.status === 'Actif' ? 'ok' : referee.status === 'Suspendu' ? 'error' : 'neutral'}`}>{referee.status}</span> : undefined },
+            { label: referee.designations ? 'Matchs (feuilles officielles)' : 'Matchs arbitrés', value: referee.matchesOfficiated },
           ]}
         />
       </section>
@@ -156,11 +179,13 @@ function RefereeDetails({ referee }: { referee: (typeof referees)[number] }) {
         ) : <p className="lede" style={{ marginTop: 12 }}>Aucune désignation à venir pour l’instant.</p>}
       </section>
 
-      {referee.trainings.length > 0 && (
+      <Designations list={referee.designations} />
+
+      {(referee.trainings?.length ?? 0) > 0 && (
         <section className="page-section tight">
           <p className="section-tag">Formations complétées</p>
           <div className="dashboard-list" style={{ marginTop: 16, maxWidth: 620 }}>
-            {referee.trainings.map((t, i) => (
+            {(referee.trainings ?? []).map((t, i) => (
               <div key={i}>
                 <div><b>{t.title}</b><small>{formatDate(t.date)}</small></div>
                 <span className="status-pill ok">Validée</span>
@@ -190,6 +215,7 @@ function OfficialDetails({ official }: { official: (typeof officials)[number] })
           ]}
         />
       </section>
+      <Designations list={official.designations} />
 
       {isMatchDelegate && (
         <>

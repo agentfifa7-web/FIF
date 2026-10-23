@@ -34,7 +34,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
       </div>
       <h1 className="sr-only">{homeClub?.name} – {awayClub?.name}</h1>
       <MatchCenter match={match} />
-      {homeClub && awayClub && (
+      {homeClub && awayClub && !match.officialLineups && (
         <MatchSheetBanner matchId={match.id} homeName={homeClub.name} awayName={awayClub.name} />
       )}
     </main>

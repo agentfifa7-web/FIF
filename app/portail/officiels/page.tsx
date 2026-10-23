@@ -10,8 +10,9 @@ export const metadata = { title: 'Portail Officiels — Mon espace — FIF' }
 
 export default async function OfficialPortalPage() {
   await loadCms()
-  // Espace personnel : affiché seulement pour un officiel réellement enregistré.
-  const official = referees[0]
+  // Espace personnel : il faudrait un compte officiel authentifié, qui n'existe
+  // pas encore. On n'affiche jamais la fiche d'un arbitre réel à sa place.
+  const official = undefined as (typeof referees)[number] | undefined
   if (!official) {
     return (
       <main>
@@ -24,8 +25,8 @@ export default async function OfficialPortalPage() {
         <section className="page-section tight">
           <div className="dashboard-panel">
             <h3>Aucun officiel enregistré pour le moment</h3>
-            <p className="lede">Cet espace s’ouvre aux arbitres, délégués et commissaires dès que leur fiche est créée à partir de la liste officielle de la Commission Centrale d’Arbitrage. Aucune désignation fictive n’est affichée.</p>
-            <Link href="/arbitrage" className="button-outline" style={{ marginTop: 12 }}>Voir l’Arbitrage Center</Link>
+            <p className="lede">Cet espace personnel (désignations, disponibilités, rapports) s’ouvrira aux arbitres, délégués et commissaires avec des identifiants fournis par la FIF. En attendant, les désignations publiées sur les feuilles de match sont consultables dans l’annuaire des officiels.</p>
+            <div className="button-group" style={{ marginTop: 12 }}><Link href="/officiels?role=arbitres" className="button-outline">Annuaire des arbitres</Link><Link href="/arbitrage" className="button-outline">Arbitrage Center</Link></div>
           </div>
         </section>
       </main>
@@ -90,7 +91,7 @@ export default async function OfficialPortalPage() {
             <div className="dashboard-panel" id="formations">
               <h3>Formations & perfectionnement</h3>
               <p className="lede">Modules VAR, préparation physique et retours vidéo pour progresser dans votre catégorie.</p>
-              <Link href="/arbitrage" className="button-outline" style={{ marginTop: 12 }}>Voir l’Arbitrage Center</Link>
+              <div className="button-group" style={{ marginTop: 12 }}><Link href="/officiels?role=arbitres" className="button-outline">Annuaire des arbitres</Link><Link href="/arbitrage" className="button-outline">Arbitrage Center</Link></div>
             </div>
           </div>
         </div>

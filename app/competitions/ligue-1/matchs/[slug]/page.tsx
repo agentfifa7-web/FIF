@@ -84,31 +84,45 @@ export default async function LigueUnMatchPage({ params }: { params: Promise<{ s
           {!match.events.length && <p className="lede" >Aucun but ni carton recensé pour ce match.</p>}
         </div>
         {match.referee && (
-          <p className="lede" style={{ color: '#8fa79a', marginTop: 24, fontSize: 12 }}>
-            Arbitre : {match.referee.name}{match.referee.assistants?.length ? ` · Assistants : ${match.referee.assistants.join(', ')}` : ''}{match.referee.fourthOfficial ? ` · 4e arbitre : ${match.referee.fourthOfficial}` : ''}
+          <p className="match-officials">
+            Arbitre : {match.referee.name}{match.referee.assistants?.length ? ` · Assistants : ${match.referee.assistants.join(', ')}` : ''}{match.referee.fourthOfficial ? ` · 4e officiel : ${match.referee.fourthOfficial}` : ''}{match.referee.commissioner ? ` · Commissaire au match : ${match.referee.commissioner}` : ''}
           </p>
         )}
         {match.attendance && (
-          <p className="lede" style={{ color: '#8fa79a', marginTop: 8, fontSize: 12 }}>Affluence : {match.attendance.toLocaleString('fr-FR')} spectateurs</p>
+          <p className="match-officials">Affluence : {match.attendance.toLocaleString('fr-FR')} spectateurs</p>
         )}
+        {match.sheetSource && <p className="match-officials">{match.sheetSource}</p>}
       </section>
 
       {match.lineups && (
         <section className="page-section tight">
-          <p className="section-tag">Compositions de départ</p>
+          <p className="section-tag">{match.lineups.home.players ? 'Feuille de match' : 'Compositions de départ'}</p>
           <div className="card-grid cols-2" style={{ marginTop: 16 }}>
-            <div className="dashboard-panel" style={{ borderTop: '3px solid var(--orange)', margin: 0 }}>
-              <h3>{match.homeClub} {match.lineups.home.formation && <span style={{ color: 'var(--muted)', fontWeight: 400, fontSize: 13 }}>({match.lineups.home.formation})</span>}</h3>
-              <ol style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12, paddingLeft: 20 }}>
-                {match.lineups.home.startingXI.map((name, i) => <li key={i} style={{ fontSize: 14 }}>{name}</li>)}
-              </ol>
-            </div>
-            <div className="dashboard-panel" style={{ borderTop: '3px solid var(--green)', margin: 0 }}>
-              <h3>{match.awayClub} {match.lineups.away.formation && <span style={{ color: 'var(--muted)', fontWeight: 400, fontSize: 13 }}>({match.lineups.away.formation})</span>}</h3>
-              <ol style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12, paddingLeft: 20 }}>
-                {match.lineups.away.startingXI.map((name, i) => <li key={i} style={{ fontSize: 14 }}>{name}</li>)}
-              </ol>
-            </div>
+            {(['home', 'away'] as const).map((side) => {
+              const l = match.lineups![side]
+              const club = side === 'home' ? match.homeClub : match.awayClub
+              const row = (p: { name: string; number?: number; captain?: boolean; goalkeeper?: boolean }, i: number) => (
+                <li key={i}><span className="lineup-num">{p.number ?? '–'}</span><span>{p.name}{p.captain && <em className="lineup-c"> (C)</em>}</span>{p.goalkeeper && <small>Gardien</small>}</li>
+              )
+              return (
+                <div key={side} className="dashboard-panel lineup-col" style={{ borderTop: `3px solid ${side === 'home' ? 'var(--fif-orange)' : 'var(--fif-green-600)'}`, margin: 0 }}>
+                  <h3>{club} {l.formation && <span style={{ color: 'var(--gray-500)', fontWeight: 400, fontSize: 14 }}>({l.formation})</span>}</h3>
+                  {l.players ? (
+                    <>
+                      <p className="lineup-sub">Titulaires</p>
+                      <ul>{l.players.filter((p) => p.starter).map(row)}</ul>
+                      <p className="lineup-sub">Remplaçants</p>
+                      <ul>{l.players.filter((p) => !p.starter).map(row)}</ul>
+                      {l.coach && <p className="lineup-coach">Entraîneur : <b>{l.coach}</b></p>}
+                    </>
+                  ) : (
+                    <ol style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12, paddingLeft: 20 }}>
+                      {l.startingXI.map((name, i) => <li key={i} style={{ fontSize: 15 }}>{name}</li>)}
+                    </ol>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </section>
       )}

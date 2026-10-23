@@ -1,5 +1,6 @@
 import { makeRng, slugify } from './rng'
 import { academyPrograms } from './academy'
+import { OFFICIAL_MATCH_SHEETS, type OfficialSheetSide } from './matchSheets'
 import type {
   Academy,
   Agent,
@@ -30,6 +31,7 @@ import type {
   Product,
   QuizQuestion,
   Referee,
+  OfficialDesignation,
   Region,
   RewardEntry,
   ScoutReport,
@@ -98,6 +100,9 @@ export const stadiums: Stadium[] = [
   { id: 'st-paix-bouake', slug: 'stade-de-la-paix-bouake', name: 'Stade de la Paix', cityId: 'c-bouake', capacity: 40000, built: 1984, note: 'Construit pour la CAN 1984, rénové pour la CAN 2023.' },
   { id: 'st-ckb', slug: 'stade-charles-konan-banny', name: 'Stade Charles Konan Banny', cityId: 'c-yamoussoukro', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
   { id: 'st-agc', slug: 'stade-amadou-gon-coulibaly', name: 'Stade Amadou Gon Coulibaly', cityId: 'c-korhogo', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
+  { id: 'st-champroux', slug: 'stade-robert-champroux', name: 'Stade Robert Champroux', cityId: 'c-abidjan', note: 'Stade de Marcory (Abidjan), utilisé en Ligue 2 (feuille de match officielle LFP, saison 2026-2027).' },
+  { id: 'st-cntf-bingerville', slug: 'cntf-bingerville', name: 'Centre National Technique de Football (CNTF) de Bingerville', cityId: 'c-abidjan', note: 'Bingerville (district d’Abidjan). Terrain de Ligue 1 désigné sur les feuilles de match et le programme officiel LFP 2026-2027.' },
+  { id: 'st-complexe-bingerville', slug: 'complexe-sportif-de-bingerville', name: 'Complexe sportif de Bingerville', cityId: 'c-abidjan', note: 'Bingerville (district d’Abidjan). Terrain de Ligue 1 désigné sur les feuilles de match et le programme officiel LFP 2026-2027.' },
   { id: 'st-pokou', slug: 'stade-laurent-pokou', name: 'Stade Laurent Pokou', cityId: 'c-san-pedro', capacity: 20000, built: 2023, note: 'Stade de la CAN 2023.' },
 ]
 
@@ -1139,11 +1144,17 @@ export interface RealLeagueMatchReferee {
   name: string
   assistants?: string[]
   fourthOfficial?: string
+  commissioner?: string
 }
 
 export interface RealLeagueMatchLineup {
   formation?: string
   startingXI: string[]
+  /** Remplaçants inscrits sur la feuille de match (n'ont pas forcément joué). */
+  bench?: string[]
+  /** Détail de la feuille officielle : numéros, capitaine, gardiens. */
+  players?: OfficialSheetSide['players']
+  coach?: string
 }
 
 export interface RealLeagueMatch {
@@ -1164,6 +1175,9 @@ export interface RealLeagueMatch {
   source: string
   /** false : score relayé par une seule source (affiché « à confirmer »). */
   scoreConfirmed?: boolean
+  /** Heure du coup d'envoi (feuille de match officielle). */
+  time?: string
+  sheetSource?: string
 }
 
 export const realLigue1Matches: RealLeagueMatch[] = [
@@ -1312,7 +1326,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     slug: 'l1-j2-fc-mouna-yakro-fc',
     competitionId: 'comp-l1',
     matchday: 2,
-    date: '2026-10-05',
+    date: '2026-10-06',
     homeClub: 'FC Mouna',
     awayClub: 'Yakro FC',
     venue: 'Complexe sportif de Bingerville',
@@ -1322,7 +1336,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
       { minute: 11, type: 'goal', team: 'away', player: 'Jaurès Diomandé' },
       { minute: 61, type: 'goal', team: 'away', player: 'Elvis N’guessan' },
     ],
-    source: 'Résultat réel confirmé par Supersport CI (« Yamoussoukro FC surclasse Mouna ») et DailySports — 2e victoire en 2 matchs pour le promu Yakro FC (2e journée).',
+    source: 'Résultat réel confirmé par Supersport CI (« Yamoussoukro FC surclasse Mouna ») et DailySports — 2e victoire en 2 matchs pour le promu Yakro FC (2e journée, lundi 6 octobre 2026 selon la feuille de match officielle).',
   },
   {
     slug: 'l1-j2-zoman-fc-co-korhogo',
@@ -1675,7 +1689,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
       { minute: 71, type: 'goal', team: 'home', player: 'Teddy Maé' },
       { minute: 82, type: 'goal', team: 'home', player: 'Teddy Maé' },
     ],
-    source: 'Score publié par une seule source (Foot Africa, « L’Africa Sports renverse le Sporting Club de Gagnoa ») — à confirmer. Match joué le samedi 17 octobre 2026 (annoncé le 18 par L’Infodrome) ; Gagnoa ouvre le score par Yao Koiame, doublé de Teddy Maé (71e, 82e).',
+    source: 'Score publié par une seule source (Foot Africa, « L’Africa Sports renverse le Sporting Club de Gagnoa ») — à confirmer. Match joué le samedi 17 octobre 2026 à 18h00 (feuille de match officielle LFP) ; Gagnoa ouvre le score par Yao Koiame, doublé de Teddy Maé (71e, 82e).',
     scoreConfirmed: false,
   },
   {
@@ -1721,7 +1735,7 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     homeScore: 1,
     awayScore: 2,
     events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
-    source: 'Résultat réel confirmé par Supersport CI (« L’OFC Adiaké chute à nouveau face à Zoman FC ») et Sport-Ivoire — victoire 2-1 de Zoman FC (3e journée, jouée entre le 10 et le 12 octobre ; date exacte à confirmer, le programme l’annonçait le 13).',
+    source: 'Résultat réel confirmé par Supersport CI (« L’OFC Adiaké chute à nouveau face à Zoman FC ») et Sport-Ivoire — victoire 2-1 de Zoman FC (3e journée, lundi 12 octobre 2026 à 15h30 au CNTF de Bingerville, selon la feuille de match officielle).',
   },
   {
     slug: 'l1-j3-fc-mouna-sol-fc',
@@ -1976,18 +1990,17 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 ]
 
 // 5e journée : du vendredi 23 octobre au dimanche 1er novembre 2026 — programme
-// publié par ami-sportif.com (22 octobre 2026) et DailySports. Les clubs engagés
-// en compétitions africaines jouent le 1er novembre. Heure communiquée
-// uniquement pour ASEC Mimosas – FC San Pedro (18h00).
-const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée (23 octobre – 1er novembre 2026) — programme publié par ami-sportif.com et DailySports.'
+// officiel de la Ligue de Football Professionnel (dates, heures, stades),
+// annoncé aussi par ami-sportif.com et DailySports. Susceptible de modifications.
+const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'FC Mouna', away: 'Zoman FC', date: '2026-10-23', note: J5_NOTE },
-  { home: 'SOL FC', away: 'ES Agboville', date: '2026-10-24', note: J5_NOTE },
-  { home: 'OFC Adiaké', away: 'Bouaké FC', date: '2026-10-24', note: J5_NOTE },
-  { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', note: J5_NOTE },
-  { home: 'US Tchologo', away: 'Stade d’Abidjan', date: '2026-10-25', note: J5_NOTE },
-  { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', note: J5_NOTE },
-  { home: 'AFAD Plateau', away: 'Yakro FC', date: '2026-11-01', note: J5_NOTE },
+  { home: 'FC Mouna', away: 'Zoman FC', date: '2026-10-23', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
+  { home: 'SOL FC', away: 'ES Agboville', date: '2026-10-24', time: '15:30', venue: 'CNTF de Bingerville', note: J5_NOTE },
+  { home: 'OFC Adiaké', away: 'Bouaké FC', date: '2026-10-24', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
+  { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
+  { home: 'US Tchologo', away: 'Stade d’Abidjan', date: '2026-10-25', time: '15:30', venue: 'Stade Amadou Gon Coulibaly, Korhogo', note: J5_NOTE },
+  { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', time: '15:30', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J5_NOTE },
+  { home: 'AFAD Plateau', away: 'Yakro FC', date: '2026-11-01', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
   { home: 'ASEC Mimosas', away: 'FC San Pedro', date: '2026-11-01', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
 ]
 
@@ -2060,10 +2073,71 @@ export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
 const STADIUM_BY_VENUE: [RegExp, string][] = [
   [/Konan Banny/i, 'st-ckb'], [/Ebimp/i, 'st-ebimpe'], [/Houphou/i, 'st-fhb'],
   [/la Paix/i, 'st-paix-bouake'], [/Gon Coulibaly/i, 'st-agc'], [/Pokou/i, 'st-pokou'],
+  [/Champroux/i, 'st-champroux'], [/C[NT]{2}F/i, 'st-cntf-bingerville'], [/Complexe (sportif )?(de )?Bingerville/i, 'st-complexe-bingerville'],
 ]
 function stadiumFromVenue(venue?: string) {
   return venue ? STADIUM_BY_VENUE.find(([re]) => re.test(venue))?.[1] ?? null : null
 }
+
+// Feuilles de match officielles (lib/data/matchSheets.ts) : date, heure,
+// stade, compositions et officiels des matchs concernés.
+for (const [slug, sheet] of Object.entries(OFFICIAL_MATCH_SHEETS)) {
+  const m = realLigue1Matches.find((x) => x.slug === slug)
+  if (!m) continue
+  m.date = sheet.date
+  if (sheet.time) m.time = sheet.time
+  if (sheet.venue) m.venue = sheet.venue
+  const toLineup = (side: OfficialSheetSide): RealLeagueMatchLineup => ({
+    startingXI: side.players.filter((p) => p.starter).map((p) => p.name),
+    bench: side.players.filter((p) => !p.starter).map((p) => p.name),
+    players: side.players,
+    coach: side.coach,
+  })
+  m.lineups = { home: toLineup(sheet.home), away: toLineup(sheet.away) }
+  if (sheet.officials) m.referee = { name: sheet.officials.referee, assistants: sheet.officials.assistants, fourthOfficial: sheet.officials.fourthOfficial, commissioner: sheet.officials.commissioner }
+  m.sheetSource = sheet.sheetSource
+}
+
+// Entraîneurs, arbitres et commissaires inscrits sur ces feuilles : une fiche
+// par personne, avec la liste de ses matchs. Aucune autre donnée (licence,
+// date de naissance, FIF ID…) n'est ajoutée tant qu'elle n'est pas officielle.
+// Variantes d'orthographe d'une même personne d'une feuille à l'autre.
+const OFFICIAL_NAME_ALIASES: Record<string, string> = {
+  'N’Goh Adou': 'N’Go Adou Hermann', // 1er assistant de Kpan Clement sur ASEC – Stella et CO Korhogo – US Tchologo
+}
+function upsertPerson<T extends { id: string; slug: string; name: string; bio: string; designations?: OfficialDesignation[] }>(list: T[], rawName: string, make: (name: string, id: string, slug: string) => T, d: OfficialDesignation) {
+  const name = OFFICIAL_NAME_ALIASES[rawName] ?? rawName
+  let person = list.find((p) => samePersonName(p.name, name))
+  if (!person) {
+    const slug = slugify(name)
+    person = make(name, `${slug}`, slug)
+    list.push(person)
+  }
+  person.designations = [...(person.designations ?? []), d].sort((a, b) => a.date.localeCompare(b.date))
+  return person
+}
+for (const [slug, sheet] of Object.entries(OFFICIAL_MATCH_SHEETS)) {
+  const m = realLigue1Matches.find((x) => x.slug === slug)
+  if (!m) continue
+  const competition = m.competitionId === 'comp-l2' ? 'Ligue 2' : 'Ligue 1 LONACI'
+  const base = { matchId: slug, label: `${m.homeClub} – ${m.awayClub} (${competition}, ${m.matchday}e journée)`, date: m.date, competition }
+  for (const [side, clubName] of [['home', m.homeClub], ['away', m.awayClub]] as const) {
+    const coach = sheet[side].coach
+    const club = getClubByName(clubName)
+    if (!coach || !club) continue
+    const c = upsertPerson(coaches, coach, (name, id, s) => ({ id: `coach-${id}`, slug: s, name, clubId: club.id, nationalTeamId: null, bio: `Entraîneur de ${club.name}, inscrit sur les feuilles de match officielles de la LFP (saison 2026-2027).` }), { ...base, role: `Entraîneur — ${club.name}` })
+    c.clubId = club.id
+  }
+  const o = sheet.officials
+  if (!o) continue
+  const refereeBio = 'Officiel désigné en championnat professionnel ivoirien (feuilles de match officielles de la LFP, saison 2026-2027).'
+  const makeRef = (name: string, id: string, s: string): Referee => ({ id: `ref-${id}`, slug: s, name, matchesOfficiated: 0, bio: refereeBio })
+  upsertPerson(referees, o.referee, makeRef, { ...base, role: 'Arbitre central' })
+  o.assistants.forEach((a, i) => upsertPerson(referees, a, makeRef, { ...base, role: i === 0 ? '1er arbitre assistant' : '2e arbitre assistant' }))
+  if (o.fourthOfficial) upsertPerson(referees, o.fourthOfficial, makeRef, { ...base, role: '4e officiel' })
+  if (o.commissioner) upsertPerson(officials, o.commissioner, (name, id, s) => ({ id: `off-${id}`, slug: s, name, role: 'Commissaire au match' as const, clubId: null, bio: 'Commissaire au match désigné par la LFP (feuilles de match officielles, saison 2026-2027).' }), { ...base, role: 'Commissaire au match' })
+}
+for (const r of referees) r.matchesOfficiated = r.designations?.length ?? r.matchesOfficiated
 
 for (const m of realLigue1Matches) {
   const home = getClubByName(m.homeClub)
@@ -2077,14 +2151,17 @@ for (const m of realLigue1Matches) {
     awayClubId: away.id,
     stadiumId: stadiumFromVenue(m.venue),
     venue: m.venue,
-    date: `${m.date}T12:00:00Z`,
-    timeConfirmed: false,
+    date: `${m.date}T${m.time ?? '12:00'}:00Z`,
+    timeConfirmed: Boolean(m.time),
     status: 'Terminé',
     homeScore: m.homeScore,
     awayScore: m.awayScore,
     events: m.events.map((e) => ({ minute: e.minute, type: e.type, team: e.team, detail: e.player })),
     refereeId: null,
     refereeName: m.referee?.name,
+    officials: m.referee ? { referee: m.referee.name, assistants: m.referee.assistants, fourthOfficial: m.referee.fourthOfficial, commissioner: m.referee.commissioner } : undefined,
+    officialLineups: m.lineups?.home.players && m.lineups.away.players ? { home: { players: m.lineups.home.players, coach: m.lineups.home.coach }, away: { players: m.lineups.away.players, coach: m.lineups.away.coach } } : undefined,
+    sheetSource: m.sheetSource,
     delegateId: null,
     attendance: m.attendance,
     detailHref: m.competitionId === 'comp-l1' ? `/competitions/ligue-1/matchs/${m.slug}` : undefined,
@@ -2151,6 +2228,45 @@ export function samePersonName(a: string, b: string) {
   return [...small].every((t) => large.has(t))
 }
 
+/** Écart d'au plus une lettre (faute de frappe sur une feuille de match). */
+function withinOneEdit(a: string, b: string) {
+  if (Math.abs(a.length - b.length) > 1) return false
+  let i = 0, j = 0, edits = 0
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue }
+    if (++edits > 1) return false
+    if (a.length > b.length) i++
+    else if (b.length > a.length) j++
+    else { i++; j++ }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1
+}
+
+/** Rapprochement tolérant des noms d'une feuille de match avec une fiche
+ *  existante du même club : chaque mot du nom le plus court doit correspondre à
+ *  un mot distinct de l'autre (identique, initiale, préfixe ≥ 4 lettres ou une
+ *  lettre d'écart), avec au moins un mot identique de 3 lettres ou plus. */
+export function closePersonName(a: string, b: string) {
+  const ta = nameTokens(a)
+  const tb = nameTokens(b)
+  const [small, large] = ta.length <= tb.length ? [ta, tb] : [tb, ta]
+  if (small.length < 2) return false
+  const used = new Set<number>()
+  let exact = false
+  for (const t of small) {
+    const idx = large.findIndex((u, k) => !used.has(k) && (
+      u === t
+      || (t.length === 1 && u.startsWith(t)) || (u.length === 1 && t.startsWith(u))
+      || (Math.min(t.length, u.length) >= 4 && (u.startsWith(t) || t.startsWith(u)))
+      || (Math.min(t.length, u.length) >= 5 && withinOneEdit(t, u))
+    ))
+    if (idx < 0) return false
+    if (large[idx] === t && t.length >= 3) exact = true
+    used.add(idx)
+  }
+  return exact
+}
+
 const COMPETITION_STAT_LABEL: Record<string, string> = { 'comp-l1': 'Ligue 1 LONACI', 'comp-l2': 'Ligue 2' }
 
 /** Matchs auxquels une feuille de match publiée s'applique (type minimal). */
@@ -2167,20 +2283,31 @@ export function recomputeMatchStats(sheets: Record<string, SheetLike> = {}) {
   const byId = new Map(players.map((p) => [p.id, p]))
   const usedSlugs = new Set(players.map((p) => p.slug))
 
-  function resolve(clubId: string, name: string | undefined, id?: string): Player | undefined {
+  function resolve(clubId: string, name: string | undefined, id?: string, hint?: { number?: number; goalkeeper?: boolean }): Player | undefined {
     const direct = id ? byId.get(id) : undefined
     if (direct) return direct
     const clean = name?.trim()
     if (!clean) return undefined
-    const found = players.find((p) => p.clubId === clubId && samePersonName(p.name, clean))
+    const same = players.filter((p) => p.clubId === clubId && samePersonName(p.name, clean))
+    // Plusieurs fiches compatibles (ex. « Doumbia Mory » et « Doumbia Mory Ismael ») : le numéro départage.
+    const found = (hint?.number !== undefined ? same.find((p) => p.squadNumber === hint.number) : undefined) ?? same[0]
     if (found) return found
+    // Orthographe proche (fautes de frappe des feuilles) : seulement si un seul joueur correspond.
+    const close = players.filter((p) => p.clubId === clubId && closePersonName(p.name, clean))
+    if (close.length === 1) return close[0]
+    // Même numéro dans le même club et au moins un mot du nom en commun.
+    if (hint?.number !== undefined) {
+      const words = new Set(nameTokens(clean).filter((w) => w.length >= 3))
+      const byNumber = players.filter((p) => p.clubId === clubId && p.squadNumber === hint.number && nameTokens(p.name).some((w) => words.has(w)))
+      if (byNumber.length === 1) return byNumber[0]
+    }
     const club = getClubById(clubId)
     if (!club) return undefined
-    const base = buildPlayerRecord({ id: `auto-${club.id}-${slugify(clean)}`, name: clean, clubId: club.id, position: 'Milieu' })
+    const base = buildPlayerRecord({ id: `auto-${club.id}-${slugify(clean)}`, name: clean, clubId: club.id, position: hint?.goalkeeper ? 'Gardien' : 'Milieu', squadNumber: hint?.number })
     let slug = `${slugify(clean)}-${club.slug}`
     for (let n = 2; usedSlugs.has(slug); n++) slug = `${slugify(clean)}-${club.slug}-${n}`
     usedSlugs.add(slug)
-    const created: Player = { ...base, slug, positionDetail: 'Poste à confirmer', licenseStatus: 'En attente', realRoster: false, autoProfile: true }
+    const created: Player = { ...base, slug, positionDetail: hint?.goalkeeper ? 'Gardien de but' : 'Poste à confirmer', licenseStatus: 'En attente', realRoster: false, autoProfile: true }
     players.push(created)
     byId.set(created.id, created)
     return created
@@ -2237,9 +2364,19 @@ export function recomputeMatchStats(sheets: Record<string, SheetLike> = {}) {
       for (const side of ['home', 'away'] as const) {
         const clubId = clubOf(side)
         const lineup = real.lineups?.[side]
-        for (const name of lineup?.startingXI ?? []) {
-          const out = subs.find((s) => s.team === side && s.playerOut && samePersonName(s.playerOut, name))
-          appear(resolve(clubId, name), out ? (out.minute ?? null) : 90)
+        if (lineup?.players) {
+          // Feuille de match officielle : les titulaires ont joué (minutes non
+          // communiquées) ; les remplaçants sont inscrits à l'effectif sans
+          // être comptés comme ayant joué.
+          for (const entry of lineup.players) {
+            const p = resolve(clubId, entry.name, undefined, { number: entry.number, goalkeeper: entry.goalkeeper })
+            if (entry.starter) appear(p, null)
+          }
+        } else {
+          for (const name of lineup?.startingXI ?? []) {
+            const out = subs.find((s) => s.team === side && s.playerOut && samePersonName(s.playerOut, name))
+            appear(resolve(clubId, name), out ? (out.minute ?? null) : 90)
+          }
         }
         for (const s of subs.filter((x) => x.team === side)) appear(resolve(clubId, s.playerIn), s.minute !== undefined ? 90 - s.minute : null)
       }
@@ -3193,7 +3330,7 @@ export function globalSearch(query: string): SearchResult[] {
   }
   for (const r of referees) {
     if (r.name.toLowerCase().includes(q)) {
-      results.push({ type: 'arbitre', title: r.name, subtitle: r.category, href: `/officiels?role=arbitres` })
+      results.push({ type: 'arbitre', title: r.name, subtitle: r.category ?? `${r.matchesOfficiated} match(s)`, href: `/officiels/arbitres/${r.slug}` })
     }
   }
   for (const s of stadiums) {
@@ -3241,8 +3378,9 @@ export function verifyIdentity(rawId: string): VerifiedIdentity | null {
 
   const refMatch = id.match(/^FIF-REF-(\d+)$/)
   if (refMatch) {
-    const referee = referees[Number(refMatch[1])]
-    if (referee) return { fifId: id, type: 'REFEREE', name: referee.name, status: referee.status, validUntil: '2027-06-30', profileHref: '/officiels?role=arbitres' }
+    // Uniquement un arbitre dont le FIF ID officiel est enregistré.
+    const referee = referees.find((r) => r.fifId?.toUpperCase() === id)
+    if (referee?.status) return { fifId: id, type: 'REFEREE', name: referee.name, status: referee.status, validUntil: '2027-06-30', profileHref: '/officiels?role=arbitres' }
   }
 
   return null

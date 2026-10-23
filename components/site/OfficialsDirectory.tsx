@@ -48,15 +48,15 @@ export function OfficialsDirectory({
           return (
             <Link href={`/officiels/${ROLE_PATH[role]}/${c.slug}`} className="entity-card" key={c.id}>
               <PersonPortrait seed={c.name} size={44} />
-              <div><strong>{c.name}</strong><span>{club?.name ?? 'Sélection nationale'} · Licence {c.license} · depuis {c.since}</span></div>
+              <div><strong>{c.name}</strong><span>{club?.name ?? 'Sélection nationale'}{c.license ? ` · Licence ${c.license}` : ''}{c.since ? ` · depuis ${c.since}` : ''}{c.designations?.length ? ` · ${c.designations.length} feuille${c.designations.length > 1 ? 's' : ''} de match` : ''}</span></div>
             </Link>
           )
         })}
         {role === 'Arbitres' && referees.map((r) => (
           <Link href={`/officiels/${ROLE_PATH[role]}/${r.slug}`} className="entity-card" key={r.id}>
             <PersonPortrait seed={r.name} size={44} />
-            <div><strong>{r.name}</strong><span>{r.category} · {r.matchesOfficiated} matchs arbitrés</span></div>
-            <span className={`status-pill ${r.status === 'Actif' ? 'ok' : r.status === 'Suspendu' ? 'error' : 'neutral'}`}>{r.status}</span>
+            <div><strong>{r.name}</strong><span>{r.category ? `${r.category} · ` : ''}{r.designations ? [...new Set(r.designations.map((d) => d.role))].join(', ') + ` · ${r.matchesOfficiated} match${r.matchesOfficiated > 1 ? 's' : ''}` : `${r.matchesOfficiated} matchs arbitrés`}</span></div>
+            {r.status && <span className={`status-pill ${r.status === 'Actif' ? 'ok' : r.status === 'Suspendu' ? 'error' : 'neutral'}`}>{r.status}</span>}
           </Link>
         ))}
         {role === 'Dirigeants' && officials.map((o) => {

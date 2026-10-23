@@ -20,9 +20,9 @@ export default async function ArbitragePage() {
         subtitle="Formation, désignations, examens, évaluations et rapports pour le corps arbitral ivoirien."
         breadcrumb={[{ label: 'Arbitrage' }]}
         meta={referees.length ? [
-          { value: String(referees.length), label: 'Arbitres licenciés' },
-          { value: String(active.length), label: 'Actifs' },
-          { value: String(fifa.length), label: 'Catégorie FIFA' },
+          { value: String(referees.length), label: 'Officiels sur les feuilles de match' },
+          ...(active.length ? [{ value: String(active.length), label: 'Actifs' }] : []),
+          ...(fifa.length ? [{ value: String(fifa.length), label: 'Catégorie FIFA' }] : []),
         ] : []}
       />
 

@@ -58,33 +58,46 @@ export interface Club {
   achievements: HonourRecord[]
 }
 
+/** Match auquel une personne a été inscrite sur une feuille de match officielle. */
+export interface OfficialDesignation {
+  matchId: string
+  label: string
+  date: string
+  role: string
+  competition: string
+}
+
+// Licence, FIF ID, date de naissance… sont facultatifs : une fiche peut être
+// créée à partir d'une feuille de match officielle, qui ne les mentionne pas.
 export interface Coach {
   id: string
   slug: string
   name: string
   clubId: string | null
   nationalTeamId: string | null
-  license: 'CAF Pro' | 'CAF A' | 'CAF B' | 'CAF C'
-  since: number
-  fifId: string
-  birthdate: string
+  license?: 'CAF Pro' | 'CAF A' | 'CAF B' | 'CAF C'
+  since?: number
+  fifId?: string
+  birthdate?: string
   bio: string
-  history: { clubId: string; from: number; to: number | null }[]
+  history?: { clubId: string; from: number; to: number | null }[]
+  designations?: OfficialDesignation[]
 }
 
 export interface Referee {
   id: string
   slug: string
   name: string
-  category: 'FIFA' | 'Fédérale 1' | 'Fédérale 2' | 'Régionale'
-  regionId: string
-  gender: Gender
-  status: 'Actif' | 'Suspendu' | 'Retraité'
+  category?: 'FIFA' | 'Fédérale 1' | 'Fédérale 2' | 'Régionale'
+  regionId?: string
+  gender?: Gender
+  status?: 'Actif' | 'Suspendu' | 'Retraité'
   matchesOfficiated: number
-  fifId: string
-  birthdate: string
+  fifId?: string
+  birthdate?: string
   bio: string
-  trainings: { title: string; date: string }[]
+  trainings?: { title: string; date: string }[]
+  designations?: OfficialDesignation[]
 }
 
 export interface Official {
@@ -93,9 +106,10 @@ export interface Official {
   name: string
   role: 'Président de club' | 'Secrétaire général' | 'Délégué de match' | 'Commissaire au match'
   clubId: string | null
-  fifId: string
-  birthdate: string
+  fifId?: string
+  birthdate?: string
   bio: string
+  designations?: OfficialDesignation[]
 }
 
 export interface Agent {
@@ -311,10 +325,28 @@ export interface Match {
   /** false : score publié par une seule source, en attente de confirmation. */
   scoreConfirmed?: boolean
   source?: string
+  /** Compositions de la feuille de match officielle (match réel). */
+  officialLineups?: { home: OfficialLineup; away: OfficialLineup }
+  /** Officiels inscrits sur la feuille de match. */
+  officials?: { referee?: string; assistants?: string[]; fourthOfficial?: string; commissioner?: string }
+  sheetSource?: string
   /** Scénario d'événements pré-généré (déterministe) utilisé pour dériver, côté
    *  client et à partir de l'heure réelle, le score et la minute « en direct »
    *  une fois le coup d'envoi (date) atteint — voir lib/liveMatch.ts. */
   liveScript?: MatchEvent[]
+}
+
+export interface LineupPlayer {
+  name: string
+  number?: number
+  starter: boolean
+  captain?: boolean
+  goalkeeper?: boolean
+}
+
+export interface OfficialLineup {
+  players: LineupPlayer[]
+  coach?: string
 }
 
 export interface Article {
