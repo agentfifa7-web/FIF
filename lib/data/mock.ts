@@ -1470,7 +1470,40 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     events: [{ type: 'goal', team: 'home', player: 'Toure Lamine' }],
     source: 'Score publié par une seule source (Supersport CI, « Ligue 1 (5e journée) : Mouna enchaîne face à Zoman ») — à confirmer. But de Touré Lamine en première période ; Zoman FC a manqué un penalty. Match joué le vendredi 23 octobre 2026.',
     scoreConfirmed: false,
+  },  {
+    slug: 'l1-j5-sol-fc-es-agboville',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-10-24',
+    time: '15:30',
+    venue: 'CNTF de Bingerville',
+    homeClub: 'SOL FC',
+    awayClub: 'ES Agboville',
+    homeScore: 1,
+    awayScore: 2,
+    events: [
+      { type: 'goal', team: 'away', player: 'Habid Souleymane' },
+      { type: 'goal', team: 'away', player: 'Yann Heddy Camus' },
+      { minute: 80, type: 'goal', team: 'home', player: 'N’Guessan Michel' },
+    ],
+    source: 'Résultat confirmé par Sport-Ivoire (« OFC Adiaké 2-1 FC Bouaké, SOL FC 1-2 ES Agboville ») et Supersport CI (« Agboville renverse SOL FC ») — buts d’Habid Souleymane et de Yann Camus (orthographié « Yann Kamis » par Supersport CI) pour Agboville, N’Guessan Michel réduit l’écart à la 80e. 5e journée, samedi 24 octobre 2026.',
   },
+  {
+    slug: 'l1-j5-ofc-adiake-bouake-fc',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-10-24',
+    time: '15:30',
+    venue: 'Complexe sportif de Bingerville',
+    homeClub: 'OFC Adiaké',
+    awayClub: 'Bouaké FC',
+    homeScore: 2,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « Football-Ligue 1 (5e journée) : OFC Adiaké 2-1 FC Bouaké ») — à confirmer. Buteurs non communiqués. 5e journée, samedi 24 octobre 2026.',
+    scoreConfirmed: false,
+  },
+
 
 
   {
@@ -2009,8 +2042,6 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 // annoncé aussi par ami-sportif.com et DailySports. Susceptible de modifications.
 const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'SOL FC', away: 'ES Agboville', date: '2026-10-24', time: '15:30', venue: 'CNTF de Bingerville', note: J5_NOTE },
-  { home: 'OFC Adiaké', away: 'Bouaké FC', date: '2026-10-24', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
   { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
   { home: 'US Tchologo', away: 'Stade d’Abidjan', date: '2026-10-25', time: '15:30', venue: 'Stade Amadou Gon Coulibaly, Korhogo', note: J5_NOTE },
   { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', time: '15:30', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J5_NOTE },
