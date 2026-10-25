@@ -1499,9 +1499,12 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayClub: 'Bouaké FC',
     homeScore: 2,
     awayScore: 1,
-    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
-    source: 'Score publié par une seule source (Sport-Ivoire, « Football-Ligue 1 (5e journée) : OFC Adiaké 2-1 FC Bouaké ») — à confirmer. Buteurs non communiqués. 5e journée, samedi 24 octobre 2026.',
-    scoreConfirmed: false,
+    events: [
+      { minute: 10, type: 'goal', team: 'home', player: 'Ouattara Bourahima' },
+      { minute: 21, type: 'goal', team: 'home', player: 'Toure Cheick Lamzi' },
+      { type: 'goal', team: 'away' },
+    ],
+    source: 'Résultat confirmé par Sport-Ivoire (« OFC Adiaké 2-1 FC Bouaké ») et Supersport CI (« Adiaké décroche sa première victoire ») — buts d’Ouattara Bourahima (10e) et de Touré Cheick Lamzy (21e) ; buteur de Bouaké FC non communiqué. 5e journée, samedi 24 octobre 2026.',
   },
 
 
