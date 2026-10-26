@@ -1505,7 +1505,25 @@ export const realLigue1Matches: RealLeagueMatch[] = [
       { type: 'goal', team: 'away' },
     ],
     source: 'Résultat confirmé par Sport-Ivoire (« OFC Adiaké 2-1 FC Bouaké ») et Supersport CI (« Adiaké décroche sa première victoire ») — buts d’Ouattara Bourahima (10e) et de Touré Cheick Lamzy (21e) ; buteur de Bouaké FC non communiqué. 5e journée, samedi 24 octobre 2026.',
+  },  {
+    slug: 'l1-j5-us-tchologo-stade-d-abidjan',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-10-25',
+    time: '15:30',
+    venue: 'Stade Amadou Gon Coulibaly, Korhogo',
+    homeClub: 'US Tchologo',
+    awayClub: 'Stade d’Abidjan',
+    homeScore: 1,
+    awayScore: 1,
+    events: [
+      { minute: 28, type: 'goal', team: 'home', player: 'Zouhoule Elvis' },
+      { minute: 90, type: 'goal', team: 'away', player: 'Coulibaly Alassane' },
+    ],
+    source: 'Score publié par une seule source (Supersport CI, « Le Stade d’Abidjan et Tchologo se neutralisent (1-1) ») — à confirmer. Buts de Zouhoulé Elvis (28e) et de Coulibaly Alassane (90+5e) ; équipes des buteurs déduites des effectifs (feuille de match officielle d’US Tchologo, buts antérieurs d’Alassane Coulibaly pour le Stade d’Abidjan). 5e journée, dimanche 25 octobre 2026.',
+    scoreConfirmed: false,
   },
+
 
 
 
@@ -2046,7 +2064,6 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
   { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
-  { home: 'US Tchologo', away: 'Stade d’Abidjan', date: '2026-10-25', time: '15:30', venue: 'Stade Amadou Gon Coulibaly, Korhogo', note: J5_NOTE },
   { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', time: '15:30', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J5_NOTE },
   { home: 'AFAD Plateau', away: 'Yakro FC', date: '2026-11-01', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
   { home: 'ASEC Mimosas', away: 'FC San Pedro', date: '2026-11-01', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
