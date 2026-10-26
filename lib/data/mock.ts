@@ -1760,7 +1760,23 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     ],
     source: 'Score publié par une seule source (Foot Africa, « L’Africa Sports renverse le Sporting Club de Gagnoa ») — à confirmer. Match joué le samedi 17 octobre 2026 à 18h00 (feuille de match officielle LFP) ; Gagnoa ouvre le score par Yao Koiame, doublé de Teddy Maé (71e, 82e).',
     scoreConfirmed: false,
+  },  {
+    slug: 'l2-j4-africa-sports-denguele-fc',
+    competitionId: 'comp-l2',
+    matchday: 4,
+    date: '2026-10-24',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeClub: 'Africa Sports',
+    awayClub: 'Denguélé FC',
+    homeScore: 0,
+    awayScore: 2,
+    events: [
+      { minute: 8, type: 'goal', team: 'away', player: 'Bissouma' },
+      { minute: 17, type: 'goal', team: 'away', player: 'Goua Bi' },
+    ],
+    source: 'Résultat confirmé par Supersport CI (« Denguélé inflige à l’Africa sa première défaite de la saison »), ami-sportif.com et L’Infodrome — Ligue 2, poule A, 4e journée, samedi 24 octobre 2026 au Stade Robert Champroux. Buts de Bissouma (8e) et Goua Bi (17e).',
   },
+
   {
     slug: 'l1-j3-soa-isca-inova',
     competitionId: 'comp-l1',
