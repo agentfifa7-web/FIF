@@ -1839,7 +1839,33 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     events: [{ type: 'goal', team: 'home' }],
     source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026) — à confirmer. Poule A, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
     scoreConfirmed: false,
+  },  {
+    slug: 'l2-j4-2-plateaux-fc-racing-club-abidjan',
+    competitionId: 'comp-l2',
+    matchday: 4,
+    date: '2026-10-25',
+    homeClub: '2 Plateaux FC',
+    awayClub: 'Racing Club Abidjan',
+    homeScore: 3,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026) — à confirmer. Poule B, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
   },
+  {
+    slug: 'l2-j4-agir-fc-rfc-aboisso',
+    competitionId: 'comp-l2',
+    matchday: 4,
+    date: '2026-10-25',
+    homeClub: 'Agir FC',
+    awayClub: 'RFC Aboisso',
+    homeScore: 0,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026) — à confirmer. Poule B, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
+  },
+
 
 
   {
