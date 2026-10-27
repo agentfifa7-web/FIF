@@ -1864,7 +1864,20 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     events: [{ type: 'goal', team: 'away' }],
     source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026) — à confirmer. Poule B, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
     scoreConfirmed: false,
+  },  {
+    slug: 'l2-j4-atlantis-fc-espi',
+    competitionId: 'comp-l2',
+    matchday: 4,
+    date: '2026-10-25',
+    homeClub: 'Atlantis FC',
+    awayClub: 'ESPI',
+    homeScore: 2,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026 — « Atlantis FC 2-0 ESP Issia », c’est-à-dire l’ESPI) — à confirmer. Poule B, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
   },
+
 
 
 
