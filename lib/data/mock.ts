@@ -2236,11 +2236,17 @@ const LIGUE2_J2: typeof LIGUE2_J1 = [
 const L2_J3_NOTE = 'Ligue 2 2026-2027, 3e journée — affiche annoncée par L’Infodrome et Supersport CI (programme complet non publié), heure à confirmer.'
 const LIGUE2_J3: typeof LIGUE2_J1 = [
 ]
+const L2_J4_NOTE = 'Ligue 2 2026-2027, 4e journée — programme publié par ami-sportif.com (26 octobre 2026) ; score non encore publié.'
+const LIGUE2_J4: typeof LIGUE2_J1 = [
+  { home: 'AS Tanda', away: 'AS Athletic', date: '2026-10-26', time: '18:00', venue: 'Stade Robert Champroux, Marcory', detail: 'Poule A.' },
+  { home: 'LYS FC', away: 'Nour FC', date: '2026-10-26', time: '15:30', venue: 'CNTF de Bingerville', detail: 'Poule B.' },
+]
 
 export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE2_J1.map((f) => ({ ...f, matchday: 1, base: L2_J1_NOTE })),
   ...LIGUE2_J2.map((f) => ({ ...f, matchday: 2, base: L2_J2_NOTE })),
   ...LIGUE2_J3.map((f) => ({ ...f, matchday: 3, base: L2_J3_NOTE })),
+  ...LIGUE2_J4.map((f) => ({ ...f, matchday: 4, base: L2_J4_NOTE })),
 ].map(({ home, away, date, time, venue, detail, matchday, base }) => ({
   slug: `l2-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l2',
