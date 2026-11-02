@@ -4,6 +4,7 @@ import type { TicketTier, TicketTierId } from '@/lib/data/tickets'
 import { formatMoney } from '@/lib/format'
 
 export const TIER_COLORS: Record<TicketTierId, string> = {
+  vvip: '#7a1f5c',
   vip: '#c9a54b',
   centrale: '#087443',
   laterale: '#ff7a00',

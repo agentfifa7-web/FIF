@@ -47,7 +47,7 @@ const ORDERS_KEY = 'fif-ticket-orders-v1'
 const ALERTS_KEY = 'fif-ticket-alerts-v1'
 const EVENT = 'fif-tickets-change'
 
-const BLOCK_LETTERS: Record<TicketTierId, string> = { vip: 'P', centrale: 'C', laterale: 'L', virage: 'V' }
+const BLOCK_LETTERS: Record<TicketTierId, string> = { vvip: 'X', vip: 'P', centrale: 'C', laterale: 'L', virage: 'V' }
 
 function read<T>(key: string, fallback: T): T {
   try { return JSON.parse(window.localStorage.getItem(key) ?? '') as T } catch { return fallback }

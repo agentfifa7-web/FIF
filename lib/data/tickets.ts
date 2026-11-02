@@ -7,7 +7,7 @@
 import { clubs, realLigue1UpcomingFixtures } from './mock'
 import { slugify } from './rng'
 
-export type TicketTierId = 'vip' | 'centrale' | 'laterale' | 'virage'
+export type TicketTierId = 'vvip' | 'vip' | 'centrale' | 'laterale' | 'virage'
 
 export interface TicketTier {
   id: TicketTierId
@@ -82,6 +82,30 @@ export const ticketEvents: TicketEvent[] = [
     source: { label: 'Prix des billets annoncés par la FIF (Camfoot)', url: 'https://www.camfoot.com/actualites/cote-divoire-cameroun-voici-les-prix-des-billets,557140.html' },
     note: 'Prix officiels communiqués par la FIF (2 000, 5 000, 10 000 et 50 000 F CFA). La répartition des tarifs par tribune affichée ici est indicative.',
     matchHref: '/equipes-nationales/elephants/matchs/elephants-cameroun-2026-10-03',
+  },
+  {
+    slug: 'cote-divoire-gambie-2026-11-12',
+    category: 'Éléphants',
+    competition: 'Éliminatoires CAN 2027 — 3e journée, groupe C',
+    home: CIV,
+    away: { name: 'Gambie', shortName: 'Scorpions', flag: '🇬🇲' },
+    date: '2026-11-12',
+    time: '19:00',
+    stadium: { name: 'Stade de la Paix', city: 'Bouaké', capacity: 40000 },
+    // Vente du jeudi 5 au mercredi 11 novembre 2026 (FIF).
+    status: Date.now() > new Date('2026-11-12T23:59:00Z').getTime() ? 'Terminé' : Date.now() >= new Date('2026-11-05T00:00:00Z').getTime() ? 'En vente' : 'Bientôt en vente',
+    maxPerOrder: 6,
+    gatesOpen: '13:00',
+    tiers: [
+      { id: 'vvip', name: 'VVIP', price: 150000, perks: 'Catégorie officielle VVIP.', gate: 'Indiquée sur le billet', availability: 'Disponible' },
+      { id: 'vip', name: 'VIP', price: 100000, perks: 'Catégorie officielle VIP.', gate: 'Indiquée sur le billet', availability: 'Disponible' },
+      { id: 'centrale', name: 'Catégorie 1', price: 10000, perks: 'Catégorie officielle 1.', gate: 'Indiquée sur le billet', availability: 'Disponible' },
+      { id: 'laterale', name: 'Catégorie 2', price: 5000, perks: 'Catégorie officielle 2.', gate: 'Indiquée sur le billet', availability: 'Disponible' },
+      { id: 'virage', name: 'Catégorie 3', price: 3000, perks: 'Catégorie officielle 3.', gate: 'Indiquée sur le billet', availability: 'Disponible' },
+    ],
+    source: { label: 'Prix des billets et points de vente annoncés par la FIF (ami-sportif.com)', url: 'https://www.ami-sportif.com/2026/11/02/cote-divoire-gambie-les-prix-des-billets-et-les-points-de-vente-devoiles-pour-les-eliminatoires-de-la-can-2027/' },
+    note: 'Tarifs officiels FIF : VVIP 150 000, VIP 100 000, catégorie 1 10 000, catégorie 2 5 000 et catégorie 3 3 000 F CFA. Vente du jeudi 5 au mercredi 11 novembre 2026 dans les points de vente d’Abidjan (Cocody, Treichville, Koumassi, Abobo, Yopougon), de Bouaké et de Yamoussoukro ; ouverture des portes à 13 h. La position des catégories sur le plan du stade est indicative.',
+    matchHref: '/equipes-nationales/elephants/matchs/elephants-gambie-2026-11-12',
   },
   ...LIGUE1_J2.map(({ homeClub: h, awayClub: a, date, time, venue, postponed, note, matchday }): TicketEvent => ({
     slug: `ligue1-j${matchday}-${slugify(h)}-${slugify(a)}`,
