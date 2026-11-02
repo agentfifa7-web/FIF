@@ -1523,6 +1523,51 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     source: 'Score publié par une seule source (Supersport CI, « Le Stade d’Abidjan et Tchologo se neutralisent (1-1) ») — à confirmer. Buts de Zouhoulé Elvis (28e) et de Coulibaly Alassane (90+5e) ; équipes des buteurs déduites des effectifs (feuille de match officielle d’US Tchologo, buts antérieurs d’Alassane Coulibaly pour le Stade d’Abidjan). 5e journée, dimanche 25 octobre 2026.',
     scoreConfirmed: false,
   },
+  {
+    slug: 'l1-j5-soa-co-korhogo',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-11-01',
+    time: '15:30',
+    venue: 'Stade Charles Konan Banny, Yamoussoukro',
+    homeClub: 'SOA',
+    awayClub: 'CO Korhogo',
+    homeScore: 2,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « Lonaci-5e journée en retard : L’ASEC Mimosas décolle enfin ! », 2 novembre 2026) — à confirmer ; buteurs non communiqués. 5e journée, dimanche 1er novembre 2026.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l1-j5-afad-plateau-yakro-fc',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-11-01',
+    time: '15:30',
+    venue: 'Stade Félix Houphouët-Boigny, Abidjan',
+    homeClub: 'AFAD Plateau',
+    awayClub: 'Yakro FC',
+    homeScore: 3,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « Lonaci-5e journée en retard : L’ASEC Mimosas décolle enfin ! », 2 novembre 2026) — à confirmer ; buteurs non communiqués. 5e journée, dimanche 1er novembre 2026.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l1-j5-asec-mimosas-fc-san-pedro',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-11-01',
+    time: '18:00',
+    venue: 'Stade Félix Houphouët-Boigny, Abidjan',
+    homeClub: 'ASEC Mimosas',
+    awayClub: 'FC San Pedro',
+    homeScore: 2,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Sport-Ivoire, « Lonaci-5e journée en retard : L’ASEC Mimosas décolle enfin ! », 2 novembre 2026) — à confirmer ; buteurs non communiqués. 5e journée, dimanche 1er novembre 2026.',
+    scoreConfirmed: false,
+  },
 
 
 
@@ -2184,9 +2229,6 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
   { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
-  { home: 'SOA', away: 'CO Korhogo', date: '2026-11-01', time: '15:30', venue: 'Stade Charles Konan Banny, Yamoussoukro', note: J5_NOTE },
-  { home: 'AFAD Plateau', away: 'Yakro FC', date: '2026-11-01', time: '15:30', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
-  { home: 'ASEC Mimosas', away: 'FC San Pedro', date: '2026-11-01', time: '18:00', venue: 'Stade Félix Houphouët-Boigny, Abidjan', note: J5_NOTE },
 ]
 
 export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
