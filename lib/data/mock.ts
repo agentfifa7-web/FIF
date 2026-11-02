@@ -1032,12 +1032,12 @@ export const competitions: Competition[] = [
   { id: 'comp-coupe', slug: 'coupe-nationale', name: 'Coupe Nationale FIF', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe — début annoncé le 29 janvier 2027', logoInitials: 'CN' },
   { id: 'comp-super', slug: 'super-coupe', name: 'Super Coupe de Côte d’Ivoire', category: 'Seniors', practice: 'Professionnel', gender: 'M', season: '2026-2027', clubIds: ['ASEC Mimosas', 'CO Korhogo'].map((n) => proClubs.find((c) => c.name === n)!.id), format: 'Match unique — 6 août 2026, Stade Félix Houphouët-Boigny : victoire de l’ASEC Mimosas face au CO Korhogo', logoInitials: 'SC' },
   { id: 'comp-d3', slug: 'championnat-national-amateur', name: 'Championnat National Amateur (D3)', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: D3_CLUB_IDS, format: '4 poules de 10 clubs — début le 16 octobre 2026 à Korhogo', logoInitials: 'D3' },
-  { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour', logoInitials: 'R1' },
-  { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CD' },
-  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Division 1 — poule unique de 12 clubs, reprise le samedi 31 octobre 2026 ; promus : Yamoussoukro FC et Jeunesse Olympic Club (L’Infodrome, Foot Africa). Supercoupe féminine en ouverture, vendredi 30 octobre 2026 au Parc des Sports de Treichville : ASEC Mimosas 5-2 Yamoussoukro FC, meilleure joueuse Kayaba Tatiana (ASEC) — score à confirmer (Supersport CI)', logoInitials: 'CF' },
+  { id: 'comp-regional', slug: 'championnat-regional-d1', name: 'Championnat Régional D1', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat, matchs aller-retour — début des compétitions régionales et de district le 8 janvier 2027 (calendrier FIF 2026-2027 relayé par l’AIP)', logoInitials: 'R1' },
+  { id: 'comp-coupe-districts', slug: 'coupe-des-districts', name: 'Coupe des Districts FIF', category: 'Seniors', practice: 'Amateur', gender: 'M', season: '2026-2027', clubIds: [], format: 'Élimination directe — début des compétitions régionales et de district le 8 janvier 2027 (calendrier FIF 2026-2027 relayé par l’AIP)', logoInitials: 'CD' },
+  { id: 'comp-fem', slug: 'championnat-feminin', name: 'Championnat National Féminin', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Division 1 — poule unique de 12 clubs, reprise le samedi 31 octobre 2026 ; promus : Yamoussoukro FC et Jeunesse Olympic Club (L’Infodrome, Foot Africa). Supercoupe féminine en ouverture, vendredi 30 octobre 2026 au Parc des Sports de Treichville : ASEC Mimosas 5-2 Yamoussoukro FC, meilleure joueuse Kayaba Tatiana (ASEC) — score à confirmer (Supersport CI). 1re journée, samedi 31 octobre 2026 au Parc des Sports de Treichville : FC Mouna 4-1 Stella Club — score à confirmer (Supersport CI)', logoInitials: 'CF' },
   { id: 'comp-coupe-fem', slug: 'coupe-feminine', name: 'Coupe Nationale Féminine', category: 'Féminin', practice: null, gender: 'F', season: '2026-2027', clubIds: [], format: 'Élimination directe', logoInitials: 'CF' },
   { id: 'comp-u20', slug: 'championnat-u20', name: 'Championnat National U20', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'U20' },
-  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'U17' },
+  { id: 'comp-u17', slug: 'championnat-u17', name: 'Championnat National U17', category: 'Jeunes', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat — début des compétitions Réserves et U17 le 3 octobre 2026 (calendrier FIF 2026-2027 relayé par l’AIP)', logoInitials: 'U17' },
   { id: 'comp-futsal', slug: 'futsal-elite', name: 'Futsal Élite', category: 'Futsal', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Championnat', logoInitials: 'FE' },
   { id: 'comp-beach', slug: 'beach-soccer-national', name: 'Beach Soccer National', category: 'Beach Soccer', practice: null, gender: 'M', season: '2026-2027', clubIds: [], format: 'Tournoi', logoInitials: 'BS' },
 ]
@@ -1922,9 +1922,73 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     source: 'Score publié par une seule source (ami-sportif.com, « Ligue 2 Côte d’Ivoire 2026-2027 : résultats de la 4e journée », 26 octobre 2026 — « Atlantis FC 2-0 ESP Issia », c’est-à-dire l’ESPI) — à confirmer. Poule B, 4e journée, jouée le week-end des 24 et 25 octobre 2026 (date exacte non communiquée) ; buteurs non communiqués.',
     scoreConfirmed: false,
   },
-
-
-
+  {
+    slug: 'l2-j5-fc-osa-leader-sc-marcory',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-10-31',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeClub: 'FC OSA',
+    awayClub: 'Leader SC Marcory',
+    homeScore: 2,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home', player: 'Koné Ali Djinan' }, { type: 'goal', team: 'home', player: 'Ballo Assoumane' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule A, 5e journée, samedi 31 octobre 2026 ; buts de Koné Ali Djinan et Ballo Assoumane pour le FC OSA (minutes non communiquées), buteur du Leader SC non communiqué.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j5-2-plateaux-fc-agir-fc',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-10-31',
+    venue: 'Complexe sportif de Bingerville',
+    homeClub: '2 Plateaux FC',
+    awayClub: 'Agir FC',
+    homeScore: 2,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'away' }, { minute: 28, type: 'goal', team: 'home' }, { minute: 54, type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule B, 5e journée, samedi 31 octobre 2026 ; 2 Plateaux FC, mené au score, l’emporte grâce à un doublé (28e et 54e) dont l’auteur n’est pas nommé dans les extraits disponibles.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j5-sirocco-fc-as-tanda',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-10-31',
+    homeClub: 'Sirocco FC',
+    awayClub: 'AS Tanda',
+    homeScore: 0,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule A, 5e journée (du 31 octobre au 2 novembre 2026, date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j5-espi-lys-fc',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-10-31',
+    homeClub: 'ESPI',
+    awayClub: 'LYS FC',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule B, 5e journée (du 31 octobre au 2 novembre 2026, date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j5-nour-fc-wac',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-10-31',
+    homeClub: 'Nour FC',
+    awayClub: 'WAC',
+    homeScore: 1,
+    awayScore: 0,
+    events: [{ type: 'goal', team: 'home' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule B, 5e journée (du 31 octobre au 2 novembre 2026, date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
+  },
 
   {
     slug: 'l1-j3-soa-isca-inova',
@@ -2278,6 +2342,13 @@ const LIGUE2_J2: typeof LIGUE2_J1 = [
 const L2_J3_NOTE = 'Ligue 2 2026-2027, 3e journée — affiche annoncée par L’Infodrome et Supersport CI (programme complet non publié), heure à confirmer.'
 const LIGUE2_J3: typeof LIGUE2_J1 = [
 ]
+const L2_J5_NOTE = 'Ligue 2 2026-2027, 5e journée — programme publié par ami-sportif.com (30 octobre 2026) ; score non encore publié.'
+const LIGUE2_J5: typeof LIGUE2_J1 = [
+  { home: 'AS Athletic', away: 'Africa Sports', date: '2026-11-01', time: '15:30', detail: 'Poule A, stade à confirmer.' },
+  { home: 'Racing Club Abidjan', away: 'Atlantis FC', date: '2026-11-01', time: '15:30', venue: 'Parc des Sports de Treichville', detail: 'Poule B.' },
+  { home: 'JAC Angré', away: 'CO Bouaflé', date: '2026-11-02', venue: 'Parc des Sports de Treichville', detail: 'Poule A, heure non communiquée.' },
+  { home: 'Don Koff FC', away: 'SC Gagnoa', date: '2026-11-02', venue: 'Yamoussoukro', detail: 'Poule A, heure non communiquée.' },
+]
 const L2_J4_NOTE = 'Ligue 2 2026-2027, 4e journée — programme publié par ami-sportif.com (26 octobre 2026) ; score non encore publié.'
 const LIGUE2_J4: typeof LIGUE2_J1 = [
   { home: 'AS Tanda', away: 'AS Athletic', date: '2026-10-26', time: '18:00', venue: 'Stade Robert Champroux, Marcory', detail: 'Poule A.' },
@@ -2289,6 +2360,7 @@ export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE2_J2.map((f) => ({ ...f, matchday: 2, base: L2_J2_NOTE })),
   ...LIGUE2_J3.map((f) => ({ ...f, matchday: 3, base: L2_J3_NOTE })),
   ...LIGUE2_J4.map((f) => ({ ...f, matchday: 4, base: L2_J4_NOTE })),
+  ...LIGUE2_J5.map((f) => ({ ...f, matchday: 5, base: L2_J5_NOTE })),
 ].map(({ home, away, date, time, venue, detail, matchday, base }) => ({
   slug: `l2-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l2',
@@ -3215,6 +3287,8 @@ export const elephantsFixtures: RealFixture[] = [
       ],
       source: 'Résultat réel confirmé par la presse ivoirienne, camerounaise et internationale (Foot Mercato, Connectionivoirienne, Africa Top Sports, Camfoot, Afrik-Foot, VAVEL, ESPN) — défaite 1-0 des Éléphants, alignés avec une équipe largement remaniée, à Ebimpé. 0-0 à la pause, but de Bil Nsongo dès la reprise (46e). Compositions et passeur décisif non retenus : les sources divergent ou ne donnent que des noms partiels.',
     } },
+  { slug: 'elephants-gambie-2026-11-12', opponent: 'Gambie', opponentFlag: '🇬🇲', date: '2026-11-12', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [] },
+  { slug: 'gambie-elephants-2026-11-17', opponent: 'Gambie', opponentFlag: '🇬🇲', date: '2026-11-17', time: '17:00', venue: 'Independence Stadium, Bakau', competition: 'Éliminatoires CAN 2027 — Groupe C', home: false, ticketCategories: [] },
 ]
 
 export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
@@ -3252,7 +3326,7 @@ export function getElephantsFixture(slug: string) {
 export const elephantsNextWindow: { opponent: string; competition: string; period: string; source: string } | null = {
   opponent: 'Gambie',
   competition: 'Éliminatoires CAN 2027 — 3e journée (groupe C)',
-  period: 'fenêtre du 9 au 17 novembre 2026, date à confirmer',
+  period: 'jeudi 12 novembre 2026 à Bouaké, retour le 17 novembre à Bakau',
   source: 'Foot Africa et Africa Football Guide (calendrier du groupe C) ; fenêtre CAF du 9 au 17 novembre 2026.',
 }
 
