@@ -2960,6 +2960,8 @@ export interface RealCallUp {
   scoutReport: ScoutReport
   preferredPositions: PositionFamiliarity[]
   stats: ElephantsStats
+  /** Faux si aucune statistique sourcée n'est disponible : la fiche l'indique au lieu d'afficher des zéros. */
+  statsKnown: boolean
   fmCalibrated: boolean
   /** Sélections et buts ajoutés depuis la collecte des statistiques, d'après
    *  les feuilles de match réelles de la fenêtre en cours (elephantsFixtures). */
@@ -3178,21 +3180,16 @@ const ELEPHANTS_REAL_STATS: Record<string, ElephantsStats> = {
 }
 
 export const elephantsCoach = 'Hervé Renard'
-export const elephantsCallUpDate = '2026-09-20'
+export const elephantsCallUpDate = '2026-11-05'
 const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Yahia Fofana', club: 'Çaykur Rizespor', country: 'Turquie', position: 'Gardien', birthdate: '2000-08-21', photoUrl: '/players/elephants/yahia-fofana.webp' },
   { name: 'Mohamed Koné', club: 'Royal Charleroi SC', country: 'Belgique', position: 'Gardien', birthdate: '2002-03-07', photoUrl: '/players/elephants/mohamed-kone.jpg' },
   { name: 'Alban Lafont', club: 'Panathinaïkos', country: 'Grèce', position: 'Gardien', birthdate: '1999-01-23', photoUrl: '/players/elephants/alban-lafont.jpg' },
   { name: 'Emmanuel Agbadou', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '1996-05-12', photoUrl: '/players/elephants/emmanuel-agbadou.jpg' },
   { name: 'Evan Ndicka', club: 'AS Roma', country: 'Italie', position: 'Défenseur', birthdate: '1999-08-20', photoUrl: '/players/elephants/evan-ndicka.jpg', tierOverride: 83 },
-  { name: 'Ghislain Konan', club: 'Gil Vicente', country: 'Portugal', position: 'Défenseur', birthdate: '1994-05-20', photoUrl: '/players/elephants/ghislain-konan.png' },
   { name: 'Kassoum Ouattara', club: 'Beşiktaş', country: 'Turquie', position: 'Défenseur', birthdate: '2004-10-14', photoUrl: '/players/elephants/kassoum-ouattara.png' },
   { name: 'Ousmane Diomandé', club: 'Sporting CP', country: 'Portugal', position: 'Défenseur', birthdate: '2002-06-04', photoUrl: '/players/elephants/ousmane-diomande.png', tierOverride: 78 },
-  { name: 'Christ Tapé', club: 'Toulouse FC', country: 'France', position: 'Défenseur', birthdate: '2006-03-02', photoUrl: '/players/elephants/christ-tape.png' },
-  { name: 'Junior Diaz', club: 'ES Troyes AC', country: 'France', position: 'Défenseur', birthdate: '2003-07-23', photoUrl: '/players/elephants/junior-diaz.jpg', note: 'Appelé en renfort après le forfait d’Odilon Kossounou (blessure à la cuisse)' },
   { name: 'Luck Zogbé', club: 'Stade Brestois 29', country: 'France', position: 'Défenseur', birthdate: '2005-03-24', photoUrl: '/players/elephants/luck-zogbe.jpg', note: 'Appelé en renfort après le forfait de Guéla Doué (blessure au mollet)' },
-  { name: 'Amadou Koné', club: 'NEOM SC', country: 'Arabie saoudite', position: 'Milieu', birthdate: '2005-05-14', photoUrl: '/players/elephants/amadou-kone.jpg' },
-  { name: 'Eddy Doué', club: 'CF Estrela Amadora', country: 'Portugal', position: 'Milieu', birthdate: '2005-12-11', photoUrl: '/players/elephants/eddy-doue.png' },
   { name: 'Franck Kessié', club: 'Atalanta BC', country: 'Italie', position: 'Milieu', birthdate: '1996-12-19', photoUrl: '/players/elephants/franck-kessie.png', tierOverride: 82 },
   { name: 'Ibrahim Sangaré', club: 'Nottingham Forest', country: 'Angleterre', position: 'Milieu', birthdate: '1997-12-02', photoUrl: '/players/elephants/ibrahim-sangare.png', tierOverride: 84 },
   { name: 'Christ Inao Oulaï', club: 'ACF Fiorentina', country: 'Italie', position: 'Milieu', birthdate: '2006-04-06', photoUrl: '/players/elephants/christ-inao-oulai.png' },
@@ -3202,9 +3199,15 @@ const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02', photoUrl: '/players/elephants/bazoumana-toure.jpg' },
   { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: '/players/elephants/elye-wahi.jpg' },
   { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14', photoUrl: '/players/elephants/yan-diomande.jpg' },
-  { name: 'Rayan Fofana', club: 'Le Havre AC', country: 'France', position: 'Attaquant', birthdate: '2006-02-12', photoUrl: '/players/elephants/rayan-fofana.jpg' },
   { name: 'Nicolas Pépé', club: 'Villarreal CF', country: 'Espagne', position: 'Attaquant', birthdate: '1995-05-29', photoUrl: '/players/elephants/nicolas-pepe.png', tierOverride: 74 },
-  { name: 'Yann Gboho', club: 'Coventry City', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-02-12', photoUrl: '/players/elephants/yann-gboho.png' },
+  { name: 'Abdoul Ouattara', club: 'Ipswich Town', country: 'Angleterre', position: 'Défenseur', birthdate: '2005-10-22', note: 'Première convocation (liste du 5 novembre 2026). Début de saison : 11 matchs toutes compétitions, 1 but et 2 passes décisives (Panafrica Football).' },
+  { name: 'Oumar Solet', club: 'Udinese', country: 'Italie', position: 'Défenseur', birthdate: '2000-02-07', note: 'Première convocation (liste du 5 novembre 2026). Début de saison : 5 matchs de Serie A, 398 minutes (Panafrica Football).' },
+  { name: 'Hassane Kamara', club: 'Udinese', country: 'Italie', position: 'Défenseur', birthdate: '1994-03-05', note: 'De retour dans la liste en novembre 2026.' },
+  { name: 'Abdoulaye Kanté', club: 'Al-Ettifaq', country: 'Arabie saoudite', position: 'Milieu', birthdate: '2005-07-09', note: 'Première convocation (liste du 5 novembre 2026). Début de saison : 7 matchs de Saudi Pro League, 630 minutes, 1 passe décisive (Panafrica Football).' },
+  { name: 'Yaya Kader Fofana', club: 'Stade de Reims', country: 'France', position: 'Milieu', birthdate: '2004-06-12', note: 'Première convocation (liste du 5 novembre 2026). Début de saison : 11 matchs de Ligue 2, 9 buts et 2 passes décisives (Panafrica Football) ; joueur UNFP du mois de septembre en Ligue 2.' },
+  { name: 'Amad Diallo', club: 'Manchester United', country: 'Angleterre', position: 'Attaquant', birthdate: '2002-07-11', note: 'De retour dans la liste en novembre 2026.' },
+  { name: 'Martial Godo', club: 'RC Strasbourg', country: 'France', position: 'Attaquant', birthdate: '2003-03-14', note: 'De retour dans la liste en novembre 2026.' },
+
 ]
 
 function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
@@ -3267,6 +3270,7 @@ function buildElephantsProfile(p: RealCallUpRaw): Omit<RealCallUp, 'flag'> {
     potentialAbilityStars: 0,
     personality,
     stats,
+    statsKnown: Boolean(ELEPHANTS_REAL_STATS[p.name]),
     attributes: { technical, mental, physical } as PlayerAttributes,
     traits,
     scoutReport,
@@ -3438,9 +3442,10 @@ export const elephantsFixtures: RealFixture[] = [
       source: 'Résultat réel confirmé par la presse ivoirienne, camerounaise et internationale (Foot Mercato, Connectionivoirienne, Africa Top Sports, Camfoot, Afrik-Foot, VAVEL, ESPN) — défaite 1-0 des Éléphants, alignés avec une équipe largement remaniée, à Ebimpé. 0-0 à la pause, but de Bil Nsongo dès la reprise (46e). Compositions et passeur décisif non retenus : les sources divergent ou ne donnent que des noms partiels.',
     } },
   { slug: 'elephants-gambie-2026-11-12', opponent: 'Gambie', opponentFlag: '🇬🇲', date: '2026-11-12', time: '19:00', venue: 'Stade de la Paix, Bouaké', competition: 'Éliminatoires CAN 2027 — Groupe C', home: true, ticketCategories: [] },
+  { slug: 'gambie-elephants-2026-11-17', opponent: 'Gambie', opponentFlag: '🇬🇲', date: '2026-11-17', time: '16:00', venue: 'Independence Stadium, Bakau', competition: 'Éliminatoires CAN 2027 — Groupe C', home: false, ticketCategories: [] },
 ]
 
-export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci) — au 20 septembre 2026. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
+export const elephantsSourceNote = 'Sélection et calendrier réels, communiqués par la FIF et relayés par la presse ivoirienne et internationale (mondialsport.ci, connectionivoirienne.net, koaci.com, footmercato.net, abidjan.net, africatopsports.com, ami-sportif.com, foot-africa.com, pulse.ci, supersport.ci, africafootunited.com, panafricafootball.com) — liste du 5 novembre 2026 ; calendrier de novembre : Côte d’Ivoire – Gambie le 12 novembre à 19 h GMT (Bouaké), Gambie – Côte d’Ivoire le 17 novembre à 16 h GMT (Bakau), selon Supersport CI et ami-sportif.com. La Somalie, sans stade homologué, se déplace à Abidjan pour son match à domicile.'
 
 // Les statistiques en sélection d'ELEPHANTS_REAL_STATS ont été relevées
 // avant cette fenêtre : chaque match joué depuis (composition de départ +
@@ -3475,7 +3480,7 @@ export function getElephantsFixture(slug: string) {
 export const elephantsNextWindow: { opponent: string; competition: string; period: string; source: string } | null = {
   opponent: 'Gambie',
   competition: 'Éliminatoires CAN 2027 — 3e journée (groupe C)',
-  period: 'jeudi 12 novembre 2026 à Bouaké ; retour à Bakau (date à confirmer)',
+  period: 'jeudi 12 novembre 2026 à Bouaké, retour le mardi 17 novembre à Bakau',
   source: 'Foot Africa et Africa Football Guide (calendrier du groupe C) ; fenêtre CAF du 9 au 17 novembre 2026.',
 }
 

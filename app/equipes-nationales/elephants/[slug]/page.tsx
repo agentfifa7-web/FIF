@@ -80,6 +80,9 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
 
       <section className="page-section tight">
         <p className="section-tag">Statistiques (saison 2026-2027)</p>
+        {!player.statsKnown ? (
+          <p className="lede" style={{ marginTop: 16 }}>Statistiques détaillées de la saison non encore renseignées pour ce joueur.</p>
+        ) : (
         <div className="stats-highlight-grid" style={{ marginTop: 16 }}>
           <div className="stats-highlight-card tone-orange">
             <Trophy size={22} />
@@ -117,6 +120,7 @@ export default async function ElephantsPlayerPage({ params }: { params: Promise<
             )}
           </div>
         </div>
+        )}
       </section>
 
       <section className="page-section tight">
