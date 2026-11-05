@@ -2442,7 +2442,16 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE1_J3_PAIRINGS.map((f) => ({ ...f, matchday: 3 })),
   ...LIGUE1_J4_PAIRINGS.map((f) => ({ ...f, matchday: 4 })),
   ...LIGUE1_J5_PAIRINGS.map((f) => ({ ...f, matchday: 5 })),
-  ...LIGUE1_J6_PAIRINGS.map((f) => ({ ...f, matchday: 6 })),
+  // Report officiel de toutes les rencontres des 6e et 7e journées (communiqué du
+  // président de la LFP, Salif Bictogo, relayé par Supersport CI le 5 novembre 2026).
+  ...LIGUE1_J6_PAIRINGS.map(({ date: _date, time: _time, ...f }) => ({
+    ...f,
+    date: undefined as string | undefined,
+    time: undefined as string | undefined,
+    matchday: 6,
+    postponed: true,
+    note: `Rencontre reportée : la LFP a reporté toutes les rencontres des 6e et 7e journées de Ligue 1 (communiqué relayé par Supersport CI le 5 novembre 2026). Initialement prévue ${_date ? `le ${_date.split('-').reverse().join('/')}` : 'entre le 6 et le 8 novembre'}${_time ? ` à ${_time.replace(':', 'h')}` : ''} ; nouvelle date non communiquée.`,
+  })),
 ].map(({ home, away, date, time, venue, postponed, note, matchday }) => ({
   slug: `l1-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l1',
