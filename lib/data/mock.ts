@@ -2450,7 +2450,7 @@ export const realLigue1UpcomingFixtures: RealLeagueFixture[] = [
     time: undefined as string | undefined,
     matchday: 6,
     postponed: true,
-    note: `Rencontre reportée : la LFP a reporté toutes les rencontres des 6e et 7e journées de Ligue 1 (communiqué relayé par Supersport CI le 5 novembre 2026). Initialement prévue ${_date ? `le ${_date.split('-').reverse().join('/')}` : 'entre le 6 et le 8 novembre'}${_time ? ` à ${_time.replace(':', 'h')}` : ''} ; nouvelle date non communiquée.`,
+    note: `Rencontre reportée : la LFP a reporté toutes les rencontres des 6e et 7e journées de Ligue 1 en raison de la trêve internationale de novembre (communiqué du 5 novembre 2026 relayé par Supersport CI et ami-sportif.com). Initialement prévue ${_date ? `le ${_date.split('-').reverse().join('/')}` : 'entre le 6 et le 8 novembre'}${_time ? ` à ${_time.replace(':', 'h')}` : ''} ; nouvelle date non communiquée.`,
   })),
 ].map(({ home, away, date, time, venue, postponed, note, matchday }) => ({
   slug: `l1-j${matchday}-${slugify(home)}-${slugify(away)}`,
