@@ -1956,8 +1956,8 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayClub: 'AS Tanda',
     homeScore: 1,
     awayScore: 0,
-    events: [{ type: 'goal', team: 'home' }],
-    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule A, 5e journée, samedi 31 octobre 2026 (programme ami-sportif.com) ; buteurs non communiqués.',
+    events: [{ type: 'goal', team: 'home', player: 'Bolou Bamba Junior' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule A, 5e journée, samedi 31 octobre 2026 (programme ami-sportif.com) ; but de Bolou Bamba Junior (Supersport CI, 7 novembre 2026).',
     scoreConfirmed: false,
   },
   {
@@ -1985,6 +1985,21 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayScore: 0,
     events: [{ type: 'goal', team: 'home' }],
     source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (5e journée) : OSA et 2 Plateaux FC irrésistibles ») — à confirmer. Poule B, 5e journée (du 31 octobre au 2 novembre 2026, date exacte non communiquée) ; buteurs non communiqués.',
+    scoreConfirmed: false,
+  },
+  {
+    slug: 'l2-j5-as-athletic-africa-sports',
+    competitionId: 'comp-l2',
+    matchday: 5,
+    date: '2026-11-01',
+    time: '15:30',
+    venue: 'Stade Robert Champroux, Marcory',
+    homeClub: 'AS Athletic',
+    awayClub: 'Africa Sports',
+    homeScore: 1,
+    awayScore: 1,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }],
+    source: 'Score publié par une seule source (Supersport CI, « Ligue 2 (6e journée) : Africa, attention à Sirocco », 7 novembre 2026 : « match nul étriqué du week-end dernier contre l’AS Athletic (1-1, 5e journée) ») — à confirmer. Poule A, dimanche 1er novembre 2026 ; buteurs non communiqués.',
     scoreConfirmed: false,
   },
   {
@@ -2496,7 +2511,6 @@ const LIGUE2_J3: typeof LIGUE2_J1 = [
 ]
 const L2_J5_NOTE = 'Ligue 2 2026-2027, 5e journée — programme publié par ami-sportif.com (30 octobre 2026) ; score non encore publié.'
 const LIGUE2_J5: typeof LIGUE2_J1 = [
-  { home: 'AS Athletic', away: 'Africa Sports', date: '2026-11-01', time: '15:30', venue: 'Stade Robert Champroux, Marcory', detail: 'Poule A.' },
   { home: 'Lanfiara FC', away: 'AS Divo', date: '2026-11-01', venue: 'Complexe sportif de Bingerville', detail: 'Poule A, heure non communiquée.' },
   { home: 'Leader Foot', away: 'Denguélé FC', date: '2026-11-01', detail: 'Poule A, heure et stade non communiqués.' },
   { home: 'RFC Aboisso', away: 'Issia Wazy', date: '2026-11-01', detail: 'Poule B, heure et stade non communiqués.' },
@@ -2504,6 +2518,12 @@ const LIGUE2_J5: typeof LIGUE2_J1 = [
   { home: 'Racing Club Abidjan', away: 'Atlantis FC', date: '2026-11-01', time: '15:30', venue: 'Parc des Sports de Treichville', detail: 'Poule B.' },
   { home: 'JAC Angré', away: 'CO Bouaflé', date: '2026-11-02', venue: 'Parc des Sports de Treichville', detail: 'Poule A, heure non communiquée.' },
   { home: 'Don Koff FC', away: 'SC Gagnoa', date: '2026-11-02', venue: 'Yamoussoukro', detail: 'Poule A, heure non communiquée.' },
+]
+const L2_J6_NOTE = 'Ligue 2 2026-2027, 6e journée — affiches annoncées par Supersport CI (7 novembre 2026), programme complet non publié.'
+const LIGUE2_J6: typeof LIGUE2_J1 = [
+  { home: 'Africa Sports', away: 'Sirocco FC', date: '2026-11-08', venue: 'Parc des Sports de Treichville', detail: 'Poule A, heure non communiquée.' },
+  { home: 'FC OSA', away: 'CO Bouaflé', venue: 'Stade du Lycée scientifique, Yamoussoukro', detail: 'Poule A, choc leader–dauphin ; date et heure non précisées (week-end des 7 et 8 novembre).' },
+  { home: 'Issia Wazy', away: '2 Plateaux FC', date: '2026-11-08', venue: 'Stade du Centre de l’INPHB, Yamoussoukro', detail: 'Poule B, dimanche après-midi, heure non communiquée.' },
 ]
 const L2_J4_NOTE = 'Ligue 2 2026-2027, 4e journée — programme publié par ami-sportif.com (26 octobre 2026) ; score non encore publié.'
 const LIGUE2_J4: typeof LIGUE2_J1 = [
@@ -2520,6 +2540,7 @@ export const realLigue2UpcomingFixtures: RealLeagueFixture[] = [
   ...LIGUE2_J3.map((f) => ({ ...f, matchday: 3, base: L2_J3_NOTE })),
   ...LIGUE2_J4.map((f) => ({ ...f, matchday: 4, base: L2_J4_NOTE })),
   ...LIGUE2_J5.map((f) => ({ ...f, matchday: 5, base: L2_J5_NOTE })),
+  ...LIGUE2_J6.map((f) => ({ ...f, matchday: 6, base: L2_J6_NOTE })),
 ].map(({ home, away, date, time, venue, detail, matchday, base }) => ({
   slug: `l2-j${matchday}-${slugify(home)}-${slugify(away)}`,
   competitionId: 'comp-l2',
