@@ -1522,6 +1522,20 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     ],
     source: 'Score publié par une seule source (Supersport CI, « Le Stade d’Abidjan et Tchologo se neutralisent (1-1) ») — à confirmer. Buts de Zouhoulé Elvis (28e) et de Coulibaly Alassane (90+5e) ; équipes des buteurs déduites des effectifs (feuille de match officielle d’US Tchologo, buts antérieurs d’Alassane Coulibaly pour le Stade d’Abidjan). 5e journée, dimanche 25 octobre 2026.',
     scoreConfirmed: false,
+  },  {
+    slug: 'l1-j5-isca-inova-stella-club',
+    competitionId: 'comp-l1',
+    matchday: 5,
+    date: '2026-10-25',
+    time: '15:30',
+    venue: 'Complexe sportif de Bingerville',
+    homeClub: 'ISCA Inova',
+    awayClub: 'Stella Club',
+    homeScore: 1,
+    awayScore: 2,
+    events: [{ type: 'goal', team: 'home' }, { type: 'goal', team: 'away' }, { type: 'goal', team: 'away' }],
+    source: 'Score donné par les sites de résultats (Footlive, foot-actu, b-sport.info), aucun compte rendu de presse ivoirienne — à confirmer. 5e journée, dimanche 25 octobre 2026 ; buteurs non communiqués.',
+    scoreConfirmed: false,
   },
   {
     slug: 'l1-j5-soa-co-korhogo',
@@ -1534,8 +1548,8 @@ export const realLigue1Matches: RealLeagueMatch[] = [
     awayClub: 'CO Korhogo',
     homeScore: 2,
     awayScore: 0,
-    events: [{ minute: 40, type: 'goal', team: 'home', player: 'Diakité Siaka' }, { minute: 89, type: 'goal', team: 'home', player: 'Idriss Traoré' }],
-    source: 'Résultat confirmé par Sport-Ivoire (« Lonaci-5e journée en retard : L’ASEC Mimosas décolle enfin ! ») et Supersport CI (« La SOA prend provisoirement les commandes ») — buts de Diakité Siaka (40e) et d’Idriss Traoré (89e) ; la SOA prend la tête avec 10 points. Match en retard de la 5e journée, dimanche 1er novembre 2026.',
+    events: [{ minute: 42, type: 'goal', team: 'home', player: 'Siaka Diakité' }, { minute: 90, type: 'goal', team: 'home', player: 'Idrissa Traoré' }],
+    source: 'Résultat confirmé par Sofascore (feuille de match : buts de Siaka Diakité à la 42e et d’Idrissa Traoré à la 90e, mi-temps 1-0), Sport-Ivoire (« Lonaci-5e journée en retard : L’ASEC Mimosas décolle enfin ! ») et Supersport CI (« La SOA prend provisoirement les commandes », qui indique 40e et 89e) ; la SOA prend la tête avec 10 points. Match en retard de la 5e journée, dimanche 1er novembre 2026.',
   },
   {
     slug: 'l1-j5-afad-plateau-yakro-fc',
@@ -2448,7 +2462,6 @@ const LIGUE1_J4_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
 // annoncé aussi par ami-sportif.com et DailySports. Susceptible de modifications.
 const J5_NOTE = 'Ligue 1 LONACI 2026-2027, 5e journée — programme officiel de la LFP (susceptible de modifications).'
 const LIGUE1_J5_PAIRINGS: typeof LIGUE1_J2_PAIRINGS = [
-  { home: 'ISCA Inova', away: 'Stella Club', date: '2026-10-25', time: '15:30', venue: 'Complexe sportif de Bingerville', note: J5_NOTE },
 ]
 
 // 6e journée : du vendredi 6 au dimanche 8 novembre 2026 — programme publié par
