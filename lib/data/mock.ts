@@ -3033,6 +3033,7 @@ const COUNTRY_FLAG: Record<string, string> = {
   Angleterre: '🇬🇧',
   Espagne: '🇪🇸',
   'Arabie saoudite': '🇸🇦',
+  Autriche: '🇦🇹',
   France: '🇫🇷',
 }
 
@@ -3238,7 +3239,7 @@ const elephantsCallUpRaw: RealCallUpRaw[] = [
   { name: 'Christ Inao Oulaï', club: 'ACF Fiorentina', country: 'Italie', position: 'Milieu', birthdate: '2006-04-06', photoUrl: '/players/elephants/christ-inao-oulai.png' },
   { name: 'Malick Yalcouyé', club: 'Brighton & Hove Albion', country: 'Angleterre', position: 'Milieu', birthdate: '2005-11-18', photoUrl: '/players/elephants/malick-yalcouye.png' },
   { name: 'Patrick Zabi', club: 'Paris FC', country: 'France', position: 'Milieu', birthdate: '2006-09-24', photoUrl: '/players/elephants/patrick-zabi.jpg' },
-  { name: 'Ange-Yoan Bonny', club: 'Inter Milan', country: 'Italie', position: 'Attaquant', birthdate: '2004-04-21', photoUrl: '/players/elephants/ange-yoan-bonny.png', tierOverride: 76 },
+  { name: 'Oumar Diakité', club: 'SK Sturm Graz', country: 'Autriche', position: 'Attaquant', birthdate: '2003-12-20', note: 'Appelé en renfort après le forfait d’Ange-Yoan Bonny (raison médicale), annoncé par la FIF le 9 novembre 2026 ; prêté par le Stade de Reims.' },
   { name: 'Bazoumana Touré', club: 'Newcastle United', country: 'Angleterre', position: 'Attaquant', birthdate: '2006-03-02', photoUrl: '/players/elephants/bazoumana-toure.jpg' },
   { name: 'Elye Wahi', club: 'OGC Nice', country: 'France', position: 'Attaquant', birthdate: '2003-01-06', photoUrl: '/players/elephants/elye-wahi.jpg' },
   { name: 'Yan Diomandé', club: 'Real Madrid', country: 'Espagne', position: 'Attaquant', birthdate: '2006-11-14', photoUrl: '/players/elephants/yan-diomande.jpg' },
